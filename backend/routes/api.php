@@ -1,0 +1,45 @@
+<?php
+
+use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\BookingReportController;
+use App\Http\Controllers\Api\AdminUserController;
+use App\Http\Controllers\Api\AdminServiceController;
+use App\Http\Controllers\Api\CustomerRequestController;
+use App\Http\Controllers\Api\PaymentAdminController;
+use App\Http\Controllers\Api\PriceAdminController;
+use App\Http\Controllers\Api\RevenueReportController;
+use App\Http\Controllers\Api\SeoSettingController;
+use App\Http\Controllers\Api\ServiceExtensionController;
+use App\Http\Controllers\Api\ServiceProviderController;
+use App\Http\Controllers\Api\UserNotificationController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/health', fn () => response()->json(['status' => 'ok']));
+
+Route::get('reports/bookings', [BookingReportController::class, 'index']);
+Route::patch('reports/bookings/{booking}/confirm', [BookingReportController::class, 'confirm']);
+Route::get('admin/users', [AdminUserController::class, 'index']);
+Route::patch('admin/users/{user}', [AdminUserController::class, 'update']);
+Route::delete('admin/users/{user}', [AdminUserController::class, 'destroy']);
+Route::get('admin/user-notifications', [UserNotificationController::class, 'index']);
+Route::post('admin/user-notifications/mark-all-seen', [UserNotificationController::class, 'markAllSeen']);
+Route::apiResource('admin/services', AdminServiceController::class);
+Route::apiResource('admin/price-groups', PriceAdminController::class);
+Route::get('admin/payments', [PaymentAdminController::class, 'index']);
+Route::patch('admin/payments/{booking}/status', [PaymentAdminController::class, 'updateStatus']);
+Route::patch('admin/payments/{booking}/refund', [PaymentAdminController::class, 'refund']);
+Route::delete('admin/payments/{booking}/delete-unpaid', [PaymentAdminController::class, 'deleteUnpaid']);
+Route::get('admin/revenue-reports', [RevenueReportController::class, 'index']);
+Route::get('admin/provider-applications', [ServiceProviderController::class, 'index']);
+Route::patch('admin/provider-applications/{serviceProvider}/approve', [ServiceProviderController::class, 'approve']);
+Route::patch('admin/provider-applications/{serviceProvider}/reject', [ServiceProviderController::class, 'reject']);
+Route::post('admin/provider-applications/{serviceProvider}/welcome-email-request', [ServiceProviderController::class, 'requestWelcomeEmail']);
+Route::apiResource('admin/providers', ServiceProviderController::class)->parameters(['providers' => 'serviceProvider']);
+Route::apiResource('admin/seo-settings', SeoSettingController::class)->parameters(['seo-settings' => 'seoSetting']);
+Route::get('seo-settings/page/{pageName}', [SeoSettingController::class, 'byPage']);
+Route::patch('customer-requests/{customerRequest}/accept', [CustomerRequestController::class, 'accept']);
+Route::patch('customer-requests/{customerRequest}/reject', [CustomerRequestController::class, 'reject']);
+Route::apiResource('customer-requests', CustomerRequestController::class);
+Route::apiResource('bookings', BookingController::class);
+Route::get('service-extensions', [ServiceExtensionController::class, 'index']);
+Route::patch('service-extensions/{serviceExtension}', [ServiceExtensionController::class, 'update']);
