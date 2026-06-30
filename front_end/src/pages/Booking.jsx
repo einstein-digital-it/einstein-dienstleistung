@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { base44 } from "@/api/base44Client";
+import { adminServicesApi, bookingsApi, priceAdminApi, providersApi, uploadApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -313,34 +314,34 @@ export default function Booking() {
   // Load custom prices from database
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings"],
-    queryFn: () => base44.entities.PriceSettings.list(),
+    queryFn: priceAdminApi.listPriceGroups,
   });
 
   const customPrices = React.useMemo(() => {
     if (!priceSettingsData || priceSettingsData.length === 0) return null;
     const pricesObj = {};
     priceSettingsData.forEach(item => {
-      pricesObj[item.category] = item.prices;
+      pricesObj[item.category] = item.items || item.prices || [];
     });
     return pricesObj;
   }, [priceSettingsData]);
 
   const getLabelByLang = (p) => {
     if (!p) return "";
-    if (lang === "ar") return p.label_ar || p.label_de;
-    if (lang === "en") return p.label_en || p.label_de;
-    if (lang === "tr") return p.label_tr || p.label_de;
-    if (lang === "es") return p.label_es || p.label_de;
-    return p.label_de;
+    if (lang === "ar") return p.label_ar || p.label_de || p.label;
+    if (lang === "en") return p.label_en || p.label_de || p.label;
+    if (lang === "tr") return p.label_tr || p.label_de || p.label;
+    if (lang === "es") return p.label_es || p.label_de || p.label;
+    return p.label_de || p.label;
   };
 
   const getUnitByLang = (p) => {
     if (!p) return "";
-    if (lang === "ar") return p.unit_ar || p.unit_de;
-    if (lang === "en") return p.unit_en || p.unit_de;
-    if (lang === "tr") return p.unit_tr || p.unit_de;
-    if (lang === "es") return p.unit_es || p.unit_de;
-    return p.unit_de;
+    if (lang === "ar") return p.unit_ar || p.unit_de || p.unit;
+    if (lang === "en") return p.unit_en || p.unit_de || p.unit;
+    if (lang === "tr") return p.unit_tr || p.unit_de || p.unit;
+    if (lang === "es") return p.unit_es || p.unit_de || p.unit;
+    return p.unit_de || p.unit;
   };
 
   const getCategoryName = (cat) => {
@@ -388,9 +389,7 @@ export default function Booking() {
   // Fetch providers for selected category
   const { data: categoryProviders = [], isLoading: loadingProviders } = useQuery({
     queryKey: ["category-providers", formData.category],
-    queryFn: () => base44.entities.ServiceProvider.filter({ 
-      status: "approved"
-    }),
+    queryFn: () => providersApi.listProviders("approved"),
     enabled: !!formData.category,
     select: (providers) => providers.filter(p => p.categories?.includes(formData.category))
   });
@@ -398,10 +397,7 @@ export default function Booking() {
   // Fetch selected provider details
   const { data: providerDetails } = useQuery({
     queryKey: ["provider-details", formData.provider_id],
-    queryFn: async () => {
-      const providers = await base44.entities.ServiceProvider.filter({ id: formData.provider_id });
-      return providers[0];
-    },
+    queryFn: () => providersApi.getProvider(formData.provider_id),
     enabled: !!formData.provider_id,
     onSuccess: (data) => {
       if (data) {
@@ -425,18 +421,14 @@ export default function Booking() {
   // Fetch existing bookings to check availability
   const { data: existingBookings = [], isLoading: loadingBookings } = useQuery({
     queryKey: ["bookings-availability", formData.category],
-    queryFn: () => base44.entities.Booking.filter(
-      { category: formData.category, status: { $ne: "cancelled" } },
-      "-date",
-      500
-    ),
+    queryFn: () => bookingsApi.listBookings({ category: formData.category, status_not: "cancelled" }),
     enabled: !!formData.category
   });
 
   // Fetch service price for selected category
   const { data: categoryServices = [] } = useQuery({
     queryKey: ["category-services", formData.category],
-    queryFn: () => base44.entities.Service.filter({ category: formData.category, is_active: true }),
+    queryFn: () => adminServicesApi.listServices({ category: formData.category, status: "active" }),
     enabled: !!formData.category
   });
 
@@ -521,6 +513,7 @@ export default function Booking() {
         const userData = await base44.auth.me();
         console.log("User data:", userData);
         setUser(userData);
+        if (userData.email) localStorage.setItem("einstein_customer_email", userData.email);
         setFormData(prev => ({
           ...prev,
           customer_name: userData.full_name || "",
@@ -564,12 +557,8 @@ export default function Booking() {
     if (!files.length) return;
     
     setLoading(true);
-    const urls = [];
-    
-    for (const file of files) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      urls.push(file_url);
-    }
+    const uploaded = await uploadApi.uploadFiles(files);
+    const urls = (uploaded.files || []).map((file) => file.url);
     
     setFormData(prev => ({
       ...prev,
@@ -648,8 +637,8 @@ export default function Booking() {
         category: formData.category,
         service_id: formData.service_id,
         service_name: serviceName,
-        provider_id: null,
-        provider_name: null,
+        provider_id: selectedProvider?.id ? String(selectedProvider.id) : null,
+        provider_name: selectedProvider?.full_name || null,
         address: formData.address,
         description: formData.description,
         date: formData.date ? format(formData.date, "yyyy-MM-dd") : null,
@@ -663,17 +652,19 @@ export default function Booking() {
 
       console.log("Booking data to create:", bookingData);
 
-      const createdBooking = await base44.entities.Booking.create(bookingData);
+      const createdBooking = await bookingsApi.createBooking(bookingData);
 
+      /*
+      // Legacy Base44 email/notification flow. Laravel now creates booking notifications.
       // Send confirmation email
       try {
-        await base44.functions.invoke('sendBookingConfirmation', { bookingId: bookingData.booking_number });
+        await legacyBase44.functions.invoke('sendBookingConfirmation', { bookingId: bookingData.booking_number });
       } catch (emailError) {
         console.error('Error sending confirmation email:', emailError);
       }
 
       // Create notification for customer
-      await base44.entities.Notification.create({
+      await legacyBase44.entities.Notification.create({
         user_email: customerEmail,
         type: "booking_confirmed",
         title_de: "Buchung eingegangen",
@@ -688,9 +679,9 @@ export default function Booking() {
 
       // Create notification for admin
       try {
-        const admins = await base44.entities.User.filter({ role: "admin" });
+        const admins = await legacyBase44.entities.User.filter({ role: "admin" });
         for (const admin of admins) {
-          await base44.entities.Notification.create({
+          await legacyBase44.entities.Notification.create({
             user_email: admin.email,
             type: "new_booking_request",
             title_de: "Neue Buchung eingegangen",
@@ -707,6 +698,7 @@ export default function Booking() {
       } catch (adminNotifError) {
         console.error("Error notifying admins:", adminNotifError);
       }
+      */
 
       setLoading(false);
       navigate(`/Payment?id=${createdBooking.id}`);

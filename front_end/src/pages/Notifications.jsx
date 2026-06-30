@@ -1,4 +1,6 @@
 import React from "react";
+import { customerApi } from "@/api/backendClient";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Bell,
   Calendar,
@@ -93,6 +95,35 @@ function NotificationRow({ item }) {
 }
 
 export default function Notifications() {
+  const queryClient = useQueryClient();
+  const email = localStorage.getItem("einstein_customer_email") || "customer@example.com";
+
+  const { data: backendNotifications = [] } = useQuery({
+    queryKey: ["customer-notifications", email],
+    queryFn: () => customerApi.listNotifications(email),
+  });
+
+  const markAllReadMutation = useMutation({
+    mutationFn: () => customerApi.markAllNotificationsRead(email),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["customer-notifications", email] }),
+  });
+
+  const deleteReadMutation = useMutation({
+    mutationFn: () => customerApi.deleteReadNotifications(email),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["customer-notifications", email] }),
+  });
+
+  const liveNotifications = backendNotifications.map((item) => ({
+    icon: item.type === "payment_received" ? CreditCard : item.type?.includes("booking") ? Calendar : Bell,
+    title: item.title_ar || item.title_en || item.title_de || item.type,
+    message: item.message_ar || item.message_en || item.message_de || "",
+    time: item.created_at ? new Date(item.created_at).toLocaleString() : "",
+    tone: item.is_read ? "blue" : "gold",
+    unread: !item.is_read,
+  }));
+  const todayItems = liveNotifications.length > 0 ? liveNotifications : today;
+  const unreadCount = todayItems.filter((item) => item.unread).length;
+
   return (
     <PageScaffold
       title="الإشعارات"
@@ -102,11 +133,11 @@ export default function Notifications() {
       maxWidth="max-w-5xl"
       actions={
         <>
-          <SecondaryButton>
+          <SecondaryButton onClick={() => deleteReadMutation.mutate()}>
             <Trash2 className="h-4 w-4" />
             حذف المقروء
           </SecondaryButton>
-          <PrimaryButton>
+          <PrimaryButton onClick={() => markAllReadMutation.mutate()}>
             <CheckCheck className="h-4 w-4" />
             تحديد الكل كمقروء
           </PrimaryButton>
@@ -122,7 +153,7 @@ export default function Notifications() {
       <DesignCard className="mt-6">
         <CardHeader title="اليوم" description="أحدث التنبيهات المهمة." />
         <div className="space-y-4 p-5">
-          {today.map((item) => <NotificationRow key={item.title} item={item} />)}
+          {todayItems.map((item) => <NotificationRow key={item.title} item={item} />)}
         </div>
       </DesignCard>
 

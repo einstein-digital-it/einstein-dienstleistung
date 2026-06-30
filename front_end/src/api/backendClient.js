@@ -21,8 +21,40 @@ async function request(path, options = {}) {
   return payload?.data ?? payload;
 }
 
+async function uploadRequest(path, formData) {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+    body: formData,
+  });
+
+  const payload = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(payload?.message || `Backend request failed (${response.status})`);
+  }
+
+  return payload?.data ?? payload;
+}
+
+function toQuery(params = {}) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") query.set(key, value);
+  });
+  const text = query.toString();
+  return text ? `?${text}` : "";
+}
+
 export const bookingsApi = {
-  listBookings: () => request("/bookings?limit=200"),
+  listBookings: (filters = {}) => request(`/bookings${toQuery({ limit: 200, ...filters })}`),
+  getBooking: (id) => request(`/bookings/${id}`),
+  createBooking: (data) => request("/bookings", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
   updateBooking: (id, data) => request(`/bookings/${id}`, {
     method: "PATCH",
     body: JSON.stringify(data),
@@ -67,7 +99,7 @@ export const usersApi = {
 };
 
 export const adminServicesApi = {
-  listServices: () => request("/admin/services"),
+  listServices: (filters = {}) => request(`/admin/services${toQuery(filters)}`),
   createService: (data) => request("/admin/services", {
     method: "POST",
     body: JSON.stringify(data),
@@ -79,6 +111,82 @@ export const adminServicesApi = {
   deleteService: (id) => request(`/admin/services/${id}`, {
     method: "DELETE",
   }),
+};
+
+export const uploadApi = {
+  uploadFiles: (files) => {
+    const formData = new FormData();
+    Array.from(files).forEach((file) => formData.append("files[]", file));
+    return uploadRequest("/uploads", formData);
+  },
+};
+
+export const profileApi = {
+  getProfile: (email) => request(`/profile${toQuery({ email })}`),
+  updateProfile: (data) => request("/profile", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  }),
+};
+
+export const customerApi = {
+  getDashboard: (email) => request(`/customer/dashboard${toQuery({ email })}`),
+  listBookings: (email, filters = {}) => request(`/customer/bookings${toQuery({ email, ...filters })}`),
+  listNotifications: (email) => request(`/customer/notifications${toQuery({ email })}`),
+  createNotification: (data) => request("/customer/notifications", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
+  markNotificationRead: (id) => request(`/customer/notifications/${id}/read`, {
+    method: "PATCH",
+  }),
+  markAllNotificationsRead: (email) => request("/customer/notifications/mark-all-read", {
+    method: "PATCH",
+    body: JSON.stringify({ email }),
+  }),
+  deleteReadNotifications: (email) => request(`/customer/notifications/read${toQuery({ email })}`, {
+    method: "DELETE",
+  }),
+  getNotificationPreferences: (email) => request(`/customer/notification-preferences${toQuery({ email })}`),
+  updateNotificationPreferences: (data) => request("/customer/notification-preferences", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  }),
+};
+
+export const paymentApi = {
+  getBooking: (id) => request(`/payments/bookings/${id}`),
+  updatePaymentStatus: (id, paymentStatus) => request(`/payments/bookings/${id}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ payment_status: paymentStatus }),
+  }),
+};
+
+export const providerDashboardApi = {
+  getDashboard: (email) => request(`/provider/dashboard${toQuery({ email })}`),
+  handleBookingAction: (bookingId, providerId, action) => request(`/provider/bookings/${bookingId}/action`, {
+    method: "PATCH",
+    body: JSON.stringify({ provider_id: providerId, action }),
+  }),
+  updateProfile: (providerId, data) => request(`/provider/profile/${providerId}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  }),
+  updateDocuments: (bookingId, providerId, documentUrls) => request(`/provider/bookings/${bookingId}/documents`, {
+    method: "PATCH",
+    body: JSON.stringify({ provider_id: providerId, document_urls: documentUrls }),
+  }),
+};
+
+export const publicApi = {
+  listServices: () => request("/public/services"),
+  listPricing: () => request("/public/pricing"),
+  getHome: () => request("/public/home"),
+  getRatings: () => request("/public/ratings"),
+};
+
+export const adminDashboardApi = {
+  getDashboard: () => request("/admin/dashboard"),
 };
 
 export const priceAdminApi = {

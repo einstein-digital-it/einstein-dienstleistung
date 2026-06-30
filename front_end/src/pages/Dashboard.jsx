@@ -14,7 +14,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { staticAdminBookings, staticAdminUsers, staticSEOSettings } from "@/lib/staticAdminData";
+import { adminDashboardApi } from "@/api/backendClient";
+import { useQuery } from "@tanstack/react-query";
 
 const quickLinks = [
   { label: "Buchungen", href: "/AdminBookings", icon: ClipboardList, note: "Aktuelle Buchungsuebersicht" },
@@ -40,38 +41,38 @@ function formatCurrency(value) {
 }
 
 export default function Dashboard() {
-  const completed = staticAdminBookings.filter((booking) => booking.status === "completed");
-  const paidRevenue = completed
-    .filter((booking) => booking.payment_status === "paid" || booking.payment_status === "authorized")
-    .reduce((sum, booking) => sum + Number(booking.price || 0), 0);
-  const pendingBookings = staticAdminBookings.filter((booking) => booking.status !== "completed").length;
-  const adminCount = staticAdminUsers.filter((item) => item.role === "admin").length;
+  const { data: dashboard } = useQuery({
+    queryKey: ["admin-dashboard"],
+    queryFn: adminDashboardApi.getDashboard,
+  });
+  const liveStats = dashboard?.stats || {};
+  const liveActivity = dashboard?.activity?.length ? dashboard.activity : activity;
 
   const stats = [
     {
       label: "Buchungen gesamt",
-      value: staticAdminBookings.length,
-      note: `${pendingBookings} offen oder in Pruefung`,
+      value: liveStats.total_bookings ?? 0,
+      note: `${liveStats.pending_bookings ?? 0} offen oder in Pruefung`,
       icon: CalendarCheck,
       tone: "bg-blue-50 text-blue-700"
     },
     {
       label: "Umsatz",
-      value: formatCurrency(paidRevenue),
-      note: "Statische lokale Ansicht",
+      value: formatCurrency(liveStats.revenue ?? 0),
+      note: "Live Laravel API",
       icon: Euro,
       tone: "bg-emerald-50 text-emerald-700"
     },
     {
       label: "Benutzer",
-      value: staticAdminUsers.length,
-      note: `${adminCount} Admin-Konto`,
+      value: liveStats.users ?? 0,
+      note: `${liveStats.admins ?? 0} Admin-Konto`,
       icon: Users,
       tone: "bg-violet-50 text-violet-700"
     },
     {
       label: "SEO Seiten",
-      value: staticSEOSettings.length,
+      value: liveStats.seo_pages ?? 0,
       note: "Indexierbare Seiten",
       icon: FileSearch,
       tone: "bg-amber-50 text-amber-700"
@@ -162,8 +163,8 @@ export default function Dashboard() {
               <CardTitle className="text-xl text-[#1e3a5f]">Aktivitaet</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {activity.map((item) => (
-                <div key={item.title} className="rounded-md border border-[#e3e9f2] bg-white p-4">
+              {liveActivity.map((item, index) => (
+                <div key={`${item.title}-${index}`} className="rounded-md border border-[#e3e9f2] bg-white p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="font-bold text-[#1e3a5f]">{item.title}</p>

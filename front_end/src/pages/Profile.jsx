@@ -1,4 +1,6 @@
 import React from "react";
+import { profileApi } from "@/api/backendClient";
+import { useQuery } from "@tanstack/react-query";
 import {
   Bell,
   Camera,
@@ -22,6 +24,19 @@ import {
 } from "@/components/design/PageScaffold";
 
 export default function Profile() {
+  const email = localStorage.getItem("einstein_customer_email") || "customer@example.com";
+  const { data: profile } = useQuery({
+    queryKey: ["profile", email],
+    queryFn: () => profileApi.getProfile(email),
+  });
+  const displayName = profile?.full_name || profile?.name || "A.A";
+  const initials = displayName
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "AA";
+
   return (
     <PageScaffold
       title="ملفي الشخصي"
@@ -39,14 +54,14 @@ export default function Profile() {
         <DesignCard className="h-fit p-6 text-center">
           <div className="relative mx-auto h-28 w-28">
             <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#122238] text-4xl font-black text-white">
-              A.A
+              {initials}
             </div>
             <button type="button" className="absolute bottom-0 left-0 flex h-10 w-10 items-center justify-center rounded-full bg-[#d4af25] text-white shadow-lg">
               <Camera className="h-5 w-5" />
             </button>
           </div>
-          <h2 className="mt-5 text-2xl font-black text-[#13233a]">A.A</h2>
-          <p className="mt-1 text-sm font-semibold text-[#65758b]">admin@example.com</p>
+          <h2 className="mt-5 text-2xl font-black text-[#13233a]">{displayName}</h2>
+          <p className="mt-1 text-sm font-semibold text-[#65758b]">{profile?.email || email}</p>
           <div className="mt-4 flex justify-center">
             <StatusPill tone="purple">مدير النظام</StatusPill>
           </div>
@@ -61,10 +76,10 @@ export default function Profile() {
           <DesignCard>
             <CardHeader title="المعلومات الشخصية" description="حقول تصميمية جاهزة لربطها لاحقاً بالمصادقة الحقيقية." />
             <div className="grid grid-cols-1 gap-5 p-5 md:grid-cols-2">
-              <FieldPreview label="الاسم الكامل" value="A.A" />
-              <FieldPreview label="البريد الإلكتروني" value="admin@example.com" />
-              <FieldPreview label="رقم الهاتف" value="01573 1770487" />
-              <FieldPreview label="العنوان" value="Frankfurt, Deutschland" />
+              <FieldPreview label="الاسم الكامل" value={displayName} />
+              <FieldPreview label="البريد الإلكتروني" value={profile?.email || email} />
+              <FieldPreview label="رقم الهاتف" value={profile?.phone || "-"} />
+              <FieldPreview label="العنوان" value={profile?.address || "-"} />
             </div>
           </DesignCard>
 

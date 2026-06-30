@@ -1,4 +1,6 @@
 import React from "react";
+import { customerApi } from "@/api/backendClient";
+import { useQuery } from "@tanstack/react-query";
 import {
   Bell,
   Calendar,
@@ -27,7 +29,29 @@ const upcoming = [
   { id: "ES-2049", title: "خدمة المكتب والسكرتارية", date: "15 يونيو", time: "13:00", status: "بانتظار الدفع", tone: "gold" }
 ];
 
+const customerEmail = () => localStorage.getItem("einstein_customer_email") || "customer@example.com";
+
+const normalizeUpcoming = (booking) => ({
+  id: booking.booking_number || booking.id,
+  title: booking.service_name || booking.category || "-",
+  date: booking.date || "-",
+  time: booking.time || "-",
+  address: booking.address || "-",
+  status: booking.status || "pending",
+  tone: booking.status === "confirmed" ? "green" : "gold",
+});
+
 export default function CustomerDashboard() {
+  const { data: dashboard } = useQuery({
+    queryKey: ["customer-dashboard", customerEmail()],
+    queryFn: () => customerApi.getDashboard(customerEmail()),
+  });
+
+  const profile = dashboard?.profile || {};
+  const upcomingBookings = dashboard?.upcoming_bookings?.length
+    ? dashboard.upcoming_bookings.map(normalizeUpcoming)
+    : upcoming;
+
   return (
     <PageScaffold
       title="لوحتي"
@@ -58,7 +82,7 @@ export default function CustomerDashboard() {
         <DesignCard>
           <CardHeader title="الحجوزات القادمة" description="بطاقات تصميمية لتوضيح حالة خدمات العميل." />
           <div className="space-y-4 p-5">
-            {upcoming.map((booking) => (
+            {upcomingBookings.map((booking) => (
               <article key={booking.id} className="rounded-[15px] border border-[#e2ebf6] bg-[#fbfdff] p-5">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
@@ -90,12 +114,12 @@ export default function CustomerDashboard() {
                 <User className="h-7 w-7" />
               </div>
               <div>
-                <h2 className="text-xl font-black text-[#13233a]">A.A</h2>
+                <h2 className="text-xl font-black text-[#13233a]">{profile.full_name || "A.A"}</h2>
                 <p className="text-sm font-semibold text-[#65758b]">عميل تجريبي للتصميم</p>
               </div>
             </div>
             <div className="mt-5 grid gap-4">
-              <FieldPreview label="البريد الإلكتروني" value="admin@example.com" />
+              <FieldPreview label="البريد الإلكتروني" value={profile.email || customerEmail()} />
               <FieldPreview label="اللغة" value="العربية" />
             </div>
           </DesignCard>
