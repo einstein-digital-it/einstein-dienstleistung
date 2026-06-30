@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import { base44 } from "@/api/base44Client";
+import { paymentApi } from "@/api/backendClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -188,19 +188,7 @@ export default function Payment() {
 
   const { data: booking, isLoading } = useQuery({
     queryKey: ["booking-payment", bookingId],
-    queryFn: async () => {
-      // Try direct fetch first (bypasses RLS)
-      try {
-        const res = await base44.functions.invoke('getBookingById', { booking_id: bookingId });
-        if (res?.data?.id) return res.data;
-      } catch (e) {
-        // fallback
-      }
-      // Fallback: search in customer bookings
-      const res = await base44.functions.invoke('getCustomerBookings', {});
-      const bookings = res?.data || [];
-      return bookings.find(b => b.id === bookingId);
-    },
+    queryFn: () => paymentApi.getBooking(bookingId),
     enabled: !!bookingId
   });
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { defaultPrices as defaultPricesMap } from "@/lib/defaultPrices";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import { base44 } from "@/api/base44Client";
+import { publicApi } from "@/api/backendClient";
 import { hasMockAdminSession } from "@/lib/mockAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -767,19 +767,19 @@ function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
   
   // Function to get label by language
   const getLabelByLang = (p) => {
-    if (lang === "ar") return p.label_ar || p.label_de;
-    if (lang === "en") return p.label_en || p.label_de;
-    if (lang === "tr") return p.label_tr || p.label_de;
-    if (lang === "es") return p.label_es || p.label_de;
-    return p.label_de;
+    if (lang === "ar") return p.label_ar || p.label_de || p.label;
+    if (lang === "en") return p.label_en || p.label_de || p.label;
+    if (lang === "tr") return p.label_tr || p.label_de || p.label;
+    if (lang === "es") return p.label_es || p.label_de || p.label;
+    return p.label_de || p.label;
   };
   
   const getUnitByLang = (p) => {
-    if (lang === "ar") return p.unit_ar || p.unit_de;
-    if (lang === "en") return p.unit_en || p.unit_de;
-    if (lang === "tr") return p.unit_tr || p.unit_de;
-    if (lang === "es") return p.unit_es || p.unit_de;
-    return p.unit_de;
+    if (lang === "ar") return p.unit_ar || p.unit_de || p.unit;
+    if (lang === "en") return p.unit_en || p.unit_de || p.unit;
+    if (lang === "tr") return p.unit_tr || p.unit_de || p.unit;
+    if (lang === "es") return p.unit_es || p.unit_de || p.unit;
+    return p.unit_de || p.unit;
   };
 
   // Function to get custom name from prices
@@ -981,7 +981,7 @@ export default function Home() {
   // Load custom prices from database
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings"],
-    queryFn: () => base44.entities.PriceSettings.list(),
+    queryFn: publicApi.listPricing,
     staleTime: 5 * 60 * 1000,
   });
   
@@ -990,7 +990,7 @@ export default function Home() {
     if (!priceSettingsData || priceSettingsData.length === 0) return null;
     const pricesObj = {};
     priceSettingsData.forEach(item => {
-      pricesObj[item.category] = item.prices;
+      pricesObj[item.category] = item.items || item.prices || [];
     });
     return pricesObj;
   }, [priceSettingsData]);

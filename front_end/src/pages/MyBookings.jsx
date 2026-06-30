@@ -1,4 +1,6 @@
 import React from "react";
+import { customerApi } from "@/api/backendClient";
+import { useQuery } from "@tanstack/react-query";
 import {
   Calendar,
   CheckCircle,
@@ -55,7 +57,39 @@ const bookings = [
   }
 ];
 
+const customerEmail = () => localStorage.getItem("einstein_customer_email") || "customer@example.com";
+
+const bookingStatus = {
+  pending: { label: "Pending", tone: "gold" },
+  confirmed: { label: "Confirmed", tone: "green" },
+  in_progress: { label: "In progress", tone: "blue" },
+  completed: { label: "Completed", tone: "green" },
+  cancelled: { label: "Cancelled", tone: "red" },
+};
+
+const normalizeBooking = (booking) => {
+  const status = bookingStatus[booking.status] || bookingStatus.pending;
+  return {
+    id: booking.booking_number || booking.id,
+    service: booking.service_name || booking.category || "-",
+    date: booking.date || "-",
+    time: booking.time || "-",
+    address: booking.address || "-",
+    payment: booking.payment_status === "paid" ? "Paid" : "Unpaid",
+    status: status.label,
+    tone: status.tone,
+    price: booking.price !== null && booking.price !== undefined ? `${Number(booking.price).toFixed(2)} EUR` : "-",
+  };
+};
+
 export default function MyBookings() {
+  const { data: backendBookings = [] } = useQuery({
+    queryKey: ["customer-bookings", customerEmail()],
+    queryFn: () => customerApi.listBookings(customerEmail()),
+  });
+
+  const displayedBookings = backendBookings.length > 0 ? backendBookings.map(normalizeBooking) : bookings;
+
   return (
     <PageScaffold
       title="حجوزاتي"
@@ -102,7 +136,7 @@ export default function MyBookings() {
             ))}
           </div>
           <div className="space-y-4 p-5">
-            {bookings.map((booking) => (
+            {displayedBookings.map((booking) => (
               <article key={booking.id} className="rounded-[15px] border border-[#e2ebf6] bg-[#fbfdff] p-5">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div>

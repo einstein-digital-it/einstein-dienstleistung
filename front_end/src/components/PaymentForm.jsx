@@ -6,7 +6,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { base44 } from "@/api/base44Client";
+import { paymentApi } from "@/api/backendClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -183,10 +183,7 @@ function CheckoutForm({ booking, amount, lang, onSuccess, onError, onStepChange 
       setLoading(false);
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
       try {
-        await base44.functions.invoke('confirmPayment', {
-          booking_id: booking.id,
-          payment_intent_id: paymentIntent.id
-        });
+        await paymentApi.updatePaymentStatus(booking.id, "paid");
       } catch (e) {
         console.error('Post-payment confirm error:', e);
       }
@@ -259,26 +256,25 @@ export default function PaymentForm({ booking, amount, lang = "de", onSuccess, o
   const progressPercentage = ((currentStep + 1) / paymentSteps.length) * 100;
 
   React.useEffect(() => {
-    const createPaymentIntent = async () => {
-      try {
-        const response = await base44.functions.invoke("createPaymentIntent", {
-          booking_id: booking.id,
-          amount: amount
-        });
-        setClientSecret(response.data.clientSecret);
-      } catch (err) {
-        console.error("Payment intent error:", err);
-        setError(err.response?.data?.error || err.message || "Request failed with status code 500");
-        onError?.(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (booking?.id && amount) {
-      createPaymentIntent();
+      setLoading(false);
     }
   }, [booking?.id, amount]);
+
+  const handleBackendPayment = async () => {
+    try {
+      setLoading(true);
+      await paymentApi.updatePaymentStatus(booking.id, "paid");
+      setCurrentStep(3);
+      setSuccess(true);
+      onSuccess?.();
+    } catch (err) {
+      setError(err.message || t.generic_error);
+      onError?.(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (success) {
     return (
@@ -334,7 +330,40 @@ export default function PaymentForm({ booking, amount, lang = "de", onSuccess, o
     );
   }
 
-  if (!clientSecret) return null;
+  if (!clientSecret) {
+    return (
+      <Card className="border-0 shadow-xl overflow-hidden">
+        <div className="bg-gradient-to-r from-[#1e3a5f] to-[#c9a227] p-1" />
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-[#1e3a5f]">
+            <CreditCard className="w-5 h-5" />
+            {t.payment}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-6 p-4 bg-gradient-to-r from-[#1e3a5f]/10 to-[#c9a227]/10 rounded-xl">
+            <p className="text-sm text-gray-600">{t.amount}</p>
+            <p className="text-3xl font-bold text-[#1e3a5f]">{Number(amount).toFixed(2)}â‚¬</p>
+            {booking?.booking_number && (
+              <p className="text-xs text-gray-500 mt-1">{t.booking_number}: {booking.booking_number}</p>
+            )}
+          </div>
+          <Button
+            type="button"
+            onClick={handleBackendPayment}
+            disabled={loading}
+            className="w-full bg-[#1e3a5f] hover:bg-[#2d5a8a] py-6 text-lg"
+          >
+            {loading ? (
+              <><Loader2 className="w-5 h-5 me-2 animate-spin" />{t.processing}</>
+            ) : (
+              <><CreditCard className="w-5 h-5 me-2" />{t.pay_now} - {Number(amount).toFixed(2)}â‚¬</>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const options = {
     clientSecret,

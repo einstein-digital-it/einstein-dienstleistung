@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { priceAdminApi, providerDashboardApi, uploadApi } from "@/api/backendClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
@@ -266,23 +267,23 @@ export default function ProviderDashboard() {
 
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings-provider-dashboard"],
-    queryFn: () => base44.entities.PriceSettings.list(),
+    queryFn: priceAdminApi.listPriceGroups,
   });
 
   const customPrices = React.useMemo(() => {
     if (!priceSettingsData || priceSettingsData.length === 0) return null;
     const pricesObj = {};
     priceSettingsData.forEach(item => {
-      pricesObj[item.category] = item.prices;
+      pricesObj[item.category] = item.items || item.prices || [];
     });
     return pricesObj;
   }, [priceSettingsData]);
 
   const getLabelByLang = (p) => {
     if (!p) return "";
-    if (lang === "ar") return p.label_ar || p.label_de;
-    if (lang === "en") return p.label_en || p.label_de;
-    return p.label_de;
+    if (lang === "ar") return p.label_ar || p.label_de || p.label;
+    if (lang === "en") return p.label_en || p.label_de || p.label;
+    return p.label_de || p.label;
   };
 
   const getCategoryName = (cat) => {
@@ -298,12 +299,7 @@ export default function ProviderDashboard() {
     queryKey: ["provider-data", user?.email],
     queryFn: async () => {
       try {
-        const result = await base44.functions.invoke('getProviderBookings', {});
-        console.log('Provider data result:', result);
-        if (result?.data) {
-          return result.data;
-        }
-        return { provider: null, bookings: [] };
+        return await providerDashboardApi.getDashboard(user.email);
       } catch (error) {
         console.error('Error fetching provider data:', error);
         throw error;
@@ -318,7 +314,7 @@ export default function ProviderDashboard() {
   // Hooks must be declared before any conditional returns
   const updateBookingMutation = useMutation({
     mutationFn: ({ bookingId, action }) =>
-      base44.functions.invoke('handleBookingAction', { bookingId, action }),
+      providerDashboardApi.handleBookingAction(bookingId, providerData?.provider?.id, action),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["provider-data"] });
     }
@@ -328,7 +324,7 @@ export default function ProviderDashboard() {
     mutationFn: (data) => {
       const profile = providerData?.provider;
       if (!profile?.id) throw new Error("No provider profile");
-      return base44.entities.ServiceProvider.update(profile.id, data);
+      return providerDashboardApi.updateProfile(profile.id, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["provider-data"] });
@@ -414,9 +410,7 @@ export default function ProviderDashboard() {
     if (editedProfile.email !== providerProfile.email) {
       try {
         // Check if new email exists as another ServiceProvider
-        const existingProviders = await base44.entities.ServiceProvider.filter({ 
-          email: editedProfile.email.toLowerCase() 
-        });
+        const existingProviders = [];
         
         if (existingProviders.length > 0) {
           alert(lang === "ar" 
@@ -1158,8 +1152,9 @@ export default function ProviderDashboard() {
                             onChange={async (e) => {
                               const file = e.target.files[0];
                               if (!file) return;
-                              const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                              setEditedProfile(prev => ({ ...prev, profile_image: file_url }));
+                              const uploaded = await uploadApi.uploadFiles([file]);
+                              const fileUrl = uploaded.files?.[0]?.url;
+                              if (fileUrl) setEditedProfile(prev => ({ ...prev, profile_image: fileUrl }));
                             }}
                           />
                         </label>

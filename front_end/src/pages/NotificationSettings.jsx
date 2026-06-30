@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { customerApi } from "@/api/backendClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -88,8 +89,10 @@ export default function NotificationSettings() {
       try {
         const savedLang = localStorage.getItem("einstein_lang") || "de";
         setLang(savedLang);
-        const userData = await base44.auth.me();
-        setUser(userData);
+        const userData = await base44.auth.me().catch(() => null);
+        const email = userData?.email || localStorage.getItem("einstein_customer_email") || "customer@example.com";
+        localStorage.setItem("einstein_customer_email", email);
+        setUser(userData || { email });
       } catch (e) {
         console.log("Error loading user");
       }
@@ -101,24 +104,7 @@ export default function NotificationSettings() {
     queryKey: ["notificationPreferences", user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
-      const result = await base44.entities.NotificationPreference.filter({
-        user_email: user.email
-      });
-      return result[0] || {
-        user_email: user.email,
-        booking_confirmed: true,
-        booking_changed: true,
-        booking_cancelled: true,
-        appointment_reminder: true,
-        provider_documents_uploaded: true,
-        payment_due_reminder: true,
-        payment_received: true,
-        review_request: true,
-        email_notifications: true,
-        in_app_notifications: true,
-        notification_language: lang,
-        reminder_timing: ["24h", "1h"]
-      };
+      return customerApi.getNotificationPreferences(user.email);
     },
     enabled: !!user?.email
   });
@@ -133,11 +119,10 @@ export default function NotificationSettings() {
 
   const updateMutation = useMutation({
     mutationFn: async (data) => {
-      if (preferences?.id) {
-        await base44.entities.NotificationPreference.update(preferences.id, data);
-      } else {
-        await base44.entities.NotificationPreference.create(data);
-      }
+      await customerApi.updateNotificationPreferences({
+        ...data,
+        user_email: user.email,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notificationPreferences"] });
