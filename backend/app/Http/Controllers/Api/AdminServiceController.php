@@ -15,6 +15,7 @@ class AdminServiceController extends Controller
     {
         $services = Service::query()
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->string('status')))
+            ->when($request->filled('category'), fn ($query) => $query->where('category', $request->string('category')))
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get()
