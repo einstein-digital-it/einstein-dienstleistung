@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { bookingsApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -9,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getMockAdminUser } from "@/lib/mockAuth";
+import { requireStoredUser } from "@/lib/backendAuth";
 import {
   MoreHorizontal, Download, User, Calendar, Clock, Package,
   Loader2, AlertCircle, Trash2, CheckCircle, XCircle, Receipt,
@@ -109,21 +108,7 @@ export default function AdminBookings() {
   useEffect(() => {
     const savedLang = localStorage.getItem("einstein_lang") || "de";
     setLang(savedLang);
-    const checkUser = async () => {
-      const mockUser = getMockAdminUser();
-      if (mockUser) {
-        setUser(mockUser);
-        return;
-      }
-      const isAuth = await base44.auth.isAuthenticated();
-      if (isAuth) {
-        const userData = await base44.auth.me();
-        if (userData.role !== "admin") window.location.href = "/";
-        setUser(userData);
-      } else {
-        base44.auth.redirectToLogin();
-      }
-    };
+    const checkUser = () => setUser(requireStoredUser({ role: "admin" }));
     checkUser();
   }, []);
 

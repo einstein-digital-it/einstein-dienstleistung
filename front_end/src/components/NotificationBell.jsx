@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import { base44 } from "@/api/base44Client";
+import { customerApi } from "@/api/backendClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Bell,
@@ -81,34 +81,16 @@ export default function NotificationBell({ user, lang = "de" }) {
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["notifications", user?.email],
-    queryFn: () => base44.entities.Notification.filter(
-      { user_email: user.email },
-      "-created_date",
-      20
-    ),
+    queryFn: () => customerApi.listNotifications(user.email),
     enabled: !!user?.email,
     refetchInterval: 30000
   });
-
-  // Real-time subscription to new notifications
-  React.useEffect(() => {
-    if (!user?.email) return;
-    
-    const unsubscribe = base44.entities.Notification.subscribe((event) => {
-      if (event.data?.user_email === user.email) {
-        // Invalidate query to refetch notifications
-        queryClient.invalidateQueries(["notifications", user.email]);
-      }
-    });
-
-    return unsubscribe;
-  }, [user?.email, queryClient]);
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
   const markAsReadMutation = useMutation({
     mutationFn: async (notificationId) => {
-      await base44.entities.Notification.update(notificationId, { is_read: true });
+      await customerApi.markNotificationRead(notificationId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["notifications"]);
@@ -117,10 +99,7 @@ export default function NotificationBell({ user, lang = "de" }) {
 
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
-      const unread = notifications.filter(n => !n.is_read);
-      await Promise.all(unread.map(n => 
-        base44.entities.Notification.update(n.id, { is_read: true })
-      ));
+      await customerApi.markAllNotificationsRead(user.email);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["notifications"]);
@@ -293,7 +272,7 @@ export default function NotificationBell({ user, lang = "de" }) {
                           {getMessage(notification)}
                         </p>
                         <p className="text-xs text-gray-400 mt-1">
-                          {formatDistanceToNow(new Date(notification.created_date), { 
+                          {formatDistanceToNow(new Date(notification.created_at || notification.created_date), { 
                             addSuffix: true, 
                             locale: locales[lang] || locales.de 
                           })}

@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { base44 } from "@/api/base44Client";
 import { revenueReportsApi } from "@/api/backendClient";
-import { getMockAdminUser } from "@/lib/mockAuth";
-import { staticAdminBookings, staticServiceExtensions } from "@/lib/staticAdminData";
+import { requireStoredUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -39,26 +37,14 @@ const CATEGORY_LABELS = {
 
 export default function RevenueReports() {
   const [lang, setLang] = useState("de");
-  const [user, setUser] = useState(() => getMockAdminUser());
+  const [user, setUser] = useState(null);
   const [yearFilter, setYearFilter] = useState(new Date().getFullYear().toString());
   const [chartType, setChartType] = useState("bar"); // bar | line | pie
 
   useEffect(() => {
     const savedLang = localStorage.getItem("einstein_lang");
     if (savedLang) setLang(savedLang);
-    const init = async () => {
-      const mockUser = getMockAdminUser();
-      if (mockUser) {
-        setUser(mockUser);
-        return;
-      }
-
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) { base44.auth.redirectToLogin(); return; }
-      const me = await base44.auth.me();
-      if (me.role !== "admin") { window.location.href = "/"; return; }
-      setUser(me);
-    };
+    const init = () => setUser(requireStoredUser({ role: "admin" }));
     init();
   }, []);
 
@@ -67,21 +53,7 @@ export default function RevenueReports() {
 
   const { data: revenueReport = { bookings: [], extensions: [] }, isLoading } = useQuery({
     queryKey: ["revenue-report", yearFilter],
-    queryFn: async () => {
-      if (getMockAdminUser()) {
-        return { bookings: staticAdminBookings, extensions: staticServiceExtensions };
-      }
-
-      try {
-        return await revenueReportsApi.getRevenueReport(yearFilter);
-      } catch {
-        const [bookings, extensions] = await Promise.all([
-          base44.entities.Booking.list("-date"),
-          base44.entities.ServiceExtension.list("-created_date"),
-        ]);
-        return { bookings, extensions };
-      }
-    },
+    queryFn: () => revenueReportsApi.getRevenueReport(yearFilter),
     enabled: !!user,
   });
   const bookings = revenueReport.bookings || [];

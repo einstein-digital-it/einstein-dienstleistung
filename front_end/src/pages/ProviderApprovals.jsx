@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { providerApprovalsApi } from "@/api/backendClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, Clock, Download, Mail } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { getMockAdminUser } from "@/lib/mockAuth";
-import { staticProviderApplications } from "@/lib/staticAdminData";
+import { requireStoredUser } from "@/lib/backendAuth";
 
 const translations = {
   de: {
@@ -66,27 +64,11 @@ export default function ProviderApprovals() {
   const queryClient = useQueryClient();
   const t = translations[lang];
   const { toast } = useToast();
-  const isMockAdmin = Boolean(getMockAdminUser());
 
   useEffect(() => {
-    const init = async () => {
+    const init = () => {
       try {
-        const mockUser = getMockAdminUser();
-        if (mockUser) {
-          setUser(mockUser);
-          return;
-        }
-
-        const isAuth = await base44.auth.isAuthenticated();
-        if (isAuth) {
-          const userData = await base44.auth.me();
-          setUser(userData);
-          if (userData?.role !== "admin") {
-            window.location.href = "/";
-          }
-        } else {
-          window.location.href = "/";
-        }
+        setUser(requireStoredUser({ role: "admin" }));
       } catch (e) {
         window.location.href = "/";
       }
@@ -96,14 +78,7 @@ export default function ProviderApprovals() {
 
   const { data: providers = [], isLoading } = useQuery({
     queryKey: ["provider-applications", filter],
-    queryFn: async () => {
-      if (isMockAdmin) return staticProviderApplications;
-      try {
-        return await providerApprovalsApi.listApplications(filter);
-      } catch {
-        return staticProviderApplications;
-      }
-    },
+    queryFn: () => providerApprovalsApi.listApplications(filter),
     enabled: !!user?.email
   });
 

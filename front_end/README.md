@@ -1,1 +1,1 @@
-# Base44 App
+# EinStein Frontend

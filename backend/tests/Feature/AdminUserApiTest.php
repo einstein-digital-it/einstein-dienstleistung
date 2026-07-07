@@ -14,6 +14,7 @@ class AdminUserApiTest extends TestCase
 
     public function test_admin_users_can_be_listed_with_frontend_shape(): void
     {
+        $this->withApiUser('admin');
         User::create([
             'name' => 'Admin User',
             'full_name' => 'Admin User',
@@ -34,7 +35,7 @@ class AdminUserApiTest extends TestCase
 
         $this->getJson('/api/admin/users')
             ->assertOk()
-            ->assertJsonCount(2, 'data')
+            ->assertJsonCount(3, 'data')
             ->assertJsonFragment([
                 'full_name' => 'Customer User',
                 'email' => 'customer@example.com',
@@ -51,6 +52,7 @@ class AdminUserApiTest extends TestCase
 
     public function test_user_notifications_can_be_listed_and_marked_seen(): void
     {
+        $this->withApiUser('admin');
         User::create([
             'name' => 'First User',
             'full_name' => 'First User',
@@ -91,6 +93,7 @@ class AdminUserApiTest extends TestCase
 
     public function test_admin_users_can_be_filtered_updated_and_deleted(): void
     {
+        $this->withApiUser('admin');
         $user = User::create([
             'name' => 'Managed User',
             'full_name' => 'Managed User',

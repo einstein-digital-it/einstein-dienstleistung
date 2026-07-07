@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
 import { priceAdminApi, providersApi } from "@/api/backendClient";
+import { requireStoredUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -109,19 +109,10 @@ export default function ProvidersList() {
   }, []);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (isAuth) {
-        const userData = await base44.auth.me();
-        setUser(userData);
-        if (userData.role !== "admin") {
-          window.location.href = "/";
-          return;
-        }
-      } else {
-        base44.auth.redirectToLogin();
-        return;
-      }
+    const checkAuth = () => {
+      const userData = requireStoredUser({ role: "admin" });
+      if (!userData) return;
+      setUser(userData);
       setAuthChecked(true);
     };
     checkAuth();

@@ -17,6 +17,7 @@ class ProviderPublicDashboardApiTest extends TestCase
 
     public function test_provider_dashboard_actions_profile_and_documents_work(): void
     {
+        $this->withApiUser('provider', 'provider@example.com');
         $provider = ServiceProvider::create([
             'full_name' => 'Provider One',
             'email' => 'provider@example.com',
@@ -75,6 +76,7 @@ class ProviderPublicDashboardApiTest extends TestCase
 
     public function test_public_content_and_admin_dashboard_return_live_data(): void
     {
+        $this->withApiUser('admin');
         User::create([
             'name' => 'Admin',
             'full_name' => 'Admin',

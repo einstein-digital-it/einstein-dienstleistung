@@ -21,7 +21,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { adminServicesApi } from "@/api/backendClient";
-import { staticServices } from "@/lib/staticAdminData";
 
 const categoryMeta = {
   office: { label: "Buero", icon: Briefcase, color: "bg-violet-50 text-violet-700 border-violet-200" },
@@ -39,7 +38,7 @@ export default function AdminServices() {
     queryKey: ["admin-services"],
     queryFn: adminServicesApi.listServices,
   });
-  const services = backendServices.length > 0 ? backendServices : staticServices;
+  const services = backendServices;
 
   const filteredServices = useMemo(() => {
     const term = search.trim().toLowerCase();

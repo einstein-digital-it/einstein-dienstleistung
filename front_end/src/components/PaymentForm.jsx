@@ -13,7 +13,8 @@ import { Progress } from "@/components/ui/progress";
 import { Loader2, CreditCard, CheckCircle, AlertCircle, Shield, Lock, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const stripePromise = loadStripe("pk_live_51SGK6mGiX448ApQVzXhu2XkReEug0x56HTxfkNzEl18T5BcIwboW7MxPATQkNUdYoMo2y6h1avdiEuxTBOfRsElc00Rsi7U8lZ");
+const stripePublishableKey = import.meta.env?.VITE_STRIPE_PUBLISHABLE_KEY || "";
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
 
 
 
@@ -261,21 +262,6 @@ export default function PaymentForm({ booking, amount, lang = "de", onSuccess, o
     }
   }, [booking?.id, amount]);
 
-  const handleBackendPayment = async () => {
-    try {
-      setLoading(true);
-      await paymentApi.updatePaymentStatus(booking.id, "paid");
-      setCurrentStep(3);
-      setSuccess(true);
-      onSuccess?.();
-    } catch (err) {
-      setError(err.message || t.generic_error);
-      onError?.(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   if (success) {
     return (
       <Card className="border-0 shadow-xl overflow-hidden">
@@ -348,18 +334,12 @@ export default function PaymentForm({ booking, amount, lang = "de", onSuccess, o
               <p className="text-xs text-gray-500 mt-1">{t.booking_number}: {booking.booking_number}</p>
             )}
           </div>
-          <Button
-            type="button"
-            onClick={handleBackendPayment}
-            disabled={loading}
-            className="w-full bg-[#1e3a5f] hover:bg-[#2d5a8a] py-6 text-lg"
-          >
-            {loading ? (
-              <><Loader2 className="w-5 h-5 me-2 animate-spin" />{t.processing}</>
-            ) : (
-              <><CreditCard className="w-5 h-5 me-2" />{t.pay_now} - {Number(amount).toFixed(2)}â‚¬</>
-            )}
-          </Button>
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+            <div className="flex items-center gap-2 font-semibold">
+              <AlertCircle className="h-4 w-4" />
+              Online payment is not configured yet. Set VITE_STRIPE_PUBLISHABLE_KEY and create the Payment Intent in Laravel.
+            </div>
+          </div>
         </CardContent>
       </Card>
     );

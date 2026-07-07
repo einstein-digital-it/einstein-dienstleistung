@@ -12,6 +12,7 @@ class SeoSettingApiTest extends TestCase
 
     public function test_seo_settings_can_be_created_listed_updated_and_read_by_page(): void
     {
+        $this->withApiUser('admin');
         $setting = $this->postJson('/api/admin/seo-settings', [
             'page_name' => 'Home',
             'meta_title_de' => 'EinStein Home',
@@ -46,6 +47,7 @@ class SeoSettingApiTest extends TestCase
 
     public function test_seo_setting_can_be_deleted(): void
     {
+        $this->withApiUser('admin');
         $setting = SeoSetting::create([
             'page_name' => 'Services',
             'meta_title_de' => 'Services',

@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { priceAdminApi } from "@/api/backendClient";
-import { staticPriceGroups } from "@/lib/staticAdminData";
 
 const icons = [ClipboardList, Settings, Briefcase, Printer, Globe, BookOpen, FileText];
 
@@ -28,7 +27,7 @@ export default function PriceAdmin() {
     queryKey: ["admin-price-groups"],
     queryFn: priceAdminApi.listPriceGroups,
   });
-  const priceGroups = backendPriceGroups.length > 0 ? backendPriceGroups : staticPriceGroups;
+  const priceGroups = backendPriceGroups;
   const itemCount = priceGroups.reduce((sum, group) => sum + group.items.length, 0);
   const numericPrices = priceGroups
     .flatMap((group) => group.items)

@@ -13,6 +13,7 @@ class AdminServiceApiTest extends TestCase
 
     public function test_services_can_be_listed_with_booking_counts(): void
     {
+        $this->withApiUser('admin');
         Service::create([
             'name' => 'Form Help',
             'category' => 'forms',
@@ -40,6 +41,7 @@ class AdminServiceApiTest extends TestCase
 
     public function test_services_can_be_created_and_updated(): void
     {
+        $this->withApiUser('admin');
         $service = $this->postJson('/api/admin/services', [
             'name' => 'Office Support',
             'category' => 'office',

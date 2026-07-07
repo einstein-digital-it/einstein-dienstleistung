@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { priceAdminApi, providerDashboardApi, uploadApi } from "@/api/backendClient";
+import { requireStoredUser } from "@/lib/backendAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
@@ -247,17 +247,12 @@ export default function ProviderDashboard() {
   const catLabels = categoryLabels[lang] || categoryLabels.de;
 
   useEffect(() => {
-    const checkUser = async () => {
+    const checkUser = () => {
       try {
-        const isAuth = await base44.auth.isAuthenticated();
-        if (isAuth) {
-          const userData = await base44.auth.me();
-          setUser(userData);
-        } else {
-          base44.auth.redirectToLogin();
-        }
+        const userData = requireStoredUser();
+        if (userData) setUser(userData);
       } catch(e) {
-        base44.auth.redirectToLogin();
+        window.location.href = "/Login";
       } finally {
         setUserLoading(false);
       }

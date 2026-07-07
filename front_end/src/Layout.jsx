@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "./utils";
-import { base44 } from "@/api/base44Client";
-import { clearMockAdminSession, getMockAdminUser } from "@/lib/mockAuth";
+import { authApi } from "@/api/backendClient";
+import { clearStoredAuth, getStoredAuthUser, redirectToLogin } from "@/lib/backendAuth";
 import EinsteinLogo from "@/components/EinsteinLogo";
 import {
   FileText,
@@ -150,34 +150,12 @@ export default function Layout({ children, currentPageName }) {
   const t = translations[lang];
 
   useEffect(() => {
-    const init = async () => {
-      const mockUser = getMockAdminUser();
-      if (mockUser) {
-        setUser(mockUser);
-        setIsProvider(false);
-        try { localStorage.setItem("einstein_is_provider", "false"); } catch {}
-        return;
-      }
-
-      try {
-        const isAuth = await base44.auth.isAuthenticated();
-        if (isAuth) {
-          const userData = await base44.auth.me();
-          setUser(userData);
-          
-          // Refresh provider status in background (non-blocking)
-          base44.functions.invoke('checkIsProvider', {}).then(result => {
-            const isProviderVal = !!result?.data?.isProvider;
-            setIsProvider(isProviderVal);
-            localStorage.setItem("einstein_is_provider", isProviderVal ? "true" : "false");
-          }).catch(() => {});
-        } else {
-          localStorage.removeItem("einstein_is_provider");
-          setIsProvider(false);
-        }
-      } catch (e) {
-        // Not authenticated
-      }
+    const init = () => {
+      const userData = getStoredAuthUser();
+      setUser(userData);
+      const isProviderVal = userData?.role === "provider";
+      setIsProvider(isProviderVal);
+      try { localStorage.setItem("einstein_is_provider", isProviderVal ? "true" : "false"); } catch {}
     };
     init();
   }, []);
@@ -205,18 +183,17 @@ export default function Layout({ children, currentPageName }) {
 
   const isRTL = lang === "ar";
   const isAdmin = user?.role === "admin";
-  const isMockAdmin = Boolean(getMockAdminUser());
 
-  const handleLogout = () => {
-    if (isMockAdmin) {
-      clearMockAdminSession();
-      setUser(null);
-      setIsProvider(false);
-      window.location.href = "/login";
-      return;
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+    } catch {
+      // Continue with local logout if the server session is already expired.
     }
-
-    base44.auth.logout(window.location.origin);
+    clearStoredAuth();
+    setUser(null);
+    setIsProvider(false);
+    window.location.href = "/Login";
   };
 
   return (
@@ -482,7 +459,7 @@ export default function Layout({ children, currentPageName }) {
                 </DropdownMenu>
               ) : (
                 <Button 
-                                        onClick={() => base44.auth.redirectToLogin()}
+                                        onClick={redirectToLogin}
                                         className="bg-[#6B46C1] hover:bg-[#805AD5] text-white font-semibold px-3 sm:px-4 text-sm"
                                       >
                   <span className="hidden sm:inline">{t.login}</span>

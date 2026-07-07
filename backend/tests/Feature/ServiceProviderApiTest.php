@@ -13,6 +13,7 @@ class ServiceProviderApiTest extends TestCase
 
     public function test_provider_applications_can_be_listed_approved_and_rejected(): void
     {
+        $this->withApiUser('admin');
         $provider = ServiceProvider::create([
             'full_name' => 'Provider One',
             'email' => 'provider@example.com',
@@ -52,6 +53,7 @@ class ServiceProviderApiTest extends TestCase
 
     public function test_providers_can_be_listed_and_welcome_email_can_be_requested(): void
     {
+        $this->withApiUser('admin');
         $provider = ServiceProvider::create([
             'full_name' => 'Approved Provider',
             'email' => 'approved@example.com',
@@ -73,6 +75,7 @@ class ServiceProviderApiTest extends TestCase
 
     public function test_provider_application_fields_can_be_created_and_shown(): void
     {
+        $this->withApiUser('admin');
         $response = $this->postJson('/api/admin/providers', [
             'full_name' => 'Applicant Provider',
             'email' => 'applicant@example.com',

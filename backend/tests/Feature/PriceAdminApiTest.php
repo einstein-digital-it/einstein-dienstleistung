@@ -12,6 +12,7 @@ class PriceAdminApiTest extends TestCase
 
     public function test_price_groups_can_be_created_listed_and_updated_with_items(): void
     {
+        $this->withApiUser('admin');
         $group = $this->postJson('/api/admin/price-groups', [
             'category' => 'Behoerden & Formularhilfe',
             'items' => [
@@ -44,6 +45,7 @@ class PriceAdminApiTest extends TestCase
 
     public function test_price_group_deletion_removes_items(): void
     {
+        $this->withApiUser('admin');
         $group = PriceGroup::create(['category' => 'Print']);
         $group->items()->create(['label' => 'Print page', 'price' => '1 EUR']);
 

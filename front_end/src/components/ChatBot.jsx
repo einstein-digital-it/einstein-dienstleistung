@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { chatApi } from "@/api/backendClient";
 import { MessageCircle, X, Send, Loader2, User, Bot, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -129,23 +129,8 @@ export default function ChatBot({ lang = "de" }) {
     setIsLoading(true);
 
     try {
-      const conversationHistory = messages
-        .slice(-6)
-        .map(m => `${m.role === "user" ? "Kunde" : "Assistent"}: ${m.content}`)
-        .join("\n");
-
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `${systemPrompt}
-
-Bisherige Konversation:
-${conversationHistory}
-
-Kunde: ${text}
-
-Antworte als freundlicher EinStein-Assistent:`,
-      });
-
-      setMessages(prev => [...prev, { role: "assistant", content: response }]);
+      const response = await chatApi.respond({ message: text, lang });
+      setMessages(prev => [...prev, { role: "assistant", content: response.reply }]);
     } catch (error) {
       setMessages(prev => [...prev, { role: "assistant", content: t.errorMessage }]);
     }

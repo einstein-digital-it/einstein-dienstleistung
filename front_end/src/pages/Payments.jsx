@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { paymentsApi } from "@/api/backendClient";
+import { requireStoredUser } from "@/lib/backendAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPageUrl } from "../utils";
 import { motion } from "framer-motion";
@@ -239,30 +239,17 @@ export default function Payments() {
   const t = translations[lang] || translations.de;
 
   useEffect(() => {
-    const checkUser = async () => {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (isAuth) {
-        const userData = await base44.auth.me();
-        if (userData.role !== "admin") {
-          window.location.href = createPageUrl("Home");
-        }
-        setUser(userData);
-      } else {
-        base44.auth.redirectToLogin();
-      }
+    const checkUser = () => {
+      const userData = requireStoredUser({ role: "admin" });
+      if (!userData) return;
+      setUser(userData);
     };
     checkUser();
   }, []);
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["all-bookings-payments"],
-    queryFn: async () => {
-      try {
-        return await paymentsApi.listPayments();
-      } catch {
-        return base44.entities.Booking.list("-created_date", 500);
-      }
-    },
+    queryFn: paymentsApi.listPayments,
     enabled: !!user
   });
 

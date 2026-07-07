@@ -3,12 +3,16 @@ import assert from "node:assert/strict";
 import {
   adminServicesApi,
   adminDashboardApi,
+  authApi,
   bookingsApi,
+  chatApi,
+  customerSupportApi,
   customerApi,
   customerRequestsApi,
   paymentsApi,
   paymentApi,
   providerDashboardApi,
+  providerDocumentsApi,
   priceAdminApi,
   publicApi,
   profileApi,
@@ -22,10 +26,16 @@ import {
 
 test("admin backend client exposes the required page APIs", () => {
   assert.equal(typeof adminServicesApi.listServices, "function");
+  assert.equal(typeof authApi.login, "function");
+  assert.equal(typeof authApi.register, "function");
+  assert.equal(typeof authApi.getCurrentUser, "function");
+  assert.equal(typeof authApi.logout, "function");
   assert.equal(typeof adminDashboardApi.getDashboard, "function");
   assert.equal(typeof bookingsApi.listBookings, "function");
   assert.equal(typeof bookingsApi.getBooking, "function");
   assert.equal(typeof bookingsApi.createBooking, "function");
+  assert.equal(typeof bookingsApi.createServiceExtension, "function");
+  assert.equal(typeof bookingsApi.authorizeServiceExtensionPayment, "function");
   assert.equal(typeof uploadApi.uploadFiles, "function");
   assert.equal(typeof profileApi.getProfile, "function");
   assert.equal(typeof profileApi.updateProfile, "function");
@@ -35,16 +45,25 @@ test("admin backend client exposes the required page APIs", () => {
   assert.equal(typeof customerApi.markAllNotificationsRead, "function");
   assert.equal(typeof customerApi.getNotificationPreferences, "function");
   assert.equal(typeof customerApi.updateNotificationPreferences, "function");
+  assert.equal(typeof customerSupportApi.getSupportContent, "function");
+  assert.equal(typeof customerSupportApi.createRequest, "function");
   assert.equal(typeof paymentApi.getBooking, "function");
   assert.equal(typeof paymentApi.updatePaymentStatus, "function");
   assert.equal(typeof providerDashboardApi.getDashboard, "function");
   assert.equal(typeof providerDashboardApi.handleBookingAction, "function");
   assert.equal(typeof providerDashboardApi.updateProfile, "function");
   assert.equal(typeof providerDashboardApi.updateDocuments, "function");
+  assert.equal(typeof providerDocumentsApi.listDocuments, "function");
+  assert.equal(typeof providerDocumentsApi.createDocument, "function");
+  assert.equal(typeof providerDocumentsApi.deleteDocument, "function");
+  assert.equal(typeof chatApi.respond, "function");
   assert.equal(typeof publicApi.listServices, "function");
   assert.equal(typeof publicApi.listPricing, "function");
   assert.equal(typeof publicApi.getHome, "function");
+  assert.equal(typeof publicApi.getOffers, "function");
   assert.equal(typeof publicApi.getRatings, "function");
+  assert.equal(typeof publicApi.listReviews, "function");
+  assert.equal(typeof publicApi.createReview, "function");
   assert.equal(typeof priceAdminApi.listPriceGroups, "function");
   assert.equal(typeof paymentsApi.listPayments, "function");
   assert.equal(typeof paymentsApi.updatePaymentStatus, "function");

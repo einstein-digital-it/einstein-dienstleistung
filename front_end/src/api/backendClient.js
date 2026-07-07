@@ -1,10 +1,20 @@
 const API_BASE_URL = import.meta.env?.VITE_BACKEND_API_URL || "http://127.0.0.1:8000/api";
 
+function getAuthToken() {
+  try {
+    return localStorage.getItem("einstein_auth_token") || "";
+  } catch {
+    return "";
+  }
+}
+
 async function request(path, options = {}) {
+  const token = getAuthToken();
   const response = await fetch(`${API_BASE_URL}${path}`, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers || {}),
     },
     ...options,
@@ -22,10 +32,12 @@ async function request(path, options = {}) {
 }
 
 async function uploadRequest(path, formData) {
+  const token = getAuthToken();
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "POST",
     headers: {
       Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: formData,
   });
@@ -62,10 +74,17 @@ export const bookingsApi = {
   deleteBooking: (id) => request(`/bookings/${id}`, {
     method: "DELETE",
   }),
-  listServiceExtensions: () => request("/service-extensions?limit=200"),
+  listServiceExtensions: (filters = {}) => request(`/service-extensions${toQuery({ limit: 200, ...filters })}`),
+  createServiceExtension: (data) => request("/service-extensions", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
   updateServiceExtension: (id, data) => request(`/service-extensions/${id}`, {
     method: "PATCH",
     body: JSON.stringify(data),
+  }),
+  authorizeServiceExtensionPayment: (id) => request(`/service-extensions/${id}/authorize-payment`, {
+    method: "POST",
   }),
 };
 
@@ -119,6 +138,21 @@ export const uploadApi = {
     Array.from(files).forEach((file) => formData.append("files[]", file));
     return uploadRequest("/uploads", formData);
   },
+};
+
+export const authApi = {
+  login: (data) => request("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
+  register: (data) => request("/auth/register", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
+  getCurrentUser: (email) => request(`/auth/me${toQuery({ email })}`),
+  logout: () => request("/auth/logout", {
+    method: "POST",
+  }),
 };
 
 export const profileApi = {
@@ -182,7 +216,39 @@ export const publicApi = {
   listServices: () => request("/public/services"),
   listPricing: () => request("/public/pricing"),
   getHome: () => request("/public/home"),
+  getOffers: () => request("/public/offers"),
   getRatings: () => request("/public/ratings"),
+  listReviews: (filters = {}) => request(`/public/reviews${toQuery(filters)}`),
+  createReview: (data) => request("/public/reviews", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
+};
+
+export const customerSupportApi = {
+  getSupportContent: () => request("/customer-support"),
+  createRequest: (data) => request("/customer-support/requests", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
+};
+
+export const providerDocumentsApi = {
+  listDocuments: (filters = {}) => request(`/provider-documents${toQuery(filters)}`),
+  createDocument: (data) => request("/provider-documents", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
+  deleteDocument: (id) => request(`/provider-documents/${id}`, {
+    method: "DELETE",
+  }),
+};
+
+export const chatApi = {
+  respond: (data) => request("/chat/respond", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
 };
 
 export const adminDashboardApi = {

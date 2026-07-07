@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { seoSettingsApi } from "@/api/backendClient";
-import { getMockAdminUser } from "@/lib/mockAuth";
-import { staticSEOSettings } from "@/lib/staticAdminData";
+import { requireStoredUser } from "@/lib/backendAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -155,7 +153,7 @@ const frequencyOptions = [
 
 export default function SEOAdmin() {
   const [lang, setLang] = useState("de");
-  const [user, setUser] = useState(() => getMockAdminUser());
+  const [user, setUser] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [selectedSetting, setSelectedSetting] = useState(null);
@@ -170,43 +168,18 @@ export default function SEOAdmin() {
     const savedLang = localStorage.getItem("einstein_lang");
     if (savedLang) setLang(savedLang);
 
-    const checkUser = async () => {
-      const mockUser = getMockAdminUser();
-      if (mockUser) {
-        setUser(mockUser);
-        return;
-      }
-
-      const isAuth = await base44.auth.isAuthenticated();
-      if (isAuth) {
-        const userData = await base44.auth.me();
-        if (userData.role !== "admin") {
-          window.location.href = "/";
-        }
-        setUser(userData);
-      } else {
-        base44.auth.redirectToLogin();
-      }
-    };
+    const checkUser = () => setUser(requireStoredUser({ role: "admin" }));
     checkUser();
   }, []);
 
   const { data: seoSettings = [], isLoading } = useQuery({
     queryKey: ["seo-settings"],
-    queryFn: async () => {
-      if (getMockAdminUser()) return staticSEOSettings;
-      try {
-        return await seoSettingsApi.listSettings();
-      } catch {
-        return staticSEOSettings;
-      }
-    },
+    queryFn: seoSettingsApi.listSettings,
     enabled: !!user
   });
 
   const saveMutation = useMutation({
     mutationFn: async (data) => {
-      if (getMockAdminUser()) return data;
       if (data.id) {
         return seoSettingsApi.updateSetting(data.id, data);
       }
@@ -220,7 +193,7 @@ export default function SEOAdmin() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => getMockAdminUser() ? id : seoSettingsApi.deleteSetting(id),
+    mutationFn: seoSettingsApi.deleteSetting,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["seo-settings"] });
       setShowDeleteAlert(false);

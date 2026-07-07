@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { providersApi, reportsApi } from "@/api/backendClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -22,7 +21,7 @@ import {
   Info
 } from "lucide-react";
 import ProviderDocumentUpload from "@/components/ProviderDocumentUpload";
-import { getMockAdminUser } from "@/lib/mockAuth";
+import { requireStoredUser } from "@/lib/backendAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -177,29 +176,18 @@ export default function BookingReports() {
     if (savedLang) setLang(savedLang);
 
     const checkAuth = async () => {
-      const mockUser = getMockAdminUser();
-      if (mockUser) {
-        setUser(mockUser);
-        return;
-      }
+      const userData = requireStoredUser();
+      if (!userData) return;
+      setUser(userData);
 
-      const isAuth = await base44.auth.isAuthenticated();
-      if (isAuth) {
-        const userData = await base44.auth.me();
-        setUser(userData);
-        
-        // Check if user is a service provider
-        if (userData.role !== "admin") {
-          const providers = await providersApi.listProviders("approved");
-          const approvedProvider = providers.find((item) => item.email?.toLowerCase() === userData.email?.toLowerCase());
-          if (approvedProvider) {
-            setProvider(approvedProvider);
-          } else {
-            window.location.href = "/";
-          }
+      if (userData.role !== "admin") {
+        const providers = await providersApi.listProviders("approved");
+        const approvedProvider = providers.find((item) => item.email?.toLowerCase() === userData.email?.toLowerCase());
+        if (approvedProvider) {
+          setProvider(approvedProvider);
+        } else {
+          window.location.href = "/";
         }
-      } else {
-        base44.auth.redirectToLogin();
       }
     };
     checkAuth();

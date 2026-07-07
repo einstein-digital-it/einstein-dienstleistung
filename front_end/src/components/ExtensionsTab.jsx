@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { bookingsApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
@@ -9,15 +9,8 @@ import { Loader2, PlusCircle, FileText, CheckCircle, Download, Printer } from "l
 async function downloadExtensionInvoice(ext, setLoadingId) {
   setLoadingId(ext.id);
   try {
-    const res = await base44.functions.invoke('generateExtensionInvoice', { extensionId: ext.id });
-    const invoiceUrl = res.data?.invoice_url;
-    if (invoiceUrl) {
-      const a = document.createElement('a');
-      a.href = invoiceUrl;
-      a.target = '_blank';
-      a.download = `EXT-${ext.booking_number || ext.id}.pdf`;
-      a.click();
-    }
+    const payload = encodeURIComponent(JSON.stringify(ext, null, 2));
+    window.open(`data:application/json;charset=utf-8,${payload}`, "_blank");
   } finally {
     setLoadingId(null);
   }
@@ -27,7 +20,7 @@ export default function ExtensionsTab({ providerEmail, lang }) {
   const [loadingId, setLoadingId] = useState(null);
   const { data: extensions = [], isLoading } = useQuery({
     queryKey: ["provider-extensions", providerEmail],
-    queryFn: () => base44.entities.ServiceExtension.filter({ provider_email: providerEmail }, "-created_date", 50),
+    queryFn: () => bookingsApi.listServiceExtensions({ provider_email: providerEmail }),
     enabled: !!providerEmail
   });
 

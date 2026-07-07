@@ -13,6 +13,7 @@ class BookingApiTest extends TestCase
 
     public function test_bookings_can_be_listed_and_updated(): void
     {
+        $this->withApiUser('admin');
         $booking = Booking::create([
             'booking_number' => 'ES-TEST-001',
             'customer_name' => 'Test Customer',
@@ -39,6 +40,7 @@ class BookingApiTest extends TestCase
 
     public function test_invalid_booking_status_is_rejected(): void
     {
+        $this->withApiUser('admin');
         $booking = Booking::create([
             'booking_number' => 'ES-TEST-002',
             'customer_name' => 'Test Customer',
@@ -54,6 +56,7 @@ class BookingApiTest extends TestCase
 
     public function test_service_extensions_can_be_listed_and_updated(): void
     {
+        $this->withApiUser('admin');
         $extension = ServiceExtension::create([
             'booking_number' => 'ES-TEST-003',
             'customer_name' => 'Test Customer',
@@ -77,6 +80,7 @@ class BookingApiTest extends TestCase
 
     public function test_booking_reports_can_be_listed_and_confirmed(): void
     {
+        $this->withApiUser('admin');
         $booking = Booking::create([
             'booking_number' => 'ES-REPORT-001',
             'customer_name' => 'Report Customer',

@@ -683,7 +683,7 @@ const serviceData = [
     icon: BookOpen, 
     color: "bg-blue-500", 
     lightColor: "bg-blue-50",
-    image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/694d6e3a995b53f785114ddc/ca2e6685c_add677bc-ecdf-4517-8651-82d976557296.jpg"
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop"
   },
   { 
     key: "print", 

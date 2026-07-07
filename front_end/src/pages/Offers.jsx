@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
+import { publicApi } from "@/api/backendClient";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
   Home,
@@ -348,28 +350,43 @@ const translations = {
   }
 };
 
+const offerIconMap = {
+  home: Home,
+  calendar: Calendar,
+  "calendar-days": CalendarDays,
+  "calendar-clock": CalendarClock,
+  sparkles: Sparkles
+};
+
 export default function Offers() {
   const [lang, setLang] = useState("de");
-  const [customPrices, setCustomPrices] = useState(null);
+
+  const { data: backendOffers = [] } = useQuery({
+    queryKey: ["public-offers"],
+    queryFn: publicApi.getOffers,
+  });
+
+  const { data: priceSettingsData = [] } = useQuery({
+    queryKey: ["offers-pricing"],
+    queryFn: publicApi.listPricing,
+  });
+
+  const customPrices = React.useMemo(() => {
+    if (!priceSettingsData || priceSettingsData.length === 0) return null;
+    const pricesObj = {};
+    priceSettingsData.forEach(item => {
+      pricesObj[item.category] = item.items || item.prices || [];
+    });
+    return pricesObj;
+  }, [priceSettingsData]);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("einstein_lang");
     if (savedLang) setLang(savedLang);
 
-    // Load custom prices from localStorage
-    const savedPrices = localStorage.getItem("einstein_offers_prices");
-    if (savedPrices) {
-      setCustomPrices(JSON.parse(savedPrices));
-    }
-
     const handleStorage = () => {
       const newLang = localStorage.getItem("einstein_lang");
       if (newLang) setLang(newLang);
-
-      const newPrices = localStorage.getItem("einstein_offers_prices");
-      if (newPrices) {
-        setCustomPrices(JSON.parse(newPrices));
-      }
     };
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
@@ -377,40 +394,32 @@ export default function Offers() {
 
   const t = translations[lang] || translations.de;
 
-  const packages = [
-    {
-      key: "fullservice",
-      icon: Home,
-      color: "bg-purple-500",
-      lightColor: "bg-purple-50"
-    },
-    {
-      key: "yearly",
-      icon: Calendar,
-      color: "bg-blue-500",
-      lightColor: "bg-blue-50"
-    },
-    {
-      key: "monthly",
-      icon: CalendarDays,
-      color: "bg-green-500",
-      lightColor: "bg-green-50"
-    },
-    {
-      key: "weekly",
-      icon: CalendarClock,
-      color: "bg-orange-500",
-      lightColor: "bg-orange-50"
-    },
-    {
-      key: "single",
-      icon: Sparkles,
-      color: "bg-pink-500",
-      lightColor: "bg-pink-50"
-    }
-  ];
+  const packages = backendOffers.map((offer) => ({
+        key: offer.key,
+        icon: offerIconMap[offer.icon] || Package,
+        color: offer.color || "bg-purple-500",
+        lightColor: offer.lightColor || "bg-purple-50",
+        offer
+      }));
+
+  const getOfferText = (offer, field) => {
+    if (!offer) return "";
+    return offer[`${field}_${lang}`] || offer[`${field}_de`] || offer[`${field}_en`] || offer[field] || "";
+  };
+
+  const getOfferList = (offer, field) => {
+    const value = offer?.[field];
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    return value[lang] || value.de || value.en || value.ar || [];
+  };
 
   const getPrices = (packageKey) => {
+    const offer = packages.find((item) => item.key === packageKey)?.offer;
+    if (offer?.prices?.length) {
+      return offer.prices;
+    }
+
     if (customPrices && customPrices[packageKey]) {
       return customPrices[packageKey].map(p => ({
         label: lang === "ar" ? p.label_ar : lang === "en" ? p.label_en : p.label_de,
@@ -488,7 +497,14 @@ export default function Offers() {
         <div className="space-y-8 mb-16">
           {packages.map((pkg, index) => {
             const Icon = pkg.icon;
-            const pkgInfo = t.packages[pkg.key];
+            const pkgInfo = {
+              title: getOfferText(pkg.offer, "title"),
+              subtitle: getOfferText(pkg.offer, "subtitle"),
+              desc: getOfferText(pkg.offer, "desc"),
+              suitable: getOfferText(pkg.offer, "suitable"),
+              features: getOfferList(pkg.offer, "features"),
+              examples: getOfferList(pkg.offer, "examples")
+            };
             const prices = getPrices(pkg.key);
 
             return (

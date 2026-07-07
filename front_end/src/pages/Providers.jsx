@@ -21,7 +21,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { providersApi } from "@/api/backendClient";
-import { staticServiceProviders } from "@/lib/staticAdminData";
 
 const categoryLabels = {
   office: "Buero",
@@ -62,7 +61,7 @@ export default function Providers() {
     queryKey: ["admin-providers"],
     queryFn: () => providersApi.listProviders("all"),
   });
-  const providers = backendProviders.length > 0 ? backendProviders : staticServiceProviders;
+  const providers = backendProviders;
 
   const filteredProviders = useMemo(() => {
     const term = search.trim().toLowerCase();

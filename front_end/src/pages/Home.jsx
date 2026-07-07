@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { defaultPrices as defaultPricesMap } from "@/lib/defaultPrices";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { publicApi } from "@/api/backendClient";
-import { hasMockAdminSession } from "@/lib/mockAuth";
+import { getStoredAuthUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
@@ -791,18 +790,14 @@ function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
     return t[serviceKey];
   };
   
-  // Function to get custom price (reads from DB, fallback to defaultPrices)
+  // Function to get custom price from backend-managed settings.
   const getServicePrice = (serviceKey) => {
     if (customPrices && customPrices[serviceKey] && customPrices[serviceKey][0]) {
       const p = customPrices[serviceKey][0];
       const unit = getUnitByLang(p);
       return `${p.price}${unit ? " " + unit : ""}`;
     }
-    // Fallback from shared defaultPrices (not hardcoded per language)
-    const d = defaultPricesMap[serviceKey];
-    if (!d) return "";
-    const unit = lang === "ar" ? d.unit_ar : lang === "en" ? d.unit_en : d.unit_de;
-    return `${d.display}${unit ? " " + unit : ""}`;
+    return "";
   };
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
@@ -976,7 +971,7 @@ function AuthenticatedArabicHero() {
 export default function Home() {
   const savedLang = (() => { try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; } })();
   const [lang, setLang] = useState(savedLang);
-  const [isMockAdmin, setIsMockAdmin] = useState(() => hasMockAdminSession());
+  const [isAdmin, setIsAdmin] = useState(() => getStoredAuthUser()?.role === "admin");
   
   // Load custom prices from database
   const { data: priceSettingsData = [] } = useQuery({
@@ -999,7 +994,7 @@ export default function Home() {
     const handleStorage = () => {
       const newLang = localStorage.getItem("einstein_lang");
       if (newLang) setLang(newLang);
-      setIsMockAdmin(hasMockAdminSession());
+      setIsAdmin(getStoredAuthUser()?.role === "admin");
     };
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
@@ -1007,7 +1002,7 @@ export default function Home() {
   
   const t = translations[lang] || translations.de;
   const isRTL = lang === "ar";
-  const showAuthenticatedArabicHero = isRTL && isMockAdmin;
+  const showAuthenticatedArabicHero = isRTL && isAdmin;
 
   return (
     <div className="min-h-screen">

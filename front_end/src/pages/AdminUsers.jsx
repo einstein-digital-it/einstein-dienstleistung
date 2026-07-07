@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { usersApi } from "@/api/backendClient";
-import { getMockAdminUser } from "@/lib/mockAuth";
+import { requireStoredUser } from "@/lib/backendAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Users, Search, Loader2, Mail, Calendar, Shield, User, Bell, CheckCheck, Phone, Power, Trash2 } from "lucide-react";
@@ -14,23 +13,11 @@ import { format } from "date-fns";
 
 export default function AdminUsers() {
   const [lang] = useState(() => localStorage.getItem("einstein_lang") || "de");
-  const [user, setUser] = useState(() => getMockAdminUser());
+  const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const check = async () => {
-      const mockUser = getMockAdminUser();
-      if (mockUser) {
-        setUser(mockUser);
-        return;
-      }
-
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) { base44.auth.redirectToLogin(); return; }
-      const me = await base44.auth.me();
-      if (me.role !== "admin") { window.location.href = "/"; return; }
-      setUser(me);
-    };
+    const check = () => setUser(requireStoredUser({ role: "admin" }));
     check();
   }, []);
 
