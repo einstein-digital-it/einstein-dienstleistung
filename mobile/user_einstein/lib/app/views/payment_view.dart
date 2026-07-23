@@ -23,7 +23,9 @@ class PaymentView extends GetView<PaymentController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (controller.isPaid.value) ...[
+                if (controller.booking == null) ...[
+                  const _NoPaymentPanel(),
+                ] else if (controller.isPaid.value) ...[
                   _SuccessPanel(bookingNumber: controller.bookingNumber),
                 ] else ...[
                   _PaymentHero(total: controller.total),
@@ -59,6 +61,38 @@ class PaymentView extends GetView<PaymentController> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _NoPaymentPanel extends StatelessWidget {
+  const _NoPaymentPanel();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xFFE9EEF6)),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.receipt_long_outlined, color: AppColors.gold, size: 64),
+          const SizedBox(height: 16),
+          const Text('No payment due', style: TextStyle(color: AppColors.navy, fontSize: 24, fontWeight: FontWeight.w900)),
+          const SizedBox(height: 8),
+          const Text('There is no unpaid booking selected right now.', textAlign: TextAlign.center, style: TextStyle(color: AppColors.muted)),
+          const SizedBox(height: 22),
+          PrimaryButton(
+            label: 'Go to My Bookings',
+            icon: Icons.calendar_month_outlined,
+            onPressed: () => Get.offNamed(AppRoutes.myBookings),
+          ),
+        ],
       ),
     );
   }

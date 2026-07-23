@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../api/customer_api_service.dart';
 import '../models/offer_package.dart';
 
 class OffersController extends GetxController {
+  final api = Get.find<CustomerApiService>();
   final selectedIndex = 0.obs;
+  final isLoading = false.obs;
+  final errorText = ''.obs;
 
-  final packages = const <OfferPackage>[
-    OfferPackage(
+  final packages = <OfferPackage>[
+    const OfferPackage(
       title: 'Ganzheitliche Haus- & Familienbetreuung',
       subtitle: 'Full-Service',
       description: 'Vollstaendige Entlastung im Alltag mit zentraler Organisation aller Aufgaben.',
@@ -20,7 +24,7 @@ class OffersController extends GetxController {
         'Zentrale Betreuung ohne externe Dienstleister',
       ],
     ),
-    OfferPackage(
+    const OfferPackage(
       title: 'Jahresbetreuung',
       subtitle: 'Ganzjahresmodell',
       description: 'Kontinuierliche, langfristige Begleitung fuer Familien und Berufstaetige.',
@@ -33,7 +37,7 @@ class OffersController extends GetxController {
         'Feste Ansprechpartner',
       ],
     ),
-    OfferPackage(
+    const OfferPackage(
       title: 'Monatsbetreuung',
       subtitle: 'Flexibles Abonnement',
       description: 'Regelmaessige Unterstuetzung mit flexibler monatlicher Planung.',
@@ -46,7 +50,7 @@ class OffersController extends GetxController {
         'Begleitung schulischer Themen',
       ],
     ),
-    OfferPackage(
+    const OfferPackage(
       title: 'Wochenbetreuung',
       subtitle: 'Kurzfristige Entlastung',
       description: 'Ideal fuer intensive Arbeitsphasen, Krankheit oder zeitlich begrenzte Projekte.',
@@ -59,5 +63,23 @@ class OffersController extends GetxController {
         'Strukturierte Entlastung',
       ],
     ),
-  ];
+  ].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadOffers();
+  }
+
+  Future<void> loadOffers() async {
+    isLoading.value = true;
+    try {
+      final remoteOffers = await api.offers();
+      if (remoteOffers.isNotEmpty) packages.assignAll(remoteOffers);
+    } catch (_) {
+      errorText.value = 'Using local offers data.';
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

@@ -16,42 +16,50 @@ class MyBookingsView extends GetView<MyBookingsController> {
     return Scaffold(
       bottomNavigationBar: const AppBottomNav(currentIndex: 3),
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(child: Text('Meine Buchungen', style: Theme.of(context).textTheme.headlineMedium)),
-                        IconButton(
-                          onPressed: () => Get.toNamed(AppRoutes.bookings),
-                          icon: const Icon(Icons.add_rounded, color: Colors.white),
-                          style: IconButton.styleFrom(backgroundColor: AppColors.navy),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Text('Verwalten Sie Termine, Zahlung und Dokumente.', style: Theme.of(context).textTheme.bodyMedium),
-                    const SizedBox(height: 18),
-                    const _BookingStats(),
-                    const SizedBox(height: 20),
-                  ],
+        child: Obx(
+          () => CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: Text('Meine Buchungen', style: Theme.of(context).textTheme.headlineMedium)),
+                          IconButton(
+                            onPressed: () => Get.toNamed(AppRoutes.bookings),
+                            icon: const Icon(Icons.add_rounded, color: Colors.white),
+                            style: IconButton.styleFrom(backgroundColor: AppColors.navy),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text('Verwalten Sie Termine, Zahlung und Dokumente.', style: Theme.of(context).textTheme.bodyMedium),
+                      const SizedBox(height: 18),
+                      _BookingStats(
+                        total: controller.totalCount,
+                        unpaid: controller.unpaidCount,
+                        paid: controller.paidCount,
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
-              sliver: SliverList.separated(
-                itemCount: controller.bookings.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 14),
-                itemBuilder: (context, index) => _BookingCard(item: controller.bookings[index]),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+                sliver: controller.bookings.isEmpty
+                    ? const SliverToBoxAdapter(child: _EmptyBookings())
+                    : SliverList.separated(
+                        itemCount: controller.bookings.length,
+                        separatorBuilder: (context, index) => const SizedBox(height: 14),
+                        itemBuilder: (context, index) => _BookingCard(item: controller.bookings[index]),
+                      ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -59,17 +67,21 @@ class MyBookingsView extends GetView<MyBookingsController> {
 }
 
 class _BookingStats extends StatelessWidget {
-  const _BookingStats();
+  const _BookingStats({required this.total, required this.unpaid, required this.paid});
+
+  final int total;
+  final int unpaid;
+  final int paid;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
-        Expanded(child: _StatBox(label: 'Alle', value: '12', icon: Icons.calendar_month_outlined)),
-        SizedBox(width: 10),
-        Expanded(child: _StatBox(label: 'Offen', value: '2', icon: Icons.access_time_rounded)),
-        SizedBox(width: 10),
-        Expanded(child: _StatBox(label: 'Bezahlt', value: '8', icon: Icons.check_circle_outline)),
+      children: [
+        Expanded(child: _StatBox(label: 'Alle', value: '$total', icon: Icons.calendar_month_outlined)),
+        const SizedBox(width: 10),
+        Expanded(child: _StatBox(label: 'Offen', value: '$unpaid', icon: Icons.access_time_rounded)),
+        const SizedBox(width: 10),
+        Expanded(child: _StatBox(label: 'Bezahlt', value: '$paid', icon: Icons.check_circle_outline)),
       ],
     );
   }
@@ -158,7 +170,9 @@ class _BookingCard extends StatelessWidget {
                 width: 126,
                 child: PrimaryButton(
                   label: item.paymentStatus == 'Unpaid' ? 'Pay' : 'Details',
-                  onPressed: () => item.paymentStatus == 'Unpaid' ? Get.toNamed(AppRoutes.payment) : null,
+                  onPressed: () => item.paymentStatus == 'Unpaid'
+                      ? Get.toNamed(AppRoutes.payment, arguments: item.id)
+                      : Get.snackbar('Booking details', '${item.id} is ${item.status.toLowerCase()}.'),
                   icon: item.paymentStatus == 'Unpaid' ? Icons.credit_card_outlined : Icons.arrow_forward_rounded,
                 ),
               ),
@@ -166,6 +180,19 @@ class _BookingCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _EmptyBookings extends StatelessWidget {
+  const _EmptyBookings();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE9EEF6))),
+      child: const Text('No bookings yet. Tap + to create your first booking.', style: TextStyle(color: AppColors.muted, fontWeight: FontWeight.w700)),
     );
   }
 }

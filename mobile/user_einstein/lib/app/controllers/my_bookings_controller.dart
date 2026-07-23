@@ -1,44 +1,37 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../api/customer_api_service.dart';
 import '../models/booking_item.dart';
+import 'customer_store_controller.dart';
 
 class MyBookingsController extends GetxController {
   final activeFilter = 'upcoming'.obs;
+  final store = Get.find<CustomerStoreController>();
+  final api = Get.find<CustomerApiService>();
+  final isLoading = false.obs;
+  final errorText = ''.obs;
 
-  final bookings = const <BookingItem>[
-    BookingItem(
-      id: 'ES-2048',
-      service: 'Behoerden & Formularhilfe',
-      date: '12 Jun 2026',
-      time: '10:30',
-      address: 'Frankfurt',
-      status: 'Confirmed',
-      paymentStatus: 'Paid',
-      price: '85 EUR',
-      statusColor: Color(0xFF10B981),
-    ),
-    BookingItem(
-      id: 'ES-2049',
-      service: 'Buero & Sekretariat',
-      date: '15 Jun 2026',
-      time: '13:00',
-      address: 'Online',
-      status: 'Awaiting payment',
-      paymentStatus: 'Unpaid',
-      price: '120 EUR',
-      statusColor: Color(0xFFC9A227),
-    ),
-    BookingItem(
-      id: 'ES-2031',
-      service: 'Nachhilfe / Lernunterstuetzung',
-      date: '28 May 2026',
-      time: '16:00',
-      address: 'Offenbach',
-      status: 'Completed',
-      paymentStatus: 'Paid',
-      price: '60 EUR',
-      statusColor: Color(0xFF3B82F6),
-    ),
-  ];
+  List<BookingItem> get bookings => store.bookings;
+  int get totalCount => store.bookings.length;
+  int get unpaidCount => store.openPaymentsCount;
+  int get paidCount => store.paidBookingsCount;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadBookings();
+  }
+
+  Future<void> loadBookings() async {
+    if (store.currentEmail.isEmpty) return;
+    isLoading.value = true;
+    try {
+      final remoteBookings = await api.bookings(store.currentEmail);
+      store.replaceBookings(remoteBookings);
+    } catch (_) {
+      errorText.value = 'Using local bookings data.';
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

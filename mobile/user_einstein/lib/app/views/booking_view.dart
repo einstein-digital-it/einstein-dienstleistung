@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/booking_controller.dart';
-import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/primary_button.dart';
 
@@ -27,56 +26,62 @@ class BookingView extends GetView<BookingController> {
               Text('Kategorie waehlen', style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 12),
               Obx(
-                () => GridView.builder(
-                  itemCount: controller.categories.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisExtent: 122,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
-                  itemBuilder: (context, index) {
-                    final id = controller.categories[index];
-                    final selected = controller.selectedCategory.value == id;
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(18),
-                      onTap: () => controller.selectCategory(id),
-                      child: Container(
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: selected ? const Color(0xFFF4EEFF) : Colors.white,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: selected ? AppColors.purple : const Color(0xFFE9EEF6), width: selected ? 2 : 1),
+                () {
+                  final selectedCategory = controller.selectedCategory.value;
+                  return GridView.builder(
+                    itemCount: controller.categories.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisExtent: 122,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                    ),
+                    itemBuilder: (context, index) {
+                      final id = controller.categories[index];
+                      final selected = selectedCategory == id;
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(18),
+                        onTap: () => controller.selectCategory(id),
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: selected ? const Color(0xFFF4EEFF) : Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: selected ? AppColors.purple : const Color(0xFFE9EEF6), width: selected ? 2 : 1),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(selected ? Icons.check_circle : Icons.radio_button_unchecked, color: selected ? AppColors.purple : AppColors.muted),
+                              const Spacer(),
+                              Text(
+                                controller.categoryLabels[id] ?? id,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900, height: 1.15),
+                              ),
+                              const SizedBox(height: 4),
+                              const Text('ab 40 EUR', style: TextStyle(color: AppColors.gold, fontSize: 12, fontWeight: FontWeight.w800)),
+                            ],
+                          ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(selected ? Icons.check_circle : Icons.radio_button_unchecked, color: selected ? AppColors.purple : AppColors.muted),
-                            const Spacer(),
-                            Text(
-                              controller.categoryLabels[id] ?? id,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900, height: 1.15),
-                            ),
-                            const SizedBox(height: 4),
-                            const Text('ab 40 EUR', style: TextStyle(color: AppColors.gold, fontSize: 12, fontWeight: FontWeight.w800)),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  );
+                },
               ),
               const SizedBox(height: 26),
-              const _DetailsCard(),
+              _DetailsCard(controller: controller),
               const SizedBox(height: 18),
-              PrimaryButton(
-                label: 'Buchung vorbereiten',
-                icon: Icons.arrow_forward_rounded,
-                onPressed: () => Get.toNamed(AppRoutes.myBookings),
+              Obx(
+                () => PrimaryButton(
+                  label: 'Buchung vorbereiten',
+                  icon: Icons.arrow_forward_rounded,
+                  isLoading: controller.isSubmitting.value,
+                  onPressed: controller.confirmBooking,
+                ),
               ),
             ],
           ),
@@ -113,7 +118,9 @@ class _StepHeader extends StatelessWidget {
 }
 
 class _DetailsCard extends StatelessWidget {
-  const _DetailsCard();
+  const _DetailsCard({required this.controller});
+
+  final BookingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -129,23 +136,100 @@ class _DetailsCard extends StatelessWidget {
         children: [
           Text('Details eingeben', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 14),
-          const _InputLike(icon: Icons.person_outline, label: 'Name', value: 'Customer Name'),
+          _InputLike(icon: Icons.person_outline, label: 'Name', value: controller.store.profile.value.fullName),
           const SizedBox(height: 10),
-          const _InputLike(icon: Icons.mail_outline, label: 'Email', value: 'customer@example.com'),
+          _InputLike(icon: Icons.mail_outline, label: 'Email', value: controller.store.profile.value.email),
           const SizedBox(height: 10),
-          const _InputLike(icon: Icons.location_on_outlined, label: 'Adresse', value: 'Frankfurt'),
-          const SizedBox(height: 10),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(14),
+          Obx(
+            () => _ChoiceWrap(
+              title: 'Date',
+              values: controller.dates,
+              selected: controller.selectedDate.value,
+              onSelected: (value) => controller.selectedDate.value = value,
             ),
-            child: const Text(
-              'Beschreibung: Unterstuetzung bei Formularen und Vorbereitung von Unterlagen.',
-              style: TextStyle(color: AppColors.muted, height: 1.35),
+          ),
+          const SizedBox(height: 10),
+          Obx(
+            () => _ChoiceWrap(
+              title: 'Time',
+              values: controller.times,
+              selected: controller.selectedTime.value,
+              onSelected: (value) => controller.selectedTime.value = value,
             ),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            onChanged: (value) => controller.address.value = value,
+            decoration: InputDecoration(
+              labelText: 'Adresse',
+              hintText: controller.address.value,
+              prefixIcon: const Icon(Icons.location_on_outlined),
+              filled: true,
+              fillColor: AppColors.input,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFFDAE5F4))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFFDAE5F4))),
+              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: AppColors.gold)),
+            ),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: controller.noteController,
+            minLines: 3,
+            maxLines: 5,
+            onChanged: (value) => controller.note.value = value,
+            decoration: InputDecoration(
+              hintText: 'Beschreibung: Unterstuetzung bei Formularen und Vorbereitung von Unterlagen.',
+              filled: true,
+              fillColor: AppColors.background,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ChoiceWrap extends StatelessWidget {
+  const _ChoiceWrap({
+    required this.title,
+    required this.values,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final String title;
+  final List<String> values;
+  final String selected;
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.input,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFDAE5F4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: const TextStyle(color: AppColors.muted, fontSize: 12, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: values.map((value) {
+              final isSelected = selected == value;
+              return ChoiceChip(
+                label: Text(value),
+                selected: isSelected,
+                selectedColor: AppColors.goldSoft,
+                onSelected: (_) => onSelected(value),
+              );
+            }).toList(),
           ),
         ],
       ),

@@ -24,7 +24,7 @@ class AppBottomNav extends StatelessWidget {
         NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
       ],
       onDestinationSelected: (index) {
-        if (index == 0) Get.offNamed(AppRoutes.home);
+        if (index == 0) Get.offNamed(AppRoutes.customerDashboard);
         if (index == 1) Get.offNamed(AppRoutes.services);
         if (index == 2) Get.offNamed(AppRoutes.offers);
         if (index == 3) Get.offNamed(AppRoutes.myBookings);

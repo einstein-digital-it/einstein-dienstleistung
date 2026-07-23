@@ -27,25 +27,114 @@ class ProfileView extends GetView<ProfileController> {
                   children: [
                     const EinsteinLogo(size: 92),
                     const SizedBox(height: 18),
-                    Text(controller.fullName.value, style: const TextStyle(color: AppColors.navy, fontSize: 24, fontWeight: FontWeight.w900)),
+                    Text(controller.fullName, style: const TextStyle(color: AppColors.navy, fontSize: 24, fontWeight: FontWeight.w900)),
                     const SizedBox(height: 4),
-                    Text(controller.email.value, style: const TextStyle(color: AppColors.muted, fontWeight: FontWeight.w700)),
+                    Text(controller.email, style: const TextStyle(color: AppColors.muted, fontWeight: FontWeight.w700)),
                     const SizedBox(height: 18),
-                    PrimaryButton(label: 'Edit profile', icon: Icons.edit_outlined, onPressed: () {}),
+                    PrimaryButton(label: 'Edit profile', icon: Icons.edit_outlined, onPressed: () => _showEditProfileSheet(context, controller)),
                   ],
                 ),
               ),
               const SizedBox(height: 18),
-              _ProfileField(icon: Icons.phone_outlined, label: 'Phone', value: controller.phone.value),
-              _ProfileField(icon: Icons.location_on_outlined, label: 'Address', value: controller.address.value),
-              _ProfileField(icon: Icons.language_outlined, label: 'Preferred language', value: controller.language.value),
+              _ProfileField(icon: Icons.phone_outlined, label: 'Phone', value: controller.phone),
+              _ProfileField(icon: Icons.location_on_outlined, label: 'Address', value: controller.address),
+              _ProfileField(icon: Icons.language_outlined, label: 'Preferred language', value: controller.language),
               const SizedBox(height: 10),
               _ActionTile(icon: Icons.notifications_outlined, title: 'Notification settings', onTap: () => Get.toNamed(AppRoutes.notificationSettings)),
               _ActionTile(icon: Icons.support_agent_outlined, title: 'Customer service', onTap: () => Get.toNamed(AppRoutes.customerService)),
-              _ActionTile(icon: Icons.logout_rounded, title: 'Logout', destructive: true, onTap: () => Get.offAllNamed(AppRoutes.login)),
+              _ActionTile(icon: Icons.logout_rounded, title: 'Logout', destructive: true, onTap: () => controller.logout()),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+void _showEditProfileSheet(BuildContext context, ProfileController controller) {
+  final nameController = TextEditingController(text: controller.fullName);
+  final phoneController = TextEditingController(text: controller.phone);
+  final addressController = TextEditingController(text: controller.address);
+  final language = controller.language.obs;
+
+  Get.bottomSheet(
+    SafeArea(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Obx(
+          () => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Edit profile', style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 16),
+              _EditField(label: 'Full name', icon: Icons.person_outline, controller: nameController),
+              const SizedBox(height: 10),
+              _EditField(label: 'Phone', icon: Icons.phone_outlined, controller: phoneController),
+              const SizedBox(height: 10),
+              _EditField(label: 'Address', icon: Icons.location_on_outlined, controller: addressController),
+              const SizedBox(height: 10),
+              PopupMenuButton<String>(
+                onSelected: (value) => language.value = value,
+                itemBuilder: (context) => const ['Deutsch', 'English', 'Arabic'].map((item) => PopupMenuItem(value: item, child: Text(item))).toList(),
+                child: Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(color: AppColors.input, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFDAE5F4))),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.language_outlined, color: AppColors.gold),
+                      const SizedBox(width: 12),
+                      Expanded(child: Text(language.value, style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900))),
+                      const Icon(Icons.expand_more_rounded, color: AppColors.muted),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              PrimaryButton(
+                label: 'Save changes',
+                icon: Icons.check_rounded,
+                onPressed: () {
+                  controller.updateProfile(
+                    fullName: nameController.text,
+                    phone: phoneController.text,
+                    address: addressController.text,
+                    language: language.value,
+                  );
+                  Get.back();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+    isScrollControlled: true,
+  );
+}
+
+class _EditField extends StatelessWidget {
+  const _EditField({required this.label, required this.icon, required this.controller});
+
+  final String label;
+  final IconData icon;
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        filled: true,
+        fillColor: AppColors.input,
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFFDAE5F4))),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: AppColors.gold)),
       ),
     );
   }

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../api/customer_api_service.dart';
 import '../models/service_item.dart';
 
 class ServicesController extends GetxController {
+  final api = Get.find<CustomerApiService>();
   final expandedId = ''.obs;
+  final isLoading = false.obs;
+  final errorText = ''.obs;
 
-  final services = const <ServiceItem>[
-    ServiceItem(
+  final services = <ServiceItem>[
+    const ServiceItem(
       id: 'forms',
       title: 'Behoerden & Formularhilfe',
       description: 'Unterstuetzung bei Behoerdenangelegenheiten, Formularen und Antraegen.',
@@ -21,7 +25,7 @@ class ServicesController extends GetxController {
         'Erklaerung von Bescheiden',
       ],
     ),
-    ServiceItem(
+    const ServiceItem(
       id: 'admin',
       title: 'Administrative Dienstleistungen',
       description: 'Umfassende administrative Unterstuetzung fuer Verwaltungsaufgaben.',
@@ -35,7 +39,7 @@ class ServicesController extends GetxController {
         'Allgemeine Bueroarbeiten',
       ],
     ),
-    ServiceItem(
+    const ServiceItem(
       id: 'coordination',
       title: 'Koordinationsleistungen',
       description: 'Professionelle Koordination und Projektbetreuung fuer Ihre Vorhaben.',
@@ -49,7 +53,7 @@ class ServicesController extends GetxController {
         'Qualitaetskontrolle',
       ],
     ),
-    ServiceItem(
+    const ServiceItem(
       id: 'mercosur',
       title: 'MERCOSUR (LATAM)',
       description: 'Dienstleistungen fuer lateinamerikanische Dokumente und Verfahren.',
@@ -63,7 +67,7 @@ class ServicesController extends GetxController {
         'Anerkennung von Abschluessen',
       ],
     ),
-    ServiceItem(
+    const ServiceItem(
       id: 'tutoring',
       title: 'Nachhilfe / Lernunterstuetzung',
       description: 'Individuelle Lernbegleitung und Nachhilfe fuer alle Altersgruppen.',
@@ -77,7 +81,7 @@ class ServicesController extends GetxController {
         'Pruefungsvorbereitung',
       ],
     ),
-    ServiceItem(
+    const ServiceItem(
       id: 'print',
       title: 'Druck- und Stempeldienstleistungen',
       description: 'Professionelle Druck- und Stempelservices fuer Ihre Unterlagen.',
@@ -91,7 +95,7 @@ class ServicesController extends GetxController {
         'Laminieren und Binden',
       ],
     ),
-    ServiceItem(
+    const ServiceItem(
       id: 'office',
       title: 'Buero- und Organisationsservice',
       description: 'Projektbezogene Buero- und Organisationsdienstleistungen.',
@@ -105,7 +109,25 @@ class ServicesController extends GetxController {
         'Digitale Dokumentenorganisation',
       ],
     ),
-  ];
+  ].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadServices();
+  }
+
+  Future<void> loadServices() async {
+    isLoading.value = true;
+    try {
+      final remoteServices = await api.services();
+      if (remoteServices.isNotEmpty) services.assignAll(remoteServices);
+    } catch (_) {
+      errorText.value = 'Using local services data.';
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   void toggle(String id) {
     expandedId.value = expandedId.value == id ? '' : id;

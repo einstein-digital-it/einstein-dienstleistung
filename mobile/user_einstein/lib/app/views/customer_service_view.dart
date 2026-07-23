@@ -46,6 +46,7 @@ class CustomerServiceView extends GetView<CustomerServiceController> {
               ),
               const SizedBox(height: 16),
               TextField(
+                controller: controller.messageController,
                 minLines: 5,
                 maxLines: 7,
                 onChanged: (value) => controller.message.value = value,
@@ -57,8 +58,49 @@ class CustomerServiceView extends GetView<CustomerServiceController> {
                   focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: const BorderSide(color: AppColors.gold, width: 1.5)),
                 ),
               ),
+              if (controller.errorText.value.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(controller.errorText.value, style: const TextStyle(color: Color(0xFFDC2626), fontWeight: FontWeight.w700)),
+              ],
               const SizedBox(height: 16),
-              PrimaryButton(label: 'Send request', icon: Icons.send_outlined, onPressed: () {}),
+              PrimaryButton(
+                label: 'Send request',
+                icon: Icons.send_outlined,
+                isLoading: controller.isSubmitting.value,
+                onPressed: controller.submitRequest,
+              ),
+              if (controller.lastRequest.value != null) ...[
+                const SizedBox(height: 14),
+                _RequestStatusCard(id: controller.lastRequest.value!.id, status: controller.lastRequest.value!.status),
+              ],
+              if (controller.supportRequests.isNotEmpty) ...[
+                const SizedBox(height: 26),
+                Text('Recent support requests', style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 12),
+                ...controller.supportRequests.take(3).map(
+                  (request) => Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE9EEF6))),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.support_agent_outlined, color: AppColors.gold),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(request.id, style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900)),
+                              Text(request.message, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: AppColors.muted)),
+                            ],
+                          ),
+                        ),
+                        Text(request.status, style: const TextStyle(color: Color(0xFF10B981), fontWeight: FontWeight.w900)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 26),
               Text('Frequently asked questions', style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 12),
@@ -76,6 +118,29 @@ class CustomerServiceView extends GetView<CustomerServiceController> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _RequestStatusCard extends StatelessWidget {
+  const _RequestStatusCard({required this.id, required this.status});
+
+  final String id;
+  final String status;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFBFDBFE))),
+      child: Row(
+        children: [
+          const Icon(Icons.check_circle_outline, color: Color(0xFF2563EB)),
+          const SizedBox(width: 12),
+          Expanded(child: Text('$id sent successfully', style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900))),
+          Text(status, style: const TextStyle(color: Color(0xFF2563EB), fontWeight: FontWeight.w900)),
+        ],
       ),
     );
   }

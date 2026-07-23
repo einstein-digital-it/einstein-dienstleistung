@@ -1,56 +1,43 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../api/customer_api_service.dart';
 import '../models/notification_item.dart';
+import 'customer_store_controller.dart';
 
 class NotificationsController extends GetxController {
-  final notifications = <NotificationItem>[
-    const NotificationItem(
-      title: 'New booking request received',
-      message: 'Your forms assistance request ES-2048 has been received and is under review.',
-      time: '8 min ago',
-      icon: Icons.calendar_month_outlined,
-      color: Color(0xFFC9A227),
-      unread: true,
-    ),
-    const NotificationItem(
-      title: 'Payment received',
-      message: 'A payment of 85 EUR was recorded for your confirmed booking.',
-      time: '42 min ago',
-      icon: Icons.credit_card_outlined,
-      color: Color(0xFF10B981),
-      unread: true,
-    ),
-    const NotificationItem(
-      title: 'Provider available',
-      message: 'A provider is available for tutoring and learning support services.',
-      time: '2 hours ago',
-      icon: Icons.person_search_outlined,
-      color: Color(0xFF3B82F6),
-    ),
-    const NotificationItem(
-      title: 'Booking completed',
-      message: 'Your secretariat booking was completed and the invoice was issued.',
-      time: 'Yesterday',
-      icon: Icons.check_circle_outline,
-      color: Color(0xFF10B981),
-    ),
-  ].obs;
+  final store = Get.find<CustomerStoreController>();
+  final api = Get.find<CustomerApiService>();
+  final isLoading = false.obs;
+  final errorText = ''.obs;
 
-  int get unreadCount => notifications.where((item) => item.unread).length;
+  List<NotificationItem> get notifications => store.notifications;
+  int get unreadCount => store.unreadNotificationsCount;
 
-  void markAllRead() {
-    final updated = notifications
-        .map(
-          (item) => NotificationItem(
-            title: item.title,
-            message: item.message,
-            time: item.time,
-            icon: item.icon,
-            color: item.color,
-          ),
-        )
-        .toList();
-    notifications.assignAll(updated);
+  @override
+  void onInit() {
+    super.onInit();
+    loadNotifications();
+  }
+
+  Future<void> loadNotifications() async {
+    if (store.currentEmail.isEmpty) return;
+    isLoading.value = true;
+    try {
+      final remoteNotifications = await api.notifications(store.currentEmail);
+      store.replaceNotifications(remoteNotifications);
+    } catch (_) {
+      errorText.value = 'Using local notifications data.';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> markAllRead() async {
+    try {
+      final remoteNotifications = await api.markAllNotificationsRead(store.currentEmail);
+      store.replaceNotifications(remoteNotifications);
+    } catch (_) {
+      store.markAllNotificationsRead();
+    }
   }
 }

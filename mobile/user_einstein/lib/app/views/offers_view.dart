@@ -20,98 +20,100 @@ class OffersView extends GetView<OffersController> {
             const SliverToBoxAdapter(child: _OffersHero()),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-              sliver: SliverList.separated(
-                itemCount: controller.packages.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 14),
-                itemBuilder: (context, index) {
-                  final item = controller.packages[index];
-                  return Container(
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: const Color(0xFFE9EEF6)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF0F172A).withValues(alpha: 0.07),
-                          blurRadius: 24,
-                          offset: const Offset(0, 12),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: item.color.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(15),
+              sliver: Obx(
+                () => SliverList.separated(
+                  itemCount: controller.packages.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 14),
+                  itemBuilder: (context, index) {
+                    final item = controller.packages[index];
+                    return Container(
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: const Color(0xFFE9EEF6)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF0F172A).withValues(alpha: 0.07),
+                            blurRadius: 24,
+                            offset: const Offset(0, 12),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: item.color.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Icon(item.icon, color: item.color, size: 26),
                               ),
-                              child: Icon(item.icon, color: item.color, size: 26),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.subtitle,
-                                    style: const TextStyle(
-                                      color: AppColors.gold,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w900,
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.subtitle,
+                                      style: const TextStyle(
+                                        color: AppColors.gold,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w900,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    item.title,
-                                    style: const TextStyle(
-                                      color: AppColors.navy,
-                                      fontSize: 18,
-                                      height: 1.18,
-                                      fontWeight: FontWeight.w900,
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      item.title,
+                                      style: const TextStyle(
+                                        color: AppColors.navy,
+                                        fontSize: 18,
+                                        height: 1.18,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(item.description, style: Theme.of(context).textTheme.bodyMedium),
+                          const SizedBox(height: 14),
+                          ...item.features.map(
+                            (feature) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.check_circle, color: Color(0xFF10B981), size: 18),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      feature,
+                                      style: const TextStyle(color: AppColors.text, fontSize: 13.5, height: 1.25),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text(item.description, style: Theme.of(context).textTheme.bodyMedium),
-                        const SizedBox(height: 14),
-                        ...item.features.map(
-                          (feature) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.check_circle, color: Color(0xFF10B981), size: 18),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    feature,
-                                    style: const TextStyle(color: AppColors.text, fontSize: 13.5, height: 1.25),
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        PrimaryButton(
-                          label: 'Jetzt beraten lassen',
-                          icon: Icons.arrow_forward_rounded,
-                          onPressed: () => Get.toNamed(AppRoutes.bookings),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                          const SizedBox(height: 8),
+                          PrimaryButton(
+                            label: 'Jetzt beraten lassen',
+                            icon: Icons.arrow_forward_rounded,
+                            onPressed: () => Get.toNamed(AppRoutes.bookings),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],
