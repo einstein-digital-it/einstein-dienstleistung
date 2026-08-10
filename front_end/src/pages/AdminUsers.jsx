@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { format } from "date-fns";
 
 export default function AdminUsers() {
-  const [lang] = useState(() => localStorage.getItem("einstein_lang") || "de");
+  const [lang] = useState(() => localStorage.getItem("einstein_lang") || "ar");
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
 

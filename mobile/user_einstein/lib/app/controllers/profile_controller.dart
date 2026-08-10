@@ -28,7 +28,7 @@ class ProfileController extends GetxController {
     if (store.currentEmail.isEmpty) return;
     try {
       final nextProfile = await api.profile(store.currentEmail);
-      store.profile.value = nextProfile;
+      store.setProfile(nextProfile);
     } catch (_) {
       errorText.value = 'Using local profile data.';
     }
@@ -48,7 +48,7 @@ class ProfileController extends GetxController {
     );
     try {
       final nextProfile = await api.updateProfile(store.profile.value);
-      store.profile.value = nextProfile;
+      store.setProfile(nextProfile);
     } catch (_) {
       errorText.value = 'Profile saved locally until API is available.';
     }
@@ -61,6 +61,7 @@ class ProfileController extends GetxController {
       // Local logout remains available when the API is unreachable.
     }
     await session.clear();
+    Get.snackbar('auth_success'.tr, 'logout_success'.tr);
     Get.offAllNamed(AppRoutes.login);
   }
 }

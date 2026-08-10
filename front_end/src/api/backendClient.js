@@ -255,6 +255,15 @@ export const adminDashboardApi = {
   getDashboard: () => request("/admin/dashboard"),
 };
 
+export const clientWorkspaceAdminApi = {
+  list: (filters = {}) => request(`/admin/client-workspaces${toQuery(filters)}`),
+  get: (id) => request(`/admin/client-workspaces/${id}`),
+  updateRequest: (clientId, requestId, data) => request(
+    `/admin/client-workspaces/${clientId}/requests/${requestId}`,
+    { method: "PATCH", body: JSON.stringify(data) },
+  ),
+};
+
 export const priceAdminApi = {
   listPriceGroups: () => request("/admin/price-groups"),
   createPriceGroup: (data) => request("/admin/price-groups", {

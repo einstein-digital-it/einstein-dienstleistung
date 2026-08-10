@@ -152,7 +152,7 @@ const frequencyOptions = [
 ];
 
 export default function SEOAdmin() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   const [user, setUser] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);

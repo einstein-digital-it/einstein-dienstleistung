@@ -22,27 +22,74 @@ class ProfileView extends GetView<ProfileController> {
             children: [
               Container(
                 padding: const EdgeInsets.all(22),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24), border: Border.all(color: const Color(0xFFE9EEF6))),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: const Color(0xFFE9EEF6)),
+                ),
                 child: Column(
                   children: [
                     const EinsteinLogo(size: 92),
                     const SizedBox(height: 18),
-                    Text(controller.fullName, style: const TextStyle(color: AppColors.navy, fontSize: 24, fontWeight: FontWeight.w900)),
+                    Text(
+                      controller.fullName,
+                      style: const TextStyle(
+                        color: AppColors.navy,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(controller.email, style: const TextStyle(color: AppColors.muted, fontWeight: FontWeight.w700)),
+                    Text(
+                      controller.email,
+                      style: const TextStyle(
+                        color: AppColors.muted,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                     const SizedBox(height: 18),
-                    PrimaryButton(label: 'Edit profile', icon: Icons.edit_outlined, onPressed: () => _showEditProfileSheet(context, controller)),
+                    PrimaryButton(
+                      label: 'profile_edit'.tr,
+                      icon: Icons.edit_outlined,
+                      onPressed: () =>
+                          _showEditProfileSheet(context, controller),
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 18),
-              _ProfileField(icon: Icons.phone_outlined, label: 'Phone', value: controller.phone),
-              _ProfileField(icon: Icons.location_on_outlined, label: 'Address', value: controller.address),
-              _ProfileField(icon: Icons.language_outlined, label: 'Preferred language', value: controller.language),
+              _ProfileField(
+                icon: Icons.phone_outlined,
+                label: 'profile_phone'.tr,
+                value: controller.phone,
+              ),
+              _ProfileField(
+                icon: Icons.location_on_outlined,
+                label: 'profile_address'.tr,
+                value: controller.address,
+              ),
+              _ProfileField(
+                icon: Icons.language_outlined,
+                label: 'profile_language'.tr,
+                value: _languageTitle(controller.language),
+              ),
               const SizedBox(height: 10),
-              _ActionTile(icon: Icons.notifications_outlined, title: 'Notification settings', onTap: () => Get.toNamed(AppRoutes.notificationSettings)),
-              _ActionTile(icon: Icons.support_agent_outlined, title: 'Customer service', onTap: () => Get.toNamed(AppRoutes.customerService)),
-              _ActionTile(icon: Icons.logout_rounded, title: 'Logout', destructive: true, onTap: () => controller.logout()),
+              _ActionTile(
+                icon: Icons.notifications_outlined,
+                title: 'profile_notification_settings'.tr,
+                onTap: () => Get.toNamed(AppRoutes.notificationSettings),
+              ),
+              _ActionTile(
+                icon: Icons.support_agent_outlined,
+                title: 'profile_customer_service'.tr,
+                onTap: () => Get.toNamed(AppRoutes.customerService),
+              ),
+              _ActionTile(
+                icon: Icons.logout_rounded,
+                title: 'profile_logout'.tr,
+                destructive: true,
+                onTap: () => controller.logout(),
+              ),
             ],
           ),
         ),
@@ -70,33 +117,73 @@ void _showEditProfileSheet(BuildContext context, ProfileController controller) {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Edit profile', style: Theme.of(context).textTheme.titleLarge),
+              Text(
+                'profile_edit'.tr,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
               const SizedBox(height: 16),
-              _EditField(label: 'Full name', icon: Icons.person_outline, controller: nameController),
+              _EditField(
+                label: 'profile_full_name'.tr,
+                icon: Icons.person_outline,
+                controller: nameController,
+              ),
               const SizedBox(height: 10),
-              _EditField(label: 'Phone', icon: Icons.phone_outlined, controller: phoneController),
+              _EditField(
+                label: 'profile_phone'.tr,
+                icon: Icons.phone_outlined,
+                controller: phoneController,
+              ),
               const SizedBox(height: 10),
-              _EditField(label: 'Address', icon: Icons.location_on_outlined, controller: addressController),
+              _EditField(
+                label: 'profile_address'.tr,
+                icon: Icons.location_on_outlined,
+                controller: addressController,
+              ),
               const SizedBox(height: 10),
               PopupMenuButton<String>(
                 onSelected: (value) => language.value = value,
-                itemBuilder: (context) => const ['Deutsch', 'English', 'Arabic'].map((item) => PopupMenuItem(value: item, child: Text(item))).toList(),
+                itemBuilder: (context) => const ['Deutsch', 'English', 'Arabic']
+                    .map(
+                      (item) => PopupMenuItem(
+                        value: item,
+                        child: Text(_languageTitle(item)),
+                      ),
+                    )
+                    .toList(),
                 child: Container(
                   padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(color: AppColors.input, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFDAE5F4))),
+                  decoration: BoxDecoration(
+                    color: AppColors.input,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFFDAE5F4)),
+                  ),
                   child: Row(
                     children: [
-                      const Icon(Icons.language_outlined, color: AppColors.gold),
+                      const Icon(
+                        Icons.language_outlined,
+                        color: AppColors.gold,
+                      ),
                       const SizedBox(width: 12),
-                      Expanded(child: Text(language.value, style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900))),
-                      const Icon(Icons.expand_more_rounded, color: AppColors.muted),
+                      Expanded(
+                        child: Text(
+                          _languageTitle(language.value),
+                          style: const TextStyle(
+                            color: AppColors.navy,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                      const Icon(
+                        Icons.expand_more_rounded,
+                        color: AppColors.muted,
+                      ),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 16),
               PrimaryButton(
-                label: 'Save changes',
+                label: 'profile_save'.tr,
                 icon: Icons.check_rounded,
                 onPressed: () {
                   controller.updateProfile(
@@ -117,8 +204,20 @@ void _showEditProfileSheet(BuildContext context, ProfileController controller) {
   );
 }
 
+String _languageTitle(String language) {
+  return switch (language.toLowerCase()) {
+    'arabic' || 'ar' => 'language_arabic'.tr,
+    'english' || 'en' => 'language_english'.tr,
+    _ => 'language_deutsch'.tr,
+  };
+}
+
 class _EditField extends StatelessWidget {
-  const _EditField({required this.label, required this.icon, required this.controller});
+  const _EditField({
+    required this.label,
+    required this.icon,
+    required this.controller,
+  });
 
   final String label;
   final IconData icon;
@@ -133,15 +232,25 @@ class _EditField extends StatelessWidget {
         prefixIcon: Icon(icon),
         filled: true,
         fillColor: AppColors.input,
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFFDAE5F4))),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: AppColors.gold)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Color(0xFFDAE5F4)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.gold),
+        ),
       ),
     );
   }
 }
 
 class _ProfileField extends StatelessWidget {
-  const _ProfileField({required this.icon, required this.label, required this.value});
+  const _ProfileField({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   final IconData icon;
   final String label;
@@ -152,7 +261,11 @@ class _ProfileField extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE9EEF6))),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE9EEF6)),
+      ),
       child: Row(
         children: [
           Icon(icon, color: AppColors.gold),
@@ -161,9 +274,22 @@ class _ProfileField extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(color: AppColors.muted, fontSize: 12, fontWeight: FontWeight.w800)),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    color: AppColors.muted,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
                 const SizedBox(height: 3),
-                Text(value, style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900)),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    color: AppColors.navy,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
               ],
             ),
           ),
@@ -174,7 +300,12 @@ class _ProfileField extends StatelessWidget {
 }
 
 class _ActionTile extends StatelessWidget {
-  const _ActionTile({required this.icon, required this.title, required this.onTap, this.destructive = false});
+  const _ActionTile({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.destructive = false,
+  });
 
   final IconData icon;
   final String title;
@@ -187,7 +318,10 @@ class _ActionTile extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       leading: Icon(icon, color: color),
-      title: Text(title, style: TextStyle(color: color, fontWeight: FontWeight.w900)),
+      title: Text(
+        title,
+        style: TextStyle(color: color, fontWeight: FontWeight.w900),
+      ),
       trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.muted),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       tileColor: Colors.white,

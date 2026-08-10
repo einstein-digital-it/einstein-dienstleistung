@@ -23,7 +23,8 @@ class OffersView extends GetView<OffersController> {
               sliver: Obx(
                 () => SliverList.separated(
                   itemCount: controller.packages.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 14),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 14),
                   itemBuilder: (context, index) {
                     final item = controller.packages[index];
                     return Container(
@@ -34,7 +35,9 @@ class OffersView extends GetView<OffersController> {
                         border: Border.all(color: const Color(0xFFE9EEF6)),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF0F172A).withValues(alpha: 0.07),
+                            color: const Color(
+                              0xFF0F172A,
+                            ).withValues(alpha: 0.07),
                             blurRadius: 24,
                             offset: const Offset(0, 12),
                           ),
@@ -53,7 +56,11 @@ class OffersView extends GetView<OffersController> {
                                   color: item.color.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                child: Icon(item.icon, color: item.color, size: 26),
+                                child: Icon(
+                                  item.icon,
+                                  color: item.color,
+                                  size: 26,
+                                ),
                               ),
                               const SizedBox(width: 14),
                               Expanded(
@@ -84,19 +91,30 @@ class OffersView extends GetView<OffersController> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          Text(item.description, style: Theme.of(context).textTheme.bodyMedium),
+                          Text(
+                            item.description,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                           const SizedBox(height: 14),
                           ...item.features.map(
                             (feature) => Padding(
                               padding: const EdgeInsets.only(bottom: 8),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.check_circle, color: Color(0xFF10B981), size: 18),
+                                  const Icon(
+                                    Icons.check_circle,
+                                    color: Color(0xFF10B981),
+                                    size: 18,
+                                  ),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
                                       feature,
-                                      style: const TextStyle(color: AppColors.text, fontSize: 13.5, height: 1.25),
+                                      style: const TextStyle(
+                                        color: AppColors.text,
+                                        fontSize: 13.5,
+                                        height: 1.25,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -105,7 +123,7 @@ class OffersView extends GetView<OffersController> {
                           ),
                           const SizedBox(height: 8),
                           PrimaryButton(
-                            label: 'Jetzt beraten lassen',
+                            label: 'offer_consultation'.tr,
                             icon: Icons.arrow_forward_rounded,
                             onPressed: () => Get.toNamed(AppRoutes.bookings),
                           ),
@@ -142,19 +160,29 @@ class _OffersHero extends StatelessWidget {
           ),
         ],
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(Icons.local_offer_outlined, color: AppColors.gold, size: 32),
           SizedBox(height: 18),
           Text(
-            'Angebote bei EinStein Institut',
-            style: TextStyle(color: Colors.white, fontSize: 31, height: 1.1, fontWeight: FontWeight.w900),
+            'offers_title'.tr,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 31,
+              height: 1.1,
+              fontWeight: FontWeight.w900,
+            ),
           ),
           SizedBox(height: 12),
           Text(
             'Ganzheitliche Betreuung aus einer Hand. Eine Institution statt vieler Anbieter.',
-            style: TextStyle(color: Color(0xFFDDE7F4), fontSize: 15.5, height: 1.45, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              color: Color(0xFFDDE7F4),
+              fontSize: 15.5,
+              height: 1.45,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),

@@ -16,11 +16,14 @@ class CustomerProfile {
   factory CustomerProfile.fromJson(Map<String, dynamic> json) {
     final email = (json['email'] ?? '').toString();
     return CustomerProfile(
-      fullName: (json['full_name'] ?? json['name'] ?? email.split('@').first).toString(),
+      fullName: (json['full_name'] ?? json['name'] ?? email.split('@').first)
+          .toString(),
       email: email,
       phone: (json['phone'] ?? '').toString(),
       address: (json['address'] ?? '').toString(),
-      language: _languageLabel((json['preferred_language'] ?? json['language'] ?? 'Deutsch').toString()),
+      language: normalizeLanguageLabel(
+        (json['preferred_language'] ?? json['language'] ?? 'Arabic').toString(),
+      ),
     );
   }
 
@@ -30,7 +33,7 @@ class CustomerProfile {
       'full_name': fullName,
       'phone': phone,
       'address': address,
-      'preferred_language': _languageCode(language),
+      'preferred_language': languageCodeFromLabel(language),
     };
   }
 
@@ -51,6 +54,23 @@ class CustomerProfile {
   }
 }
 
+String normalizeLanguageLabel(String value) {
+  return switch (value.toLowerCase()) {
+    'ar' || 'arabic' => 'Arabic',
+    'en' || 'english' => 'English',
+    _ => 'Deutsch',
+  };
+}
+
+String languageCodeFromLabel(String value) {
+  return switch (value.toLowerCase()) {
+    'arabic' || 'ar' => 'ar',
+    'english' || 'en' => 'en',
+    _ => 'de',
+  };
+}
+
+// ignore: unused_element
 String _languageLabel(String value) {
   return switch (value.toLowerCase()) {
     'ar' || 'arabic' || 'العربية' => 'Arabic',
@@ -59,6 +79,7 @@ String _languageLabel(String value) {
   };
 }
 
+// ignore: unused_element
 String _languageCode(String value) {
   return switch (value.toLowerCase()) {
     'arabic' || 'ar' || 'العربية' => 'ar',

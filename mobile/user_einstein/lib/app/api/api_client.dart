@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 import 'api_exception.dart';
@@ -13,7 +12,7 @@ class ApiClient {
     http.Client? httpClient,
     this.baseUrl = const String.fromEnvironment(
       'EINSTEIN_API_BASE_URL',
-      defaultValue: 'http://10.0.2.2:8000/api',
+      defaultValue: 'http://127.0.0.1:8000/api',
     ),
   }) : _httpClient = httpClient ?? http.Client();
 
@@ -25,19 +24,35 @@ class ApiClient {
     return _send('GET', path, query: query);
   }
 
-  Future<dynamic> post(String path, {Map<String, dynamic>? body, Map<String, String?> query = const {}}) {
+  Future<dynamic> post(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, String?> query = const {},
+  }) {
     return _send('POST', path, body: body, query: query);
   }
 
-  Future<dynamic> patch(String path, {Map<String, dynamic>? body, Map<String, String?> query = const {}}) {
+  Future<dynamic> patch(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, String?> query = const {},
+  }) {
     return _send('PATCH', path, body: body, query: query);
   }
 
-  Future<dynamic> put(String path, {Map<String, dynamic>? body, Map<String, String?> query = const {}}) {
+  Future<dynamic> put(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, String?> query = const {},
+  }) {
     return _send('PUT', path, body: body, query: query);
   }
 
-  Future<dynamic> delete(String path, {Map<String, dynamic>? body, Map<String, String?> query = const {}}) {
+  Future<dynamic> delete(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, String?> query = const {},
+  }) {
     return _send('DELETE', path, body: body, query: query);
   }
 
@@ -48,16 +63,15 @@ class ApiClient {
     Map<String, String?> query = const {},
   }) async {
     await session.ensureLoaded();
-    if (_isWidgetTest) {
-      throw const ApiException('API disabled during widget tests.');
-    }
-
-    final normalizedBase = baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
+    final normalizedBase = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
     final normalizedPath = path.startsWith('/') ? path.substring(1) : path;
     final uri = Uri.parse('$normalizedBase/$normalizedPath').replace(
       queryParameters: {
         for (final entry in query.entries)
-          if (entry.value != null && entry.value!.isNotEmpty) entry.key: entry.value,
+          if (entry.value != null && entry.value!.isNotEmpty)
+            entry.key: entry.value,
       },
     );
 
@@ -94,7 +108,9 @@ class ApiClient {
       );
     }
 
-    return decoded is Map<String, dynamic> && decoded.containsKey('data') ? decoded['data'] : decoded;
+    return decoded is Map<String, dynamic> && decoded.containsKey('data')
+        ? decoded['data']
+        : decoded;
   }
 
   String? _messageFrom(Object? decoded) {
@@ -103,10 +119,5 @@ class ApiClient {
       if (message is String && message.isNotEmpty) return message;
     }
     return null;
-  }
-
-  bool get _isWidgetTest {
-    final binding = WidgetsBinding.instance;
-    return binding.runtimeType.toString().contains('TestWidgetsFlutterBinding');
   }
 }

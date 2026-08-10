@@ -36,7 +36,7 @@ const CATEGORY_LABELS = {
 };
 
 export default function RevenueReports() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   const [user, setUser] = useState(null);
   const [yearFilter, setYearFilter] = useState(new Date().getFullYear().toString());
   const [chartType, setChartType] = useState("bar"); // bar | line | pie

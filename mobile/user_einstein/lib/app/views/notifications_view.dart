@@ -26,15 +26,24 @@ class NotificationsView extends GetView<NotificationsController> {
                     children: [
                       Row(
                         children: [
-                          Expanded(child: Text('Benachrichtigungen', style: Theme.of(context).textTheme.headlineMedium)),
+                          Expanded(
+                            child: Text(
+                              'notifications'.tr,
+                              style: Theme.of(context).textTheme.headlineMedium,
+                            ),
+                          ),
                           TextButton.icon(
                             onPressed: controller.markAllRead,
                             icon: const Icon(Icons.done_all_rounded, size: 18),
-                            label: const Text('Read all'),
+                            label: Text('read_all'.tr),
                           ),
                           IconButton(
-                            onPressed: () => Get.toNamed(AppRoutes.notificationSettings),
-                            icon: const Icon(Icons.settings_outlined, color: AppColors.navy),
+                            onPressed: () =>
+                                Get.toNamed(AppRoutes.notificationSettings),
+                            icon: const Icon(
+                              Icons.settings_outlined,
+                              color: AppColors.navy,
+                            ),
                           ),
                         ],
                       ),
@@ -52,9 +61,12 @@ class NotificationsView extends GetView<NotificationsController> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
                 sliver: SliverList.separated(
                   itemCount: controller.notifications.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
                   itemBuilder: (context, index) {
-                    return _NotificationCard(item: controller.notifications[index]);
+                    return _NotificationCard(
+                      item: controller.notifications[index],
+                    );
                   },
                 ),
               ),
@@ -78,7 +90,11 @@ class _NotificationCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: item.unread ? const Color(0xFFFFFAF0) : Colors.white,
         borderRadius: BorderRadius.circular(17),
-        border: Border.all(color: item.unread ? AppColors.gold.withValues(alpha: 0.42) : const Color(0xFFE9EEF6)),
+        border: Border.all(
+          color: item.unread
+              ? AppColors.gold.withValues(alpha: 0.42)
+              : const Color(0xFFE9EEF6),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +119,11 @@ class _NotificationCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.title,
-                        style: const TextStyle(color: AppColors.navy, fontSize: 16, fontWeight: FontWeight.w900),
+                        style: const TextStyle(
+                          color: AppColors.navy,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                     ),
                     if (item.unread)
@@ -111,14 +131,31 @@ class _NotificationCard extends StatelessWidget {
                         width: 9,
                         height: 9,
                         margin: const EdgeInsets.only(top: 5),
-                        decoration: const BoxDecoration(color: AppColors.gold, shape: BoxShape.circle),
+                        decoration: const BoxDecoration(
+                          color: AppColors.gold,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                   ],
                 ),
                 const SizedBox(height: 7),
-                Text(item.message, style: const TextStyle(color: AppColors.muted, height: 1.35, fontSize: 13.5)),
+                Text(
+                  item.message,
+                  style: const TextStyle(
+                    color: AppColors.muted,
+                    height: 1.35,
+                    fontSize: 13.5,
+                  ),
+                ),
                 const SizedBox(height: 10),
-                Text(item.time, style: const TextStyle(color: Color(0xFF8EA0B7), fontSize: 12, fontWeight: FontWeight.w800)),
+                Text(
+                  item.time,
+                  style: const TextStyle(
+                    color: Color(0xFF8EA0B7),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ],
             ),
           ),

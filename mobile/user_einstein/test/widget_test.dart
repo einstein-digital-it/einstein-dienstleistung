@@ -1,33 +1,111 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_einstein/main.dart';
+import 'package:user_einstein/app/api/api_client.dart';
+import 'package:user_einstein/app/api/auth_session.dart';
+import 'package:user_einstein/app/api/customer_api_service.dart';
+import 'package:user_einstein/app/controllers/customer_clients_controller.dart';
+import 'package:user_einstein/app/lang/app_translations.dart';
+import 'package:user_einstein/app/models/managed_client.dart';
+import 'package:user_einstein/app/views/client_workspace_view.dart';
 
 void main() {
   tearDown(Get.reset);
 
-  Future<void> pumpApp(WidgetTester tester) async {
+  Future<void> pumpApp(WidgetTester tester, {bool useEnglish = true}) async {
     SharedPreferences.setMockInitialValues({});
-    await tester.pumpWidget(const EinsteinUserApp());
+    final session = AuthSession();
+    Get.put<AuthSession>(session, permanent: true);
+    final client = ApiClient(
+      session: session,
+      httpClient: MockClient((request) async {
+        final path = request.url.path;
+        if (path.endsWith('/auth/login') || path.endsWith('/auth/register')) {
+          final body = jsonDecode(request.body) as Map<String, dynamic>;
+          final email = body['email']?.toString() ?? 'customer@example.com';
+          final name = body['name']?.toString() ?? 'Customer User';
+          return http.Response(
+            jsonEncode({
+              'data': {
+                'user': {
+                  'id': 1,
+                  'name': name,
+                  'full_name': name,
+                  'email': email,
+                  'role': 'user',
+                  'preferred_language': 'en',
+                },
+                'session': {'token': 'test-token'},
+              },
+            }),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+        return http.Response(
+          '{"message":"Not available in widget test."}',
+          503,
+        );
+      }),
+    );
+    Get.put<ApiClient>(client, permanent: true);
+    Get.put<CustomerApiService>(CustomerApiService(client), permanent: true);
+    await tester.pumpWidget(
+      EinsteinUserApp(
+        initialLocale: useEnglish ? const Locale('en') : const Locale('ar'),
+      ),
+    );
+    await tester.pumpAndSettle();
   }
 
   Future<void> signIn(WidgetTester tester) async {
-    await tester.enterText(find.byType(EditableText).at(0), 'customer@example.com');
+    await tester.enterText(
+      find.byType(EditableText).at(0),
+      'customer@example.com',
+    );
     await tester.enterText(find.byType(EditableText).at(1), '11111111');
     final signInButton = find.widgetWithText(FilledButton, 'Sign in');
     await tester.ensureVisible(signInButton);
     await tester.tap(signInButton);
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 4));
+    await tester.pumpAndSettle();
   }
 
   testWidgets('shows the EinStein login screen', (tester) async {
-    await pumpApp(tester);
+    await pumpApp(tester, useEnglish: false);
 
-    expect(find.text('Welcome to EinStein Institut'), findsOneWidget);
-    expect(find.text('Sign in'), findsOneWidget);
-    expect(find.text('Continue with Google'), findsOneWidget);
+    expect(
+      find.text(
+        '\u0645\u0631\u062d\u0628\u064b\u0627 \u0628\u0643 \u0641\u064a \u0645\u0639\u0647\u062f \u0622\u064a\u0646\u0634\u062a\u0627\u064a\u0646',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        '\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('starts with Arabic as the default application language', (
+    tester,
+  ) async {
+    await pumpApp(tester, useEnglish: false);
+
+    expect(Get.locale?.languageCode, 'ar');
+    expect(
+      Directionality.of(tester.element(find.byType(Scaffold).first)),
+      TextDirection.rtl,
+    );
   });
 
   testWidgets('navigates from login to home and offers', (tester) async {
@@ -35,15 +113,70 @@ void main() {
 
     await signIn(tester);
 
+    expect(Get.find<AuthSession>().isAuthenticated, isTrue);
     expect(find.text('Customer Dashboard'), findsOneWidget);
 
     await tester.tap(find.text('Offers').first);
     await tester.pumpAndSettle();
 
-    expect(find.text('Angebote bei EinStein Institut'), findsOneWidget);
+    expect(find.text('Offers from EinStein Institut'), findsOneWidget);
   });
 
-  testWidgets('opens profile, notification settings, and payment flows', (tester) async {
+  testWidgets('registers a user and stores the issued session token', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+
+    final signUpButton = find.text('Sign up');
+    await tester.ensureVisible(signUpButton);
+    await tester.tap(signUpButton);
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(EditableText).at(0), 'New Customer');
+    await tester.enterText(
+      find.byType(EditableText).at(1),
+      'new.customer@example.com',
+    );
+    await tester.enterText(find.byType(EditableText).at(2), '11111111');
+    final createAccountButton = find.widgetWithText(
+      FilledButton,
+      'Create account',
+    );
+    await tester.ensureVisible(createAccountButton);
+    await tester.tap(createAccountButton);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 4));
+    await tester.pumpAndSettle();
+
+    expect(Get.find<AuthSession>().isAuthenticated, isTrue);
+    expect(find.text('Customer Dashboard'), findsOneWidget);
+  });
+
+  testWidgets('opens the customer dashboard when a session is restored', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final session = AuthSession();
+    await session.save(token: 'restored-token', email: 'customer@example.com');
+    Get.put<AuthSession>(session, permanent: true);
+    final client = ApiClient(
+      session: session,
+      httpClient: MockClient(
+        (_) async =>
+            http.Response('{"message":"Not available in widget test."}', 503),
+      ),
+    );
+    Get.put<ApiClient>(client, permanent: true);
+    Get.put<CustomerApiService>(CustomerApiService(client), permanent: true);
+
+    await tester.pumpWidget(const EinsteinUserApp(initialLocale: Locale('en')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Customer Dashboard'), findsOneWidget);
+  });
+
+  testWidgets('opens profile, notification settings, and payment flows', (
+    tester,
+  ) async {
     await pumpApp(tester);
 
     await signIn(tester);
@@ -68,7 +201,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Secure payment'), findsOneWidget);
 
-    final payNowButton = find.widgetWithText(FilledButton, 'Pay now - 142.80 EUR');
+    final payNowButton = find.widgetWithText(
+      FilledButton,
+      'Pay now - 142.80 EUR',
+    );
     await tester.ensureVisible(payNowButton);
     await tester.pumpAndSettle();
     await tester.tap(payNowButton);
@@ -77,27 +213,31 @@ void main() {
     expect(find.text('Payment successful'), findsOneWidget);
   });
 
-  testWidgets('creates a local booking and shows it in my bookings', (tester) async {
+  testWidgets('creates a local booking and shows it in my bookings', (
+    tester,
+  ) async {
     await pumpApp(tester);
     await signIn(tester);
 
     await tester.tap(find.widgetWithText(FilledButton, 'New booking'));
     await tester.pumpAndSettle();
-    expect(find.text('Dienstleistung buchen'), findsOneWidget);
+    expect(find.text('Book a service'), findsOneWidget);
 
-    final prepareButton = find.widgetWithText(FilledButton, 'Buchung vorbereiten');
+    final prepareButton = find.widgetWithText(FilledButton, 'Prepare booking');
     await tester.ensureVisible(prepareButton);
     await tester.pumpAndSettle();
     await tester.tap(prepareButton);
     await tester.pump(const Duration(milliseconds: 400));
     await tester.pumpAndSettle();
 
-    expect(find.text('Meine Buchungen'), findsOneWidget);
+    expect(find.text('My Bookings'), findsOneWidget);
     expect(find.text('ES-2053'), findsOneWidget);
     expect(find.text('90 EUR'), findsOneWidget);
   });
 
-  testWidgets('persists notification settings during navigation', (tester) async {
+  testWidgets('persists notification settings during navigation', (
+    tester,
+  ) async {
     await pumpApp(tester);
     await signIn(tester);
 
@@ -108,7 +248,10 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.scrollUntilVisible(find.text('Email notifications'), 220);
-    final emailSwitch = find.widgetWithText(SwitchListTile, 'Email notifications');
+    final emailSwitch = find.widgetWithText(
+      SwitchListTile,
+      'Email notifications',
+    );
     expect(tester.widget<SwitchListTile>(emailSwitch).value, isTrue);
     await tester.tap(emailSwitch);
     await tester.pumpAndSettle();
@@ -120,8 +263,21 @@ void main() {
     await tester.tap(find.text('Notification settings'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Email notifications'), 220);
-    final persistedEmailSwitch = find.widgetWithText(SwitchListTile, 'Email notifications');
+    final persistedEmailSwitch = find.widgetWithText(
+      SwitchListTile,
+      'Email notifications',
+    );
     expect(tester.widget<SwitchListTile>(persistedEmailSwitch).value, isFalse);
+  });
+
+  testWidgets('switches app language between English and Arabic', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    expect(find.text('Welcome to EinStein Institut'), findsOneWidget);
+
+    await pumpApp(tester, useEnglish: false);
+    expect(Get.locale?.languageCode, 'ar');
   });
 
   testWidgets('updates profile information locally', (tester) async {
@@ -154,7 +310,10 @@ void main() {
     await tester.tap(find.text('Customer service'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byType(EditableText).first, 'I need help changing my appointment.');
+    await tester.enterText(
+      find.byType(EditableText).first,
+      'I need help changing my appointment.',
+    );
     await tester.tap(find.widgetWithText(FilledButton, 'Send request'));
     await tester.pump(const Duration(milliseconds: 400));
     await tester.pumpAndSettle();
@@ -162,5 +321,71 @@ void main() {
     expect(find.text('SUP-1001 sent successfully'), findsOneWidget);
     expect(find.text('Received'), findsWidgets);
     await tester.pump(const Duration(seconds: 4));
+  });
+
+  testWidgets('renders a separate client workspace with structured tabs', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final session = AuthSession();
+    Get.put<AuthSession>(session, permanent: true);
+    Get.put<ApiClient>(ApiClient(session: session), permanent: true);
+    Get.put<CustomerApiService>(
+      CustomerApiService(Get.find<ApiClient>()),
+      permanent: true,
+    );
+    final controller = Get.put(ClientWorkspaceController(clientId: '1'));
+    controller.workspace.value = ClientWorkspace(
+      client: const ManagedClient(
+        id: '1',
+        fullName: 'Mueller GmbH',
+        companyName: 'Mueller Software',
+        email: 'mueller@example.com',
+        phone: '+49 170 111111',
+        language: 'de',
+        status: 'active',
+        notes: 'Use our company tone.',
+        communicationsCount: 1,
+        openRequestsCount: 1,
+        filesCount: 1,
+        openInvoicesCount: 1,
+      ),
+      communications: const [],
+      requests: const [
+        ClientRequest(
+          id: '10',
+          number: 'CR-100',
+          subject: 'Prepare a quote',
+          description: 'Send it by email.',
+          status: 'open',
+          priority: 'high',
+          assignedTo: null,
+          dueAt: null,
+        ),
+      ],
+      files: const [],
+      invoices: const [],
+      history: const [],
+    );
+
+    await tester.pumpWidget(
+      GetMaterialApp(
+        translations: AppTranslations(),
+        locale: const Locale('en'),
+        fallbackLocale: const Locale('en'),
+        home: const ClientWorkspaceView(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Mueller GmbH'), findsOneWidget);
+    expect(find.text('Communication'), findsOneWidget);
+    expect(find.text('Prepare a quote'), findsNothing);
+
+    await tester.tap(find.text('Requests'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Prepare a quote'), findsOneWidget);
+    expect(find.text('CR-100'), findsOneWidget);
   });
 }

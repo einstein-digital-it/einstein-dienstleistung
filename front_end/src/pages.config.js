@@ -57,6 +57,7 @@ import Bookings from './pages/Bookings';
 import CustomerDashboard from './pages/CustomerDashboard';
 import CustomerRequests from './pages/CustomerRequests';
 import CustomerService from './pages/CustomerService';
+import ClientWorkspace from './pages/ClientWorkspace';
 import Dashboard from './pages/Dashboard';
 import EarningsReports from './pages/EarningsReports';
 import Home from './pages/Home';
@@ -98,6 +99,7 @@ export const PAGES = {
     "CustomerDashboard": CustomerDashboard,
     "CustomerRequests": CustomerRequests,
     "CustomerService": CustomerService,
+    "ClientWorkspace": ClientWorkspace,
     "Dashboard": Dashboard,
     "EarningsReports": EarningsReports,
     "Home": Home,

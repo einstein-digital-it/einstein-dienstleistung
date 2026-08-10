@@ -12,8 +12,11 @@ class CustomerServiceView extends GetView<CustomerServiceController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Customer Service'),
-        leading: IconButton(onPressed: Get.back, icon: const Icon(Icons.arrow_back_rounded)),
+        title: Text('customer_service'.tr),
+        leading: IconButton(
+          onPressed: Get.back,
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
       ),
       body: SafeArea(
         child: Obx(
@@ -22,26 +25,64 @@ class CustomerServiceView extends GetView<CustomerServiceController> {
             children: [
               Container(
                 padding: const EdgeInsets.all(22),
-                decoration: BoxDecoration(color: AppColors.navy, borderRadius: BorderRadius.circular(24)),
-                child: const Column(
+                decoration: BoxDecoration(
+                  color: AppColors.navy,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.support_agent_outlined, color: AppColors.gold, size: 34),
+                    Icon(
+                      Icons.support_agent_outlined,
+                      color: AppColors.gold,
+                      size: 34,
+                    ),
                     SizedBox(height: 16),
-                    Text('How can we help?', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w900)),
+                    Text(
+                      'help_title'.tr,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
                     SizedBox(height: 8),
-                    Text('Reach the EinStein support team for bookings, documents and payment questions.', style: TextStyle(color: Color(0xFFDDE7F4), height: 1.4)),
+                    Text(
+                      'help_subtitle'.tr,
+                      style: TextStyle(color: Color(0xFFDDE7F4), height: 1.4),
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 18),
               Row(
                 children: [
-                  Expanded(child: _TypeChip(label: 'Callback', value: 'callback', selected: controller.selectedType.value == 'callback', onTap: () => controller.selectedType.value = 'callback')),
+                  Expanded(
+                    child: _TypeChip(
+                      label: 'callback'.tr,
+                      value: 'callback',
+                      selected: controller.selectedType.value == 'callback',
+                      onTap: () => controller.selectedType.value = 'callback',
+                    ),
+                  ),
                   const SizedBox(width: 10),
-                  Expanded(child: _TypeChip(label: 'Email', value: 'email', selected: controller.selectedType.value == 'email', onTap: () => controller.selectedType.value = 'email')),
+                  Expanded(
+                    child: _TypeChip(
+                      label: 'email'.tr,
+                      value: 'email',
+                      selected: controller.selectedType.value == 'email',
+                      onTap: () => controller.selectedType.value = 'email',
+                    ),
+                  ),
                   const SizedBox(width: 10),
-                  Expanded(child: _TypeChip(label: 'Question', value: 'question', selected: controller.selectedType.value == 'question', onTap: () => controller.selectedType.value = 'question')),
+                  Expanded(
+                    child: _TypeChip(
+                      label: 'question'.tr,
+                      value: 'question',
+                      selected: controller.selectedType.value == 'question',
+                      onTap: () => controller.selectedType.value = 'question',
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -51,67 +92,135 @@ class CustomerServiceView extends GetView<CustomerServiceController> {
                 maxLines: 7,
                 onChanged: (value) => controller.message.value = value,
                 decoration: InputDecoration(
-                  hintText: 'Describe your request...',
+                  hintText: 'describe_request'.tr,
                   filled: true,
                   fillColor: Colors.white,
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: const BorderSide(color: Color(0xFFE9EEF6))),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: const BorderSide(color: AppColors.gold, width: 1.5)),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: const BorderSide(color: Color(0xFFE9EEF6)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: const BorderSide(
+                      color: AppColors.gold,
+                      width: 1.5,
+                    ),
+                  ),
                 ),
               ),
               if (controller.errorText.value.isNotEmpty) ...[
                 const SizedBox(height: 8),
-                Text(controller.errorText.value, style: const TextStyle(color: Color(0xFFDC2626), fontWeight: FontWeight.w700)),
+                Text(
+                  controller.errorText.value,
+                  style: const TextStyle(
+                    color: Color(0xFFDC2626),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ],
               const SizedBox(height: 16),
               PrimaryButton(
-                label: 'Send request',
+                label: 'send_request'.tr,
                 icon: Icons.send_outlined,
                 isLoading: controller.isSubmitting.value,
                 onPressed: controller.submitRequest,
               ),
               if (controller.lastRequest.value != null) ...[
                 const SizedBox(height: 14),
-                _RequestStatusCard(id: controller.lastRequest.value!.id, status: controller.lastRequest.value!.status),
+                _RequestStatusCard(
+                  id: controller.lastRequest.value!.id,
+                  status: controller.lastRequest.value!.status,
+                ),
               ],
               if (controller.supportRequests.isNotEmpty) ...[
                 const SizedBox(height: 26),
-                Text('Recent support requests', style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 12),
-                ...controller.supportRequests.take(3).map(
-                  (request) => Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE9EEF6))),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.support_agent_outlined, color: AppColors.gold),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(request.id, style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900)),
-                              Text(request.message, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: AppColors.muted)),
-                            ],
-                          ),
-                        ),
-                        Text(request.status, style: const TextStyle(color: Color(0xFF10B981), fontWeight: FontWeight.w900)),
-                      ],
-                    ),
-                  ),
+                Text(
+                  'recent_requests'.tr,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
+                const SizedBox(height: 12),
+                ...controller.supportRequests
+                    .take(3)
+                    .map(
+                      (request) => Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE9EEF6)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.support_agent_outlined,
+                              color: AppColors.gold,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    request.id,
+                                    style: const TextStyle(
+                                      color: AppColors.navy,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                  Text(
+                                    request.message,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: AppColors.muted,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              request.status,
+                              style: const TextStyle(
+                                color: Color(0xFF10B981),
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
               ],
               const SizedBox(height: 26),
-              Text('Frequently asked questions', style: Theme.of(context).textTheme.titleLarge),
+              Text('faq'.tr, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 12),
               ...controller.faqs.map(
                 (faq) => Container(
                   margin: const EdgeInsets.only(bottom: 10),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE9EEF6))),
-                  child: ListTile(
-                    leading: const Icon(Icons.help_outline_rounded, color: AppColors.gold),
-                    title: Text(faq, style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w800)),
-                    trailing: const Icon(Icons.expand_more_rounded, color: AppColors.muted),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xFFE9EEF6)),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.help_outline_rounded,
+                        color: AppColors.gold,
+                      ),
+                      title: Text(
+                        faq,
+                        style: const TextStyle(
+                          color: AppColors.navy,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.expand_more_rounded,
+                        color: AppColors.muted,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -133,13 +242,31 @@ class _RequestStatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFBFDBFE))),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEFF6FF),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFBFDBFE)),
+      ),
       child: Row(
         children: [
           const Icon(Icons.check_circle_outline, color: Color(0xFF2563EB)),
           const SizedBox(width: 12),
-          Expanded(child: Text('$id sent successfully', style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900))),
-          Text(status, style: const TextStyle(color: Color(0xFF2563EB), fontWeight: FontWeight.w900)),
+          Expanded(
+            child: Text(
+              'request_sent'.trParams({'id': id}),
+              style: const TextStyle(
+                color: AppColors.navy,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          Text(
+            status,
+            style: const TextStyle(
+              color: Color(0xFF2563EB),
+              fontWeight: FontWeight.w900,
+            ),
+          ),
         ],
       ),
     );
@@ -147,7 +274,12 @@ class _RequestStatusCard extends StatelessWidget {
 }
 
 class _TypeChip extends StatelessWidget {
-  const _TypeChip({required this.label, required this.value, required this.selected, required this.onTap});
+  const _TypeChip({
+    required this.label,
+    required this.value,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String label;
   final String value;
@@ -165,9 +297,18 @@ class _TypeChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected ? AppColors.navy : Colors.white,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: selected ? AppColors.navy : const Color(0xFFE9EEF6)),
+          border: Border.all(
+            color: selected ? AppColors.navy : const Color(0xFFE9EEF6),
+          ),
         ),
-        child: Text(label, style: TextStyle(color: selected ? Colors.white : AppColors.navy, fontWeight: FontWeight.w900, fontSize: 12.5)),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected ? Colors.white : AppColors.navy,
+            fontWeight: FontWeight.w900,
+            fontSize: 12.5,
+          ),
+        ),
       ),
     );
   }

@@ -61,25 +61,30 @@ class AuthController extends GetxController {
       final user = Map<String, dynamic>.from(result['user'] as Map);
       final sessionData = Map<String, dynamic>.from(result['session'] as Map);
       final token = sessionData['token']?.toString();
-      if (token != null && token.isNotEmpty) {
-        await session.save(token: token, email: email);
+      if (token == null || token.isEmpty) {
+        throw const ApiException('Authentication token was not returned.');
       }
+      await session.save(
+        token: token,
+        email: user['email']?.toString() ?? email,
+      );
       store.profile.value = CustomerProfile.fromJson(user);
     } on ApiException catch (error) {
-      if (error.statusCode == 401 || error.statusCode == 403 || error.statusCode == 422) {
-        errorText.value = error.message;
-        isLoading.value = false;
-        return;
-      }
-      await Future<void>.delayed(const Duration(milliseconds: 450));
-      store.signIn(email: email, name: name);
+      errorText.value = error.message;
+      Get.snackbar('auth_failed'.tr, error.message);
+      return;
     } catch (_) {
-      await Future<void>.delayed(const Duration(milliseconds: 450));
-      store.signIn(email: email, name: name);
+      errorText.value = 'auth_connection_error'.tr;
+      Get.snackbar('auth_failed'.tr, 'auth_connection_error'.tr);
+      return;
     } finally {
       isLoading.value = false;
     }
 
+    Get.snackbar(
+      'auth_success'.tr,
+      isRegister.value ? 'register_success'.tr : 'login_success'.tr,
+    );
     Get.offAllNamed(AppRoutes.customerDashboard);
   }
 

@@ -60,7 +60,7 @@ export default function Login() {
       localStorage.setItem("einstein_auth_user", JSON.stringify(user));
       if (token) localStorage.setItem("einstein_auth_token", token);
       localStorage.setItem("einstein_customer_email", user.email);
-      localStorage.setItem("einstein_lang", user.preferred_language || localStorage.getItem("einstein_lang") || "de");
+      localStorage.setItem("einstein_lang", user.preferred_language || localStorage.getItem("einstein_lang") || "ar");
       localStorage.setItem("einstein_is_provider", user.role === "provider" ? "true" : "false");
 
       if (user.role === "admin") {

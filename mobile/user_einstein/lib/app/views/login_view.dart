@@ -23,7 +23,9 @@ class LoginView extends GetView<AuthController> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(18),
-                border: const Border(top: BorderSide(color: Color(0xFFDBE7F5), width: 5)),
+                border: const Border(
+                  top: BorderSide(color: Color(0xFFDBE7F5), width: 5),
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: const Color(0xFF0F172A).withValues(alpha: 0.12),
@@ -40,8 +42,8 @@ class LoginView extends GetView<AuthController> {
                   children: [
                     const EinsteinLogo(size: 122),
                     const SizedBox(height: 34),
-                    const Text(
-                      'Welcome to EinStein Institut',
+                    Text(
+                      'login_welcome'.tr,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppColors.text,
@@ -51,21 +53,29 @@ class LoginView extends GetView<AuthController> {
                       ),
                     ),
                     const SizedBox(height: 14),
-                    const Text(
-                      'Sign in to continue',
+                    Text(
+                      'login_subtitle'.tr,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.muted, fontSize: 19, fontWeight: FontWeight.w700),
+                      style: TextStyle(
+                        color: AppColors.muted,
+                        fontSize: 19,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     const SizedBox(height: 40),
                     _SocialButton(
-                      label: 'Continue with Google',
+                      label: 'continue_google'.tr,
                       child: _GoogleMark(),
                       onPressed: () {},
                     ),
                     const SizedBox(height: 14),
                     _SocialButton(
-                      label: 'Continue with Facebook',
-                      child: const Icon(Icons.facebook, color: Color(0xFF1877F2), size: 28),
+                      label: 'continue_facebook'.tr,
+                      child: const Icon(
+                        Icons.facebook,
+                        color: Color(0xFF1877F2),
+                        size: 28,
+                      ),
                       onPressed: () {},
                     ),
                     const SizedBox(height: 36),
@@ -73,21 +83,21 @@ class LoginView extends GetView<AuthController> {
                     const SizedBox(height: 34),
                     if (controller.isRegister.value) ...[
                       _AuthField(
-                        label: 'Name',
+                        label: 'name'.tr,
                         controller: controller.nameController,
                         icon: Icons.person_outline,
                       ),
                       const SizedBox(height: 24),
                     ],
                     _AuthField(
-                      label: 'Email',
+                      label: 'email'.tr,
                       controller: controller.emailController,
                       icon: Icons.mail_outline,
                       keyboardType: TextInputType.emailAddress,
                     ),
                     const SizedBox(height: 24),
                     _AuthField(
-                      label: 'Password',
+                      label: 'password'.tr,
                       controller: controller.passwordController,
                       icon: Icons.lock_outline,
                       obscureText: true,
@@ -96,7 +106,10 @@ class LoginView extends GetView<AuthController> {
                       const SizedBox(height: 18),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFEFEF),
                           borderRadius: BorderRadius.circular(10),
@@ -104,13 +117,18 @@ class LoginView extends GetView<AuthController> {
                         child: Text(
                           controller.errorText.value,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(color: Color(0xFFB91C1C), fontWeight: FontWeight.w700),
+                          style: const TextStyle(
+                            color: Color(0xFFB91C1C),
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ],
                     const SizedBox(height: 24),
                     PrimaryButton(
-                      label: controller.isRegister.value ? 'Create account' : 'Sign in',
+                      label: controller.isRegister.value
+                          ? 'create_account'.tr
+                          : 'sign_in'.tr,
                       dark: true,
                       isLoading: controller.isLoading.value,
                       onPressed: controller.submit,
@@ -120,17 +138,25 @@ class LoginView extends GetView<AuthController> {
                       children: [
                         TextButton(
                           onPressed: () {},
-                          child: const Text(
-                            'Forgot password?',
-                            style: TextStyle(color: AppColors.muted, fontWeight: FontWeight.w700),
+                          child: Text(
+                            'forgot_password'.tr,
+                            style: TextStyle(
+                              color: AppColors.muted,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         const Spacer(),
                         TextButton(
                           onPressed: controller.toggleMode,
                           child: Text(
-                            controller.isRegister.value ? 'Sign in' : 'Sign up',
-                            style: const TextStyle(color: AppColors.text, fontWeight: FontWeight.w900),
+                            controller.isRegister.value
+                                ? 'sign_in'.tr
+                                : 'sign_up'.tr,
+                            style: const TextStyle(
+                              color: AppColors.text,
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
                         ),
                       ],
@@ -167,14 +193,27 @@ class _SocialButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: const Color(0xFF334155),
           side: const BorderSide(color: Color(0xFFDFE7F1)),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(13),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             child,
-            const SizedBox(width: 16),
-            Text(label, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            const SizedBox(width: 10),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -188,7 +227,10 @@ class _GoogleMark extends StatelessWidget {
     return Container(
       width: 25,
       height: 25,
-      decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white,
+      ),
       alignment: Alignment.center,
       child: const Text(
         'G',
@@ -207,12 +249,18 @@ class _DividerLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
         Expanded(child: Divider(color: AppColors.line)),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text('OR', style: TextStyle(color: Color(0xFF96A5BA), fontWeight: FontWeight.w900)),
+          child: Text(
+            'or'.tr,
+            style: TextStyle(
+              color: Color(0xFF96A5BA),
+              fontWeight: FontWeight.w900,
+            ),
+          ),
         ),
         Expanded(child: Divider(color: AppColors.line)),
       ],
@@ -239,7 +287,13 @@ class _AuthField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(label, style: const TextStyle(color: Color(0xFF334155), fontWeight: FontWeight.w800)),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Color(0xFF334155),
+            fontWeight: FontWeight.w800,
+          ),
+        ),
         const SizedBox(height: 12),
         TextField(
           controller: controller,
@@ -249,14 +303,20 @@ class _AuthField extends StatelessWidget {
             filled: true,
             fillColor: AppColors.input,
             prefixIcon: Icon(icon, color: const Color(0xFF8EA0B7)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 18,
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(13),
               borderSide: const BorderSide(color: Color(0xFFDAE5F4)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(13),
-              borderSide: const BorderSide(color: Color(0xFFB5C7E5), width: 1.5),
+              borderSide: const BorderSide(
+                color: Color(0xFFB5C7E5),
+                width: 1.5,
+              ),
             ),
           ),
         ),

@@ -142,12 +142,12 @@ export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [lang, setLang] = useState(() => {
-    try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; }
+    try { return localStorage.getItem("einstein_lang") || "ar"; } catch { return "ar"; }
   });
   const [isProvider, setIsProvider] = useState(() => {
     try { return localStorage.getItem("einstein_is_provider") === "true"; } catch { return false; }
   });
-  const t = translations[lang];
+  const t = translations[lang] || translations.ar;
 
   useEffect(() => {
     const init = () => {
@@ -326,6 +326,12 @@ export default function Layout({ children, currentPageName }) {
                       <Link to={createPageUrl("PriceAdmin")} className="flex items-center gap-2">
                         <CreditCard className="w-4 h-4 text-gray-400" />
                         {lang === "ar" ? "الأسعار" : lang === "en" ? "Prices" : "Preise"}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to={createPageUrl("ClientWorkspace")} className="flex items-center gap-2">
+                        <Briefcase className="w-4 h-4 text-gray-400" />
+                        {lang === "ar" ? "مساحة عمل العملاء" : lang === "en" ? "Client Workspace" : "Kundenbereich"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>

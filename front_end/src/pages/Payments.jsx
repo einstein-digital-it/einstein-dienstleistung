@@ -216,7 +216,7 @@ const statusIcons = {
 };
 
 export default function Payments() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   const [user, setUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");

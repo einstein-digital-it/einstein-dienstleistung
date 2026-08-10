@@ -31,16 +31,16 @@ class HomeView extends GetView<HomeController> {
                     const SizedBox(height: 24),
                     const _QuickActions(),
                     const SizedBox(height: 24),
-                    const _SectionHeading(
-                      title: 'Unser Versprechen',
-                      subtitle: 'Struktur, Klarheit und Entlastung fuer Ihren Alltag.',
+                    _SectionHeading(
+                      title: 'home_promise'.tr,
+                      subtitle: 'home_promise_subtitle'.tr,
                     ),
                     const SizedBox(height: 14),
                     _PromiseGrid(promises: controller.promises),
                     const SizedBox(height: 28),
-                    const _SectionHeading(
-                      title: 'Unsere Dienstleistungen',
-                      subtitle: 'Alles aus einer Hand - organisiert und transparent.',
+                    _SectionHeading(
+                      title: 'home_services'.tr,
+                      subtitle: 'home_services_subtitle'.tr,
                     ),
                     const SizedBox(height: 14),
                   ],
@@ -51,7 +51,8 @@ class HomeView extends GetView<HomeController> {
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
               sliver: SliverList.separated(
                 itemCount: controller.services.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 14),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 14),
                 itemBuilder: (context, index) {
                   return ServiceCard(service: controller.services[index]);
                 },
@@ -73,19 +74,35 @@ class _HomeTopBar extends StatelessWidget {
       children: [
         const EinsteinLogo(size: 48),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('EinStein Institut', style: TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900, fontSize: 18)),
+              Text(
+                'EinStein Institut',
+                style: TextStyle(
+                  color: AppColors.navy,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18,
+                ),
+              ),
               SizedBox(height: 2),
-              Text('Organisation & Verwaltung', style: TextStyle(color: AppColors.muted, fontWeight: FontWeight.w600)),
+              Text(
+                'home_organisation'.tr,
+                style: const TextStyle(
+                  color: AppColors.muted,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
         ),
         IconButton(
           onPressed: () => Get.toNamed(AppRoutes.notifications),
-          icon: const Icon(Icons.notifications_none_rounded, color: AppColors.navy),
+          icon: const Icon(
+            Icons.notifications_none_rounded,
+            color: AppColors.navy,
+          ),
           style: IconButton.styleFrom(backgroundColor: Colors.white),
         ),
       ],
@@ -99,9 +116,9 @@ class _QuickActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final actions = [
-      (Icons.dashboard_outlined, 'Dashboard', AppRoutes.customerDashboard),
-      (Icons.local_offer_outlined, 'Offers', AppRoutes.offers),
-      (Icons.support_agent_outlined, 'Support', AppRoutes.customerService),
+      (Icons.dashboard_outlined, 'dashboard'.tr, AppRoutes.customerDashboard),
+      (Icons.local_offer_outlined, 'nav_offers'.tr, AppRoutes.offers),
+      (Icons.support_agent_outlined, 'support'.tr, AppRoutes.customerService),
     ];
 
     return Row(
@@ -130,7 +147,11 @@ class _QuickActions extends StatelessWidget {
                           action.$2,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900, fontSize: 12.5),
+                          style: const TextStyle(
+                            color: AppColors.navy,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 12.5,
+                          ),
                         ),
                       ],
                     ),
@@ -175,27 +196,41 @@ class _HeroPanel extends StatelessWidget {
               borderRadius: BorderRadius.circular(999),
               border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
             ),
-            child: const Text(
-              'EinStein - Weil Struktur Sicherheit schafft.',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
+            child: Text(
+              'home_tagline'.tr,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: 12,
+              ),
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Organisation & Verwaltung',
-            style: TextStyle(color: Colors.white, fontSize: 33, height: 1.08, fontWeight: FontWeight.w900),
+          Text(
+            'home_organisation'.tr,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 33,
+              height: 1.08,
+              fontWeight: FontWeight.w900,
+            ),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Wir nehmen Ihnen Komplexitaet ab. Organisation, Verwaltung und Umsetzung - mehrsprachig, professionell und rechtssicher.',
-            style: TextStyle(color: Color(0xFFDDE7F4), fontSize: 15.5, height: 1.45, fontWeight: FontWeight.w500),
+          Text(
+            'home_hero_subtitle'.tr,
+            style: TextStyle(
+              color: Color(0xFFDDE7F4),
+              fontSize: 15.5,
+              height: 1.45,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 22),
           Row(
             children: [
               Expanded(
                 child: PrimaryButton(
-                  label: 'Jetzt buchen',
+                  label: 'book_now'.tr,
                   icon: Icons.arrow_forward_rounded,
                   onPressed: onBook,
                 ),
@@ -255,11 +290,20 @@ class _PromiseGrid extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.check_circle, color: Color(0xFF10B981), size: 22),
+              const Icon(
+                Icons.check_circle,
+                color: Color(0xFF10B981),
+                size: 22,
+              ),
               const SizedBox(height: 10),
               Text(
                 promises[index],
-                style: const TextStyle(color: AppColors.navy, fontSize: 13.5, height: 1.2, fontWeight: FontWeight.w900),
+                style: const TextStyle(
+                  color: AppColors.navy,
+                  fontSize: 13.5,
+                  height: 1.2,
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ],
           ),

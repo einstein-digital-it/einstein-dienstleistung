@@ -12,7 +12,7 @@ class CustomerStoreController extends GetxController {
     email: 'asmlahmd98@gmail.com',
     phone: '+49 170 000000',
     address: 'Frankfurt am Main',
-    language: 'Deutsch',
+    language: 'Arabic',
   ).obs;
 
   final bookings = <BookingItem>[
@@ -54,7 +54,8 @@ class CustomerStoreController extends GetxController {
   final notifications = <NotificationItem>[
     const NotificationItem(
       title: 'New booking request received',
-      message: 'Your forms assistance request ES-2048 has been received and is under review.',
+      message:
+          'Your forms assistance request ES-2048 has been received and is under review.',
       time: '8 min ago',
       icon: Icons.calendar_month_outlined,
       color: Color(0xFFC9A227),
@@ -70,14 +71,16 @@ class CustomerStoreController extends GetxController {
     ),
     const NotificationItem(
       title: 'Provider available',
-      message: 'A provider is available for tutoring and learning support services.',
+      message:
+          'A provider is available for tutoring and learning support services.',
       time: '2 hours ago',
       icon: Icons.person_search_outlined,
       color: Color(0xFF3B82F6),
     ),
     const NotificationItem(
       title: 'Booking completed',
-      message: 'Your secretariat booking was completed and the invoice was issued.',
+      message:
+          'Your secretariat booking was completed and the invoice was issued.',
       time: 'Yesterday',
       icon: Icons.check_circle_outline,
       color: Color(0xFF10B981),
@@ -92,42 +95,79 @@ class CustomerStoreController extends GetxController {
   final providerUpdates = false.obs;
   final emailEnabled = true.obs;
   final pushEnabled = true.obs;
-  final selectedLanguage = 'Deutsch'.obs;
+  final selectedLanguage = 'Arabic'.obs;
+  final locale = const Locale('ar').obs;
   final reminderTiming = '24h before'.obs;
   final dashboardOpenPayments = RxnInt();
 
-  int get openPaymentsCount => dashboardOpenPayments.value ?? bookings.where((item) => !item.isPaid).length;
+  int get openPaymentsCount =>
+      dashboardOpenPayments.value ??
+      bookings.where((item) => !item.isPaid).length;
   int get paidBookingsCount => bookings.where((item) => item.isPaid).length;
-  int get unreadNotificationsCount => notifications.where((item) => item.unread).length;
+  int get unreadNotificationsCount =>
+      notifications.where((item) => item.unread).length;
 
   List<BookingItem> get upcomingBookings => bookings.take(3).toList();
-  List<NotificationItem> get recentNotifications => notifications.take(3).toList();
+  List<NotificationItem> get recentNotifications =>
+      notifications.take(3).toList();
 
   String get currentEmail => profile.value.email;
+
+  void setProfile(CustomerProfile nextProfile) {
+    profile.value = nextProfile;
+    applyLanguage(nextProfile.language, updateProfileLanguage: false);
+  }
+
+  void applyLanguage(String language, {bool updateProfileLanguage = true}) {
+    final normalized = normalizeLanguageLabel(language);
+    selectedLanguage.value = normalized;
+    if (updateProfileLanguage && profile.value.language != normalized) {
+      profile.value = profile.value.copyWith(language: normalized);
+    }
+    final nextLocale = Locale(languageCodeFromLabel(normalized));
+    if (Get.locale?.languageCode != nextLocale.languageCode) {
+      Get.updateLocale(nextLocale);
+    }
+    locale.value = nextLocale;
+  }
 
   void applyDashboard(Map<String, dynamic> data) {
     final summary = data['summary'];
     if (summary is Map && summary['open_payments'] != null) {
-      dashboardOpenPayments.value = int.tryParse(summary['open_payments'].toString());
+      dashboardOpenPayments.value = int.tryParse(
+        summary['open_payments'].toString(),
+      );
     }
 
     final profileData = data['profile'];
     if (profileData is Map) {
-      profile.value = CustomerProfile.fromJson(Map<String, dynamic>.from(profileData));
-      selectedLanguage.value = profile.value.language;
+      setProfile(
+        CustomerProfile.fromJson(Map<String, dynamic>.from(profileData)),
+      );
     }
 
     final upcoming = data['upcoming_bookings'];
     if (upcoming is List) {
       bookings.assignAll(
-        upcoming.map((item) => BookingItem.fromJson(Map<String, dynamic>.from(item as Map))).toList(),
+        upcoming
+            .map(
+              (item) =>
+                  BookingItem.fromJson(Map<String, dynamic>.from(item as Map)),
+            )
+            .toList(),
       );
     }
 
     final latestNotifications = data['notifications'];
     if (latestNotifications is List) {
       notifications.assignAll(
-        latestNotifications.map((item) => NotificationItem.fromJson(Map<String, dynamic>.from(item as Map))).toList(),
+        latestNotifications
+            .map(
+              (item) => NotificationItem.fromJson(
+                Map<String, dynamic>.from(item as Map),
+              ),
+            )
+            .toList(),
       );
     }
   }
@@ -157,8 +197,13 @@ class CustomerStoreController extends GetxController {
   }
 
   void signIn({required String email, String? name}) {
-    final resolvedName = (name == null || name.trim().isEmpty) ? profile.value.fullName : name.trim();
-    profile.value = profile.value.copyWith(fullName: resolvedName, email: email);
+    final resolvedName = (name == null || name.trim().isEmpty)
+        ? profile.value.fullName
+        : name.trim();
+    profile.value = profile.value.copyWith(
+      fullName: resolvedName,
+      email: email,
+    );
   }
 
   void updateProfile({
@@ -173,7 +218,7 @@ class CustomerStoreController extends GetxController {
       address: address.trim(),
       language: language,
     );
-    selectedLanguage.value = language;
+    applyLanguage(language);
     addNotification(
       title: 'Profile updated',
       message: 'Your personal information was updated successfully.',
@@ -231,17 +276,15 @@ class CustomerStoreController extends GetxController {
 
   void markAllNotificationsRead() {
     notifications.assignAll(
-      notifications.map(
-        (item) {
-          return NotificationItem(
-            title: item.title,
-            message: item.message,
-            time: item.time,
-            icon: item.icon,
-            color: item.color,
-          );
-        },
-      ),
+      notifications.map((item) {
+        return NotificationItem(
+          title: item.title,
+          message: item.message,
+          time: item.time,
+          icon: item.icon,
+          color: item.color,
+        );
+      }),
     );
   }
 
@@ -264,7 +307,10 @@ class CustomerStoreController extends GetxController {
     );
   }
 
-  SupportRequest createSupportRequest({required String type, required String message}) {
+  SupportRequest createSupportRequest({
+    required String type,
+    required String message,
+  }) {
     final request = SupportRequest(
       id: 'SUP-${1000 + supportRequests.length + 1}',
       type: type,

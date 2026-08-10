@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/booking_controller.dart';
 import '../controllers/customer_dashboard_controller.dart';
+import '../controllers/customer_clients_controller.dart';
 import '../controllers/customer_service_controller.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/my_bookings_controller.dart';
@@ -14,6 +15,8 @@ import '../controllers/profile_controller.dart';
 import '../controllers/services_controller.dart';
 import '../views/booking_view.dart';
 import '../views/customer_dashboard_view.dart';
+import '../views/customer_clients_view.dart';
+import '../views/client_workspace_view.dart';
 import '../views/customer_service_view.dart';
 import '../views/home_view.dart';
 import '../views/login_view.dart';
@@ -88,14 +91,18 @@ abstract class AppPages {
       name: AppRoutes.customerDashboard,
       page: () => const CustomerDashboardView(),
       binding: BindingsBuilder(() {
-        Get.lazyPut<CustomerDashboardController>(CustomerDashboardController.new);
+        Get.lazyPut<CustomerDashboardController>(
+          CustomerDashboardController.new,
+        );
       }),
     ),
     GetPage(
       name: AppRoutes.notificationSettings,
       page: () => const NotificationSettingsView(),
       binding: BindingsBuilder(() {
-        Get.lazyPut<NotificationSettingsController>(NotificationSettingsController.new);
+        Get.lazyPut<NotificationSettingsController>(
+          NotificationSettingsController.new,
+        );
       }),
     ),
     GetPage(
@@ -110,6 +117,22 @@ abstract class AppPages {
       page: () => const CustomerServiceView(),
       binding: BindingsBuilder(() {
         Get.lazyPut<CustomerServiceController>(CustomerServiceController.new);
+      }),
+    ),
+    GetPage(
+      name: AppRoutes.customerClients,
+      page: () => const CustomerClientsView(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<CustomerClientsController>(CustomerClientsController.new);
+      }),
+    ),
+    GetPage(
+      name: AppRoutes.clientWorkspace,
+      page: () => const ClientWorkspaceView(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<ClientWorkspaceController>(
+          () => ClientWorkspaceController(clientId: Get.arguments.toString()),
+        );
       }),
     ),
   ];

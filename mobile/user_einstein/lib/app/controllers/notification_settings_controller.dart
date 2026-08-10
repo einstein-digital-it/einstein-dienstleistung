@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../api/customer_api_service.dart';
+import '../models/customer_profile.dart';
 import 'customer_store_controller.dart';
 
 class NotificationSettingsController extends GetxController {
@@ -22,10 +23,16 @@ class NotificationSettingsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    everAll(
-      [bookingUpdates, paymentUpdates, reminderUpdates, providerUpdates, emailEnabled, pushEnabled, selectedLanguage, reminderTiming],
-      (_) => savePreferences(),
-    );
+    everAll([
+      bookingUpdates,
+      paymentUpdates,
+      reminderUpdates,
+      providerUpdates,
+      emailEnabled,
+      pushEnabled,
+      selectedLanguage,
+      reminderTiming,
+    ], (_) => savePreferences());
     loadPreferences();
   }
 
@@ -40,7 +47,12 @@ class NotificationSettingsController extends GetxController {
       providerUpdates.value = prefs['provider_documents_uploaded'] == true;
       emailEnabled.value = prefs['email_notifications'] != false;
       pushEnabled.value = prefs['in_app_notifications'] != false;
-      selectedLanguage.value = _languageLabel((prefs['notification_language'] ?? 'de').toString());
+      store.applyLanguage(
+        normalizeLanguageLabel(
+          (prefs['notification_language'] ?? store.selectedLanguage.value)
+              .toString(),
+        ),
+      );
     } catch (_) {
       errorText.value = 'Using local notification preferences.';
     } finally {
@@ -60,7 +72,7 @@ class NotificationSettingsController extends GetxController {
         'provider_documents_uploaded': providerUpdates.value,
         'email_notifications': emailEnabled.value,
         'in_app_notifications': pushEnabled.value,
-        'notification_language': _languageCode(selectedLanguage.value),
+        'notification_language': languageCodeFromLabel(selectedLanguage.value),
         'reminder_timing': [reminderTiming.value],
       });
     } catch (_) {
@@ -68,19 +80,8 @@ class NotificationSettingsController extends GetxController {
     }
   }
 
-  String _languageLabel(String code) {
-    return switch (code.toLowerCase()) {
-      'ar' || 'arabic' => 'Arabic',
-      'en' || 'english' => 'English',
-      _ => 'Deutsch',
-    };
-  }
-
-  String _languageCode(String label) {
-    return switch (label.toLowerCase()) {
-      'arabic' || 'ar' => 'ar',
-      'english' || 'en' => 'en',
-      _ => 'de',
-    };
+  void setLanguage(String language) {
+    store.applyLanguage(language);
+    savePreferences();
   }
 }

@@ -12,8 +12,11 @@ class BookingView extends GetView<BookingController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dienstleistung buchen'),
-        leading: IconButton(onPressed: Get.back, icon: const Icon(Icons.arrow_back_rounded)),
+        title: Text('book_service'.tr),
+        leading: IconButton(
+          onPressed: Get.back,
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -23,61 +26,87 @@ class BookingView extends GetView<BookingController> {
             children: [
               const _StepHeader(),
               const SizedBox(height: 20),
-              Text('Kategorie waehlen', style: Theme.of(context).textTheme.headlineMedium),
+              Text(
+                'choose_category'.tr,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
               const SizedBox(height: 12),
-              Obx(
-                () {
-                  final selectedCategory = controller.selectedCategory.value;
-                  return GridView.builder(
-                    itemCount: controller.categories.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisExtent: 122,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
-                    itemBuilder: (context, index) {
-                      final id = controller.categories[index];
-                      final selected = selectedCategory == id;
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(18),
-                        onTap: () => controller.selectCategory(id),
-                        child: Container(
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: selected ? const Color(0xFFF4EEFF) : Colors.white,
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: selected ? AppColors.purple : const Color(0xFFE9EEF6), width: selected ? 2 : 1),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(selected ? Icons.check_circle : Icons.radio_button_unchecked, color: selected ? AppColors.purple : AppColors.muted),
-                              const Spacer(),
-                              Text(
-                                controller.categoryLabels[id] ?? id,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w900, height: 1.15),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text('ab 40 EUR', style: TextStyle(color: AppColors.gold, fontSize: 12, fontWeight: FontWeight.w800)),
-                            ],
+              Obx(() {
+                final selectedCategory = controller.selectedCategory.value;
+                return GridView.builder(
+                  itemCount: controller.categories.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisExtent: 122,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                  ),
+                  itemBuilder: (context, index) {
+                    final id = controller.categories[index];
+                    final selected = selectedCategory == id;
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(18),
+                      onTap: () => controller.selectCategory(id),
+                      child: Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: selected
+                              ? const Color(0xFFF4EEFF)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: selected
+                                ? AppColors.purple
+                                : const Color(0xFFE9EEF6),
+                            width: selected ? 2 : 1,
                           ),
                         ),
-                      );
-                    },
-                  );
-                },
-              ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              selected
+                                  ? Icons.check_circle
+                                  : Icons.radio_button_unchecked,
+                              color: selected
+                                  ? AppColors.purple
+                                  : AppColors.muted,
+                            ),
+                            const Spacer(),
+                            Text(
+                              controller.categoryLabels[id] ?? id,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: AppColors.navy,
+                                fontWeight: FontWeight.w900,
+                                height: 1.15,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'from_price'.tr,
+                              style: const TextStyle(
+                                color: AppColors.gold,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }),
               const SizedBox(height: 26),
               _DetailsCard(controller: controller),
               const SizedBox(height: 18),
               Obx(
                 () => PrimaryButton(
-                  label: 'Buchung vorbereiten',
+                  label: 'prepare_booking'.tr,
                   icon: Icons.arrow_forward_rounded,
                   isLoading: controller.isSubmitting.value,
                   onPressed: controller.confirmBooking,
@@ -102,14 +131,24 @@ class _StepHeader extends StatelessWidget {
         color: AppColors.navy,
         borderRadius: BorderRadius.circular(22),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Schnelle Buchung', style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.w900)),
+          Text(
+            'quick_booking'.tr,
+            style: const TextStyle(
+              color: AppColors.gold,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
           SizedBox(height: 8),
           Text(
-            'Waehlen Sie eine Dienstleistung, Termin und Details. Die Buchung wird danach in My Bookings sichtbar.',
-            style: TextStyle(color: Color(0xFFDDE7F4), fontSize: 15, height: 1.4),
+            'quick_booking_subtitle'.tr,
+            style: TextStyle(
+              color: Color(0xFFDDE7F4),
+              fontSize: 15,
+              height: 1.4,
+            ),
           ),
         ],
       ),
@@ -134,15 +173,26 @@ class _DetailsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Details eingeben', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            'booking_details'.tr,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: 14),
-          _InputLike(icon: Icons.person_outline, label: 'Name', value: controller.store.profile.value.fullName),
+          _InputLike(
+            icon: Icons.person_outline,
+            label: 'name'.tr,
+            value: controller.store.profile.value.fullName,
+          ),
           const SizedBox(height: 10),
-          _InputLike(icon: Icons.mail_outline, label: 'Email', value: controller.store.profile.value.email),
+          _InputLike(
+            icon: Icons.mail_outline,
+            label: 'email'.tr,
+            value: controller.store.profile.value.email,
+          ),
           const SizedBox(height: 10),
           Obx(
             () => _ChoiceWrap(
-              title: 'Date',
+              title: 'date'.tr,
               values: controller.dates,
               selected: controller.selectedDate.value,
               onSelected: (value) => controller.selectedDate.value = value,
@@ -151,7 +201,7 @@ class _DetailsCard extends StatelessWidget {
           const SizedBox(height: 10),
           Obx(
             () => _ChoiceWrap(
-              title: 'Time',
+              title: 'time'.tr,
               values: controller.times,
               selected: controller.selectedTime.value,
               onSelected: (value) => controller.selectedTime.value = value,
@@ -161,14 +211,23 @@ class _DetailsCard extends StatelessWidget {
           TextField(
             onChanged: (value) => controller.address.value = value,
             decoration: InputDecoration(
-              labelText: 'Adresse',
+              labelText: 'address'.tr,
               hintText: controller.address.value,
               prefixIcon: const Icon(Icons.location_on_outlined),
               filled: true,
               fillColor: AppColors.input,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFFDAE5F4))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFFDAE5F4))),
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: AppColors.gold)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xFFDAE5F4)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xFFDAE5F4)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: AppColors.gold),
+              ),
             ),
           ),
           const SizedBox(height: 10),
@@ -178,10 +237,13 @@ class _DetailsCard extends StatelessWidget {
             maxLines: 5,
             onChanged: (value) => controller.note.value = value,
             decoration: InputDecoration(
-              hintText: 'Beschreibung: Unterstuetzung bei Formularen und Vorbereitung von Unterlagen.',
+              hintText: 'booking_note_hint'.tr,
               filled: true,
               fillColor: AppColors.background,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
         ],
@@ -216,7 +278,14 @@ class _ChoiceWrap extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(color: AppColors.muted, fontSize: 12, fontWeight: FontWeight.w800)),
+          Text(
+            title,
+            style: const TextStyle(
+              color: AppColors.muted,
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -238,7 +307,11 @@ class _ChoiceWrap extends StatelessWidget {
 }
 
 class _InputLike extends StatelessWidget {
-  const _InputLike({required this.icon, required this.label, required this.value});
+  const _InputLike({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   final IconData icon;
   final String label;
@@ -261,9 +334,22 @@ class _InputLike extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(color: AppColors.muted, fontSize: 12, fontWeight: FontWeight.w800)),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    color: AppColors.muted,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(value, style: const TextStyle(color: AppColors.text, fontWeight: FontWeight.w800)),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    color: AppColors.text,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ],
             ),
           ),

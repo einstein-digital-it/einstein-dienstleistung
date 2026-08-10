@@ -164,7 +164,7 @@ const statusColors = {
 };
 
 export default function BookingReports() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   const [user, setUser] = useState(null);
   const [provider, setProvider] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState({ open: false, booking: null });

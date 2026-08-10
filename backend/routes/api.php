@@ -1,14 +1,16 @@
 <?php
 
+use App\Http\Controllers\Api\AdminDashboardController;
+use App\Http\Controllers\Api\AdminClientWorkspaceController;
+use App\Http\Controllers\Api\AdminServiceController;
+use App\Http\Controllers\Api\AdminUserController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\BookingReportController;
-use App\Http\Controllers\Api\AdminUserController;
-use App\Http\Controllers\Api\AdminDashboardController;
-use App\Http\Controllers\Api\AdminServiceController;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ChatController;
-use App\Http\Controllers\Api\CustomerRequestController;
+use App\Http\Controllers\Api\CustomerClientController;
 use App\Http\Controllers\Api\CustomerPortalController;
+use App\Http\Controllers\Api\CustomerRequestController;
 use App\Http\Controllers\Api\CustomerSupportController;
 use App\Http\Controllers\Api\FileUploadController;
 use App\Http\Controllers\Api\NotificationController;
@@ -52,6 +54,17 @@ Route::middleware('api.auth:admin,provider,user')->group(function () {
     Route::get('profile', [ProfileController::class, 'show']);
     Route::patch('profile', [ProfileController::class, 'update']);
     Route::get('customer/dashboard', [CustomerPortalController::class, 'dashboard']);
+    Route::middleware('api.auth:user')->group(function () {
+        Route::get('customer/clients', [CustomerClientController::class, 'index']);
+        Route::post('customer/clients', [CustomerClientController::class, 'store']);
+        Route::get('customer/clients/{managedClient}', [CustomerClientController::class, 'show']);
+        Route::patch('customer/clients/{managedClient}', [CustomerClientController::class, 'update']);
+        Route::post('customer/clients/{managedClient}/communications', [CustomerClientController::class, 'storeCommunication']);
+        Route::post('customer/clients/{managedClient}/requests', [CustomerClientController::class, 'storeRequest']);
+        Route::patch('customer/clients/{managedClient}/requests/{clientRequest}', [CustomerClientController::class, 'updateRequest']);
+        Route::post('customer/clients/{managedClient}/files', [CustomerClientController::class, 'storeFile']);
+        Route::post('customer/clients/{managedClient}/invoices', [CustomerClientController::class, 'storeInvoice']);
+    });
     Route::get('customer/bookings', [CustomerPortalController::class, 'bookings']);
     Route::get('customer/notifications', [NotificationController::class, 'index']);
     Route::post('customer/notifications', [NotificationController::class, 'store']);
@@ -79,6 +92,9 @@ Route::middleware('api.auth:admin,provider')->group(function () {
 
 Route::middleware('api.auth:admin')->group(function () {
     Route::get('admin/dashboard', [AdminDashboardController::class, 'index']);
+    Route::get('admin/client-workspaces', [AdminClientWorkspaceController::class, 'index']);
+    Route::get('admin/client-workspaces/{managedClient}', [AdminClientWorkspaceController::class, 'show']);
+    Route::patch('admin/client-workspaces/{managedClient}/requests/{clientRequest}', [AdminClientWorkspaceController::class, 'updateRequest']);
     Route::get('reports/bookings', [BookingReportController::class, 'index']);
     Route::patch('reports/bookings/{booking}/confirm', [BookingReportController::class, 'confirm']);
     Route::get('admin/users', [AdminUserController::class, 'index']);

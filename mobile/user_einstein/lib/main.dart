@@ -5,32 +5,81 @@ import 'app/api/api_client.dart';
 import 'app/api/auth_session.dart';
 import 'app/api/customer_api_service.dart';
 import 'app/controllers/customer_store_controller.dart';
+import 'app/lang/app_translations.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/theme/app_theme.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final session = AuthSession();
+  await session.load();
+  Get.put<AuthSession>(session, permanent: true);
   runApp(const EinsteinUserApp());
 }
 
+void _ensureDependencies() {
+  if (Get.isRegistered<CustomerStoreController>()) return;
+
+  final session = Get.isRegistered<AuthSession>()
+      ? Get.find<AuthSession>()
+      : Get.put<AuthSession>(AuthSession(), permanent: true);
+  if (!Get.isRegistered<ApiClient>()) {
+    Get.put<ApiClient>(ApiClient(session: session), permanent: true);
+  }
+  if (!Get.isRegistered<CustomerApiService>()) {
+    Get.put<CustomerApiService>(
+      CustomerApiService(Get.find<ApiClient>()),
+      permanent: true,
+    );
+  }
+  Get.put<CustomerStoreController>(CustomerStoreController(), permanent: true);
+}
+
 class EinsteinUserApp extends StatelessWidget {
-  const EinsteinUserApp({super.key});
+  const EinsteinUserApp({super.key, this.initialLocale});
+
+  final Locale? initialLocale;
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'EinStein Institut',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      initialRoute: AppRoutes.login,
-      initialBinding: BindingsBuilder(() {
-        final session = AuthSession();
-        Get.put<AuthSession>(session, permanent: true);
-        Get.put<ApiClient>(ApiClient(session: session), permanent: true);
-        Get.put<CustomerApiService>(CustomerApiService(Get.find<ApiClient>()), permanent: true);
-        Get.put<CustomerStoreController>(CustomerStoreController(), permanent: true);
-      }),
-      getPages: AppPages.pages,
-    );
+    _ensureDependencies();
+    final store = Get.find<CustomerStoreController>();
+    final session = Get.find<AuthSession>();
+    if (initialLocale != null && store.locale.value != initialLocale) {
+      store.locale.value = initialLocale!;
+      Get.locale = initialLocale;
+      final language = initialLocale!.languageCode == 'ar'
+          ? 'Arabic'
+          : initialLocale!.languageCode == 'de'
+          ? 'Deutsch'
+          : 'English';
+      store.selectedLanguage.value = language;
+      store.profile.value = store.profile.value.copyWith(language: language);
+    }
+
+    return Obx(() {
+      final locale = store.locale.value;
+      return GetMaterialApp(
+        title: 'EinStein Institut',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        translations: AppTranslations(),
+        locale: locale,
+        fallbackLocale: const Locale('ar'),
+        builder: (context, child) {
+          return Directionality(
+            textDirection: locale.languageCode == 'ar'
+                ? TextDirection.rtl
+                : TextDirection.ltr,
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
+        initialRoute: session.isAuthenticated
+            ? AppRoutes.customerDashboard
+            : AppRoutes.login,
+        getPages: AppPages.pages,
+      );
+    });
   }
 }

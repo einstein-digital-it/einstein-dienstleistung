@@ -98,15 +98,15 @@ const paymentConfig = {
 };
 
 export default function AdminBookings() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
-  const t = translations[lang] || translations.de;
+  const t = translations[lang] || translations.ar;
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("einstein_lang") || "de";
+    const savedLang = localStorage.getItem("einstein_lang") || "ar";
     setLang(savedLang);
     const checkUser = () => setUser(requireStoredUser({ role: "admin" }));
     checkUser();

@@ -11,4 +11,6 @@ abstract class AppRoutes {
   static const notificationSettings = '/notification-settings';
   static const profile = '/profile';
   static const customerService = '/customer-service';
+  static const customerClients = '/customer-clients';
+  static const clientWorkspace = '/customer-clients/workspace';
 }

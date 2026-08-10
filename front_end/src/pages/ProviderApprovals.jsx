@@ -57,7 +57,7 @@ const translations = {
 };
 
 export default function ProviderApprovals() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   const [user, setUser] = useState(null);
   const [filter, setFilter] = useState("pending");
   const [resendingId, setResendingId] = useState(null);

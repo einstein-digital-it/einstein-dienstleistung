@@ -35,17 +35,27 @@ class ServicesView extends GetView<ServicesController> {
                       bottomRight: Radius.circular(28),
                     ),
                   ),
-                  child: const Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Unsere Dienstleistungen',
-                        style: TextStyle(color: Colors.white, fontSize: 32, height: 1.08, fontWeight: FontWeight.w900),
+                        'services_title'.tr,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32,
+                          height: 1.08,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                       SizedBox(height: 12),
                       Text(
-                        'Ganzheitliches Dienstleistungszentrum fuer Alltag, Bildung & Organisation.',
-                        style: TextStyle(color: Color(0xFFDDE7F4), fontSize: 15.5, height: 1.42, fontWeight: FontWeight.w500),
+                        'services_subtitle'.tr,
+                        style: TextStyle(
+                          color: Color(0xFFDDE7F4),
+                          fontSize: 15.5,
+                          height: 1.42,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       SizedBox(height: 18),
                       _HeaderBadge(),
@@ -59,7 +69,8 @@ class ServicesView extends GetView<ServicesController> {
               sliver: Obx(
                 () => SliverList.separated(
                   itemCount: controller.services.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 14),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 14),
                   itemBuilder: (context, index) {
                     final service = controller.services[index];
                     return Column(
@@ -72,7 +83,7 @@ class ServicesView extends GetView<ServicesController> {
                         if (controller.expandedId.value == service.id) ...[
                           const SizedBox(height: 10),
                           PrimaryButton(
-                            label: 'Jetzt buchen',
+                            label: 'book_now'.tr,
                             icon: Icons.arrow_forward_rounded,
                             onPressed: () => Get.toNamed(AppRoutes.bookings),
                           ),
@@ -102,14 +113,18 @@ class _HeaderBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
         border: Border.all(color: AppColors.gold.withValues(alpha: 0.35)),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.verified_outlined, color: AppColors.gold, size: 18),
           SizedBox(width: 8),
           Text(
-            'EinStein-geprueft - Qualitaet garantiert',
-            style: TextStyle(color: Colors.white, fontSize: 12.5, fontWeight: FontWeight.w800),
+            'quality_guaranteed'.tr,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ],
       ),
