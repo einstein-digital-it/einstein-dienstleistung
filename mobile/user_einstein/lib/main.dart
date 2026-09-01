@@ -46,12 +46,13 @@ class EinsteinUserApp extends StatelessWidget {
     _ensureDependencies();
     final store = Get.find<CustomerStoreController>();
     final session = Get.find<AuthSession>();
-    if (initialLocale != null && store.locale.value != initialLocale) {
-      store.locale.value = initialLocale!;
-      Get.locale = initialLocale;
-      final language = initialLocale!.languageCode == 'ar'
+    final preferredLocale = initialLocale ?? Locale(session.localeCode);
+    if (store.locale.value != preferredLocale) {
+      store.locale.value = preferredLocale;
+      Get.locale = preferredLocale;
+      final language = preferredLocale.languageCode == 'ar'
           ? 'Arabic'
-          : initialLocale!.languageCode == 'de'
+          : preferredLocale.languageCode == 'de'
           ? 'Deutsch'
           : 'English';
       store.selectedLanguage.value = language;
@@ -77,7 +78,7 @@ class EinsteinUserApp extends StatelessWidget {
         },
         initialRoute: session.isAuthenticated
             ? AppRoutes.customerDashboard
-            : AppRoutes.login,
+            : AppRoutes.home,
         getPages: AppPages.pages,
       );
     });

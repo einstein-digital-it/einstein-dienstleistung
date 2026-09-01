@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Notification;
+use App\Models\ServiceProvider;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -140,6 +141,26 @@ class BookingController extends Controller
                     'message_ar' => "حجز جديد {$booking->booking_number} من {$booking->customer_name}.",
                     'message_en' => "New booking {$booking->booking_number} from {$booking->customer_name}.",
                     'link' => 'BookingReports',
+                    'booking_id' => (string) $booking->id,
+                ]);
+            });
+
+        ServiceProvider::query()
+            ->where('status', 'approved')
+            ->where('login_enabled', true)
+            ->get()
+            ->filter(fn (ServiceProvider $provider) => empty($provider->categories) || in_array($booking->category, $provider->categories ?? [], true))
+            ->each(function (ServiceProvider $provider) use ($booking) {
+                Notification::create([
+                    'user_email' => $provider->email,
+                    'type' => 'new_booking_request',
+                    'title_de' => 'Neue passende Anfrage',
+                    'title_ar' => 'طلب جديد متوافق',
+                    'title_en' => 'New matching request',
+                    'message_de' => "Neue Buchung {$booking->booking_number} von {$booking->customer_name}.",
+                    'message_ar' => "حجز جديد {$booking->booking_number} من {$booking->customer_name}.",
+                    'message_en' => "New booking {$booking->booking_number} from {$booking->customer_name}.",
+                    'link' => 'ProviderRequests',
                     'booking_id' => (string) $booking->id,
                 ]);
             });

@@ -68,7 +68,7 @@ class OffersView extends GetView<OffersController> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      item.subtitle,
+                                      item.subtitle.tr,
                                       style: const TextStyle(
                                         color: AppColors.gold,
                                         fontSize: 12,
@@ -77,7 +77,7 @@ class OffersView extends GetView<OffersController> {
                                     ),
                                     const SizedBox(height: 5),
                                     Text(
-                                      item.title,
+                                      item.title.tr,
                                       style: const TextStyle(
                                         color: AppColors.navy,
                                         fontSize: 18,
@@ -92,7 +92,7 @@ class OffersView extends GetView<OffersController> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            item.description,
+                            item.description.tr,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           const SizedBox(height: 14),
@@ -109,7 +109,7 @@ class OffersView extends GetView<OffersController> {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
-                                      feature,
+                                      feature.tr,
                                       style: const TextStyle(
                                         color: AppColors.text,
                                         fontSize: 13.5,
@@ -176,7 +176,7 @@ class _OffersHero extends StatelessWidget {
           ),
           SizedBox(height: 12),
           Text(
-            'Ganzheitliche Betreuung aus einer Hand. Eine Institution statt vieler Anbieter.',
+            'offers_hero_subtitle'.tr,
             style: TextStyle(
               color: Color(0xFFDDE7F4),
               fontSize: 15.5,

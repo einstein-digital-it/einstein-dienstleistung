@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../api/auth_session.dart';
 import '../models/booking_item.dart';
 import '../models/customer_profile.dart';
 import '../models/notification_item.dart';
@@ -125,6 +128,7 @@ class CustomerStoreController extends GetxController {
       profile.value = profile.value.copyWith(language: normalized);
     }
     final nextLocale = Locale(languageCodeFromLabel(normalized));
+    unawaited(Get.find<AuthSession>().saveLocale(nextLocale.languageCode));
     if (Get.locale?.languageCode != nextLocale.languageCode) {
       Get.updateLocale(nextLocale);
     }

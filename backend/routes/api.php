@@ -22,6 +22,8 @@ use App\Http\Controllers\Api\PriceAdminController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ProviderDashboardController;
 use App\Http\Controllers\Api\ProviderDocumentController;
+use App\Http\Controllers\Api\ProviderEarningsController;
+use App\Http\Controllers\Api\ProviderNotificationController;
 use App\Http\Controllers\Api\PublicContentController;
 use App\Http\Controllers\Api\RevenueReportController;
 use App\Http\Controllers\Api\ReviewController;
@@ -34,6 +36,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/health', fn () => response()->json(['status' => 'ok']));
 
 Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('auth/provider/login', [AuthController::class, 'providerLogin']);
+Route::post('auth/provider/register', [AuthController::class, 'providerRegister']);
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::get('auth/me', [AuthController::class, 'me']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
@@ -88,6 +92,13 @@ Route::middleware('api.auth:admin,provider')->group(function () {
     Route::patch('provider/bookings/{booking}/documents', [ProviderDashboardController::class, 'updateDocuments']);
     Route::patch('provider/profile/{serviceProvider}', [ProviderDashboardController::class, 'updateProfile']);
     Route::apiResource('provider-documents', ProviderDocumentController::class)->only(['index', 'store', 'destroy']);
+});
+
+Route::middleware('api.auth:provider')->group(function () {
+    Route::get('provider/earnings', [ProviderEarningsController::class, 'index']);
+    Route::get('provider/notifications', [ProviderNotificationController::class, 'index']);
+    Route::patch('provider/notifications/read-all', [ProviderNotificationController::class, 'markAllRead']);
+    Route::patch('provider/notifications/{notification}/read', [ProviderNotificationController::class, 'markRead']);
 });
 
 Route::middleware('api.auth:admin')->group(function () {

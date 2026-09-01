@@ -5,11 +5,52 @@ namespace Tests\Feature;
 use App\Models\ServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class ServiceProviderApiTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_provider_registration_waits_for_admin_approval_and_preserves_the_password(): void
+    {
+        $response = $this->postJson('/api/auth/provider/register', [
+            'full_name' => 'Pending Provider',
+            'email' => 'pending-provider@example.com',
+            'password' => 'Provider123',
+            'phone' => '55555',
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('data.provider.status', 'pending')
+            ->assertJsonPath('data.provider.login_enabled', false);
+
+        $user = User::query()->where('email', 'pending-provider@example.com')->firstOrFail();
+        $provider = ServiceProvider::query()->where('email', $user->email)->firstOrFail();
+
+        $this->assertSame('provider', $user->role);
+        $this->assertFalse($user->is_active);
+        $this->assertTrue(Hash::check('Provider123', $user->password));
+
+        $this->withApiUser('admin');
+        $this->getJson('/api/admin/provider-applications?status=pending')
+            ->assertOk()
+            ->assertJsonPath('data.0.email', 'pending-provider@example.com');
+
+        $this->patchJson("/api/admin/provider-applications/{$provider->id}/approve")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'approved')
+            ->assertJsonPath('data.login_enabled', true);
+
+        $this->assertTrue($user->fresh()->is_active);
+        $this->assertTrue(Hash::check('Provider123', $user->fresh()->password));
+
+        $this->postJson('/api/auth/provider/login', [
+            'email' => 'pending-provider@example.com',
+            'password' => 'Provider123',
+        ])->assertOk()->assertJsonPath('data.user.role', 'provider');
+    }
 
     public function test_provider_applications_can_be_listed_approved_and_rejected(): void
     {

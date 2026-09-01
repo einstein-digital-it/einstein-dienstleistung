@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, Clock, Download, Mail } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { requireStoredUser } from "@/lib/backendAuth";
+import { getAdminText } from "@/lib/adminLocalization";
 
 const translations = {
   de: {
@@ -63,10 +64,12 @@ export default function ProviderApprovals() {
   const [resendingId, setResendingId] = useState(null);
   const queryClient = useQueryClient();
   const t = translations[lang];
+  const adminT = getAdminText(lang);
   const { toast } = useToast();
 
   useEffect(() => {
     const init = () => {
+      setLang(localStorage.getItem("einstein_lang") || "ar");
       try {
         setUser(requireStoredUser({ role: "admin" }));
       } catch (e) {
@@ -86,9 +89,9 @@ export default function ProviderApprovals() {
     setResendingId(provider.id);
     try {
       await providerApprovalsApi.requestWelcomeEmail(provider.id);
-      toast({ title: "✅ تم إرسال الإيميل بنجاح!", description: provider.email });
+      toast({ title: adminT.common.emailSent, description: provider.email });
     } catch (e) {
-      toast({ title: "❌ فشل الإرسال", description: e.message, variant: "destructive" });
+      toast({ title: adminT.common.sendFailed, description: e.message, variant: "destructive" });
     }
     setResendingId(null);
   };
@@ -136,7 +139,7 @@ export default function ProviderApprovals() {
                   : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
               }`}
             >
-              {f === "pending" ? "⏳ قيد الانتظار" : f === "approved" ? "✅ موافق عليهم" : "📋 الكل"}
+              {f === "pending" ? t.pending : f === "approved" ? t.approved : adminT.common.all}
             </button>
           ))}
         </div>
@@ -179,7 +182,7 @@ export default function ProviderApprovals() {
                     {/* Bio */}
                     {provider.bio_de && (
                       <div>
-                        <h3 className="font-semibold text-sm text-gray-700 mb-2">النبذة</h3>
+                        <h3 className="font-semibold text-sm text-gray-700 mb-2">{adminT.common.bio}</h3>
                         <p className="text-sm text-gray-600">{provider.bio_de}</p>
                       </div>
                     )}
@@ -195,7 +198,7 @@ export default function ProviderApprovals() {
                     {/* Qualifications */}
                     {provider.qualifications && (
                       <div>
-                        <h3 className="font-semibold text-sm text-gray-700 mb-2">المؤهلات</h3>
+                        <h3 className="font-semibold text-sm text-gray-700 mb-2">{adminT.common.qualifications}</h3>
                         <p className="text-sm text-gray-600">{provider.qualifications}</p>
                       </div>
                     )}
@@ -231,7 +234,7 @@ export default function ProviderApprovals() {
                     {/* Service Area */}
                     {provider.service_area && (
                       <div>
-                        <h3 className="font-semibold text-sm text-gray-700 mb-2">منطقة الخدمة</h3>
+                        <h3 className="font-semibold text-sm text-gray-700 mb-2">{adminT.common.serviceArea}</h3>
                         <p className="text-sm text-gray-600">{provider.service_area}</p>
                       </div>
                     )}
@@ -251,7 +254,7 @@ export default function ProviderApprovals() {
                             className="flex items-center gap-2 text-sm text-[#6B46C1] hover:underline"
                           >
                             <Download className="w-4 h-4" />
-                            {`Dokument ${idx + 1}`}
+                            {`${adminT.common.document} ${idx + 1}`}
                           </a>
                         ))}
                       </div>

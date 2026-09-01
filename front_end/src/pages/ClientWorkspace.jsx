@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { getAdminText } from "@/lib/adminLocalization";
 
 const labels = {
   ar: {
@@ -28,6 +29,7 @@ const labels = {
 export default function ClientWorkspace() {
   const lang = localStorage.getItem("einstein_lang") || "ar";
   const t = labels[lang] || labels.ar;
+  const adminT = getAdminText(lang);
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState(null);
   const queryClient = useQueryClient();
@@ -40,7 +42,7 @@ export default function ClientWorkspace() {
 
   return <div className="min-h-screen bg-[#f6f8fb] py-8" dir={lang === "ar" ? "rtl" : "ltr"}>
     <div className="mx-auto max-w-7xl px-4">
-      <div className="mb-7"><p className="text-sm font-semibold text-[#c9a227]">Admin / Client Workspace</p><h1 className="mt-1 text-3xl font-bold text-[#1e3a5f]">{t.title}</h1><p className="mt-2 text-sm text-[#65758b]">{t.subtitle}</p></div>
+      <div className="mb-7"><p className="text-sm font-semibold text-[#c9a227]">{adminT.common.clientWorkspaceBreadcrumb}</p><h1 className="mt-1 text-3xl font-bold text-[#1e3a5f]">{t.title}</h1><p className="mt-2 text-sm text-[#65758b]">{t.subtitle}</p></div>
       <Card className="mb-6 border-[#e3e9f2]"><CardContent className="p-4"><div className="relative"><Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8ea0b7]" /><Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t.search} className="ps-10" /></div></CardContent></Card>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[340px_1fr]">
         <Card className="border-[#e3e9f2]"><CardHeader><CardTitle className="flex items-center gap-2 text-[#1e3a5f]"><Users className="h-5 w-5" />{t.title}</CardTitle></CardHeader><CardContent className="space-y-3">

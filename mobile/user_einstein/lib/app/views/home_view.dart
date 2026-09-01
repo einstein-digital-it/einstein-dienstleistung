@@ -5,7 +5,7 @@ import '../controllers/home_controller.dart';
 import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/app_bottom_nav.dart';
-import '../widgets/einstein_logo.dart';
+import '../widgets/public_header.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/service_card.dart';
 
@@ -25,7 +25,7 @@ class HomeView extends GetView<HomeController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const _HomeTopBar(),
+                    const PublicHeader(),
                     const SizedBox(height: 22),
                     _HeroPanel(onBook: () => Get.toNamed(AppRoutes.bookings)),
                     const SizedBox(height: 24),
@@ -61,51 +61,6 @@ class HomeView extends GetView<HomeController> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _HomeTopBar extends StatelessWidget {
-  const _HomeTopBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const EinsteinLogo(size: 48),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'EinStein Institut',
-                style: TextStyle(
-                  color: AppColors.navy,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 18,
-                ),
-              ),
-              SizedBox(height: 2),
-              Text(
-                'home_organisation'.tr,
-                style: const TextStyle(
-                  color: AppColors.muted,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-        IconButton(
-          onPressed: () => Get.toNamed(AppRoutes.notifications),
-          icon: const Icon(
-            Icons.notifications_none_rounded,
-            color: AppColors.navy,
-          ),
-          style: IconButton.styleFrom(backgroundColor: Colors.white),
-        ),
-      ],
     );
   }
 }
@@ -297,7 +252,7 @@ class _PromiseGrid extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                promises[index],
+                promises[index].tr,
                 style: const TextStyle(
                   color: AppColors.navy,
                   fontSize: 13.5,

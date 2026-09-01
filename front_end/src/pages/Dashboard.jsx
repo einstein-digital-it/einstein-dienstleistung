@@ -46,6 +46,42 @@ const translations = {
   }
 };
 
+const quickLinksByLanguage = {
+  ar: translations.ar.links,
+  en: [
+    { label: "Bookings", href: "/AdminBookings", icon: ClipboardList, note: "View current bookings" },
+    { label: "Reports", href: "/BookingReports", icon: BarChart3, note: "Booking and status reports" },
+    { label: "Revenue Report", href: "/RevenueReports", icon: Euro, note: "Revenue and monthly comparison" },
+    { label: "Users", href: "/Users", icon: Users, note: "Customer and administrator accounts" },
+    { label: "Provider Applications", href: "/SupplierRequests", icon: UserCheck, note: "Review new provider applications" },
+    { label: "SEO", href: "/SEO", icon: Search, note: "Meta data and sitemap" },
+  ],
+  de: [
+    { label: "Buchungen", href: "/AdminBookings", icon: ClipboardList, note: "Aktuelle Buchungen anzeigen" },
+    { label: "Berichte", href: "/BookingReports", icon: BarChart3, note: "Buchungs- und Statusberichte" },
+    { label: "Umsatzbericht", href: "/RevenueReports", icon: Euro, note: "Umsatz und monatlicher Vergleich" },
+    { label: "Benutzer", href: "/Users", icon: Users, note: "Kunden- und Administratorkonten" },
+    { label: "Anbieterantraege", href: "/SupplierRequests", icon: UserCheck, note: "Neue Anbieterantraege pruefen" },
+    { label: "SEO", href: "/SEO", icon: Search, note: "Meta-Daten und Sitemap" },
+  ],
+};
+
+const activityByLanguage = {
+  ar: translations.ar.activityItems,
+  en: [
+    { title: "New booking received", detail: "Coordination and communication", time: "Today, 10:00", status: "New" },
+    { title: "User registered", detail: "New customer account", time: "25.05.2026", status: "Customer" },
+    { title: "SEO record updated", detail: "Home page and services", time: "This week", status: "SEO" },
+    { title: "Payment status reviewed", detail: "Completed bookings", time: "May 2026", status: "Finance" },
+  ],
+  de: [
+    { title: "Neue Buchung eingegangen", detail: "Koordination und Kommunikation", time: "Heute, 10:00", status: "Neu" },
+    { title: "Benutzer registriert", detail: "Neues Kundenkonto", time: "25.05.2026", status: "Kunde" },
+    { title: "SEO-Eintrag aktualisiert", detail: "Startseite und Dienstleistungen", time: "Diese Woche", status: "SEO" },
+    { title: "Zahlungsstatus geprueft", detail: "Abgeschlossene Buchungen", time: "Mai 2026", status: "Finanzen" },
+  ],
+};
+
 function formatCurrency(value, lang) {
   return new Intl.NumberFormat(lang === "ar" ? "ar" : "de-DE", {
     style: "currency",
@@ -61,10 +97,8 @@ export default function Dashboard() {
     return () => window.removeEventListener("storage", syncLanguage);
   }, []);
   const t = translations[lang] || translations.ar;
-  const quickLinks = t.links.length ? t.links : translations.ar.links;
-  const activity = t.activityItems.length
-    ? t.activityItems
-    : translations.ar.activityItems;
+  const quickLinks = quickLinksByLanguage[lang] || quickLinksByLanguage.ar;
+  const activity = activityByLanguage[lang] || activityByLanguage.ar;
   const { data: dashboard } = useQuery({
     queryKey: ["admin-dashboard"],
     queryFn: adminDashboardApi.getDashboard,

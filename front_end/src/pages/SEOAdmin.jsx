@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { seoSettingsApi } from "@/api/backendClient";
 import { requireStoredUser } from "@/lib/backendAuth";
+import { getAdminText } from "@/lib/adminLocalization";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -163,6 +164,7 @@ export default function SEOAdmin() {
 
   const queryClient = useQueryClient();
   const t = translations[lang] || translations.de;
+  const adminT = getAdminText(lang);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("einstein_lang");
@@ -331,7 +333,7 @@ export default function SEOAdmin() {
                             </h3>
                             {setting.no_index && (
                               <Badge variant="outline" className="text-red-600 border-red-300">
-                                No Index
+                                {adminT.seo.noIndex}
                               </Badge>
                             )}
                           </div>
@@ -339,8 +341,8 @@ export default function SEOAdmin() {
                             {setting.meta_title_de || setting.meta_title_en || "-"}
                           </p>
                           <div className="flex gap-4 text-xs text-gray-500">
-                            <span>Priority: {setting.priority || 0.5}</span>
-                            <span>Frequency: {setting.change_frequency || "weekly"}</span>
+                            <span>{adminT.seo.priority}: {setting.priority || 0.5}</span>
+                            <span>{adminT.seo.frequency}: {setting.change_frequency || "weekly"}</span>
                           </div>
                         </div>
                         <div className="flex gap-2">
@@ -377,7 +379,7 @@ export default function SEOAdmin() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Globe className="w-5 h-5" />
-                  Sitemap XML
+                  {adminT.seo.sitemapXml}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -422,7 +424,7 @@ export default function SEOAdmin() {
                   onValueChange={(value) => setFormData({ ...formData, page_name: value })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select page" />
+                    <SelectValue placeholder={adminT.seo.selectPage} />
                   </SelectTrigger>
                   <SelectContent>
                     {availablePages.map((page) => (
@@ -449,7 +451,7 @@ export default function SEOAdmin() {
                       <Input
                         value={formData[`meta_title_${langCode}`] || ""}
                         onChange={(e) => setFormData({ ...formData, [`meta_title_${langCode}`]: e.target.value })}
-                        placeholder="Max 60 characters"
+                        placeholder={adminT.seo.metaTitleHint}
                         maxLength={60}
                       />
                       <p className="text-xs text-gray-500 mt-1">
@@ -461,7 +463,7 @@ export default function SEOAdmin() {
                       <Textarea
                         value={formData[`meta_description_${langCode}`] || ""}
                         onChange={(e) => setFormData({ ...formData, [`meta_description_${langCode}`]: e.target.value })}
-                        placeholder="Max 160 characters"
+                        placeholder={adminT.seo.metaDescriptionHint}
                         maxLength={160}
                         rows={3}
                       />
@@ -474,7 +476,7 @@ export default function SEOAdmin() {
                       <Input
                         value={formData[`keywords_${langCode}`] || ""}
                         onChange={(e) => setFormData({ ...formData, [`keywords_${langCode}`]: e.target.value })}
-                        placeholder="keyword1, keyword2, keyword3"
+                        placeholder={adminT.seo.keywordHint}
                       />
                     </div>
                   </TabsContent>

@@ -97,6 +97,57 @@ const paymentConfig = {
   refunded: { color: "bg-gray-100 text-gray-700 border-gray-200" },
 };
 
+const adminBookingText = {
+  ar: {
+    deleteConfirm: "هل أنت متأكد من الحذف؟",
+    error: "خطأ",
+    bookings: "الحجوزات",
+    extensions: "التمديدات",
+    acceptAndCollect: "قبول وتحصيل الدفع",
+    declineAndRefund: "رفض واسترداد الدفع",
+    noPrice: "لا يوجد سعر",
+    noExtensions: "لا توجد طلبات تمديد",
+    payment: { paid: "مدفوع", authorized: "مصرح", unpaid: "غير مدفوع" },
+    service: "الخدمة:",
+    provider: "المزوّد:",
+    booking: "رقم الحجز:",
+    invoiceApi: "ستتم إضافة واجهة برمجة الفواتير لاحقًا.",
+    invoice: "فاتورة",
+  },
+  en: {
+    deleteConfirm: "Are you sure you want to delete this booking?",
+    error: "Error",
+    bookings: "Bookings",
+    extensions: "Extensions",
+    acceptAndCollect: "Accept and collect payment",
+    declineAndRefund: "Decline and refund payment",
+    noPrice: "No price",
+    noExtensions: "No extension requests",
+    payment: { paid: "Paid", authorized: "Authorized", unpaid: "Unpaid" },
+    service: "Service:",
+    provider: "Provider:",
+    booking: "Booking:",
+    invoiceApi: "The invoices API will be added later.",
+    invoice: "Invoice",
+  },
+  de: {
+    deleteConfirm: "Diese Buchung wirklich loeschen?",
+    error: "Fehler",
+    bookings: "Buchungen",
+    extensions: "Erweiterungen",
+    acceptAndCollect: "Bestaetigen und Zahlung einziehen",
+    declineAndRefund: "Ablehnen und erstatten",
+    noPrice: "Kein Preis",
+    noExtensions: "Keine Erweiterungsantraege",
+    payment: { paid: "Bezahlt", authorized: "Autorisiert", unpaid: "Unbezahlt" },
+    service: "Dienst:",
+    provider: "Anbieter:",
+    booking: "Buchung:",
+    invoiceApi: "Die Rechnungs-API wird spaeter ergaenzt.",
+    invoice: "Rechnung",
+  },
+};
+
 export default function AdminBookings() {
   const [lang, setLang] = useState("ar");
   const [user, setUser] = useState(null);
@@ -104,6 +155,7 @@ export default function AdminBookings() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
   const t = translations[lang] || translations.ar;
+  const ui = adminBookingText[lang] || adminBookingText.ar;
 
   useEffect(() => {
     const savedLang = localStorage.getItem("einstein_lang") || "ar";
@@ -135,7 +187,7 @@ export default function AdminBookings() {
   };
 
   const handleDeleteBooking = async (bookingId) => {
-    if (window.confirm(lang === 'ar' ? "هل أنت متأكد من الحذف؟" : "Sicher löschen?")) {
+    if (window.confirm(ui.deleteConfirm)) {
       await bookingsApi.deleteBooking(bookingId);
       refetch();
     }
@@ -193,7 +245,7 @@ export default function AdminBookings() {
       <div className="flex items-center justify-center h-screen bg-gray-50">
         <div className="text-center p-8 bg-red-50 rounded-lg border border-red-200">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-red-700">Error</h2>
+          <h2 className="text-xl font-bold text-red-700">{ui.error}</h2>
           <p className="text-red-600">{error.message}</p>
         </div>
       </div>
@@ -212,11 +264,11 @@ export default function AdminBookings() {
         <Tabs defaultValue="bookings">
           <TabsList className="mb-6 bg-white border shadow-sm">
             <TabsTrigger value="bookings">
-              {lang === 'ar' ? 'الحجوزات' : lang === 'en' ? 'Bookings' : 'Buchungen'}
+              {ui.bookings}
               <span className="ms-1.5 bg-[#6B46C1] text-white text-xs rounded-full px-1.5 py-0.5">{bookings.length}</span>
             </TabsTrigger>
             <TabsTrigger value="extensions">
-              🔁 {lang === 'ar' ? 'التمديدات' : lang === 'en' ? 'Extensions' : 'Erweiterungen'}
+              🔁 {ui.extensions}
               {extensions.length > 0 && <span className="ms-1.5 bg-orange-500 text-white text-xs rounded-full px-1.5 py-0.5">{extensions.length}</span>}
             </TabsTrigger>
           </TabsList>
@@ -298,11 +350,11 @@ export default function AdminBookings() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => handleConfirmBooking(booking)}>
                           <CheckCircle className="w-4 h-4 me-2 text-green-600" />
-                          {booking.payment_status === 'authorized' ? (lang === 'ar' ? '✅ قبول وتحصيل الدفع' : '✅ Bestätigen & Zahlung einziehen') : t.confirm}
+                          {booking.payment_status === 'authorized' ? `✅ ${ui.acceptAndCollect}` : t.confirm}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleRejectBooking(booking)}>
                           <XCircle className="w-4 h-4 me-2 text-red-600" />
-                          {booking.payment_status === 'authorized' ? (lang === 'ar' ? '❌ رفض واسترداد الدفع' : '❌ Ablehnen & Erstatten') : t.reject}
+                          {booking.payment_status === 'authorized' ? `❌ ${ui.declineAndRefund}` : t.reject}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, "completed")}>
                           <CheckCircle className="w-4 h-4 me-2 text-blue-600" />{t.complete}
@@ -370,7 +422,7 @@ export default function AdminBookings() {
                   <div className="flex items-center justify-between gap-2">
                     <div>
                       <span className="text-sm font-bold text-[#6B46C1]">
-                        {booking.price != null ? `€${booking.price}` : (lang === 'ar' ? 'لا يوجد سعر' : 'Kein Preis')}
+                        {booking.price != null ? `€${booking.price}` : ui.noPrice}
                       </span>
                       {booking.price != null && (
                         <span className="text-xs text-gray-500 ms-2">
@@ -443,7 +495,7 @@ export default function AdminBookings() {
             ) : extensions.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-xl border border-gray-100">
                 <PlusCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500">{lang === 'ar' ? 'لا توجد طلبات تمديد' : lang === 'en' ? 'No extension requests' : 'Keine Erweiterungsanträge'}</p>
+                <p className="text-gray-500">{ui.noExtensions}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -456,9 +508,7 @@ export default function AdminBookings() {
                         ext.payment_status === 'authorized' ? 'bg-blue-100 text-blue-800' :
                         'bg-yellow-100 text-yellow-800'
                       }>
-                        💳 {ext.payment_status === 'paid' ? (lang === 'ar' ? 'مدفوع' : 'Bezahlt') :
-                            ext.payment_status === 'authorized' ? (lang === 'ar' ? 'مخصوم' : 'Autorisiert') :
-                            (lang === 'ar' ? 'غير مدفوع' : 'Unbezahlt')}
+                        💳 {ui.payment[ext.payment_status] || ui.payment.unpaid}
                       </Badge>
                       <Badge className={
                         ext.status === 'completed' ? 'bg-green-100 text-green-800' :
@@ -480,9 +530,9 @@ export default function AdminBookings() {
                     </div>
                     <div className="border-t border-gray-100" />
                     <div className="text-xs text-gray-600 space-y-1">
-                      <p><span className="font-medium">{lang === 'ar' ? 'الخدمة:' : 'Dienst:'}</span> {ext.service_name}</p>
-                      <p><span className="font-medium">{lang === 'ar' ? 'المزود:' : 'Anbieter:'}</span> {ext.provider_name || '-'}</p>
-                      {ext.booking_number && <p><span className="font-medium">{lang === 'ar' ? 'رقم الحجز:' : 'Buchung:'}</span> {ext.booking_number}</p>}
+                      <p><span className="font-medium">{ui.service}</span> {ext.service_name}</p>
+                      <p><span className="font-medium">{ui.provider}</span> {ext.provider_name || '-'}</p>
+                      {ext.booking_number && <p><span className="font-medium">{ui.booking}</span> {ext.booking_number}</p>}
                     </div>
                     {ext.description && (
                       <p className="text-xs bg-gray-50 p-2 rounded-lg border border-gray-100 text-gray-700">{ext.description}</p>
@@ -505,8 +555,8 @@ export default function AdminBookings() {
                       <div className="flex gap-1 flex-wrap">
                         {ext.payment_status === 'paid' && (
                           <Button size="sm" variant="outline" className="h-7 text-xs border-purple-200 text-purple-700 hover:bg-purple-50"
-                            onClick={() => window.alert(lang === 'ar' ? 'سيتم إضافة API الفواتير لاحقاً.' : 'Rechnungs-API wird spaeter ergaenzt.')}>
-                            <Receipt className="w-3 h-3 me-1" /> {lang === 'ar' ? 'فاتورة' : 'Rechnung'}
+                            onClick={() => window.alert(ui.invoiceApi)}>
+                            <Receipt className="w-3 h-3 me-1" /> {ui.invoice}
                           </Button>
                         )}
                         <Button size="sm" className="h-7 text-xs bg-green-600 hover:bg-green-700"

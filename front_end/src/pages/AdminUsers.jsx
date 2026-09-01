@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
+import { getAdminText } from "@/lib/adminLocalization";
 
 export default function AdminUsers() {
   const [lang] = useState(() => localStorage.getItem("einstein_lang") || "ar");
@@ -68,6 +69,7 @@ export default function AdminUsers() {
     es: { title: "Todos los Usuarios", search: "Buscar...", total: "Total", admins: "Admins", users_lbl: "Usuarios", joined: "Fecha de registro", role: "Rol", user_col: "Usuario", email_col: "Correo", no_users: "No se encontraron usuarios", admin_lbl: "Admin", user_badge: "Usuario" },
   };
   const t = labels[lang] || labels.de;
+  const adminT = getAdminText(lang);
 
   if (!user || isLoading) {
     return (
@@ -180,7 +182,7 @@ export default function AdminUsers() {
                     <th className="text-start px-4 py-3 text-sm font-semibold text-gray-600">{t.joined}</th>
                     <th className="text-start px-4 py-3 text-sm font-semibold text-gray-600">{lang === "ar" ? "الهاتف" : lang === "en" ? "Phone" : "Telefon"}</th>
                     <th className="text-start px-4 py-3 text-sm font-semibold text-gray-600">{lang === "ar" ? "تواصل" : lang === "en" ? "Contact" : "Kontakt"}</th>
-                    <th className="text-start px-4 py-3 text-sm font-semibold text-gray-600">Manage</th>
+                    <th className="text-start px-4 py-3 text-sm font-semibold text-gray-600">{adminT.common.manage}</th>
                     </tr>
                     </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -253,8 +255,8 @@ export default function AdminUsers() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="admin">Admin</SelectItem>
-                              <SelectItem value="provider">Provider</SelectItem>
-                              <SelectItem value="user">User</SelectItem>
+                              <SelectItem value="provider">{adminT.common.provider}</SelectItem>
+                              <SelectItem value="user">{adminT.common.user}</SelectItem>
                             </SelectContent>
                           </Select>
                           <Button
@@ -263,7 +265,7 @@ export default function AdminUsers() {
                             size="icon"
                             onClick={() => updateUserMutation.mutate({ id: u.id, data: { is_active: !u.is_active } })}
                             disabled={updateUserMutation.isPending}
-                            title={u.is_active ? "Deactivate" : "Activate"}
+                            title={u.is_active ? adminT.common.deactivate : adminT.common.activate}
                           >
                             <Power className={`w-4 h-4 ${u.is_active ? "text-green-600" : "text-gray-400"}`} />
                           </Button>
@@ -272,10 +274,10 @@ export default function AdminUsers() {
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              if (window.confirm("Delete this user?")) deleteUserMutation.mutate(u.id);
+                              if (window.confirm(adminT.common.deleteUserConfirm)) deleteUserMutation.mutate(u.id);
                             }}
                             disabled={deleteUserMutation.isPending}
-                            title="Delete"
+                            title={adminT.common.delete}
                           >
                             <Trash2 className="w-4 h-4 text-red-600" />
                           </Button>

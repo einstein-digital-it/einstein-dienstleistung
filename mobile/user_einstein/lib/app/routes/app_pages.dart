@@ -28,8 +28,13 @@ import '../views/payment_view.dart';
 import '../views/profile_view.dart';
 import '../views/services_view.dart';
 import 'app_routes.dart';
+import 'customer_auth_middleware.dart';
 
 abstract class AppPages {
+  static final _customerAuthMiddleware = <GetMiddleware>[
+    CustomerAuthMiddleware(),
+  ];
+
   static final pages = <GetPage<dynamic>>[
     GetPage(
       name: AppRoutes.login,
@@ -62,6 +67,7 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.bookings,
       page: () => const BookingView(),
+      middlewares: _customerAuthMiddleware,
       binding: BindingsBuilder(() {
         Get.lazyPut<BookingController>(BookingController.new);
       }),
@@ -69,6 +75,7 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.myBookings,
       page: () => const MyBookingsView(),
+      middlewares: _customerAuthMiddleware,
       binding: BindingsBuilder(() {
         Get.lazyPut<MyBookingsController>(MyBookingsController.new);
       }),
@@ -76,6 +83,7 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.notifications,
       page: () => const NotificationsView(),
+      middlewares: _customerAuthMiddleware,
       binding: BindingsBuilder(() {
         Get.lazyPut<NotificationsController>(NotificationsController.new);
       }),
@@ -83,6 +91,7 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.payment,
       page: () => const PaymentView(),
+      middlewares: _customerAuthMiddleware,
       binding: BindingsBuilder(() {
         Get.lazyPut<PaymentController>(PaymentController.new);
       }),
@@ -90,6 +99,7 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.customerDashboard,
       page: () => const CustomerDashboardView(),
+      middlewares: _customerAuthMiddleware,
       binding: BindingsBuilder(() {
         Get.lazyPut<CustomerDashboardController>(
           CustomerDashboardController.new,
@@ -99,6 +109,7 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.notificationSettings,
       page: () => const NotificationSettingsView(),
+      middlewares: _customerAuthMiddleware,
       binding: BindingsBuilder(() {
         Get.lazyPut<NotificationSettingsController>(
           NotificationSettingsController.new,
@@ -108,6 +119,7 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.profile,
       page: () => const ProfileView(),
+      middlewares: _customerAuthMiddleware,
       binding: BindingsBuilder(() {
         Get.lazyPut<ProfileController>(ProfileController.new);
       }),
@@ -115,6 +127,7 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.customerService,
       page: () => const CustomerServiceView(),
+      middlewares: _customerAuthMiddleware,
       binding: BindingsBuilder(() {
         Get.lazyPut<CustomerServiceController>(CustomerServiceController.new);
       }),
@@ -122,6 +135,7 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.customerClients,
       page: () => const CustomerClientsView(),
+      middlewares: _customerAuthMiddleware,
       binding: BindingsBuilder(() {
         Get.lazyPut<CustomerClientsController>(CustomerClientsController.new);
       }),
@@ -129,6 +143,7 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.clientWorkspace,
       page: () => const ClientWorkspaceView(),
+      middlewares: _customerAuthMiddleware,
       binding: BindingsBuilder(() {
         Get.lazyPut<ClientWorkspaceController>(
           () => ClientWorkspaceController(clientId: Get.arguments.toString()),

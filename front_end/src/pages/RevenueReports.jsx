@@ -182,7 +182,7 @@ export default function RevenueReports() {
     a.download = `EinStein_Umsatzbericht_${selectedYear}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success(lang === "ar" ? "تم تصدير CSV" : "CSV exportiert");
+    toast.success({ ar: "تم تصدير CSV", en: "CSV exported", de: "CSV exportiert" }[lang] || "CSV exported");
   };
 
   // Export PDF
@@ -200,7 +200,9 @@ export default function RevenueReports() {
     doc.setFontSize(11); doc.setFont("helvetica", "normal");
     doc.text(`${t.title} ${selectedYear}`, margin, 25);
     doc.setFontSize(8); doc.setTextColor(200, 180, 255);
-    doc.text(`Erstellt am ${new Date().toLocaleDateString("de-DE")}`, W - margin, 30, { align: "right" });
+    const generatedLabel = { ar: "تم الإنشاء في", en: "Created on", de: "Erstellt am" }[lang] || "Created on";
+    const dateLocale = { ar: "ar", en: "en-GB", de: "de-DE" }[lang] || "en-GB";
+    doc.text(`${generatedLabel} ${new Date().toLocaleDateString(dateLocale)}`, W - margin, 30, { align: "right" });
     y = 45;
 
     // KPI summary
@@ -275,7 +277,7 @@ export default function RevenueReports() {
     doc.text("EinStein Institut UG (haftungsbeschränkt) · Frankfurt, Deutschland · info@einsteindienstleistung.de", W / 2, y, { align: "center" });
 
     doc.save(`EinStein_Umsatzbericht_${selectedYear}.pdf`);
-    toast.success(lang === "ar" ? "تم تصدير PDF" : "PDF exportiert");
+    toast.success({ ar: "تم تصدير PDF", en: "PDF exported", de: "PDF exportiert" }[lang] || "PDF exported");
   };
 
   const t = {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProviderDocument;
+use App\Models\ServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -11,9 +12,22 @@ class ProviderDocumentController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $documents = ProviderDocument::query()
-            ->when($request->filled('provider_id'), fn ($query) => $query->where('service_provider_id', $request->integer('provider_id')))
-            ->when($request->filled('provider_email'), fn ($query) => $query->where('provider_email', $request->string('provider_email')))
+        $query = ProviderDocument::query();
+
+        if ($request->user()->role === 'provider') {
+            $provider = $this->providerForRequest($request);
+            $query->where(function ($documents) use ($provider) {
+                $documents
+                    ->where('service_provider_id', $provider->id)
+                    ->orWhere('provider_email', $provider->email);
+            });
+        } else {
+            $query
+                ->when($request->filled('provider_id'), fn ($documents) => $documents->where('service_provider_id', $request->integer('provider_id')))
+                ->when($request->filled('provider_email'), fn ($documents) => $documents->where('provider_email', $request->string('provider_email')));
+        }
+
+        $documents = $query
             ->latest()
             ->limit(min((int) $request->integer('limit', 200), 500))
             ->get();
@@ -23,13 +37,31 @@ class ProviderDocumentController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $document = ProviderDocument::create($request->validate($this->rules()));
+        $data = $request->validate($this->rules());
+
+        if ($request->user()->role === 'provider') {
+            $provider = $this->providerForRequest($request);
+            $data['service_provider_id'] = $provider->id;
+            $data['provider_email'] = $provider->email;
+        }
+
+        $document = ProviderDocument::create($data);
 
         return response()->json(['data' => $document], 201);
     }
 
-    public function destroy(ProviderDocument $providerDocument): JsonResponse
+    public function destroy(Request $request, ProviderDocument $providerDocument): JsonResponse
     {
+        if ($request->user()->role === 'provider') {
+            $provider = $this->providerForRequest($request);
+            abort_unless(
+                $providerDocument->service_provider_id === $provider->id ||
+                $providerDocument->provider_email === $provider->email,
+                403,
+                'Forbidden.',
+            );
+        }
+
         $providerDocument->delete();
 
         return response()->json(null, 204);
@@ -46,5 +78,24 @@ class ProviderDocumentController extends Controller
             'status' => ['sometimes', 'nullable', 'string', 'max:255'],
             'metadata' => ['sometimes', 'nullable', 'array'],
         ];
+    }
+
+    private function providerForRequest(Request $request): ServiceProvider
+    {
+        $provider = ServiceProvider::query()
+            ->where(function ($query) use ($request) {
+                $query
+                    ->where('user_id', $request->user()->id)
+                    ->orWhere('email', $request->user()->email);
+            })
+            ->first();
+
+        abort_unless(
+            $provider && $provider->status === 'approved' && $provider->login_enabled,
+            403,
+            'Provider account is not enabled.',
+        );
+
+        return $provider;
     }
 }

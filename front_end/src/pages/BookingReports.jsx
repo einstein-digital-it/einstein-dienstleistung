@@ -163,6 +163,39 @@ const statusColors = {
   cancelled: "bg-red-100 text-red-800"
 };
 
+const bookingReportText = {
+  ar: {
+    confirmedToast: "تم تأكيد الحجز بنجاح",
+    confirmError: "تعذر تأكيد الحجز",
+    all: "الكل",
+    requiredDocuments: "الأوراق المطلوبة",
+    customerDocuments: "مستندات العميل",
+    providerDocuments: "مستندات المزوّد",
+    document: "مستند",
+    paymentRequired: "يتطلب دفعًا من العميل",
+  },
+  en: {
+    confirmedToast: "Booking confirmed successfully",
+    confirmError: "Could not confirm the booking",
+    all: "All",
+    requiredDocuments: "Required Documents",
+    customerDocuments: "Customer Documents",
+    providerDocuments: "Provider Documents",
+    document: "Document",
+    paymentRequired: "payment required from customer",
+  },
+  de: {
+    confirmedToast: "Buchung wurde bestaetigt",
+    confirmError: "Buchung konnte nicht bestaetigt werden",
+    all: "Alle",
+    requiredDocuments: "Benoetigte Dokumente",
+    customerDocuments: "Kundendokumente",
+    providerDocuments: "Anbieter-Dokumente",
+    document: "Dokument",
+    paymentRequired: "zahlungspflichtig fuer den Kunden",
+  },
+};
+
 export default function BookingReports() {
   const [lang, setLang] = useState("ar");
   const [user, setUser] = useState(null);
@@ -194,6 +227,7 @@ export default function BookingReports() {
   }, []);
 
   const t = translations[lang] || translations.de;
+  const ui = bookingReportText[lang] || bookingReportText.de;
   const isAdmin = user?.role === "admin";
 
   // Fetch bookings
@@ -217,11 +251,11 @@ export default function BookingReports() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookings-reports"] });
-      toast.success(lang === "ar" ? "تم تأكيد الحجز بنجاح" : "Buchung bestätigt!");
+      toast.success(ui.confirmedToast);
       setConfirmDialog({ open: false, booking: null });
     },
     onError: (error) => {
-      toast.error("Error confirming booking");
+      toast.error(ui.confirmError);
       console.error(error);
     }
   });
@@ -265,7 +299,7 @@ export default function BookingReports() {
               onClick={() => setFilter(status)}
               className={filter === status ? "bg-[#6B46C1]" : ""}
             >
-              {status === "all" ? (lang === "ar" ? "الكل" : "All") : t[status]}
+              {status === "all" ? ui.all : t[status]}
             </Button>
           ))}
         </div>
@@ -346,7 +380,7 @@ export default function BookingReports() {
                           <div className="flex items-start gap-2 text-sm text-blue-700 bg-blue-50 p-3 rounded-lg border border-blue-200">
                             <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
                             <div>
-                              <p className="font-medium mb-0.5">{lang === "ar" ? "الأوراق المطلوبة" : lang === "en" ? "Required Documents" : "Benötigte Dokumente"}</p>
+                              <p className="font-medium mb-0.5">{ui.requiredDocuments}</p>
                               <p>{booking.required_documents_hint}</p>
                             </div>
                           </div>
@@ -357,7 +391,7 @@ export default function BookingReports() {
                           <div>
                             <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-1">
                               <FileText className="w-3 h-3" />
-                              {lang === "ar" ? "مستندات العميل" : lang === "en" ? "Customer Documents" : "Kundendokumente"}
+                              {ui.customerDocuments}
                             </p>
                             <div className="flex flex-wrap gap-2">
                               {booking.documents_urls.map((url, i) => {
@@ -370,7 +404,7 @@ export default function BookingReports() {
                                   <a key={i} href={url} target="_blank" rel="noopener noreferrer"
                                     className="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm hover:bg-blue-100 transition-colors border border-blue-200">
                                     <FileText className="w-4 h-4" />
-                                    {lang === "ar" ? "مستند" : "Dokument"} {i + 1}
+                                    {ui.document} {i + 1}
                                   </a>
                                 );
                               })}
@@ -401,10 +435,10 @@ export default function BookingReports() {
                           <div>
                             <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-1">
                               <Upload className="w-3 h-3" />
-                              {lang === "ar" ? "مستندات مزود الخدمة" : lang === "en" ? "Provider Documents" : "Anbieter-Dokumente"}
+                              {ui.providerDocuments}
                               <span className="ms-1 text-amber-600 flex items-center gap-0.5">
                                 <Lock className="w-3 h-3" />
-                                {lang === "ar" ? "(تتطلب دفع للعميل)" : lang === "en" ? "(require payment)" : "(zahlungspflichtig)"}
+                                ({ui.paymentRequired})
                               </span>
                             </p>
                             <div className="flex flex-wrap gap-2">

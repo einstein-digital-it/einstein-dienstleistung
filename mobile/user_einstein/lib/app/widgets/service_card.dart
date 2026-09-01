@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../models/service_item.dart';
 import '../theme/app_colors.dart';
@@ -26,7 +27,9 @@ class ServiceCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: expanded ? AppColors.gold : const Color(0xFFE9EEF6)),
+          border: Border.all(
+            color: expanded ? AppColors.gold : const Color(0xFFE9EEF6),
+          ),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF0F172A).withValues(alpha: 0.07),
@@ -56,7 +59,7 @@ class ServiceCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        service.title,
+                        service.title.tr,
                         style: const TextStyle(
                           color: AppColors.navy,
                           fontSize: 17,
@@ -66,8 +69,12 @@ class ServiceCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 7),
                       Text(
-                        service.description,
-                        style: const TextStyle(color: AppColors.muted, fontSize: 13.5, height: 1.35),
+                        service.description.tr,
+                        style: const TextStyle(
+                          color: AppColors.muted,
+                          fontSize: 13.5,
+                          height: 1.35,
+                        ),
                       ),
                     ],
                   ),
@@ -82,8 +89,12 @@ class ServiceCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
-                service.price,
-                style: const TextStyle(color: AppColors.gold, fontWeight: FontWeight.w900, fontSize: 13),
+                service.price.tr,
+                style: const TextStyle(
+                  color: AppColors.gold,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 13,
+                ),
               ),
             ),
             if (expanded) ...[
@@ -95,12 +106,20 @@ class ServiceCard extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Row(
                     children: [
-                      const Icon(Icons.check_circle, color: Color(0xFF10B981), size: 17),
+                      const Icon(
+                        Icons.check_circle,
+                        color: Color(0xFF10B981),
+                        size: 17,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          feature,
-                          style: const TextStyle(color: AppColors.text, fontSize: 13.5, height: 1.25),
+                          feature.tr,
+                          style: const TextStyle(
+                            color: AppColors.text,
+                            fontSize: 13.5,
+                            height: 1.25,
+                          ),
                         ),
                       ),
                     ],

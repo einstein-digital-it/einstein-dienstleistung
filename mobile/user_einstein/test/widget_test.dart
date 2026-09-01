@@ -13,6 +13,7 @@ import 'package:user_einstein/app/api/customer_api_service.dart';
 import 'package:user_einstein/app/controllers/customer_clients_controller.dart';
 import 'package:user_einstein/app/lang/app_translations.dart';
 import 'package:user_einstein/app/models/managed_client.dart';
+import 'package:user_einstein/app/routes/app_routes.dart';
 import 'package:user_einstein/app/views/client_workspace_view.dart';
 
 void main() {
@@ -65,6 +66,8 @@ void main() {
   }
 
   Future<void> signIn(WidgetTester tester) async {
+    Get.toNamed(AppRoutes.login);
+    await tester.pumpAndSettle();
     await tester.enterText(
       find.byType(EditableText).at(0),
       'customer@example.com',
@@ -79,21 +82,18 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('shows the EinStein login screen', (tester) async {
+  testWidgets('allows a guest to browse home and protects booking', (tester) async {
     await pumpApp(tester, useEnglish: false);
 
     expect(
       find.text(
-        '\u0645\u0631\u062d\u0628\u064b\u0627 \u0628\u0643 \u0641\u064a \u0645\u0639\u0647\u062f \u0622\u064a\u0646\u0634\u062a\u0627\u064a\u0646',
+        '\u0627\u0644\u062a\u0646\u0638\u064a\u0645 \u0648\u0627\u0644\u0625\u062f\u0627\u0631\u0629',
       ),
-      findsOneWidget,
+      findsWidgets,
     );
-    expect(
-      find.text(
-        '\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644',
-      ),
-      findsOneWidget,
-    );
+    await tester.tap(find.text('\u0627\u062d\u062c\u0632 \u0627\u0644\u0622\u0646'));
+    await tester.pumpAndSettle();
+    expect(find.text('\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644'), findsOneWidget);
   });
 
   testWidgets('starts with Arabic as the default application language', (
@@ -127,6 +127,8 @@ void main() {
   ) async {
     await pumpApp(tester);
 
+    Get.toNamed(AppRoutes.login);
+    await tester.pumpAndSettle();
     final signUpButton = find.text('Sign up');
     await tester.ensureVisible(signUpButton);
     await tester.tap(signUpButton);
@@ -274,7 +276,7 @@ void main() {
     tester,
   ) async {
     await pumpApp(tester);
-    expect(find.text('Welcome to EinStein Institut'), findsOneWidget);
+    expect(find.text('Organisation & Administration'), findsWidgets);
 
     await pumpApp(tester, useEnglish: false);
     expect(Get.locale?.languageCode, 'ar');
