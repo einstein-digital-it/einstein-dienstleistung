@@ -12,6 +12,7 @@ class PaymentAdminApiTest extends TestCase
 
     public function test_payments_can_be_listed_and_status_can_be_updated(): void
     {
+        $this->withApiUser('admin');
         $booking = Booking::create([
             'booking_number' => 'ES-PAY-001',
             'customer_name' => 'Pay Customer',
@@ -36,6 +37,7 @@ class PaymentAdminApiTest extends TestCase
 
     public function test_payments_can_be_refunded_and_unpaid_bookings_can_be_deleted(): void
     {
+        $this->withApiUser('admin');
         $paid = Booking::create([
             'booking_number' => 'ES-PAY-002',
             'customer_name' => 'Paid Customer',

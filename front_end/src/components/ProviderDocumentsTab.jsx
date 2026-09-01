@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { providerDocumentsApi, uploadApi } from "@/api/backendClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -105,11 +105,11 @@ export default function ProviderDocumentsTab({ providerId, lang = "de" }) {
 
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ["provider-documents", providerId],
-    queryFn: () => base44.entities.ProviderDocument.filter({ provider_id: providerId }, "-created_date")
+    queryFn: () => providerDocumentsApi.listDocuments({ provider_id: providerId })
   });
 
   const createDocMutation = useMutation({
-    mutationFn: (data) => base44.entities.ProviderDocument.create(data),
+    mutationFn: (data) => providerDocumentsApi.createDocument(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["provider-documents", providerId] });
       setNewDoc({ name: "", type: "certificate", file_url: "" });
@@ -117,7 +117,7 @@ export default function ProviderDocumentsTab({ providerId, lang = "de" }) {
   });
 
   const deleteDocMutation = useMutation({
-    mutationFn: (id) => base44.entities.ProviderDocument.delete(id),
+    mutationFn: (id) => providerDocumentsApi.deleteDocument(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["provider-documents", providerId] })
   });
 
@@ -125,24 +125,35 @@ export default function ProviderDocumentsTab({ providerId, lang = "de" }) {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setNewDoc(prev => ({ ...prev, file_url }));
+    const uploaded = await uploadApi.uploadFiles([file]);
+    const fileUrl = uploaded.files?.[0]?.url || "";
+    setNewDoc(prev => ({ ...prev, file_url: fileUrl }));
     setUploading(false);
   };
 
   const handleSave = () => {
     if (!newDoc.name || !newDoc.file_url) return;
     createDocMutation.mutate({
-      ...newDoc,
-      provider_id: providerId,
-      upload_date: new Date().toISOString()
+      title: newDoc.name,
+      document_type: newDoc.type,
+      file_url: newDoc.file_url,
+      service_provider_id: providerId,
     });
   };
 
-  const filteredDocs = filterType === "all" ? documents : documents.filter(d => d.type === filterType);
+  const normalizeDoc = (doc) => ({
+    ...doc,
+    name: doc.name || doc.title,
+    type: doc.type || doc.document_type || "other",
+    file_url: doc.file_url,
+    upload_date: doc.upload_date || doc.created_at,
+  });
+
+  const normalizedDocs = documents.map(normalizeDoc);
+  const filteredDocs = filterType === "all" ? normalizedDocs : normalizedDocs.filter(d => d.type === filterType);
 
   // Count per type
-  const countByType = documents.reduce((acc, d) => {
+  const countByType = normalizedDocs.reduce((acc, d) => {
     acc[d.type] = (acc[d.type] || 0) + 1;
     return acc;
   }, {});
@@ -208,13 +219,13 @@ export default function ProviderDocumentsTab({ providerId, lang = "de" }) {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between flex-wrap gap-3">
-            <CardTitle className="text-[#1e3a5f]">{t.title} ({documents.length})</CardTitle>
+            <CardTitle className="text-[#1e3a5f]">{t.title} ({normalizedDocs.length})</CardTitle>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setFilterType("all")}
                 className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${filterType === "all" ? "bg-[#6B46C1] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
               >
-                {t.all} ({documents.length})
+                {t.all} ({normalizedDocs.length})
               </button>
               {Object.entries(t.types).map(([key, label]) => countByType[key] ? (
                 <button
@@ -255,7 +266,7 @@ export default function ProviderDocumentsTab({ providerId, lang = "de" }) {
                       <p className="font-semibold text-[#1e3a5f] truncate">{doc.name}</p>
                       <div className="flex items-center gap-2 mt-1 flex-wrap">
                         <Badge className={`text-xs ${colorClass} border-0`}>{t.types[doc.type] || doc.type}</Badge>
-                        <span className="text-xs text-gray-400">{format(new Date(doc.upload_date || doc.created_date), "dd.MM.yyyy")}</span>
+                        <span className="text-xs text-gray-400">{format(new Date(doc.upload_date || doc.created_at), "dd.MM.yyyy")}</span>
                       </div>
                       <div className="flex items-center gap-2 mt-2">
                         <a

@@ -15,13 +15,13 @@ class ProviderDashboardController extends Controller
 {
     public function show(Request $request): JsonResponse
     {
-        $data = $request->validate([
-            'email' => ['required', 'email', 'max:255'],
-        ]);
-
-        $provider = ServiceProvider::query()
-            ->where('email', $data['email'])
-            ->first();
+        $provider = $request->user()->role === 'provider'
+            ? $this->providerForRequest($request)
+            : ServiceProvider::query()
+                ->where('email', $request->validate([
+                    'email' => ['required', 'email', 'max:255'],
+                ])['email'])
+                ->first();
 
         if (! $provider) {
             return response()->json(['data' => ['provider' => null, 'bookings' => [], 'summary' => $this->summary(collect())]]);
@@ -44,11 +44,12 @@ class ProviderDashboardController extends Controller
     public function action(Request $request, Booking $booking): JsonResponse
     {
         $data = $request->validate([
-            'provider_id' => ['required', 'integer', 'exists:service_providers,id'],
-            'action' => ['required', Rule::in(['accept', 'decline', 'complete'])],
+            'provider_id' => ['sometimes', 'integer', 'exists:service_providers,id'],
+            'action' => ['required', Rule::in(['accept', 'decline', 'start', 'complete'])],
         ]);
 
-        $provider = ServiceProvider::findOrFail($data['provider_id']);
+        $provider = $this->providerForRequest($request, $data['provider_id'] ?? null);
+        $this->assertBookingAccess($booking, $provider, $data['action']);
 
         if ($data['action'] === 'accept') {
             $booking->update([
@@ -65,13 +66,26 @@ class ProviderDashboardController extends Controller
         }
 
         if ($data['action'] === 'decline') {
-            $booking->update(['status' => 'cancelled']);
-            $this->notifyCustomer($booking, 'booking_cancelled', 'Booking cancelled');
+            $declinedIds = $booking->provider_declined_ids ?? [];
+            $declinedIds[] = (string) $provider->id;
+            $booking->update([
+                'provider_declined_ids' => array_values(array_unique($declinedIds)),
+            ]);
+            $this->notifyProvider($provider, $booking, 'booking_declined', 'Request declined');
+        }
+
+        if ($data['action'] === 'start') {
+            abort_unless($booking->status === 'confirmed', 422, 'Only confirmed bookings can be started.');
+            $booking->update(['status' => 'in_progress']);
+            $this->notifyCustomer($booking, 'booking_in_progress', 'Work started');
+            $this->notifyProvider($provider, $booking, 'booking_in_progress', 'Work started');
         }
 
         if ($data['action'] === 'complete') {
+            abort_unless(in_array($booking->status, ['confirmed', 'in_progress'], true), 422, 'This booking cannot be completed.');
             $booking->update(['status' => 'completed']);
             $this->notifyCustomer($booking, 'booking_completed', 'Booking completed');
+            $this->notifyProvider($provider, $booking, 'booking_completed', 'Booking completed');
         }
 
         return response()->json(['data' => $booking->fresh()]);
@@ -79,6 +93,11 @@ class ProviderDashboardController extends Controller
 
     public function updateProfile(Request $request, ServiceProvider $serviceProvider): JsonResponse
     {
+        if ($request->user()->role === 'provider') {
+            $provider = $this->providerForRequest($request);
+            abort_unless($provider->is($serviceProvider), 403, 'Forbidden.');
+        }
+
         $data = $request->validate([
             'full_name' => ['sometimes', 'string', 'max:255'],
             'phone' => ['sometimes', 'nullable', 'string', 'max:255'],
@@ -109,10 +128,13 @@ class ProviderDashboardController extends Controller
     public function updateDocuments(Request $request, Booking $booking): JsonResponse
     {
         $data = $request->validate([
-            'provider_id' => ['required', 'integer', 'exists:service_providers,id'],
+            'provider_id' => ['sometimes', 'integer', 'exists:service_providers,id'],
             'document_urls' => ['required', 'array', 'min:1'],
             'document_urls.*' => ['string', 'max:2048'],
         ]);
+
+        $provider = $this->providerForRequest($request, $data['provider_id'] ?? null);
+        $this->assertBookingAccess($booking, $provider, 'documents');
 
         $current = $booking->provider_documents_urls ?? [];
         $booking->update([
@@ -136,9 +158,69 @@ class ProviderDashboardController extends Controller
                         $categories = $provider->categories ?? [];
                         $query->where('status', 'pending')
                             ->whereNull('confirmed_by_provider_id')
+                            ->where(function ($query) use ($provider) {
+                                $query
+                                    ->whereNull('provider_declined_ids')
+                                    ->orWhereJsonDoesntContain('provider_declined_ids', (string) $provider->id);
+                            })
                             ->when(count($categories) > 0, fn ($query) => $query->whereIn('category', $categories));
                     });
             });
+    }
+
+    private function providerForRequest(Request $request, ?int $requestedProviderId = null): ServiceProvider
+    {
+        if ($request->user()->role === 'admin') {
+            if (! $requestedProviderId) {
+                throw ValidationException::withMessages([
+                    'provider_id' => ['A provider is required.'],
+                ]);
+            }
+
+            return ServiceProvider::findOrFail($requestedProviderId);
+        }
+
+        $provider = ServiceProvider::query()
+            ->where(function ($query) use ($request) {
+                $query
+                    ->where('user_id', $request->user()->id)
+                    ->orWhere('email', $request->user()->email);
+            })
+            ->first();
+
+        if (! $provider ||
+            $provider->status !== 'approved' ||
+            ! $provider->login_enabled) {
+            abort(403, 'Provider account is not enabled.');
+        }
+
+        if ($requestedProviderId && $provider->id !== $requestedProviderId) {
+            abort(403, 'Forbidden.');
+        }
+
+        return $provider;
+    }
+
+    private function assertBookingAccess(Booking $booking, ServiceProvider $provider, string $action): void
+    {
+        $isAssigned = $booking->provider_id === (string) $provider->id ||
+            $booking->confirmed_by_provider_id === (string) $provider->id ||
+            $booking->confirmed_by_provider_email === $provider->email;
+
+        $matchesCategory = empty($provider->categories) ||
+            in_array($booking->category, $provider->categories, true);
+        $isOpenRequest = $booking->status === 'pending' &&
+            empty($booking->confirmed_by_provider_id) &&
+            ! in_array((string) $provider->id, $booking->provider_declined_ids ?? [], true) &&
+            $matchesCategory;
+
+        $canHandleOpenRequest = in_array($action, ['accept', 'decline'], true) && $isOpenRequest;
+
+        abort_unless($isAssigned || $canHandleOpenRequest, 403, 'Forbidden.');
+
+        if ($action === 'accept') {
+            abort_unless($isOpenRequest, 422, 'This booking is no longer available.');
+        }
     }
 
     private function summary($bookings): array
@@ -167,6 +249,22 @@ class ProviderDashboardController extends Controller
             'message_ar' => "{$title}: {$booking->booking_number}",
             'message_en' => "{$title}: {$booking->booking_number}",
             'link' => 'MyBookings',
+            'booking_id' => (string) $booking->id,
+        ]);
+    }
+
+    private function notifyProvider(ServiceProvider $provider, Booking $booking, string $type, string $title): void
+    {
+        Notification::create([
+            'user_email' => $provider->email,
+            'type' => $type,
+            'title_de' => $title,
+            'title_ar' => $title,
+            'title_en' => $title,
+            'message_de' => "{$title}: {$booking->booking_number}",
+            'message_ar' => "{$title}: {$booking->booking_number}",
+            'message_en' => "{$title}: {$booking->booking_number}",
+            'link' => 'ProviderBookings',
             'booking_id' => (string) $booking->id,
         ]);
     }

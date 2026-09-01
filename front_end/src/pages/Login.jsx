@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { authApi } from "@/api/backendClient";
 import EinsteinLogo from "@/components/EinsteinLogo";
-import { createMockAdminSession } from "@/lib/mockAuth";
 
 function GoogleIcon() {
   return (
@@ -26,21 +26,55 @@ function FacebookIcon() {
 
 export default function Login() {
   const navigate = useNavigate();
+  const [mode, setMode] = useState("login");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const trimmedEmail = email.trim();
 
     if (!trimmedEmail || !password.trim()) {
-      setError("Enter any email and password to continue.");
+      setError("Enter your email and password to continue.");
       return;
     }
 
-    createMockAdminSession(trimmedEmail);
-    navigate("/", { replace: true });
+    if (mode === "register" && !name.trim()) {
+      setError("Enter your name to create an account.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const result = mode === "register"
+        ? await authApi.register({ name: name.trim(), email: trimmedEmail, password })
+        : await authApi.login({ email: trimmedEmail, password });
+
+      const user = result.user || result;
+      const token = result.session?.token;
+      localStorage.setItem("einstein_auth_user", JSON.stringify(user));
+      if (token) localStorage.setItem("einstein_auth_token", token);
+      localStorage.setItem("einstein_customer_email", user.email);
+      localStorage.setItem("einstein_lang", user.preferred_language || localStorage.getItem("einstein_lang") || "ar");
+      localStorage.setItem("einstein_is_provider", user.role === "provider" ? "true" : "false");
+
+      if (user.role === "admin") {
+        navigate("/Dashboard", { replace: true });
+      } else if (user.role === "provider") {
+        navigate("/ProviderDashboard", { replace: true });
+      } else {
+        navigate("/CustomerDashboard", { replace: true });
+      }
+    } catch (err) {
+      setError(err.message || "Unable to sign in. Please check your details.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,6 +119,26 @@ export default function Login() {
           </div>
 
           <form className="w-full" onSubmit={handleSubmit} noValidate>
+            {mode === "register" && (
+              <div className="mb-[27px]">
+                <label htmlFor="auth-name" className="mb-[13px] block text-center text-[16px] font-bold text-[#334155]">
+                  Name
+                </label>
+                <input
+                  id="auth-name"
+                  type="text"
+                  value={name}
+                  onChange={(event) => {
+                    setName(event.target.value);
+                    if (error) setError("");
+                  }}
+                  className="h-[60px] w-full rounded-[13px] border border-[#dae5f4] bg-[#e8f0fd] px-4 text-[16px] text-black outline-none transition placeholder:text-[#7b8ca4] focus:border-[#b5c7e5] focus:ring-2 focus:ring-[#d5e2f5]"
+                  autoComplete="name"
+                  aria-invalid={Boolean(error)}
+                />
+              </div>
+            )}
+
             <div className="mb-[27px]">
               <label htmlFor="auth-email" className="mb-[13px] block text-center text-[16px] font-bold text-[#334155]">
                 Email
@@ -135,9 +189,10 @@ export default function Login() {
 
             <button
               type="submit"
+              disabled={loading}
               className="h-[62px] w-full rounded-[13px] bg-[#111827] text-[18px] font-bold text-white transition hover:bg-[#1f2937] focus:outline-none focus:ring-2 focus:ring-[#111827] focus:ring-offset-2"
             >
-              Sign in
+              {loading ? "Please wait..." : mode === "register" ? "Create account" : "Sign in"}
             </button>
 
             <div className="mt-[17px] flex w-full items-center justify-between gap-4 text-[15px] leading-5">
@@ -151,9 +206,13 @@ export default function Login() {
                 Need an account?{" "}
                 <button
                   type="button"
+                  onClick={() => {
+                    setMode((current) => current === "login" ? "register" : "login");
+                    setError("");
+                  }}
                   className="font-bold text-[#334155] transition hover:text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#94a3b8] focus:ring-offset-2"
                 >
-                  Sign up
+                  {mode === "login" ? "Sign up" : "Sign in"}
                 </button>
               </p>
             </div>

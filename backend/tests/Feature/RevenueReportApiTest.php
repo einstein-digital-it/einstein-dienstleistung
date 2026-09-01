@@ -13,6 +13,7 @@ class RevenueReportApiTest extends TestCase
 
     public function test_revenue_report_returns_bookings_extensions_and_summary(): void
     {
+        $this->withApiUser('admin');
         Booking::create([
             'booking_number' => 'ES-REV-001',
             'customer_name' => 'Revenue Customer',

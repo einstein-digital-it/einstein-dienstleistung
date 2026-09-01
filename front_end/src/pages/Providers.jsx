@@ -21,48 +21,40 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { providersApi } from "@/api/backendClient";
-import { staticServiceProviders } from "@/lib/staticAdminData";
+import { getAdminLocale, getAdminText } from "@/lib/adminLocalization";
 
-const categoryLabels = {
-  office: "Buero",
-  forms: "Formulare",
-  admin: "Administration",
-  coordination: "Koordination",
-  mercosur: "MERCOSUR",
-  tutoring: "Nachhilfe",
-  print: "Druck"
-};
-
-const statusMeta = {
+const statusMeta = (t) => ({
   approved: {
-    label: "Genehmigt",
+    label: t.statuses.approved,
     icon: BadgeCheck,
     className: "bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
   },
   pending: {
-    label: "Ausstehend",
+    label: t.statuses.pending,
     icon: Clock,
     className: "bg-amber-100 text-amber-700 hover:bg-amber-100"
   },
   suspended: {
-    label: "Gesperrt",
+    label: t.statuses.suspended,
     icon: ShieldAlert,
     className: "bg-slate-100 text-slate-700 hover:bg-slate-100"
   },
   rejected: {
-    label: "Abgelehnt",
+    label: t.statuses.rejected,
     icon: ShieldAlert,
     className: "bg-red-100 text-red-700 hover:bg-red-100"
   }
-};
+});
 
 export default function Providers() {
   const [search, setSearch] = useState("");
+  const t = getAdminText(getAdminLocale()).providers;
+  const statuses = statusMeta(t);
   const { data: backendProviders = [] } = useQuery({
     queryKey: ["admin-providers"],
     queryFn: () => providersApi.listProviders("all"),
   });
-  const providers = backendProviders.length > 0 ? backendProviders : staticServiceProviders;
+  const providers = backendProviders;
 
   const filteredProviders = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -91,29 +83,29 @@ export default function Providers() {
           className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
         >
           <div>
-            <p className="mb-2 text-sm font-semibold text-[#c9a227]">Admin / Fachkraefte</p>
-            <h1 className="text-3xl font-bold text-[#1e3a5f]">Fachkraefte verwalten</h1>
+            <p className="mb-2 text-sm font-semibold text-[#c9a227]">{t.breadcrumb}</p>
+            <h1 className="text-3xl font-bold text-[#1e3a5f]">{t.title}</h1>
             <p className="mt-2 text-sm text-[#65758b]">
-              Statische Designansicht fuer Service Provider, Dokumente, Kategorien und Status.
+              {t.subtitle}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" className="border-[#dbe3ee]">
-              Export
+              {t.export}
             </Button>
             <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8a]">
               <UserCheck className="mr-2 h-4 w-4" />
-              Fachkraft hinzufuegen
+              {t.add}
             </Button>
           </div>
         </motion.div>
 
         <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
           {[
-            { label: "Fachkraefte", value: providers.length, icon: Users },
-            { label: "Genehmigt", value: approved, icon: BadgeCheck },
-            { label: "Ausstehend", value: pending, icon: Clock },
-            { label: "Dokumente", value: documents, icon: FileText }
+            { label: t.total, value: providers.length, icon: Users },
+            { label: t.approved, value: approved, icon: BadgeCheck },
+            { label: t.pending, value: pending, icon: Clock },
+            { label: t.documents, value: documents, icon: FileText }
           ].map((stat) => (
             <Card key={stat.label} className="border-[#e3e9f2] shadow-sm">
               <CardContent className="flex items-center gap-4 p-5">
@@ -136,7 +128,7 @@ export default function Providers() {
               <Input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Fachkraft suchen..."
+                placeholder={t.search}
                 className="pl-10"
               />
             </div>
@@ -145,7 +137,7 @@ export default function Providers() {
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {filteredProviders.map((provider, index) => {
-            const status = statusMeta[provider.status] || statusMeta.pending;
+            const status = statuses[provider.status] || statuses.pending;
             const StatusIcon = status.icon;
             return (
               <motion.div
@@ -169,7 +161,7 @@ export default function Providers() {
                               {status.label}
                             </Badge>
                             <Badge variant="outline" className="border-[#dbe3ee] text-[#65758b]">
-                              {provider.total_jobs} Auftraege
+                              {provider.total_jobs} {t.jobs}
                             </Badge>
                           </div>
                         </div>
@@ -195,7 +187,7 @@ export default function Providers() {
                       </p>
                       <p className="flex items-center gap-2">
                         <FileText className="h-4 w-4 text-[#8ea0b7]" />
-                        {provider.documents} Dokumente
+                        {provider.documents} {t.documents}
                       </p>
                     </div>
 
@@ -203,12 +195,12 @@ export default function Providers() {
                       <div>
                         <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#8ea0b7]">
                           <Briefcase className="h-4 w-4" />
-                          Kategorien
+                          {t.categories}
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {(provider.categories || []).map((category) => (
                             <Badge key={category} variant="outline" className="border-[#dbe3ee] bg-white text-[#1e3a5f]">
-                              {categoryLabels[category] || category}
+                              {t.categoriesMap[category] || category}
                             </Badge>
                           ))}
                         </div>
@@ -216,7 +208,7 @@ export default function Providers() {
                       <div>
                         <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#8ea0b7]">
                           <Languages className="h-4 w-4" />
-                          Sprachen
+                          {t.languages}
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {(provider.languages || []).map((language) => (
@@ -230,11 +222,11 @@ export default function Providers() {
 
                     <div className="mt-5 flex items-center justify-between border-t border-[#e3e9f2] pt-4">
                       <div>
-                        <p className="text-xs text-[#8ea0b7]">Stundensatz</p>
-                        <p className="font-bold text-[#1e3a5f]">{provider.hourly_rate} EUR / Stunde</p>
+                        <p className="text-xs text-[#8ea0b7]">{t.hourlyRate}</p>
+                        <p className="font-bold text-[#1e3a5f]">{provider.hourly_rate} EUR / {t.hour}</p>
                       </div>
                       <Button variant="outline" className="border-[#dbe3ee]">
-                        Details
+                        {t.details}
                       </Button>
                     </div>
                   </CardContent>

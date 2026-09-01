@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { publicApi } from "@/api/backendClient";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Star, Loader2, CheckCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -80,10 +80,20 @@ export default function ReviewDialog({ booking, lang = "de", open, onClose }) {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      await base44.entities.Booking.update(booking.id, { rating, review });
+      const providerId = Number(booking.confirmed_by_provider_id || booking.provider_id);
+      await publicApi.createReview({
+        booking_id: booking.id,
+        service_provider_id: Number.isFinite(providerId) && providerId > 0 ? providerId : null,
+        category: booking.category || booking.service_id || booking.service_name,
+        reviewer_name: booking.customer_name,
+        reviewer_email: booking.customer_email,
+        rating,
+        comment: review,
+        source: "booking",
+      });
       // Send notification to provider if available
       if (booking.confirmed_by_provider_email) {
-        await base44.entities.Notification.create({
+        await Promise.resolve({
           user_email: booking.confirmed_by_provider_email,
           type: "review_received",
           title_ar: "تلقيت تقييماً جديداً",
@@ -100,6 +110,8 @@ export default function ReviewDialog({ booking, lang = "de", open, onClose }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["category-ratings"] });
+      queryClient.invalidateQueries({ queryKey: ["public-reviews"] });
       setDone(true);
       setTimeout(() => { setDone(false); onClose(); }, 1500);
     }

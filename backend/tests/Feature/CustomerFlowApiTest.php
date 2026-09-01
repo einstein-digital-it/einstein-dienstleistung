@@ -17,6 +17,7 @@ class CustomerFlowApiTest extends TestCase
 
     public function test_customer_booking_dashboard_notifications_and_payment_flow(): void
     {
+        $this->withApiUser('user', 'customer@example.com');
         User::create([
             'name' => 'Admin',
             'full_name' => 'Admin',
@@ -82,6 +83,7 @@ class CustomerFlowApiTest extends TestCase
 
     public function test_profile_preferences_notifications_and_upload_api_work(): void
     {
+        $this->withApiUser('user', 'customer@example.com');
         Storage::fake('public');
 
         $this->getJson('/api/profile?email=customer@example.com')

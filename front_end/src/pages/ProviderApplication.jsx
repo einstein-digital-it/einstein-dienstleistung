@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
-import { priceAdminApi, providersApi } from "@/api/backendClient";
+import { priceAdminApi, providersApi, uploadApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -251,9 +250,18 @@ export default function ProviderApplication() {
     if (!file) return;
     
     setLoading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setFormData(prev => ({ ...prev, profile_image: file_url }));
-    setLoading(false);
+    try {
+      const uploaded = await uploadApi.uploadFiles([file]);
+      const fileUrl = uploaded.files?.[0]?.url;
+      if (fileUrl) {
+        setFormData(prev => ({ ...prev, profile_image: fileUrl }));
+      }
+    } catch (error) {
+      console.error("Error uploading profile image:", error);
+      alert(lang === "ar" ? "فشل رفع الصورة." : lang === "en" ? "Profile image upload failed." : "Profilbild konnte nicht hochgeladen werden.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCategoryToggle = (cat) => {
@@ -279,18 +287,19 @@ export default function ProviderApplication() {
     if (!files.length) return;
     
     setLoading(true);
-    const urls = [];
-    
-    for (const file of files) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      urls.push(file_url);
+    try {
+      const uploaded = await uploadApi.uploadFiles(Array.from(files));
+      const urls = (uploaded.files || []).map((file) => file.url).filter(Boolean);
+      setFormData(prev => ({
+        ...prev,
+        documents_urls: [...prev.documents_urls, ...urls]
+      }));
+    } catch (error) {
+      console.error("Error uploading provider documents:", error);
+      alert(lang === "ar" ? "فشل رفع المستندات." : lang === "en" ? "Document upload failed." : "Dokumente konnten nicht hochgeladen werden.");
+    } finally {
+      setLoading(false);
     }
-    
-    setFormData(prev => ({
-      ...prev,
-      documents_urls: [...prev.documents_urls, ...urls]
-    }));
-    setLoading(false);
   };
 
   const handleSubmit = async (e) => {
@@ -336,7 +345,7 @@ export default function ProviderApplication() {
       try {
         const admins = [];
         for (const admin of admins) {
-          await base44.integrations.Core.SendEmail({
+          await Promise.resolve({
             to: admin.email,
             subject: `Neue Fachkraft-Bewerbung / New Provider Application: ${formData.full_name}`,
             body: `

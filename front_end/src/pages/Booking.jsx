@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import { base44 } from "@/api/base44Client";
 import { adminServicesApi, bookingsApi, priceAdminApi, providersApi, uploadApi } from "@/api/backendClient";
+import { getStoredAuthUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -46,7 +46,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { format, isSameDay, addDays, startOfDay } from "date-fns";
-import { defaultPrices, getPriceNumber } from "@/lib/defaultPrices";
+import { getPriceNumber } from "@/lib/priceUtils";
 import SecretariatPackages from "@/components/SecretariatPackages";
 
 const translations = {
@@ -507,19 +507,16 @@ export default function Booking() {
   const availableSlots = getAvailableSlots();
 
   useEffect(() => {
-    const checkUser = async () => {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (isAuth) {
-        const userData = await base44.auth.me();
-        console.log("User data:", userData);
-        setUser(userData);
-        if (userData.email) localStorage.setItem("einstein_customer_email", userData.email);
-        setFormData(prev => ({
-          ...prev,
-          customer_name: userData.full_name || "",
-          customer_email: userData.email || ""
-        }));
-      }
+    const checkUser = () => {
+      const userData = getStoredAuthUser();
+      if (!userData) return;
+      setUser(userData);
+      if (userData.email) localStorage.setItem("einstein_customer_email", userData.email);
+      setFormData(prev => ({
+        ...prev,
+        customer_name: userData.full_name || "",
+        customer_email: userData.email || ""
+      }));
     };
     checkUser();
     
@@ -591,7 +588,7 @@ export default function Booking() {
         defaultPrice = hourlyRate * hrs;
         serviceName = `${getCategoryName("secretariat")} (${hrs}h)`;
       } else if (formData.service_id === `${formData.category}_main`) {
-          // Priority: PriceSettings -> Service.price_from -> defaultPrices
+          // Priority: PriceSettings -> Service.price_from.
           const priceFromSettings = customPrices && customPrices[formData.category]?.[0]?.price
             ? parseFloat(String(customPrices[formData.category][0].price).replace(/[^\d.,]/g, '').replace(',', '.'))
             : null;
@@ -653,52 +650,6 @@ export default function Booking() {
       console.log("Booking data to create:", bookingData);
 
       const createdBooking = await bookingsApi.createBooking(bookingData);
-
-      /*
-      // Legacy Base44 email/notification flow. Laravel now creates booking notifications.
-      // Send confirmation email
-      try {
-        await legacyBase44.functions.invoke('sendBookingConfirmation', { bookingId: bookingData.booking_number });
-      } catch (emailError) {
-        console.error('Error sending confirmation email:', emailError);
-      }
-
-      // Create notification for customer
-      await legacyBase44.entities.Notification.create({
-        user_email: customerEmail,
-        type: "booking_confirmed",
-        title_de: "Buchung eingegangen",
-        title_ar: "تم استلام الحجز",
-        title_en: "Booking Received",
-        message_de: `Ihre Buchung ${bookingNum} wurde erfolgreich eingereicht. Wir werden uns in Kürze bei Ihnen melden.`,
-        message_ar: `تم تقديم حجزك ${bookingNum} بنجاح. سنتواصل معك قريباً.`,
-        message_en: `Your booking ${bookingNum} has been successfully submitted. We will contact you shortly.`,
-        link: "CustomerDashboard",
-        is_read: false
-      });
-
-      // Create notification for admin
-      try {
-        const admins = await legacyBase44.entities.User.filter({ role: "admin" });
-        for (const admin of admins) {
-          await legacyBase44.entities.Notification.create({
-            user_email: admin.email,
-            type: "new_booking_request",
-            title_de: "Neue Buchung eingegangen",
-            title_ar: "حجز جديد وارد",
-            title_en: "New Booking Received",
-            message_de: `Neue Buchung ${bookingNum} von ${formData.customer_name} - ${serviceName}`,
-            message_ar: `حجز جديد ${bookingNum} من ${formData.customer_name} - ${serviceName}`,
-            message_en: `New booking ${bookingNum} from ${formData.customer_name} - ${serviceName}`,
-            link: "BookingReports",
-            booking_id: bookingNum,
-            is_read: false
-          });
-        }
-      } catch (adminNotifError) {
-        console.error("Error notifying admins:", adminNotifError);
-      }
-      */
 
       setLoading(false);
       navigate(`/Payment?id=${createdBooking.id}`);
@@ -849,12 +800,7 @@ export default function Booking() {
                         <p className="text-xs text-[#c9a227] font-medium mt-1">
                           {priceInfo
                             ? `${priceInfo.price} ${priceInfo.unit}`
-                            : (() => {
-                                const d = defaultPrices[cat.key];
-                                if (!d) return "";
-                                const unit = lang === "ar" ? d.unit_ar : lang === "en" ? d.unit_en : d.unit_de;
-                                return `${d.display}${unit ? " " + unit : ""}`;
-                              })()
+                            : ""
                           }
                         </p>
                       </button>

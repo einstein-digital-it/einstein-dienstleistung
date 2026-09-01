@@ -18,6 +18,8 @@ class ServiceExtension extends Model
         'booking_number',
         'customer_name',
         'customer_email',
+        'provider_id',
+        'provider_email',
         'service_name',
         'provider_name',
         'status',

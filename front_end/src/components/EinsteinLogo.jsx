@@ -2,12 +2,12 @@ import React from "react";
 
 export default function EinsteinLogo({ size = 40 }) {
   return (
-    <img 
-      src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/694d6e3a995b53f785114ddc/297b1cd85_IMG_0747.png"
-      alt="EinStein Logo"
-      width={size}
-      height={size}
-      style={{ objectFit: 'contain' }}
-    />
+    <div
+      aria-label="EinStein Logo"
+      className="inline-flex items-center justify-center rounded-full bg-white font-black text-[#1e3a5f] shadow-sm ring-1 ring-[#d4af25]/40"
+      style={{ width: size, height: size, fontSize: Math.max(12, Math.round(size * 0.35)) }}
+    >
+      ES
+    </div>
   );
 }

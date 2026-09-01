@@ -59,16 +59,20 @@ class ServiceProviderController extends Controller
 
     public function approve(ServiceProvider $serviceProvider): JsonResponse
     {
-        $user = User::query()->updateOrCreate(
-            ['email' => $serviceProvider->email],
-            [
-                'name' => $serviceProvider->full_name,
-                'full_name' => $serviceProvider->full_name,
-                'phone' => $serviceProvider->phone,
-                'role' => 'provider',
-                'password' => Hash::make(Str::random(32)),
-            ]
-        );
+        $user = User::query()->firstOrNew(['email' => $serviceProvider->email]);
+        $user->fill([
+            'name' => $serviceProvider->full_name,
+            'full_name' => $serviceProvider->full_name,
+            'phone' => $serviceProvider->phone,
+            'role' => 'provider',
+            'is_active' => true,
+        ]);
+
+        if (! $user->exists || ! $user->password) {
+            $user->password = Hash::make(Str::random(32));
+        }
+
+        $user->save();
 
         $serviceProvider->update([
             'user_id' => $user->id,
@@ -83,6 +87,11 @@ class ServiceProviderController extends Controller
 
     public function reject(ServiceProvider $serviceProvider): JsonResponse
     {
+        User::query()
+            ->where('id', $serviceProvider->user_id)
+            ->orWhere('email', $serviceProvider->email)
+            ->update(['is_active' => false]);
+
         $serviceProvider->update([
             'status' => 'rejected',
             'login_enabled' => false,

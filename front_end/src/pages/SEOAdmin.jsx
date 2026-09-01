@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { seoSettingsApi } from "@/api/backendClient";
-import { getMockAdminUser } from "@/lib/mockAuth";
-import { staticSEOSettings } from "@/lib/staticAdminData";
+import { requireStoredUser } from "@/lib/backendAuth";
+import { getAdminText } from "@/lib/adminLocalization";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -154,8 +153,8 @@ const frequencyOptions = [
 ];
 
 export default function SEOAdmin() {
-  const [lang, setLang] = useState("de");
-  const [user, setUser] = useState(() => getMockAdminUser());
+  const [lang, setLang] = useState("ar");
+  const [user, setUser] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [selectedSetting, setSelectedSetting] = useState(null);
@@ -165,48 +164,24 @@ export default function SEOAdmin() {
 
   const queryClient = useQueryClient();
   const t = translations[lang] || translations.de;
+  const adminT = getAdminText(lang);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("einstein_lang");
     if (savedLang) setLang(savedLang);
 
-    const checkUser = async () => {
-      const mockUser = getMockAdminUser();
-      if (mockUser) {
-        setUser(mockUser);
-        return;
-      }
-
-      const isAuth = await base44.auth.isAuthenticated();
-      if (isAuth) {
-        const userData = await base44.auth.me();
-        if (userData.role !== "admin") {
-          window.location.href = "/";
-        }
-        setUser(userData);
-      } else {
-        base44.auth.redirectToLogin();
-      }
-    };
+    const checkUser = () => setUser(requireStoredUser({ role: "admin" }));
     checkUser();
   }, []);
 
   const { data: seoSettings = [], isLoading } = useQuery({
     queryKey: ["seo-settings"],
-    queryFn: async () => {
-      if (getMockAdminUser()) return staticSEOSettings;
-      try {
-        return await seoSettingsApi.listSettings();
-      } catch {
-        return staticSEOSettings;
-      }
-    },
+    queryFn: seoSettingsApi.listSettings,
     enabled: !!user
   });
 
   const saveMutation = useMutation({
     mutationFn: async (data) => {
-      if (getMockAdminUser()) return data;
       if (data.id) {
         return seoSettingsApi.updateSetting(data.id, data);
       }
@@ -220,7 +195,7 @@ export default function SEOAdmin() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => getMockAdminUser() ? id : seoSettingsApi.deleteSetting(id),
+    mutationFn: seoSettingsApi.deleteSetting,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["seo-settings"] });
       setShowDeleteAlert(false);
@@ -358,7 +333,7 @@ export default function SEOAdmin() {
                             </h3>
                             {setting.no_index && (
                               <Badge variant="outline" className="text-red-600 border-red-300">
-                                No Index
+                                {adminT.seo.noIndex}
                               </Badge>
                             )}
                           </div>
@@ -366,8 +341,8 @@ export default function SEOAdmin() {
                             {setting.meta_title_de || setting.meta_title_en || "-"}
                           </p>
                           <div className="flex gap-4 text-xs text-gray-500">
-                            <span>Priority: {setting.priority || 0.5}</span>
-                            <span>Frequency: {setting.change_frequency || "weekly"}</span>
+                            <span>{adminT.seo.priority}: {setting.priority || 0.5}</span>
+                            <span>{adminT.seo.frequency}: {setting.change_frequency || "weekly"}</span>
                           </div>
                         </div>
                         <div className="flex gap-2">
@@ -404,7 +379,7 @@ export default function SEOAdmin() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Globe className="w-5 h-5" />
-                  Sitemap XML
+                  {adminT.seo.sitemapXml}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -449,7 +424,7 @@ export default function SEOAdmin() {
                   onValueChange={(value) => setFormData({ ...formData, page_name: value })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select page" />
+                    <SelectValue placeholder={adminT.seo.selectPage} />
                   </SelectTrigger>
                   <SelectContent>
                     {availablePages.map((page) => (
@@ -476,7 +451,7 @@ export default function SEOAdmin() {
                       <Input
                         value={formData[`meta_title_${langCode}`] || ""}
                         onChange={(e) => setFormData({ ...formData, [`meta_title_${langCode}`]: e.target.value })}
-                        placeholder="Max 60 characters"
+                        placeholder={adminT.seo.metaTitleHint}
                         maxLength={60}
                       />
                       <p className="text-xs text-gray-500 mt-1">
@@ -488,7 +463,7 @@ export default function SEOAdmin() {
                       <Textarea
                         value={formData[`meta_description_${langCode}`] || ""}
                         onChange={(e) => setFormData({ ...formData, [`meta_description_${langCode}`]: e.target.value })}
-                        placeholder="Max 160 characters"
+                        placeholder={adminT.seo.metaDescriptionHint}
                         maxLength={160}
                         rows={3}
                       />
@@ -501,7 +476,7 @@ export default function SEOAdmin() {
                       <Input
                         value={formData[`keywords_${langCode}`] || ""}
                         onChange={(e) => setFormData({ ...formData, [`keywords_${langCode}`]: e.target.value })}
-                        placeholder="keyword1, keyword2, keyword3"
+                        placeholder={adminT.seo.keywordHint}
                       />
                     </div>
                   </TabsContent>

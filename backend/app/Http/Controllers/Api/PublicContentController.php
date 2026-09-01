@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\PriceGroup;
+use App\Models\Review;
 use App\Models\Service;
 use App\Models\ServiceProvider;
 use Illuminate\Http\JsonResponse;
@@ -69,6 +70,22 @@ class PublicContentController extends Controller
 
     public function ratings(): JsonResponse
     {
-        return response()->json(['data' => []]);
+        $reviews = Review::query()
+            ->where('status', 'approved')
+            ->latest()
+            ->limit(500)
+            ->get()
+            ->map(fn (Review $review) => [
+                'id' => $review->id,
+                'booking_id' => $review->booking_id,
+                'service_provider_id' => $review->service_provider_id,
+                'category' => $review->category,
+                'reviewer_name' => $review->reviewer_name,
+                'rating' => $review->rating,
+                'comment' => $review->comment,
+                'created_at' => $review->created_at?->toISOString(),
+            ]);
+
+        return response()->json(['data' => $reviews]);
     }
 }

@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { base44 } from "@/api/base44Client";
 import { revenueReportsApi } from "@/api/backendClient";
-import { getMockAdminUser } from "@/lib/mockAuth";
-import { staticAdminBookings, staticServiceExtensions } from "@/lib/staticAdminData";
+import { requireStoredUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -38,27 +36,15 @@ const CATEGORY_LABELS = {
 };
 
 export default function RevenueReports() {
-  const [lang, setLang] = useState("de");
-  const [user, setUser] = useState(() => getMockAdminUser());
+  const [lang, setLang] = useState("ar");
+  const [user, setUser] = useState(null);
   const [yearFilter, setYearFilter] = useState(new Date().getFullYear().toString());
   const [chartType, setChartType] = useState("bar"); // bar | line | pie
 
   useEffect(() => {
     const savedLang = localStorage.getItem("einstein_lang");
     if (savedLang) setLang(savedLang);
-    const init = async () => {
-      const mockUser = getMockAdminUser();
-      if (mockUser) {
-        setUser(mockUser);
-        return;
-      }
-
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) { base44.auth.redirectToLogin(); return; }
-      const me = await base44.auth.me();
-      if (me.role !== "admin") { window.location.href = "/"; return; }
-      setUser(me);
-    };
+    const init = () => setUser(requireStoredUser({ role: "admin" }));
     init();
   }, []);
 
@@ -67,21 +53,7 @@ export default function RevenueReports() {
 
   const { data: revenueReport = { bookings: [], extensions: [] }, isLoading } = useQuery({
     queryKey: ["revenue-report", yearFilter],
-    queryFn: async () => {
-      if (getMockAdminUser()) {
-        return { bookings: staticAdminBookings, extensions: staticServiceExtensions };
-      }
-
-      try {
-        return await revenueReportsApi.getRevenueReport(yearFilter);
-      } catch {
-        const [bookings, extensions] = await Promise.all([
-          base44.entities.Booking.list("-date"),
-          base44.entities.ServiceExtension.list("-created_date"),
-        ]);
-        return { bookings, extensions };
-      }
-    },
+    queryFn: () => revenueReportsApi.getRevenueReport(yearFilter),
     enabled: !!user,
   });
   const bookings = revenueReport.bookings || [];
@@ -210,7 +182,7 @@ export default function RevenueReports() {
     a.download = `EinStein_Umsatzbericht_${selectedYear}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success(lang === "ar" ? "تم تصدير CSV" : "CSV exportiert");
+    toast.success({ ar: "تم تصدير CSV", en: "CSV exported", de: "CSV exportiert" }[lang] || "CSV exported");
   };
 
   // Export PDF
@@ -228,7 +200,9 @@ export default function RevenueReports() {
     doc.setFontSize(11); doc.setFont("helvetica", "normal");
     doc.text(`${t.title} ${selectedYear}`, margin, 25);
     doc.setFontSize(8); doc.setTextColor(200, 180, 255);
-    doc.text(`Erstellt am ${new Date().toLocaleDateString("de-DE")}`, W - margin, 30, { align: "right" });
+    const generatedLabel = { ar: "تم الإنشاء في", en: "Created on", de: "Erstellt am" }[lang] || "Created on";
+    const dateLocale = { ar: "ar", en: "en-GB", de: "de-DE" }[lang] || "en-GB";
+    doc.text(`${generatedLabel} ${new Date().toLocaleDateString(dateLocale)}`, W - margin, 30, { align: "right" });
     y = 45;
 
     // KPI summary
@@ -303,7 +277,7 @@ export default function RevenueReports() {
     doc.text("EinStein Institut UG (haftungsbeschränkt) · Frankfurt, Deutschland · info@einsteindienstleistung.de", W / 2, y, { align: "center" });
 
     doc.save(`EinStein_Umsatzbericht_${selectedYear}.pdf`);
-    toast.success(lang === "ar" ? "تم تصدير PDF" : "PDF exportiert");
+    toast.success({ ar: "تم تصدير PDF", en: "PDF exported", de: "PDF exportiert" }[lang] || "PDF exported");
   };
 
   const t = {

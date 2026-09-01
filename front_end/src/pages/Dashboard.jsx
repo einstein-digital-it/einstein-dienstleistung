@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   BarChart3,
@@ -17,30 +17,88 @@ import { Button } from "@/components/ui/button";
 import { adminDashboardApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
 
-const quickLinks = [
-  { label: "Buchungen", href: "/AdminBookings", icon: ClipboardList, note: "Aktuelle Buchungsuebersicht" },
-  { label: "Berichte", href: "/BookingReports", icon: BarChart3, note: "Buchungs- und Statusberichte" },
-  { label: "Umsatzbericht", href: "/EarningsReports", icon: Euro, note: "Einnahmen und Monatsvergleich" },
-  { label: "Benutzer", href: "/Users", icon: Users, note: "Kunden und Admin-Konten" },
-  { label: "Fachkraft-Antraege", href: "/SupplierRequests", icon: UserCheck, note: "Neue Anbieter pruefen" },
-  { label: "SEO", href: "/SEO", icon: Search, note: "Meta-Daten und Sitemap" }
-];
+const translations = {
+  ar: {
+    area: "منطقة الإدارة", title: "لوحة التحكم", subtitle: "نظرة عامة على الحجوزات والمستخدمين والمزودين وتحسين محركات البحث والإيرادات.",
+    bookings: "الحجوزات", revenueReport: "تقرير الإيرادات", totalBookings: "إجمالي الحجوزات", pending: "قيد الانتظار أو المراجعة",
+    revenue: "الإيرادات", liveApi: "بيانات مباشرة من Laravel API", users: "المستخدمون", adminAccounts: "حسابات المديرين",
+    seoPages: "صفحات SEO", indexable: "صفحات قابلة للفهرسة", interfaces: "واجهات الإدارة", activityTitle: "النشاط",
+    links: [
+      { label: "الحجوزات", href: "/AdminBookings", icon: ClipboardList, note: "عرض الحجوزات الحالية" },
+      { label: "التقارير", href: "/BookingReports", icon: BarChart3, note: "تقارير الحجوزات والحالات" },
+      { label: "تقرير الإيرادات", href: "/RevenueReports", icon: Euro, note: "الإيرادات والمقارنة الشهرية" },
+      { label: "المستخدمون", href: "/Users", icon: Users, note: "حسابات العملاء والمديرين" },
+      { label: "طلبات المزودين", href: "/SupplierRequests", icon: UserCheck, note: "مراجعة طلبات المزودين الجدد" },
+      { label: "SEO", href: "/SEO", icon: Search, note: "بيانات الميتا وخريطة الموقع" }
+    ],
+    activityItems: [
+      { title: "وصل حجز جديد", detail: "التنسيق والتواصل", time: "اليوم، 10:00", status: "جديد" },
+      { title: "تم تسجيل مستخدم", detail: "حساب عميل جديد", time: "25.05.2026", status: "عميل" },
+      { title: "تم تحديث سجل SEO", detail: "الصفحة الرئيسية والخدمات", time: "هذا الأسبوع", status: "SEO" },
+      { title: "تمت مراجعة حالة الدفع", detail: "الحجوزات المكتملة", time: "مايو 2026", status: "المالية" }
+    ]
+  },
+  en: {
+    area: "Admin area", title: "Administration", subtitle: "Overview of bookings, users, providers, SEO and revenue.", bookings: "Bookings", revenueReport: "Revenue report", totalBookings: "Total bookings", pending: "pending or under review", revenue: "Revenue", liveApi: "Live Laravel API", users: "Users", adminAccounts: "Admin accounts", seoPages: "SEO pages", indexable: "Indexable pages", interfaces: "Admin interfaces", activityTitle: "Activity", links: [], activityItems: []
+  },
+  de: {
+    area: "Adminbereich", title: "Administration", subtitle: "Uebersicht fuer Buchungen, Benutzer, Fachkraefte, SEO und Umsatzberichte.", bookings: "Buchungen", revenueReport: "Umsatzbericht", totalBookings: "Buchungen gesamt", pending: "offen oder in Pruefung", revenue: "Umsatz", liveApi: "Live Laravel API", users: "Benutzer", adminAccounts: "Admin-Konten", seoPages: "SEO Seiten", indexable: "Indexierbare Seiten", interfaces: "Admin-Interfaces", activityTitle: "Aktivitaet", links: [], activityItems: []
+  }
+};
 
-const activity = [
-  { title: "Neue Buchung eingegangen", detail: "Koordination und Kommunikation", time: "Heute, 10:00", status: "Neu" },
-  { title: "Benutzer registriert", detail: "ENG. MOHAMMED K. M. ABDELRAHMAN", time: "25.05.2026", status: "Kunde" },
-  { title: "SEO-Eintrag aktualisiert", detail: "Startseite und Dienstleistungen", time: "Diese Woche", status: "SEO" },
-  { title: "Zahlungsstatus geprueft", detail: "Abgeschlossene Buchungen", time: "Mai 2026", status: "Finanzen" }
-];
+const quickLinksByLanguage = {
+  ar: translations.ar.links,
+  en: [
+    { label: "Bookings", href: "/AdminBookings", icon: ClipboardList, note: "View current bookings" },
+    { label: "Reports", href: "/BookingReports", icon: BarChart3, note: "Booking and status reports" },
+    { label: "Revenue Report", href: "/RevenueReports", icon: Euro, note: "Revenue and monthly comparison" },
+    { label: "Users", href: "/Users", icon: Users, note: "Customer and administrator accounts" },
+    { label: "Provider Applications", href: "/SupplierRequests", icon: UserCheck, note: "Review new provider applications" },
+    { label: "SEO", href: "/SEO", icon: Search, note: "Meta data and sitemap" },
+  ],
+  de: [
+    { label: "Buchungen", href: "/AdminBookings", icon: ClipboardList, note: "Aktuelle Buchungen anzeigen" },
+    { label: "Berichte", href: "/BookingReports", icon: BarChart3, note: "Buchungs- und Statusberichte" },
+    { label: "Umsatzbericht", href: "/RevenueReports", icon: Euro, note: "Umsatz und monatlicher Vergleich" },
+    { label: "Benutzer", href: "/Users", icon: Users, note: "Kunden- und Administratorkonten" },
+    { label: "Anbieterantraege", href: "/SupplierRequests", icon: UserCheck, note: "Neue Anbieterantraege pruefen" },
+    { label: "SEO", href: "/SEO", icon: Search, note: "Meta-Daten und Sitemap" },
+  ],
+};
 
-function formatCurrency(value) {
-  return new Intl.NumberFormat("de-DE", {
+const activityByLanguage = {
+  ar: translations.ar.activityItems,
+  en: [
+    { title: "New booking received", detail: "Coordination and communication", time: "Today, 10:00", status: "New" },
+    { title: "User registered", detail: "New customer account", time: "25.05.2026", status: "Customer" },
+    { title: "SEO record updated", detail: "Home page and services", time: "This week", status: "SEO" },
+    { title: "Payment status reviewed", detail: "Completed bookings", time: "May 2026", status: "Finance" },
+  ],
+  de: [
+    { title: "Neue Buchung eingegangen", detail: "Koordination und Kommunikation", time: "Heute, 10:00", status: "Neu" },
+    { title: "Benutzer registriert", detail: "Neues Kundenkonto", time: "25.05.2026", status: "Kunde" },
+    { title: "SEO-Eintrag aktualisiert", detail: "Startseite und Dienstleistungen", time: "Diese Woche", status: "SEO" },
+    { title: "Zahlungsstatus geprueft", detail: "Abgeschlossene Buchungen", time: "Mai 2026", status: "Finanzen" },
+  ],
+};
+
+function formatCurrency(value, lang) {
+  return new Intl.NumberFormat(lang === "ar" ? "ar" : "de-DE", {
     style: "currency",
     currency: "EUR"
   }).format(value);
 }
 
 export default function Dashboard() {
+  const [lang, setLang] = useState(() => localStorage.getItem("einstein_lang") || "ar");
+  useEffect(() => {
+    const syncLanguage = () => setLang(localStorage.getItem("einstein_lang") || "ar");
+    window.addEventListener("storage", syncLanguage);
+    return () => window.removeEventListener("storage", syncLanguage);
+  }, []);
+  const t = translations[lang] || translations.ar;
+  const quickLinks = quickLinksByLanguage[lang] || quickLinksByLanguage.ar;
+  const activity = activityByLanguage[lang] || activityByLanguage.ar;
   const { data: dashboard } = useQuery({
     queryKey: ["admin-dashboard"],
     queryFn: adminDashboardApi.getDashboard,
@@ -50,30 +108,30 @@ export default function Dashboard() {
 
   const stats = [
     {
-      label: "Buchungen gesamt",
+      label: t.totalBookings,
       value: liveStats.total_bookings ?? 0,
-      note: `${liveStats.pending_bookings ?? 0} offen oder in Pruefung`,
+      note: `${liveStats.pending_bookings ?? 0} ${t.pending}`,
       icon: CalendarCheck,
       tone: "bg-blue-50 text-blue-700"
     },
     {
-      label: "Umsatz",
-      value: formatCurrency(liveStats.revenue ?? 0),
-      note: "Live Laravel API",
+      label: t.revenue,
+      value: formatCurrency(liveStats.revenue ?? 0, lang),
+      note: t.liveApi,
       icon: Euro,
       tone: "bg-emerald-50 text-emerald-700"
     },
     {
-      label: "Benutzer",
+      label: t.users,
       value: liveStats.users ?? 0,
-      note: `${liveStats.admins ?? 0} Admin-Konto`,
+      note: `${liveStats.admins ?? 0} ${t.adminAccounts}`,
       icon: Users,
       tone: "bg-violet-50 text-violet-700"
     },
     {
-      label: "SEO Seiten",
+      label: t.seoPages,
       value: liveStats.seo_pages ?? 0,
-      note: "Indexierbare Seiten",
+      note: t.indexable,
       icon: FileSearch,
       tone: "bg-amber-50 text-amber-700"
     }
@@ -90,20 +148,20 @@ export default function Dashboard() {
           <div>
             <div className="mb-2 inline-flex items-center gap-2 rounded-md border border-[#dbe3ee] bg-white px-3 py-1 text-sm font-semibold text-[#65758b]">
               <ShieldCheck className="h-4 w-4 text-[#c9a227]" />
-              Adminbereich
+              {t.area}
             </div>
-            <h1 className="text-3xl font-bold text-[#1e3a5f]">Administration</h1>
+            <h1 className="text-3xl font-bold text-[#1e3a5f]">{t.title}</h1>
             <p className="mt-2 max-w-2xl text-sm text-[#65758b]">
-              Uebersicht fuer Buchungen, Benutzer, Fachkraefte, SEO und Umsatzberichte.
+              {t.subtitle}
             </p>
           </div>
 
           <div className="flex gap-2">
             <Button asChild variant="outline" className="border-[#dbe3ee]">
-              <a href="/AdminBookings">Buchungen</a>
+              <a href="/AdminBookings">{t.bookings}</a>
             </Button>
             <Button asChild className="bg-[#1e3a5f] text-white hover:bg-[#2d5a8a]">
-              <a href="/EarningsReports">Umsatzbericht</a>
+              <a href="/RevenueReports">{t.revenueReport}</a>
             </Button>
           </div>
         </motion.div>
@@ -135,7 +193,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_390px]">
           <Card className="border-[#e3e9f2] shadow-sm">
             <CardHeader>
-              <CardTitle className="text-xl text-[#1e3a5f]">Admin-Interfaces</CardTitle>
+              <CardTitle className="text-xl text-[#1e3a5f]">{t.interfaces}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -160,7 +218,7 @@ export default function Dashboard() {
 
           <Card className="border-[#e3e9f2] shadow-sm">
             <CardHeader>
-              <CardTitle className="text-xl text-[#1e3a5f]">Aktivitaet</CardTitle>
+              <CardTitle className="text-xl text-[#1e3a5f]">{t.activityTitle}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {liveActivity.map((item, index) => (

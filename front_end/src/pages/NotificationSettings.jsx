@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { customerApi } from "@/api/backendClient";
+import { getStoredAuthUser } from "@/lib/backendAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -89,7 +89,7 @@ export default function NotificationSettings() {
       try {
         const savedLang = localStorage.getItem("einstein_lang") || "de";
         setLang(savedLang);
-        const userData = await base44.auth.me().catch(() => null);
+        const userData = getStoredAuthUser();
         const email = userData?.email || localStorage.getItem("einstein_customer_email") || "customer@example.com";
         localStorage.setItem("einstein_customer_email", email);
         setUser(userData || { email });

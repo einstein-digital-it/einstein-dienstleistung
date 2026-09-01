@@ -30,6 +30,7 @@ class Booking extends Model
         'confirmed_by_provider_name',
         'confirmed_by_provider_email',
         'confirmed_at',
+        'provider_declined_ids',
         'status',
         'payment_status',
         'price',
@@ -46,6 +47,7 @@ class Booking extends Model
         return [
             'date' => 'date:Y-m-d',
             'confirmed_at' => 'datetime',
+            'provider_declined_ids' => 'array',
             'price' => 'decimal:2',
             'duration_hours' => 'integer',
             'documents_urls' => 'array',

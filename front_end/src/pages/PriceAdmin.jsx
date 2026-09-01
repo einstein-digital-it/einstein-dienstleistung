@@ -19,16 +19,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { priceAdminApi } from "@/api/backendClient";
-import { staticPriceGroups } from "@/lib/staticAdminData";
+import { getAdminLocale, getAdminText } from "@/lib/adminLocalization";
 
 const icons = [ClipboardList, Settings, Briefcase, Printer, Globe, BookOpen, FileText];
 
 export default function PriceAdmin() {
+  const t = getAdminText(getAdminLocale()).prices;
   const { data: backendPriceGroups = [] } = useQuery({
     queryKey: ["admin-price-groups"],
     queryFn: priceAdminApi.listPriceGroups,
   });
-  const priceGroups = backendPriceGroups.length > 0 ? backendPriceGroups : staticPriceGroups;
+  const priceGroups = backendPriceGroups;
   const itemCount = priceGroups.reduce((sum, group) => sum + group.items.length, 0);
   const numericPrices = priceGroups
     .flatMap((group) => group.items)
@@ -47,29 +48,29 @@ export default function PriceAdmin() {
           className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
         >
           <div>
-            <p className="mb-2 text-sm font-semibold text-[#c9a227]">Admin / Preise</p>
-            <h1 className="text-3xl font-bold text-[#1e3a5f]">Preise verwalten</h1>
+            <p className="mb-2 text-sm font-semibold text-[#c9a227]">{t.breadcrumb}</p>
+            <h1 className="text-3xl font-bold text-[#1e3a5f]">{t.title}</h1>
             <p className="mt-2 text-sm text-[#65758b]">
-              Statische Designansicht fuer Preislisten, Einheiten und Dienstleistungspakete.
+              {t.subtitle}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" className="border-[#dbe3ee]">
               <Plus className="mr-2 h-4 w-4" />
-              Preis hinzufuegen
+              {t.add}
             </Button>
             <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8a]">
               <Save className="mr-2 h-4 w-4" />
-              Design speichern
+              {t.save}
             </Button>
           </div>
         </motion.div>
 
         <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
           {[
-            { label: "Preisgruppen", value: priceGroups.length, icon: ClipboardList },
-            { label: "Preispositionen", value: itemCount, icon: Euro },
-            { label: "Durchschnitt", value: averagePrice, icon: TrendingUp }
+            { label: t.groups, value: priceGroups.length, icon: ClipboardList },
+            { label: t.items, value: itemCount, icon: Euro },
+            { label: t.average, value: averagePrice, icon: TrendingUp }
           ].map((stat) => (
             <Card key={stat.label} className="border-[#e3e9f2] shadow-sm">
               <CardContent className="flex items-center gap-4 p-5">
@@ -105,7 +106,7 @@ export default function PriceAdmin() {
                         {group.category}
                       </CardTitle>
                       <Badge className="w-fit bg-[#fff6d9] text-[#8a6a00] hover:bg-[#fff6d9]">
-                        {group.items.length} Positionen
+                        {group.items.length} {t.positions}
                       </Badge>
                     </div>
                   </CardHeader>
@@ -114,10 +115,10 @@ export default function PriceAdmin() {
                       <table className="w-full min-w-[720px] text-sm">
                         <thead className="bg-[#f8fbff] text-[#65758b]">
                           <tr>
-                            <th className="px-5 py-4 text-left font-semibold">Bezeichnung</th>
-                            <th className="px-5 py-4 text-left font-semibold">Preis</th>
-                            <th className="px-5 py-4 text-left font-semibold">Einheit</th>
-                            <th className="px-5 py-4 text-left font-semibold">Status</th>
+                            <th className="px-5 py-4 text-start font-semibold">{t.label}</th>
+                            <th className="px-5 py-4 text-start font-semibold">{t.price}</th>
+                            <th className="px-5 py-4 text-start font-semibold">{t.unit}</th>
+                            <th className="px-5 py-4 text-start font-semibold">{t.status}</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[#e3e9f2]">
@@ -133,7 +134,7 @@ export default function PriceAdmin() {
                                 <Input value={item.unit} readOnly className="max-w-[180px] border-[#dbe3ee] bg-white" />
                               </td>
                               <td className="px-5 py-4">
-                                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Aktiv</Badge>
+                                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">{t.active}</Badge>
                               </td>
                             </tr>
                           ))}
@@ -143,7 +144,7 @@ export default function PriceAdmin() {
                     <div className="flex justify-end border-t border-[#e3e9f2] bg-[#fbfdff] p-4">
                       <Button variant="outline" className="border-[#dbe3ee]">
                         <Plus className="mr-2 h-4 w-4" />
-                        Position hinzufuegen
+                        {t.addItem}
                       </Button>
                     </div>
                   </CardContent>
