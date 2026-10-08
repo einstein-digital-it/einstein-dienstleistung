@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { customerApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -39,7 +40,14 @@ const normalizeUpcoming = (booking) => ({
   address: booking.address || "-",
   status: booking.status || "pending",
   tone: booking.status === "confirmed" ? "green" : "gold",
+  category: booking.category,
+  customerName: booking.customer_name || "",
+  customerEmail: booking.customer_email || "",
 });
+
+// Dokumenten-Abo can be cancelled any time to the end of the month (§ 312k BGB)
+const cancelUrl = (booking) =>
+  `/Cancellation?${new URLSearchParams({ name: booking.customerName, email: booking.customerEmail, reference: booking.id }).toString()}`;
 
 export default function CustomerDashboard() {
   const { data: dashboard } = useQuery({
@@ -98,6 +106,11 @@ export default function CustomerDashboard() {
                     </div>
                   </div>
                   <div className="flex gap-2">
+                    {booking.category === "dokumentabo" && (
+                      <Link to={cancelUrl(booking)} className="inline-flex h-11 items-center justify-center rounded-[10px] border border-red-200 bg-white px-4 text-sm font-extrabold text-red-600 hover:bg-red-50">
+                        إلغاء الاشتراك
+                      </Link>
+                    )}
                     <SecondaryButton className="px-4">تعديل</SecondaryButton>
                     <PrimaryButton className="px-4">تفاصيل</PrimaryButton>
                   </div>

@@ -40,6 +40,8 @@ class Booking extends Model
         'provider_documents_urls',
         'description',
         'required_documents_hint',
+        'agb_accepted',
+        'withdrawal_consent',
     ];
 
     protected function casts(): array
@@ -52,6 +54,8 @@ class Booking extends Model
             'duration_hours' => 'integer',
             'documents_urls' => 'array',
             'provider_documents_urls' => 'array',
+            'agb_accepted' => 'boolean',
+            'withdrawal_consent' => 'boolean',
         ];
     }
 

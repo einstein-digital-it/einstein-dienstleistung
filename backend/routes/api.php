@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\BookingReportController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\ContractCancellationController;
 use App\Http\Controllers\Api\CustomerClientController;
 use App\Http\Controllers\Api\CustomerPortalController;
 use App\Http\Controllers\Api\CustomerRequestController;
@@ -51,6 +52,7 @@ Route::get('public/offers', [OfferController::class, 'index']);
 Route::get('public/ratings', [PublicContentController::class, 'ratings']);
 Route::get('public/reviews', [ReviewController::class, 'index']);
 Route::post('public/reviews', [ReviewController::class, 'store']);
+Route::post('public/cancellations', [ContractCancellationController::class, 'store'])->middleware('throttle:10,1');
 Route::get('seo-settings/page/{pageName}', [SeoSettingController::class, 'byPage']);
 
 Route::middleware('api.auth:admin,provider,user')->group(function () {
@@ -103,6 +105,8 @@ Route::middleware('api.auth:provider')->group(function () {
 
 Route::middleware('api.auth:admin')->group(function () {
     Route::get('admin/dashboard', [AdminDashboardController::class, 'index']);
+    Route::get('admin/cancellations', [ContractCancellationController::class, 'index']);
+    Route::patch('admin/cancellations/{cancellation}', [ContractCancellationController::class, 'update']);
     Route::get('admin/client-workspaces', [AdminClientWorkspaceController::class, 'index']);
     Route::get('admin/client-workspaces/{managedClient}', [AdminClientWorkspaceController::class, 'show']);
     Route::patch('admin/client-workspaces/{managedClient}/requests/{clientRequest}', [AdminClientWorkspaceController::class, 'updateRequest']);

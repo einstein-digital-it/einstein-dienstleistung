@@ -17,7 +17,9 @@ import {
   BookOpen,
   Printer,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Ship,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -146,6 +148,8 @@ const translations = {
           { label: "Stundensatz (Vor-Ort)", price: "45 €", unit: "/ Stunde" }
         ]
       },
+      eur1: {name:"Dokumentenservice für EU–Syrien Warenverkehr / EUR.1",desc:"Administrative Vorbereitung von Export-/Importunterlagen für den Warenverkehr EU–Syrien.",features:["Administrative Vorbereitung von Export-/Importunterlagen","Checklisten","EUR.1-Vorbereitung","Übersetzungen"],note:"Hinweis: EinStein übernimmt keine Zollvertretung, keine Rechtsberatung und keine Steuerberatung. Die Leistung beschränkt sich auf administrative Unterstützung, Dokumentenorganisation, Übersetzung und Kommunikationsbegleitung. Die endgültige Prüfung der Zoll- und Ursprungsfragen erfolgt durch die zuständigen Zollbehörden oder zugelassene Fachstellen.",prices:[{label:"Dokumentenservice EU–Syrien / EUR.1",price:"ab 150 €",unit:""}]},
+      dokumentabo: {name:"EinStein Dokumenten-Abo – Ihre Post. Unsere Aufgabe.",desc:"Briefe vom Jobcenter, der Ausländerbehörde, dem Finanzamt, der Krankenkasse oder dem Vermieter? Sie schicken uns ein Foto – wir kümmern uns um den Rest.",features:["Lesen, Übersetzen und Erklären Ihrer Post (bis zu 8 Schreiben pro Monat)","Fristen- und Terminerinnerung","Ausfüllen von Formularen und Anträgen","Einfache Antworten: Unterlagen nachreichen, Termine bestätigen, Adressänderungen","Digitale Ablage","Fester Ansprechpartner"],prices:[{label:"Monatsabo (bis zu 8 Schreiben)",price:"49 €",unit:"/ Monat"},{label:"Weitere Schreiben",price:"20 €",unit:"/ Stunde"}],note:"Nicht enthalten: Rechtsberatung, Widersprüche, Klagen und Streitfälle (Vermittlung an Anwälte/Beratungsstellen) | Versicherungs- oder Steuerberatung. Administrative Unterstützungsleistung, keine Rechtsdienstleistungen im Sinne des RDG. Mindestlaufzeit 1 Monat, danach monatlich kündbar."},
     }
   },
   ar: {
@@ -269,6 +273,8 @@ const translations = {
           { label: "السعر بالساعة (حضوري)", price: "45 €", unit: "/ ساعة" }
         ]
       },
+      eur1: {name:"خدمة وثائق التصدير/الاستيراد بين سوريا والاتحاد الأوروبي / EUR.1",desc:"تحضير إداري لوثائق التصدير/الاستيراد في التبادل التجاري بين الاتحاد الأوروبي وسوريا.",features:["تحضير إداري لوثائق التصدير/الاستيراد","قوائم المراجعة (Checklisten)","تجهيز EUR.1","الترجمات"],note:"ملاحظة: EinStein لا يقدم تمثيلاً جمركياً ولا استشارات قانونية أو ضريبية. تقتصر الخدمة على الدعم الإداري وتنظيم الوثائق والترجمة ومرافقة التواصل. الفحص النهائي لمسائل الجمارك والمنشأ يتم من قبل السلطات الجمركية المختصة أو الجهات المعتمدة.",prices:[{label:"خدمة EUR.1 / EU-سوريا",price:"من 150 €",unit:""}]},
+      dokumentabo: {name:"اشتراك EinStein للمستندات – بريدك علينا",desc:"رسالة من الجوب سنتر، أو مكتب الأجانب، أو الضرائب، أو التأمين الصحي، أو المؤجّر؟ صوّرها وأرسلها لنا، ونحن نتابع الباقي.",features:["قراءة الرسائل وترجمتها وشرحها (حتى 8 رسائل شهرياً)","تذكير بالمواعيد والمهل","تعبئة الاستمارات والطلبات","ردود بسيطة: إرسال وثائق ناقصة، تأكيد موعد، تغيير عنوان","أرشفة رقمية","شخص ثابت يتابع ملفك"],prices:[{label:"الاشتراك الشهري (حتى 8 رسائل)",price:"49 €",unit:"/ شهرياً"},{label:"رسائل إضافية",price:"20 €",unit:"/ ساعة"}],note:"لا يشمل: الاستشارات القانونية والاعتراضات والدعاوى والنزاعات (نوجّهك لمحامٍ أو جهة استشارة) | نصائح التأمين أو الضرائب. خدمة إدارية، لا تشمل خدمات قانونية حسب قانون RDG. أقل مدة شهر واحد، بعدها إلغاء شهري."},
     }
   },
   en: {
@@ -392,6 +398,8 @@ const translations = {
           { label: "Hourly rate (on-site)", price: "€45", unit: "/ hour" }
         ]
       },
+      eur1: {name:"EU–Syria Trade Document Service / EUR.1",desc:"Administrative preparation of export/import documents for EU–Syria trade.",features:["Administrative preparation of export/import documents","Checklists","EUR.1 preparation","Translations"],note:"Note: EinStein does not provide customs representation, legal advice or tax advice. The service is limited to administrative support, document organization, translation and communication. The final examination of customs and origin matters is carried out by the competent customs authorities or authorized specialist bodies.",prices:[{label:"EU–Syria / EUR.1 Service",price:"from €150",unit:""}]},
+      dokumentabo: {name:"EinStein Document Subscription – Your mail. Our job.",desc:"Letters from the Jobcenter, the immigration office, the tax office, your health insurer or your landlord? Send us a photo – we take care of the rest.",features:["Reading, translating and explaining your mail (up to 8 letters per month)","Deadline and appointment reminders","Filling in forms and applications","Simple replies: submitting documents, confirming appointments, address changes","Digital filing","Fixed contact person"],prices:[{label:"Monthly subscription (up to 8 letters)",price:"€49",unit:"/ month"},{label:"Additional letters",price:"€20",unit:"/ hour"}],note:"Not included: legal advice, objections, lawsuits and disputes (we refer you to lawyers or advice centres) | insurance or tax advice. Administrative support service, no legal services under the German RDG. Minimum term 1 month, then cancellable monthly."},
     }
   },
   tr: {
@@ -515,6 +523,8 @@ const translations = {
           { label: "Saatlik ucret (yerinde)", price: "45 Euro", unit: "/ saat" }
         ]
       },
+      eur1: {name:"AB–Suriye Ticaret Belge Hizmeti / EUR.1",desc:"AB–Suriye ticareti icin ihracat/ithalat belgelerinin idari hazirligi.",features:["Ihracat/ithalat belgelerinin idari hazirligi","Kontrol listeleri (Checklisten)","EUR.1 hazirligi","Ceviriler"],note:"Not: EinStein gumruk temsilciligi, hukuki danismanlik veya vergi danismanligi sunmaz. Hizmet idari destek ile sinirlidir.",prices:[{label:"AB–Suriye / EUR.1 Hizmeti",price:"150 Euro'dan",unit:""}]},
+      dokumentabo: {name:"EinStein Belge Aboneliği – Postanız bize emanet.",desc:"Jobcenter, Yabancılar Dairesi, Vergi Dairesi, sağlık sigortası veya ev sahibinden mektup mu geldi? Bize bir fotoğraf gönderin – gerisini biz hallederiz.",features:["Postanızı okuma, çevirme ve açıklama (ayda en fazla 8 yazı)","Süre ve randevu hatırlatma","Form ve başvuru doldurma","Basit yanıtlar: belge gönderme, randevu onaylama, adres değişikliği","Dijital arşivleme","Sabit irtibat kişisi"],prices:[{label:"Aylık abonelik (en fazla 8 yazı)",price:"49 €",unit:"/ ay"},{label:"Ek yazılar",price:"20 €",unit:"/ saat"}],note:"Dahil değil: hukuki danışmanlık, itirazlar, davalar ve uyuşmazlıklar (avukatlara veya danışma merkezlerine yönlendiririz) | sigorta veya vergi danışmanlığı. İdari destek hizmetidir, Alman RDG kapsamında hukuki hizmet sunulmaz. Asgari süre 1 ay, sonrasında aylık iptal edilebilir."},
     }
   },
   es: {
@@ -638,6 +648,8 @@ const translations = {
           { label: "Tarifa por hora (presencial)", price: "45 €", unit: "/ hora" }
         ]
       },
+      eur1: {name:"Servicio de Documentos Comerciales UE–Siria / EUR.1",desc:"Preparación administrativa de documentos de exportación/importación para el comercio UE–Siria.",features:["Preparación administrativa de documentos de exportación/importación","Listas de verificación (Checklisten)","Preparación EUR.1","Traducciones"],note:"Nota: EinStein no ofrece representación aduanera, asesoría legal ni asesoría fiscal. El servicio se limita al apoyo administrativo.",prices:[{label:"Servicio UE–Siria / EUR.1",price:"desde 150 €",unit:""}]},
+      dokumentabo: {name:"Suscripción de Documentos EinStein – Tu correo. Nuestro trabajo.",desc:"¿Cartas del Jobcenter, la oficina de extranjería, Hacienda, tu seguro médico o tu casero? Envíanos una foto – nosotros nos encargamos del resto.",features:["Lectura, traducción y explicación de tu correo (hasta 8 cartas al mes)","Recordatorio de plazos y citas","Rellenar formularios y solicitudes","Respuestas sencillas: enviar documentos, confirmar citas, cambios de dirección","Archivo digital","Persona de contacto fija"],prices:[{label:"Suscripción mensual (hasta 8 cartas)",price:"49 €",unit:"/ mes"},{label:"Cartas adicionales",price:"20 €",unit:"/ hora"}],note:"No incluido: asesoramiento jurídico, recursos, demandas y litigios (te derivamos a abogados o centros de asesoramiento) | asesoramiento de seguros o fiscal. Servicio de apoyo administrativo, sin servicios jurídicos según la ley alemana RDG. Duración mínima 1 mes, después cancelable mensualmente."},
     }
   }
 };
@@ -691,6 +703,20 @@ const serviceData = [
     color: "bg-pink-500", 
     lightColor: "bg-pink-50",
     image: "https://images.unsplash.com/photo-1562564055-71e051d33c19?w=800&auto=format&fit=crop"
+  },
+  {
+    key: "eur1",
+    icon: Ship,
+    color: "bg-rose-600",
+    lightColor: "bg-rose-50",
+    image: "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=800&auto=format&fit=crop"
+  },
+  {
+    key: "dokumentabo",
+    icon: Mail,
+    color: "bg-purple-600",
+    lightColor: "bg-purple-50",
+    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&auto=format&fit=crop"
   }
 ];
 

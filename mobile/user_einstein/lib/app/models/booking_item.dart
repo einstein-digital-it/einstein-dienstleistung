@@ -11,6 +11,7 @@ class BookingItem {
     required this.paymentStatus,
     required this.price,
     required this.statusColor,
+    this.category = '',
   });
 
   final String id;
@@ -22,6 +23,9 @@ class BookingItem {
   final String paymentStatus;
   final String price;
   final Color statusColor;
+  final String category;
+
+  bool get isDocumentSubscription => category == 'dokumentabo';
 
   factory BookingItem.fromJson(Map<String, dynamic> json) {
     final status = (json['status'] ?? 'pending').toString();
@@ -37,6 +41,7 @@ class BookingItem {
       paymentStatus: paymentStatus,
       price: price == null ? '0 EUR' : '${_number(price)} EUR',
       statusColor: _statusColor(status, paymentStatus),
+      category: (json['category'] ?? '').toString(),
     );
   }
 
@@ -58,6 +63,7 @@ class BookingItem {
     String? paymentStatus,
     String? price,
     Color? statusColor,
+    String? category,
   }) {
     return BookingItem(
       id: id ?? this.id,
@@ -69,6 +75,7 @@ class BookingItem {
       paymentStatus: paymentStatus ?? this.paymentStatus,
       price: price ?? this.price,
       statusColor: statusColor ?? this.statusColor,
+      category: category ?? this.category,
     );
   }
 }

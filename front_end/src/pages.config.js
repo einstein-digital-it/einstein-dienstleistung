@@ -11,11 +11,13 @@
  * 
  *   import HomePage from './pages/HomePage';
  *   import Dashboard from './pages/Dashboard';
+import Datenschutz from './pages/Datenschutz';
  *   import Settings from './pages/Settings';
  *   
  *   export const PAGES = {
  *       "HomePage": HomePage,
  *       "Dashboard": Dashboard,
+    "Datenschutz": Datenschutz,
  *       "Settings": Settings,
  *   }
  *   
@@ -27,11 +29,13 @@
  * Example with Layout (wraps all pages):
  *
  *   import Home from './pages/Home';
+import Impressum from './pages/Impressum';
  *   import Settings from './pages/Settings';
  *   import __Layout from './Layout.jsx';
  *
  *   export const PAGES = {
  *       "Home": Home,
+    "Impressum": Impressum,
  *       "Settings": Settings,
  *   }
  *
@@ -47,11 +51,13 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import AGB from './pages/AGB';
 import AdminBookings from './pages/AdminBookings';
 import AdminUsers from './pages/AdminUsers';
 import AdminServices from './pages/AdminServices';
 import Administration from './pages/Administration';
 import Booking from './pages/Booking';
+import Cancellation from './pages/Cancellation';
 import BookingReports from './pages/BookingReports';
 import Bookings from './pages/Bookings';
 import CustomerDashboard from './pages/CustomerDashboard';
@@ -89,11 +95,13 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AGB": AGB,
     "AdminBookings": AdminBookings,
     "AdminUsers": AdminUsers,
     "AdminServices": AdminServices,
     "Administration": Administration,
     "Booking": Booking,
+    "Cancellation": Cancellation,
     "BookingReports": BookingReports,
     "Bookings": Bookings,
     "CustomerDashboard": CustomerDashboard,

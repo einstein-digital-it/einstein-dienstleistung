@@ -646,8 +646,18 @@ export default function Layout({ children, currentPageName }) {
             </div>
             </div>
 
-          <div className="border-t border-[#805AD5] mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>© 2025 EinStein Institut UG (haftungsbeschränkt). All rights reserved.</p>
+          <div className="border-t border-[#805AD5] mt-8 pt-8 text-center text-sm text-gray-300">
+            <div className="mb-4">
+              <Link to="/Cancellation" className="inline-block rounded-lg border border-white/40 px-4 py-2 font-semibold text-white hover:bg-white/10 transition-colors">
+                {lang === "ar" ? "إلغاء العقود هنا" : lang === "en" ? "Cancel contracts here" : lang === "tr" ? "Sözleşmeleri burada iptal edin" : lang === "es" ? "Cancelar contratos aquí" : "Verträge hier kündigen"}
+              </Link>
+            </div>
+            <div className="flex flex-wrap justify-center gap-4 mb-3">
+              <Link to="/Impressum" className="hover:text-white transition-colors">Impressum</Link>
+              <Link to="/Datenschutz" className="hover:text-white transition-colors">Datenschutz</Link>
+              <Link to="/AGB" className="hover:text-white transition-colors">AGB</Link>
+            </div>
+            <p>© 2026 EinStein – Inhaber Beshr Alhoury Alhomsi</p>
           </div>
         </div>
       </footer>

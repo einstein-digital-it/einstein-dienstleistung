@@ -92,6 +92,14 @@ class CustomerApiService {
     return BookingItem.fromJson(Map<String, dynamic>.from(data as Map));
   }
 
+  /// "Vertraege hier kuendigen" (§ 312k BGB) — works without login.
+  Future<Map<String, dynamic>> submitCancellation(
+    Map<String, dynamic> payload,
+  ) async {
+    final data = await client.post('public/cancellations', body: payload);
+    return Map<String, dynamic>.from(data as Map);
+  }
+
   Future<BookingItem> paymentBooking(String bookingId) async {
     final data = await client.get('payments/bookings/$bookingId');
     return BookingItem.fromJson(Map<String, dynamic>.from(data as Map));

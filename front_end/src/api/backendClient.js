@@ -223,6 +223,11 @@ export const publicApi = {
     method: "POST",
     body: JSON.stringify(data),
   }),
+  // § 312k BGB cancellation ("Verträge hier kündigen") — no login required
+  submitCancellation: (data) => request("/public/cancellations", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
 };
 
 export const customerSupportApi = {

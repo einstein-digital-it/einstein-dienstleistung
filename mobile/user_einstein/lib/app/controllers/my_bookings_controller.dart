@@ -34,4 +34,21 @@ class MyBookingsController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  /// Cancel the Dokumenten-Abo to the end of the month (§ 312k BGB).
+  Future<void> cancelSubscription(BookingItem item) async {
+    try {
+      await api.submitCancellation({
+        'name': store.profile.value.fullName,
+        'email': store.currentEmail,
+        'cancellation_type': 'ordinary',
+        'termination_timing': 'soonest',
+        'reference_number': item.id,
+        'language': Get.locale?.languageCode ?? 'de',
+      });
+      Get.snackbar('cancel_subscription'.tr, 'cancel_subscription_done'.tr);
+    } catch (_) {
+      Get.snackbar('cancel_subscription'.tr, 'cancel_subscription_failed'.tr);
+    }
+  }
 }

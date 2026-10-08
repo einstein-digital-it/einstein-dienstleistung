@@ -25,7 +25,9 @@ import {
   Target,
   Languages,
   BadgeCheck,
-  Quote
+  Quote,
+  Ship,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -59,7 +61,7 @@ const translations = {
     
     // Services
     our_services: "Unsere Dienstleistungen",
-    services_subtitle: "Alles aus einer Hand – 7 Bereiche für Ihren Alltag",
+    services_subtitle: "Alles aus einer Hand – 9 Bereiche für Ihren Alltag",
     forms: "Behörden & Formularhilfe",
     forms_desc: "Unterstützung bei Behördenangelegenheiten, Ausfüllen von Formularen und Anträgen",
     forms_price: "40 €/Std.",
@@ -81,6 +83,12 @@ const translations = {
     office: "Büro- und Organisationsservice",
     office_desc: "E-Mail-Management, Terminplanung, Dokumentenerstellung, Rechnungsvorbereitung",
     office_price: "40 €/Std.",
+    eur1: "Dokumentenservice EU–Syrien / EUR.1",
+    eur1_desc: "Administrative Vorbereitung von Export-/Importunterlagen, Checklisten, EUR.1-Vorbereitung, Übersetzungen",
+    eur1_price: "ab 150 €",
+    dokumentabo: "EinStein Dokumenten-Abo",
+    dokumentabo_desc: "Ihre Post. Unsere Aufgabe. Briefe von Behörden & Versicherungen – Sie schicken uns ein Foto, wir kümmern uns um den Rest.",
+    dokumentabo_price: "49 € / Monat",
     
     // Quality
     quality_title: "EinStein-geprüft – Qualität garantiert",
@@ -168,7 +176,7 @@ const translations = {
     
     // Services
     our_services: "خدماتنا",
-    services_subtitle: "كل شيء من مكان واحد - 7 مجالات لحياتك اليومية",
+    services_subtitle: "كل شيء من مكان واحد - 9 مجالات لحياتك اليومية",
     forms: "مساعدة الدوائر والنماذج",
     forms_desc: "دعم في الشؤون الحكومية، ملء النماذج والطلبات",
     forms_price: "40 €/ساعة",
@@ -190,6 +198,12 @@ const translations = {
     office: "خدمة المكتب والتنظيم",
     office_desc: "إدارة البريد الإلكتروني، جدولة المواعيد، إعداد المستندات، تحضير الفواتير",
     office_price: "40 €/ساعة",
+    eur1: "خدمة وثائق التصدير/الاستيراد EUR.1",
+    eur1_desc: "تجهيز ملف التصدير والاستيراد إدارياً، Checklist، ترجمة، تحضير EUR.1",
+    eur1_price: "من 150 €",
+    dokumentabo: "اشتراك EinStein للمستندات",
+    dokumentabo_desc: "بريدك علينا. رسالة من الجهات الرسمية أو التأمين؟ صوّرها وأرسلها لنا، ونحن نتابع الباقي.",
+    dokumentabo_price: "49 يورو شهرياً",
     
     // Quality
     quality_title: "معتمد من آينشتاين - جودة مضمونة",
@@ -277,7 +291,7 @@ const translations = {
     
     // Services
     our_services: "Our Services",
-    services_subtitle: "Everything from one source – 7 areas for your daily life",
+    services_subtitle: "Everything from one source – 9 areas for your daily life",
     forms: "Government & Form Assistance",
     forms_desc: "Support with government matters, filling out forms and applications",
     forms_price: "€40/hr",
@@ -299,6 +313,12 @@ const translations = {
     office: "Office & Organization Service",
     office_desc: "Email management, appointment scheduling, document creation, invoice preparation",
     office_price: "€40/hr",
+    eur1: "EU–Syria Document Service / EUR.1",
+    eur1_desc: "Administrative preparation of export/import documents, checklists, EUR.1 preparation, translation",
+    eur1_price: "from €150",
+    dokumentabo: "EinStein Document Subscription",
+    dokumentabo_desc: "Your mail. Our job. Letters from authorities & insurers – send us a photo, we take care of the rest.",
+    dokumentabo_price: "€49 / month",
     
     // Quality
     quality_title: "EinStein-Certified – Quality Guaranteed",
@@ -386,7 +406,7 @@ const translations = {
     
     // Services
     our_services: "Hizmetlerimiz",
-    services_subtitle: "Her sey tek kaynaktan - gunluk yasamin icin 7 alan",
+    services_subtitle: "Her sey tek kaynaktan - gunluk yasamin icin 9 alan",
     forms: "Resmi Daire ve Form Yardimi",
     forms_desc: "Resmi isler, form ve basvuru doldurma destegi",
     forms_price: "40 Euro/saat",
@@ -408,6 +428,12 @@ const translations = {
     office: "Ofis ve Organizasyon Hizmeti",
     office_desc: "E-posta yonetimi, randevu planlama, belge olusturma, fatura hazirlama",
     office_price: "40 Euro/saat",
+    eur1: "AB–Suriye Belge Hizmeti / EUR.1",
+    eur1_desc: "AB–Suriye ticareti icin ihracat/ithalat belgelerinin idari hazirligi.",
+    eur1_price: "150 Euro'dan",
+    dokumentabo: "EinStein Belge Aboneliği",
+    dokumentabo_desc: "Postanız bize emanet. Bize bir fotoğraf gönderin – gerisini biz hallederiz.",
+    dokumentabo_price: "49 € / ay",
     
     // Quality
     quality_title: "EinStein Sertifikali - Kalite Garantili",
@@ -495,7 +521,7 @@ const translations = {
     
     // Services
     our_services: "Nuestros Servicios",
-    services_subtitle: "Todo de una sola fuente - 7 áreas para tu vida diaria",
+    services_subtitle: "Todo de una sola fuente - 9 áreas para tu vida diaria",
     forms: "Asistencia Gubernamental y Formularios",
     forms_desc: "Apoyo con asuntos gubernamentales, llenado de formularios y solicitudes",
     forms_price: "40 €/hora",
@@ -517,6 +543,12 @@ const translations = {
     office: "Servicio de Oficina y Organización",
     office_desc: "Gestión de correo, programación de citas, creación de documentos, preparación de facturas",
     office_price: "40 €/hora",
+    eur1: "Servicio de Documentos UE–Siria / EUR.1",
+    eur1_desc: "Preparación administrativa de documentos de exportación/importación para el comercio UE–Siria.",
+    eur1_price: "desde 150 €",
+    dokumentabo: "Suscripción de Documentos EinStein",
+    dokumentabo_desc: "Tu correo. Nuestro trabajo. Envíanos una foto – nosotros nos encargamos del resto.",
+    dokumentabo_price: "49 € / mes",
     
     // Quality
     quality_title: "Certificado por EinStein - Calidad Garantizada",
@@ -587,7 +619,9 @@ const services = [
   { key: "coordination", icon: Settings, color: "bg-indigo-500" },
   { key: "mercosur", icon: Globe, color: "bg-amber-500" },
   { key: "tutoring", icon: BookOpen, color: "bg-blue-500" },
-  { key: "print", icon: Printer, color: "bg-pink-500" }
+  { key: "print", icon: Printer, color: "bg-pink-500" },
+  { key: "eur1", icon: Ship, color: "bg-rose-600" },
+  { key: "dokumentabo", icon: Mail, color: "bg-purple-600" }
 ];
 
 const whyFeatures = [
@@ -797,7 +831,7 @@ function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
       const unit = getUnitByLang(p);
       return `${p.price}${unit ? " " + unit : ""}`;
     }
-    return "";
+    return t[`${serviceKey}_price`] || "";
   };
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,

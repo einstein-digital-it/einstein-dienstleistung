@@ -16,6 +16,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      # Catches code errors even before signing secrets are configured
+      - name: Analyze code
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
       - name: Check required settings
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
@@ -31,16 +47,6 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "17"
-
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
       - name: Restore upload keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
@@ -54,7 +60,6 @@ jobs:
             echo "storeFile=upload.jks"
           } > android/key.properties
 
-      - run: flutter pub get
 
       # versionCode = workflow run number, so every build can be uploaded to Play
       - name: Build AAB (Google Play)

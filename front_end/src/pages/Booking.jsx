@@ -27,7 +27,8 @@ import {
   Loader2,
   Star,
   Users,
-  AlertCircle
+  AlertCircle,
+  Ship
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +37,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -71,7 +73,9 @@ const translations = {
       mercosur: "MERCOSUR (LATAM)",
       tutoring: "Nachhilfe / Lernunterstützung",
       print: "Druck- & Stempeldienstleistungen",
-      secretariat: "Büro & Sekretariat (Vor-Ort)"
+      secretariat: "Büro & Sekretariat (Vor-Ort)",
+      eur1: "Dokumentenservice EU–Syrien / EUR.1",
+      dokumentabo: "Dokumenten-Abo – 49 € / Monat"
     },
     name: "Vollständiger Name",
     email: "E-Mail-Adresse",
@@ -117,7 +121,9 @@ const translations = {
       mercosur: "ميركوسور (أمريكا اللاتينية)",
       tutoring: "الدروس الخصوصية / دعم التعلم",
       print: "خدمات الطباعة والأختام",
-      secretariat: "المكتب والسكرتارية (حضوري)"
+      secretariat: "المكتب والسكرتارية (حضوري)",
+      eur1: "خدمة وثائق التصدير/الاستيراد EUR.1",
+      dokumentabo: "اشتراك المستندات – 49 يورو / شهرياً"
     },
     name: "الاسم الكامل",
     email: "البريد الإلكتروني",
@@ -163,7 +169,9 @@ const translations = {
       mercosur: "MERCOSUR (LATAM)",
       tutoring: "Tutoring / Learning Support",
       print: "Printing & Stamp Services",
-      secretariat: "Office & Secretariat (On-Site)"
+      secretariat: "Office & Secretariat (On-Site)",
+      eur1: "EU–Syria Document Service / EUR.1",
+      dokumentabo: "Document Subscription – €49 / month"
     },
     name: "Full Name",
     email: "Email Address",
@@ -209,7 +217,9 @@ const translations = {
       mercosur: "MERCOSUR (LATAM)",
       tutoring: "Tutoría / Apoyo al Aprendizaje",
       print: "Servicios de Impresión y Sellos",
-      secretariat: "Oficina & Secretariado (Presencial)"
+      secretariat: "Oficina & Secretariado (Presencial)",
+      eur1: "Servicio de Documentos UE–Siria / EUR.1",
+      dokumentabo: "Suscripción de Documentos – 49 € / mes"
     },
     name: "Nombre Completo",
     email: "Correo Electrónico",
@@ -255,7 +265,9 @@ const translations = {
       mercosur: "MERCOSUR (LATAM)",
       tutoring: "Özel Ders / Öğrenme Desteği",
       print: "Baskı ve Damga Hizmetleri",
-      secretariat: "Ofis & Sekreterlik (Yerinde)"
+      secretariat: "Ofis & Sekreterlik (Yerinde)",
+      eur1: "AB–Suriye Belge Hizmeti / EUR.1",
+      dokumentabo: "Belge Aboneliği – Aylık 49 €"
     },
     name: "Tam Ad",
     email: "E-posta Adresi",
@@ -289,7 +301,9 @@ const categories = [
   { key: "mercosur", icon: Globe, color: "bg-amber-500" },
   { key: "tutoring", icon: BookOpen, color: "bg-blue-500" },
   { key: "print", icon: Printer, color: "bg-pink-500" },
-  { key: "secretariat", icon: Building2, color: "bg-violet-600" }
+  { key: "secretariat", icon: Building2, color: "bg-violet-600" },
+  { key: "eur1", icon: Ship, color: "bg-rose-600" },
+  { key: "dokumentabo", icon: Mail, color: "bg-purple-500" }
 ];
 
 const allTimeSlots = [
@@ -383,7 +397,9 @@ export default function Booking() {
     date: undefined,
     time: "",
     documents_urls: [],
-    hours: 1
+    hours: 1,
+    agb_accepted: false,
+    withdrawal_consent: false
   });
 
   // Fetch providers for selected category
@@ -644,7 +660,9 @@ export default function Booking() {
         status: "pending",
         payment_status: "unpaid",
         price: defaultPrice,
-        duration_hours: (formData.category === "secretariat" && !selectedPackage) ? (formData.hours || 1) : undefined
+        duration_hours: (formData.category === "secretariat" && !selectedPackage) ? (formData.hours || 1) : undefined,
+        agb_accepted: formData.agb_accepted,
+        withdrawal_consent: formData.withdrawal_consent
       };
 
       console.log("Booking data to create:", bookingData);
@@ -669,7 +687,7 @@ export default function Booking() {
     switch (step) {
       case 1: return !!(formData.category && formData.service_id);
       case 2: return !!(formData.customer_name && formData.customer_email && formData.customer_phone && formData.description);
-      case 3: return formData.date !== undefined && formData.time !== "";
+      case 3: return formData.date !== undefined && formData.time !== "" && formData.agb_accepted;
       default: return true;
     }
   };
@@ -1102,6 +1120,39 @@ export default function Booking() {
                       </>
                     )}
                   </div>
+                </div>
+                {/* AGB + withdrawal consent */}
+                <div className="mt-8 space-y-4 rounded-2xl border border-gray-100 bg-gray-50 p-5">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <Checkbox
+                      checked={formData.agb_accepted}
+                      onCheckedChange={(v) => setFormData(prev => ({ ...prev, agb_accepted: v === true }))}
+                      className="mt-0.5"
+                    />
+                    <span className="text-sm text-gray-700">
+                      {lang === "ar" ? "لقد قرأت " : lang === "en" ? "I have read the " : lang === "tr" ? "Okudum ve kabul ediyorum: " : lang === "es" ? "He leído y acepto las " : "Ich habe die "}
+                      <Link to="/AGB" target="_blank" className="font-semibold text-[#6B46C1] underline">AGB</Link>
+                      {lang === "ar" ? " و" : lang === "en" ? " and the " : lang === "tr" ? " ve " : lang === "es" ? " y la " : " und die "}
+                      <Link to="/Datenschutz" target="_blank" className="font-semibold text-[#6B46C1] underline">
+                        {lang === "ar" ? "سياسة الخصوصية" : lang === "en" ? "Privacy Policy" : lang === "tr" ? "Gizlilik Politikası" : lang === "es" ? "Política de Privacidad" : "Datenschutzerklärung"}
+                      </Link>
+                      {lang === "ar" ? " وأوافق عليها. *" : lang === "en" ? " and accept them. *" : lang === "tr" ? " ve kabul ediyorum. *" : lang === "es" ? " y las acepto. *" : " gelesen und akzeptiere sie. *"}
+                    </span>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <Checkbox
+                      checked={formData.withdrawal_consent}
+                      onCheckedChange={(v) => setFormData(prev => ({ ...prev, withdrawal_consent: v === true }))}
+                      className="mt-0.5"
+                    />
+                    <span className="text-sm text-gray-700">
+                      {lang === "ar" ? "أطلب صراحةً أن يبدأ EinStein بتقديم الخدمة قبل انتهاء مهلة العدول. وأعلم أن حقي في العدول يسقط عند التنفيذ الكامل للعقد."
+                        : lang === "en" ? "I expressly request that EinStein begins the service before the withdrawal period expires. I am aware that my right of withdrawal expires upon complete performance of the contract."
+                        : lang === "tr" ? "EinStein'in hizmete cayma süresi dolmadan başlamasını açıkça talep ediyorum. Cayma hakkımın sözleşmenin tamamen ifasıyla sona ereceğini biliyorum."
+                        : lang === "es" ? "Solicito expresamente que EinStein comience la prestación antes de que expire el plazo de desistimiento. Soy consciente de que mi derecho de desistimiento se extingue con la ejecución completa del contrato."
+                        : "Ich verlange ausdrücklich, dass EinStein vor Ablauf der Widerrufsfrist mit der Leistung beginnt. Mir ist bekannt, dass mein Widerrufsrecht bei vollständiger Vertragserfüllung erlischt."}
+                    </span>
+                  </label>
                 </div>
               </motion.div>
             )}

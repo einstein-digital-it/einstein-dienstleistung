@@ -95,6 +95,8 @@ class BookingController extends Controller
             'provider_documents_urls.*' => ['string', 'max:2048'],
             'description' => ['nullable', 'string'],
             'required_documents_hint' => ['nullable', 'string'],
+            'agb_accepted' => ['sometimes', 'boolean'],
+            'withdrawal_consent' => ['sometimes', 'boolean'],
         ];
     }
 

@@ -266,8 +266,35 @@ class _BookingCard extends StatelessWidget {
               ),
             ],
           ),
+          if (item.isDocumentSubscription) ...[
+            const SizedBox(height: 10),
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: TextButton.icon(
+                onPressed: () => _confirmCancel(item),
+                icon: const Icon(Icons.cancel_outlined, size: 18),
+                label: Text('cancel_subscription'.tr),
+                style: TextButton.styleFrom(foregroundColor: const Color(0xFFDC2626)),
+              ),
+            ),
+          ],
         ],
       ),
+    );
+  }
+
+  void _confirmCancel(BookingItem item) {
+    Get.defaultDialog(
+      title: 'cancel_subscription'.tr,
+      middleText: 'cancel_subscription_confirm'.tr,
+      textConfirm: 'cancel_subscription'.tr,
+      textCancel: 'cancel_back'.tr,
+      confirmTextColor: Colors.white,
+      buttonColor: const Color(0xFFDC2626),
+      onConfirm: () {
+        Get.back();
+        Get.find<MyBookingsController>().cancelSubscription(item);
+      },
     );
   }
 }
