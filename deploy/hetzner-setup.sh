@@ -12,7 +12,7 @@ set -euo pipefail
 DOMAIN="${1:-}"
 ADMIN_EMAIL="${2:-}"
 REPO="git@github.com:einstein-digital-it/einstein-dienstleistung.git"
-BRANCH="main"
+BRANCH="${BRANCH:-release/android}"   # branch with the latest changes; switch to main once merged
 APP_DIR="/var/www/einstein"
 
 if [[ -z "$DOMAIN" || -z "$ADMIN_EMAIL" ]]; then
