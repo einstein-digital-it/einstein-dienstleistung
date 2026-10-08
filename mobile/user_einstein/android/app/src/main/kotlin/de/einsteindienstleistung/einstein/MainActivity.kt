@@ -1,4 +1,4 @@
-package com.user.einsteindienstleistung.ahmed.dose.www.user_einstein
+package de.einsteindienstleistung.einstein
 
 import io.flutter.embedding.android.FlutterActivity
 
