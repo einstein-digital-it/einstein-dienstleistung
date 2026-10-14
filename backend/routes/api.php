@@ -84,7 +84,6 @@ Route::middleware('api.auth:admin,provider,user')->group(function () {
     Route::get('customer/notification-preferences', [NotificationPreferenceController::class, 'show']);
     Route::put('customer/notification-preferences', [NotificationPreferenceController::class, 'update']);
     Route::get('payments/bookings/{booking}', [PaymentController::class, 'show']);
-    Route::patch('payments/bookings/{booking}/status', [PaymentController::class, 'updateStatus']);
     Route::apiResource('bookings', BookingController::class);
     Route::get('service-extensions', [ServiceExtensionController::class, 'index']);
     Route::post('service-extensions', [ServiceExtensionController::class, 'store']);
@@ -93,6 +92,8 @@ Route::middleware('api.auth:admin,provider,user')->group(function () {
 });
 
 Route::middleware('api.auth:admin,provider')->group(function () {
+    // Only staff may mark bookings as paid (customers pay through the payment provider)
+    Route::patch('payments/bookings/{booking}/status', [PaymentController::class, 'updateStatus']);
     Route::get('provider/dashboard', [ProviderDashboardController::class, 'show']);
     Route::patch('provider/bookings/{booking}/action', [ProviderDashboardController::class, 'action']);
     Route::patch('provider/bookings/{booking}/documents', [ProviderDashboardController::class, 'updateDocuments']);

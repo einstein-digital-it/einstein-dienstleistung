@@ -39,7 +39,7 @@ class BookingController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $data = $request->validate($this->rules());
+        $data = $this->withoutStaffOnlyFields($request, $request->validate($this->rules()), creating: true);
         $data['booking_number'] ??= 'ES-' . now()->format('YmdHis') . '-' . random_int(100, 999);
         $booking = Booking::create($data);
         $this->ensureCustomerUser($booking);
@@ -50,7 +50,7 @@ class BookingController extends Controller
 
     public function update(Request $request, Booking $booking): JsonResponse
     {
-        $data = $request->validate($this->rules(partial: true));
+        $data = $this->withoutStaffOnlyFields($request, $request->validate($this->rules(partial: true)));
         $booking->update($data);
 
         return response()->json(['data' => $booking->fresh()]);
@@ -61,6 +61,35 @@ class BookingController extends Controller
         $booking->delete();
 
         return response()->json(null, 204);
+    }
+
+    /**
+     * Customers must not be able to mark their own booking as paid or change
+     * price/status/provider confirmation — only admins and providers may.
+     */
+    private function withoutStaffOnlyFields(Request $request, array $data, bool $creating = false): array
+    {
+        $role = $request->user()?->role;
+        if (in_array($role, ['admin', 'provider'], true)) {
+            return $data;
+        }
+
+        if (! $creating) {
+            unset($data['price']); // the quoted price is set once when booking
+        }
+        unset(
+            $data['payment_status'],
+            $data['invoice_url'],
+            $data['confirmed_by_provider_id'],
+            $data['confirmed_by_provider_name'],
+            $data['confirmed_by_provider_email'],
+            $data['confirmed_at'],
+        );
+        if (isset($data['status']) && ! in_array($data['status'], ['pending', 'cancelled'], true)) {
+            unset($data['status']);
+        }
+
+        return $data;
     }
 
     private function rules(bool $partial = false): array
