@@ -1,4 +1,4 @@
-# Build trigger: 2026-10-14 (secrets configured)
+# Build trigger: 2026-10-14 (retry with secret cleanup)
 name: Build Android (APK + AAB)
 
 # Runs automatically on every push to release/android, or manually from the Actions tab.
@@ -53,7 +53,19 @@ jobs:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > android/app/upload.jks
+          # Tolerate spaces / line breaks introduced when copy-pasting the secret
+          CLEAN_B64=$(printf '%s' "$KEYSTORE_BASE64" | tr -d '[:space:]')
+          CLEAN_PW=$(printf '%s' "$KEYSTORE_PASSWORD" | tr -d '[:space:]')
+          echo "KEYSTORE_BASE64 length after cleanup: ${#CLEAN_B64} (expected 2980)"
+          if ! printf '%s' "$CLEAN_B64" | base64 -d > android/app/upload.jks 2>/dev/null; then
+            echo "::error::KEYSTORE_BASE64 is not valid base64 (length ${#CLEAN_B64}, expected 2980). Re-copy the whole last line of einstein-signing-info.txt."
+            exit 1
+          fi
+          if ! keytool -list -keystore android/app/upload.jks -storepass "$CLEAN_PW" -alias upload > /dev/null 2>&1; then
+            echo "::error::Keystore could not be opened. Either KEYSTORE_BASE64 is incomplete (length ${#CLEAN_B64}, expected 2980) or KEYSTORE_PASSWORD is wrong (length ${#CLEAN_PW}, expected 20)."
+            exit 1
+          fi
+          KEYSTORE_PASSWORD="$CLEAN_PW"
           {
             echo "storePassword=$KEYSTORE_PASSWORD"
             echo "keyPassword=$KEYSTORE_PASSWORD"
