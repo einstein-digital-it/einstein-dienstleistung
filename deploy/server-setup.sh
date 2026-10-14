@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# EinStein — one-time server setup for a fresh Ubuntu 24.04 (Hetzner Cloud).
+# EinStein — one-time server setup for a fresh Ubuntu 24.04 VPS (Strato, Hetzner, ...).
 # Installs: firewall, fail2ban, Nginx, PHP 8.3, Node, Laravel backend, React frontend, HTTPS.
 #
 # Usage (as root, on the server):
-#   bash hetzner-setup.sh api.example.de admin@example.de
+#   bash server-setup.sh api.example.de admin@example.de
 #
 # Before running: the domain's DNS "A" record must already point to this server's IP.
 
@@ -16,7 +16,7 @@ BRANCH="${BRANCH:-release/android}"   # branch with the latest changes; switch t
 APP_DIR="/var/www/einstein"
 
 if [[ -z "$DOMAIN" || -z "$ADMIN_EMAIL" ]]; then
-  echo "Usage: bash hetzner-setup.sh <domain> <admin-email>"
+  echo "Usage: bash server-setup.sh <domain> <admin-email>"
   exit 1
 fi
 
@@ -88,6 +88,13 @@ if [[ ! -f .env ]]; then
     .env
   php artisan key:generate --force
 fi
+
+# MCP endpoint for Claude: create a random secret once
+if ! grep -q '^MCP_SECRET=.\+' .env; then
+  sed -i '/^MCP_SECRET=/d' .env
+  echo "MCP_SECRET=$(openssl rand -hex 24)" >> .env
+fi
+MCP_SECRET="$(grep '^MCP_SECRET=' .env | cut -d= -f2)"
 
 touch database/database.sqlite
 php artisan migrate --force
@@ -162,4 +169,8 @@ echo " Website : https://$DOMAIN"
 echo " API     : https://$DOMAIN/api   <- put this in the app"
 echo " Admin   : $ADMIN_EMAIL"
 echo " Password: $ADMIN_PW   (save it now — it is not stored anywhere)"
+echo
+echo " Claude connector (MCP) — add in Claude: Settings > Connectors > Add custom connector"
+echo "   https://$DOMAIN/api/mcp/$MCP_SECRET"
+echo "   Keep this link private: anyone with it can manage the site."
 echo "=================================================================="

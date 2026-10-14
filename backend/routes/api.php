@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\BookingReportController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\ContractCancellationController;
+use App\Http\Controllers\Api\McpController;
 use App\Http\Controllers\Api\CustomerClientController;
 use App\Http\Controllers\Api\CustomerPortalController;
 use App\Http\Controllers\Api\CustomerRequestController;
@@ -35,6 +36,9 @@ use App\Http\Controllers\Api\UserNotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => response()->json(['status' => 'ok']));
+
+// MCP admin endpoint for Claude (secret URL, see config/services.php)
+Route::match(['get', 'post', 'delete'], 'mcp/{secret}', [McpController::class, 'handle'])->middleware('throttle:120,1');
 
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/provider/login', [AuthController::class, 'providerLogin']);

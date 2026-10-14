@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    // MCP admin endpoint for Claude: POST /api/mcp/{MCP_SECRET}. Empty = disabled.
+    'mcp' => [
+        'secret' => env('MCP_SECRET', ''),
+    ],
+
 ];
