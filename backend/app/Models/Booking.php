@@ -42,6 +42,9 @@ class Booking extends Model
         'required_documents_hint',
         'agb_accepted',
         'withdrawal_consent',
+        'stripe_session_id',
+        'stripe_subscription_id',
+        'paid_at',
     ];
 
     protected function casts(): array
@@ -56,6 +59,7 @@ class Booking extends Model
             'provider_documents_urls' => 'array',
             'agb_accepted' => 'boolean',
             'withdrawal_consent' => 'boolean',
+            'paid_at' => 'datetime',
         ];
     }
 

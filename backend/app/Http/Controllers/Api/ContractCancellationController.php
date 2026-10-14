@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\ContractCancellation;
 use App\Models\Notification;
 use App\Models\User;
@@ -34,6 +35,7 @@ class ContractCancellationController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
+        $this->cancelMatchingSubscription($cancellation);
         $this->notify($cancellation);
 
         $received = $cancellation->created_at->timezone('Europe/Berlin');
@@ -60,6 +62,35 @@ class ContractCancellationController extends Controller
         $cancellation->update($data);
 
         return response()->json(['data' => $cancellation->fresh()]);
+    }
+
+    /**
+     * If the cancellation names a Dokumenten-Abo booking of the same customer,
+     * stop the Stripe subscription at the end of the current month (AGB § 8).
+     */
+    private function cancelMatchingSubscription(ContractCancellation $c): void
+    {
+        $query = Booking::query()
+            ->where('category', 'dokumentabo')
+            ->whereRaw('LOWER(customer_email) = ?', [strtolower($c->email)])
+            ->whereNotNull('stripe_subscription_id')
+            ->whereNotIn('status', ['cancelled', 'completed']);
+
+        if ($c->reference_number) {
+            $query->where(fn ($q) => $q->where('booking_number', $c->reference_number)->orWhere('id', $c->reference_number));
+        }
+
+        $bookings = $query->get();
+        // Without a reference only act when the customer has exactly one active Abo
+        if (! $c->reference_number && $bookings->count() !== 1) {
+            return;
+        }
+
+        foreach ($bookings as $booking) {
+            if (StripeController::cancelSubscriptionAtPeriodEnd($booking)) {
+                $c->update(['status' => 'confirmed']);
+            }
+        }
     }
 
     private function notify(ContractCancellation $c): void

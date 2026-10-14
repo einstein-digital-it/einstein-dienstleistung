@@ -190,6 +190,11 @@ export const customerApi = {
 
 export const paymentApi = {
   getBooking: (id) => request(`/payments/bookings/${id}`),
+  // Stripe Checkout: returns { url } of the hosted payment page
+  startCheckout: (id, lang = "de") => request(`/payments/bookings/${id}/checkout`, {
+    method: "POST",
+    body: JSON.stringify({ lang }),
+  }),
   updatePaymentStatus: (id, paymentStatus) => request(`/payments/bookings/${id}/status`, {
     method: "PATCH",
     body: JSON.stringify({ payment_status: paymentStatus }),

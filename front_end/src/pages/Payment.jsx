@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { paymentApi } from "@/api/backendClient";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import PaymentForm from "@/components/PaymentForm";
+import StripeCheckoutButton from "@/components/StripeCheckoutButton";
 import InvoicePreview from "@/components/InvoicePreview";
 
 const translations = {
@@ -40,7 +40,7 @@ const translations = {
     no_price_msg: "Bitte warten Sie, bis wir den Preis für Ihre Buchung festgelegt haben. Wir werden Sie kontaktieren.",
     price_breakdown: "Preisübersicht",
     net_amount: "Nettobetrag",
-    vat: "MwSt. (19%)",
+    vat: "Keine USt. (§ 19 UStG)",
     total: "Gesamtbetrag",
     categories: {
       education: "Bildung & Nachhilfe",
@@ -69,7 +69,7 @@ const translations = {
     no_price_msg: "يرجى الانتظار حتى نحدد سعر حجزك. سنتواصل معك قريباً.",
     price_breakdown: "تفاصيل السعر",
     net_amount: "المبلغ الصافي",
-    vat: "ضريبة القيمة المضافة (19%)",
+    vat: "لا ضريبة قيمة مضافة (§ 19 UStG)",
     total: "المبلغ الإجمالي",
     categories: {
       education: "التعليم والدروس",
@@ -120,7 +120,7 @@ const translations = {
     no_price_msg: "Por favor espera hasta que establezcamos el precio.",
     price_breakdown: "Desglose de Precio",
     net_amount: "Monto Neto",
-    vat: "IVA (19%)",
+    vat: "Sin IVA (§ 19 UStG)",
     total: "Monto Total",
     categories: {}
   },
@@ -142,7 +142,7 @@ const translations = {
     no_price_msg: "Please wait until we set the price for your booking. We will contact you soon.",
     price_breakdown: "Price Breakdown",
     net_amount: "Net Amount",
-    vat: "VAT (19%)",
+    vat: "No VAT (§ 19 UStG)",
     total: "Total Amount",
     categories: {
       education: "Education & Tutoring",
@@ -160,7 +160,6 @@ export default function Payment() {
   const bookingId = searchParams.get("id") || searchParams.get("booking");
   const [lang, setLang] = useState("de");
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const queryClient = useQueryClient();
 
 
   useEffect(() => {
@@ -168,9 +167,8 @@ export default function Payment() {
     if (savedLang) setLang(savedLang);
 
     // Check for Stripe redirect
-    const paymentIntent = searchParams.get("payment_intent");
-    const redirectStatus = searchParams.get("redirect_status");
-    if (paymentIntent && redirectStatus === "succeeded") {
+    // Back from Stripe Checkout (the webhook marks the booking as paid)
+    if (searchParams.get("paid") === "1") {
       setPaymentSuccess(true);
     }
 
@@ -273,9 +271,9 @@ export default function Payment() {
     );
   }
 
-  // Calculate prices with VAT
-  const netAmount = booking.price || 0;
-  const vatRate = 0.19;
+  // Kleinunternehmer gemäß § 19 UStG — no VAT is charged
+  const netAmount = Number(booking.price) || 0;
+  const vatRate = 0;
   const vatAmount = netAmount * vatRate;
   const totalAmount = netAmount + vatAmount;
 
@@ -468,15 +466,11 @@ export default function Payment() {
             animate={{ opacity: 1, x: 0 }}
             className="space-y-4"
           >
-            <PaymentForm
+            <StripeCheckoutButton
               booking={booking}
               amount={totalAmount}
               lang={lang}
-              onSuccess={() => {
-                setPaymentSuccess(true);
-                queryClient.invalidateQueries({ queryKey: ["booking-payment", bookingId] });
-                queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
-              }}
+              canceled={searchParams.get("canceled") === "1"}
             />
           </motion.div>
         </div>

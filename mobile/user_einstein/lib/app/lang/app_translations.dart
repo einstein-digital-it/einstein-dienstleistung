@@ -1045,6 +1045,13 @@ final Map<String, String> _catalogEn = {
   'cancel_subscription_done': 'We have received your cancellation.',
   'cancel_subscription_failed': 'Cancellation could not be sent. Please email info@einsteindienstleistung.de.',
   'cancel_back': 'Back',
+  'vat': 'No VAT (§ 19 UStG)',
+  'card_online': 'Pay online',
+  'card_online_subtitle': 'Card, PayPal, SEPA, Klarna, Apple Pay, Google Pay (via Stripe)',
+  'invoice_chosen_info': 'Your booking stays open. You will receive an invoice by email.',
+  'payment_pending_info': 'Complete the payment in your browser, then come back to the app.',
+  'payment_start_failed': 'The payment could not be started. Please try again later.',
+  'check_payment_status': 'Check payment status',
 };
 
 final Map<String, String> _catalogAr = {
@@ -1152,6 +1159,13 @@ final Map<String, String> _catalogAr = {
   'cancel_subscription_done': 'استلمنا طلب الإلغاء.',
   'cancel_subscription_failed': 'تعذّر إرسال الإلغاء. يرجى المراسلة على info@einsteindienstleistung.de.',
   'cancel_back': 'رجوع',
+  'vat': 'لا ضريبة قيمة مضافة (§ 19 UStG)',
+  'card_online': 'الدفع أونلاين',
+  'card_online_subtitle': 'بطاقة، PayPal، SEPA، Klarna، Apple Pay، Google Pay (عبر Stripe)',
+  'invoice_chosen_info': 'يبقى حجزك مفتوحاً، وستصلك فاتورة بالبريد الإلكتروني.',
+  'payment_pending_info': 'أكمل الدفع في المتصفح، ثم ارجع إلى التطبيق.',
+  'payment_start_failed': 'تعذّر بدء الدفع. يرجى المحاولة لاحقاً.',
+  'check_payment_status': 'تحقق من حالة الدفع',
 };
 
 final Map<String, String> _catalogDe = {
@@ -1267,4 +1281,11 @@ final Map<String, String> _catalogDe = {
   'cancel_subscription_done': 'Wir haben Ihre Kuendigung erhalten.',
   'cancel_subscription_failed': 'Kuendigung konnte nicht gesendet werden. Bitte schreiben Sie an info@einsteindienstleistung.de.',
   'cancel_back': 'Zurueck',
+  'vat': 'Keine USt. (§ 19 UStG)',
+  'card_online': 'Online bezahlen',
+  'card_online_subtitle': 'Karte, PayPal, SEPA, Klarna, Apple Pay, Google Pay (über Stripe)',
+  'invoice_chosen_info': 'Ihre Buchung bleibt offen. Sie erhalten eine Rechnung per E-Mail.',
+  'payment_pending_info': 'Schließen Sie die Zahlung im Browser ab und kehren Sie dann zur App zurück.',
+  'payment_start_failed': 'Die Zahlung konnte nicht gestartet werden. Bitte später erneut versuchen.',
+  'check_payment_status': 'Zahlungsstatus prüfen',
 };

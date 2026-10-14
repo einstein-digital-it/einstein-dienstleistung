@@ -100,6 +100,15 @@ class CustomerApiService {
     return Map<String, dynamic>.from(data as Map);
   }
 
+  /// Starts Stripe Checkout and returns the URL of the hosted payment page.
+  Future<String> startCheckout(String bookingId, String lang) async {
+    final data = await client.post(
+      'payments/bookings/$bookingId/checkout',
+      body: {'lang': lang},
+    );
+    return (Map<String, dynamic>.from(data as Map))['url'].toString();
+  }
+
   Future<BookingItem> paymentBooking(String bookingId) async {
     final data = await client.get('payments/bookings/$bookingId');
     return BookingItem.fromJson(Map<String, dynamic>.from(data as Map));

@@ -1,25 +1,30 @@
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../api/customer_api_service.dart';
 import '../models/booking_item.dart';
 import 'customer_store_controller.dart';
 
-class PaymentController extends GetxController {
+class PaymentController extends GetxController with WidgetsBindingObserver {
   final store = Get.find<CustomerStoreController>();
   final api = Get.find<CustomerApiService>();
 
   final selectedMethod = 'card'.obs;
   final isProcessing = false.obs;
   final isPaid = false.obs;
+  final awaitingConfirmation = false.obs;
+  final infoText = ''.obs;
   final bookingId = RxnString();
 
   BookingItem? get booking => store.bookingById(bookingId.value);
   String get bookingNumber => booking?.id ?? 'No booking';
   String get serviceName => booking?.service ?? 'No service selected';
   double get amount => booking?.amountValue ?? 0;
-  double get vat => amount * 0.19;
+  // Kleinunternehmer gemaess § 19 UStG: no VAT is charged.
+  double get vat => 0;
 
-  double get total => amount + vat;
+  double get total => amount;
 
   @override
   void onInit() {
@@ -30,7 +35,22 @@ class PaymentController extends GetxController {
     } else if (args is Map && args['bookingId'] is String) {
       bookingId.value = args['bookingId'] as String;
     }
+    WidgetsBinding.instance.addObserver(this);
     loadPayment();
+  }
+
+  @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.onClose();
+  }
+
+  /// When the customer comes back from the Stripe page, refresh the status.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && awaitingConfirmation.value) {
+      checkStatus();
+    }
   }
 
   Future<void> loadPayment() async {
@@ -52,20 +72,43 @@ class PaymentController extends GetxController {
   Future<void> confirmPayment() async {
     final currentBooking = booking;
     if (currentBooking == null) return;
+    infoText.value = '';
+
+    if (selectedMethod.value == 'invoice') {
+      // Pay later by invoice: the booking simply stays unpaid.
+      infoText.value = 'invoice_chosen_info'.tr;
+      return;
+    }
+
     isProcessing.value = true;
     try {
-      final paidBooking = await api.updatePaymentStatus(currentBooking.id, 'paid');
-      final index = store.bookings.indexWhere((item) => item.id == currentBooking.id);
-      if (index == -1) {
-        store.bookings.insert(0, paidBooking);
+      final url = await api.startCheckout(
+        currentBooking.id,
+        Get.locale?.languageCode ?? 'de',
+      );
+      final opened = await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
+      );
+      if (opened) {
+        awaitingConfirmation.value = true;
+        infoText.value = 'payment_pending_info'.tr;
       } else {
-        store.bookings[index] = paidBooking;
+        infoText.value = 'payment_start_failed'.tr;
       }
     } catch (_) {
-      await Future<void>.delayed(const Duration(milliseconds: 650));
-      store.markBookingPaid(currentBooking.id);
+      infoText.value = 'payment_start_failed'.tr;
     }
     isProcessing.value = false;
-    isPaid.value = true;
+  }
+
+  /// Reload the booking; it is marked paid by Stripe (webhook) after payment.
+  Future<void> checkStatus() async {
+    await loadPayment();
+    if (booking?.isPaid ?? false) {
+      isPaid.value = true;
+      awaitingConfirmation.value = false;
+      infoText.value = '';
+    }
   }
 }

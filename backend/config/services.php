@@ -35,6 +35,12 @@ return [
         ],
     ],
 
+    // Online payment (Stripe Checkout). Keys: Stripe Dashboard > Developers.
+    'stripe' => [
+        'secret' => env('STRIPE_SECRET', ''),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET', ''),
+    ],
+
     // MCP admin endpoint for Claude: POST /api/mcp/{MCP_SECRET}. Empty = disabled.
     'mcp' => [
         'secret' => env('MCP_SECRET', ''),

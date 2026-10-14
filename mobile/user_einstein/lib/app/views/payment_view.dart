@@ -64,6 +64,21 @@ class PaymentView extends GetView<PaymentController> {
                     isLoading: controller.isProcessing.value,
                     onPressed: controller.confirmPayment,
                   ),
+                  if (controller.infoText.value.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      controller.infoText.value,
+                      style: const TextStyle(color: AppColors.muted, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                  if (controller.awaitingConfirmation.value) ...[
+                    const SizedBox(height: 8),
+                    TextButton.icon(
+                      onPressed: controller.checkStatus,
+                      icon: const Icon(Icons.refresh),
+                      label: Text('check_payment_status'.tr),
+                    ),
+                  ],
                 ],
               ],
             ),
