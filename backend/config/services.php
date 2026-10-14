@@ -41,6 +41,11 @@ return [
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET', ''),
     ],
 
+    // VAT added on top of the (net) service prices
+    'tax' => [
+        'vat_rate' => (float) env('VAT_RATE', 0.19),
+    ],
+
     // MCP admin endpoint for Claude: POST /api/mcp/{MCP_SECRET}. Empty = disabled.
     'mcp' => [
         'secret' => env('MCP_SECRET', ''),

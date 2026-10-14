@@ -71,7 +71,7 @@ export default function Impressum() {
           <section>
             <Heading icon={Receipt}>Steuerliche Angaben</Heading>
             <div className="text-gray-700 leading-relaxed space-y-3 text-sm">
-              <p>Kleinunternehmer gemäß § 19 UStG.<br />Es wird keine Umsatzsteuer ausgewiesen.</p>
+              <p>Die Leistungen unterliegen der gesetzlichen Umsatzsteuer (derzeit 19 %).<br />Die Umsatzsteuer wird in den Rechnungen gesondert ausgewiesen.</p>
               <p>
                 <span className="font-medium text-[#1e3a5f]">Wirtschafts-Identifikationsnummer (W-IdNr.)</span><br />
                 DE454555907-00001

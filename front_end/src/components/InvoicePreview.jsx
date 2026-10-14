@@ -15,7 +15,7 @@ const translations = {
     service: "Dienstleistung",
     description: "Beschreibung",
     net_amount: "Nettobetrag",
-    vat: "Keine USt. (§ 19 UStG)",
+    vat: "MwSt. (19%)",
     total: "Gesamtbetrag",
     print: "Drucken",
     booking_number: "Buchungsnummer",
@@ -31,7 +31,7 @@ const translations = {
     service: "الخدمة",
     description: "الوصف",
     net_amount: "المبلغ الصافي",
-    vat: "لا ضريبة قيمة مضافة (§ 19 UStG)",
+    vat: "ضريبة القيمة المضافة (19%)",
     total: "المبلغ الإجمالي",
     print: "طباعة",
     booking_number: "رقم الحجز",
@@ -47,7 +47,7 @@ const translations = {
     service: "Service",
     description: "Description",
     net_amount: "Net Amount",
-    vat: "No VAT (§ 19 UStG)",
+    vat: "VAT (19%)",
     total: "Total Amount",
     print: "Print",
     booking_number: "Booking Number",
@@ -63,7 +63,7 @@ const translations = {
     service: "Hizmet",
     description: "Aciklama",
     net_amount: "Net Tutar",
-    vat: "KDV yok (§ 19 UStG)",
+    vat: "KDV (19%)",
     total: "Toplam Tutar",
     print: "Yazdir",
     booking_number: "Rezervasyon Numarasi",
@@ -79,7 +79,7 @@ const translations = {
     service: "Servicio",
     description: "Descripción",
     net_amount: "Importe Neto",
-    vat: "Sin IVA (§ 19 UStG)",
+    vat: "IVA (19%)",
     total: "Importe Total",
     print: "Imprimir",
     booking_number: "Número de Reserva",
@@ -186,7 +186,7 @@ export default function InvoicePreview({ booking, netAmount, vatAmount, totalAmo
       y += 7;
     };
     totRow('Netto / Net:', `€${netAmount?.toFixed(2)}`);
-    totRow('USt. / VAT (§ 19 UStG):', `€${vatAmount?.toFixed(2)}`);
+    totRow('MwSt. 19% / VAT:', `€${vatAmount?.toFixed(2)}`);
     line(totX - 3, y - 2, valX, y - 2, [107, 70, 193]);
     y += 2;
     totRow('Gesamt / Total:', `€${totalAmount?.toFixed(2)}`, true);

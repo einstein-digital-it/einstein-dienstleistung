@@ -21,8 +21,8 @@ class PaymentController extends GetxController with WidgetsBindingObserver {
   String get bookingNumber => booking?.id ?? 'No booking';
   String get serviceName => booking?.service ?? 'No service selected';
   double get amount => booking?.amountValue ?? 0;
-  // Kleinunternehmer gemaess § 19 UStG: no VAT is charged.
-  double get vat => 0;
+  // Prices are net; 19 % VAT is added (the server charges the same total).
+  double get vat => double.parse((amount * 0.19).toStringAsFixed(2));
 
   double get total => amount;
 

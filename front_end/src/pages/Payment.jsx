@@ -40,7 +40,7 @@ const translations = {
     no_price_msg: "Bitte warten Sie, bis wir den Preis für Ihre Buchung festgelegt haben. Wir werden Sie kontaktieren.",
     price_breakdown: "Preisübersicht",
     net_amount: "Nettobetrag",
-    vat: "Keine USt. (§ 19 UStG)",
+    vat: "MwSt. (19%)",
     total: "Gesamtbetrag",
     categories: {
       education: "Bildung & Nachhilfe",
@@ -69,7 +69,7 @@ const translations = {
     no_price_msg: "يرجى الانتظار حتى نحدد سعر حجزك. سنتواصل معك قريباً.",
     price_breakdown: "تفاصيل السعر",
     net_amount: "المبلغ الصافي",
-    vat: "لا ضريبة قيمة مضافة (§ 19 UStG)",
+    vat: "ضريبة القيمة المضافة (19%)",
     total: "المبلغ الإجمالي",
     categories: {
       education: "التعليم والدروس",
@@ -120,7 +120,7 @@ const translations = {
     no_price_msg: "Por favor espera hasta que establezcamos el precio.",
     price_breakdown: "Desglose de Precio",
     net_amount: "Monto Neto",
-    vat: "Sin IVA (§ 19 UStG)",
+    vat: "IVA (19%)",
     total: "Monto Total",
     categories: {}
   },
@@ -142,7 +142,7 @@ const translations = {
     no_price_msg: "Please wait until we set the price for your booking. We will contact you soon.",
     price_breakdown: "Price Breakdown",
     net_amount: "Net Amount",
-    vat: "No VAT (§ 19 UStG)",
+    vat: "VAT (19%)",
     total: "Total Amount",
     categories: {
       education: "Education & Tutoring",
@@ -271,9 +271,9 @@ export default function Payment() {
     );
   }
 
-  // Kleinunternehmer gemäß § 19 UStG — no VAT is charged
+  // Prices are net; 19 % VAT is added on top (the server charges the same total)
   const netAmount = Number(booking.price) || 0;
-  const vatRate = 0;
+  const vatRate = 0.19;
   const vatAmount = netAmount * vatRate;
   const totalAmount = netAmount + vatAmount;
 

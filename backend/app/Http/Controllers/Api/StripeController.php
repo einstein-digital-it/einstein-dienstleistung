@@ -46,8 +46,10 @@ class StripeController extends Controller
             return response()->json(['message' => 'This booking was cancelled.'], 409);
         }
 
-        $amount = $this->amountFor($booking);
-        if ($amount <= 0) {
+        $net = $this->amountFor($booking);
+        $vatRate = (float) config('services.tax.vat_rate', 0.19);
+        $amount = round($net * (1 + $vatRate), 2); // gross amount charged
+        if ($net <= 0) {
             return response()->json(['message' => 'No price set for this booking yet. EinStein will send you the amount.'], 422);
         }
 
@@ -62,7 +64,7 @@ class StripeController extends Controller
                 'unit_amount' => (int) round($amount * 100),
                 'product_data' => [
                     'name' => $booking->service_name ?: ($booking->category ?: 'EinStein Service'),
-                    'description' => 'Buchung '.$booking->booking_number,
+                    'description' => 'Buchung '.$booking->booking_number.' — inkl. '.round($vatRate * 100).' % MwSt.',
                 ],
             ],
         ];
@@ -94,9 +96,15 @@ class StripeController extends Controller
             return response()->json(['message' => 'Payment could not be started. Please try again later.'], 502);
         }
 
-        $booking->update(['stripe_session_id' => $session['id'], 'price' => $amount]);
+        $booking->update(['stripe_session_id' => $session['id'], 'price' => $net]);
 
-        return response()->json(['data' => ['url' => $session['url'], 'amount' => $amount, 'subscription' => $isSubscription]]);
+        return response()->json(['data' => [
+            'url' => $session['url'],
+            'net' => $net,
+            'vat' => round($amount - $net, 2),
+            'amount' => $amount,
+            'subscription' => $isSubscription,
+        ]]);
     }
 
     /**
@@ -185,7 +193,7 @@ class StripeController extends Controller
 
     // ---------------------------------------------------------------- helpers
 
-    /** Server-side amount: the booking price, but never below the official price of its category. */
+    /** Server-side NET amount: the booking price, but never below the official price of its category. */
     private function amountFor(Booking $booking): float
     {
         $price = (float) $booking->price;
@@ -238,7 +246,7 @@ class StripeController extends Controller
             'link' => 'MyBookings',
             'booking_id' => (string) $booking->id,
         ]);
-        $this->notifyAdmins('Zahlung eingegangen', "{$booking->customer_name} hat {$booking->booking_number} bezahlt ({$booking->price} €).", $booking);
+        $this->notifyAdmins('Zahlung eingegangen', "{$booking->customer_name} hat {$booking->booking_number} bezahlt (netto {$booking->price} € zzgl. MwSt.).", $booking);
     }
 
     private function markFailed(Booking $booking): void
