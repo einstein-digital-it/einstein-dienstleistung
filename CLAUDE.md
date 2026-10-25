@@ -36,7 +36,7 @@ Working branch: `release/android` (not main). The team talks in Levantine Arabic
 - Mobile app has not been run on a device by Claude yet. Check with `flutter analyze`, `flutter test`, then a run on an emulator.
 - Open questions:
   - USt-IdNr for the Impressum.
-  - Website (front_end) still shows net prices; the app shows gross incl. 19 % MwSt. (PAngV).
+  - Company address: Impressum, AGB, Datenschutz and invoices use Julius-Leber-Weg 8 — confirm whether it should be Robert-Dißmann-Str. 8.
 
 ## Rules
 - Never put passwords, API keys, the keystore or the MCP URL in code, commits or chat. The owner enters secrets herself.
