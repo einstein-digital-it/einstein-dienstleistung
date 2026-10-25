@@ -238,13 +238,26 @@ class _BookingCard extends StatelessWidget {
           const SizedBox(height: 14),
           Row(
             children: [
-              Text(
-                item.price,
-                style: const TextStyle(
-                  color: AppColors.navy,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.grossPrice,
+                    style: const TextStyle(
+                      color: AppColors.navy,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  Text(
+                    'incl_vat'.tr,
+                    style: const TextStyle(
+                      color: AppColors.muted,
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
               ),
               const Spacer(),
               SizedBox(

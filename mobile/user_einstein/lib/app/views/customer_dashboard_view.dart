@@ -107,12 +107,25 @@ class CustomerDashboardView extends GetView<CustomerDashboardController> {
                                     ],
                                   ),
                                 ),
-                                Text(
-                                  item.price,
-                                  style: const TextStyle(
-                                    color: AppColors.gold,
-                                    fontWeight: FontWeight.w900,
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      item.grossPrice,
+                                      style: const TextStyle(
+                                        color: AppColors.gold,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    Text(
+                                      'incl_vat'.tr,
+                                      style: const TextStyle(
+                                        color: AppColors.muted,
+                                        fontSize: 10.5,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

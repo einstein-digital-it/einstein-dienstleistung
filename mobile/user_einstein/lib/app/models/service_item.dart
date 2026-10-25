@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'vat.dart';
+
 class ServiceItem {
   const ServiceItem({
     required this.id,
@@ -63,7 +65,10 @@ String _price(Map<String, dynamic> json) {
   final price = json['price'] ?? json['base_price'] ?? json['starting_price'];
   final unit = json['unit'] ?? json['price_unit'] ?? 'EUR';
   if (price == null) return 'Price on request';
-  return '$price $unit';
+  // Server prices are net; customers see the gross price (PAngV).
+  final net = num.tryParse(price.toString());
+  if (net == null) return '$price $unit';
+  return '${formatAmount(grossFromNet(net))} $unit ${'incl_vat'.tr}';
 }
 
 List<String> _features(Map<String, dynamic> json) {

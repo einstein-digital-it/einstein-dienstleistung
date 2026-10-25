@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../api/customer_api_service.dart';
 import '../models/booking_item.dart';
+import '../models/vat.dart';
 import 'customer_store_controller.dart';
 
 class PaymentController extends GetxController with WidgetsBindingObserver {
@@ -22,7 +23,7 @@ class PaymentController extends GetxController with WidgetsBindingObserver {
   String get serviceName => booking?.displayService ?? 'No service selected';
   double get amount => booking?.amountValue ?? 0;
   // Prices are net; 19 % VAT is added (the server charges the same total).
-  double get vat => double.parse((amount * 0.19).toStringAsFixed(2));
+  double get vat => double.parse((amount * vatRate).toStringAsFixed(2));
 
   double get total => amount + vat;
 

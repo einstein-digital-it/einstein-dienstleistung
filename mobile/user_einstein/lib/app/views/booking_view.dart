@@ -39,7 +39,8 @@ class BookingView extends GetView<BookingController> {
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    mainAxisExtent: 122,
+                    // Room for two lines of name and two of the gross price.
+                    mainAxisExtent: 148,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
                   ),
@@ -88,6 +89,8 @@ class BookingView extends GetView<BookingController> {
                             const SizedBox(height: 4),
                             Text(
                               'service_${id}_price'.tr,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: AppColors.gold,
                                 fontSize: 12,

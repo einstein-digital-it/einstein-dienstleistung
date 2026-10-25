@@ -19,6 +19,7 @@ void main() {
     expect(item.number, 'ES-20261025171803-514');
     expect(item.date, '26.10.2026');
     expect(item.price, '150 EUR');
+    expect(item.grossPrice, '178.50 EUR');
     expect(item.paymentStatusKey, 'payment_status_unpaid');
     expect(item.statusKey, 'booking_status_awaiting_payment');
   });

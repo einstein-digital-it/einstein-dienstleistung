@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'vat.dart';
+
 class BookingItem {
   const BookingItem({
     required this.id,
@@ -58,6 +60,9 @@ class BookingItem {
     final match = RegExp(r'(\d+(\.\d+)?)').firstMatch(normalized);
     return double.tryParse(match?.group(1) ?? '') ?? 0;
   }
+
+  /// What the customer pays: net price + 19 % VAT, e.g. "178.50 EUR".
+  String get grossPrice => '${formatAmount(grossFromNet(amountValue))} EUR';
 
   bool get isPaid => paymentStatus == 'Paid';
 
