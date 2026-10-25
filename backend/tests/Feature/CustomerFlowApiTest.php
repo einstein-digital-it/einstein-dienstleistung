@@ -69,6 +69,13 @@ class CustomerFlowApiTest extends TestCase
             ->assertJsonPath('data.summary.open_payments', 1)
             ->assertJsonPath('data.upcoming_bookings.0.service_name', 'Forms help');
 
+        // Customers pay through Stripe; only staff may mark a booking as paid.
+        $this->patchJson("/api/payments/bookings/{$bookingId}/status", [
+            'payment_status' => 'paid',
+        ])->assertForbidden();
+
+        $this->withApiUser('admin');
+
         $this->patchJson("/api/payments/bookings/{$bookingId}/status", [
             'payment_status' => 'paid',
         ])

@@ -24,7 +24,7 @@ class PaymentController extends GetxController with WidgetsBindingObserver {
   // Prices are net; 19 % VAT is added (the server charges the same total).
   double get vat => double.parse((amount * 0.19).toStringAsFixed(2));
 
-  double get total => amount;
+  double get total => amount + vat;
 
   @override
   void onInit() {

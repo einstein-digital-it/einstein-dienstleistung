@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -11,49 +12,124 @@ import 'package:user_einstein/app/api/api_client.dart';
 import 'package:user_einstein/app/api/auth_session.dart';
 import 'package:user_einstein/app/api/customer_api_service.dart';
 import 'package:user_einstein/app/controllers/customer_clients_controller.dart';
+import 'package:user_einstein/app/controllers/payment_controller.dart';
 import 'package:user_einstein/app/lang/app_translations.dart';
 import 'package:user_einstein/app/models/managed_client.dart';
 import 'package:user_einstein/app/routes/app_routes.dart';
 import 'package:user_einstein/app/views/client_workspace_view.dart';
 
+/// In-memory stand-in for the Laravel API, so flows that now go through the
+/// server (bookings, Stripe checkout) can be exercised in widget tests.
+class _FakeBackend {
+  final bookings = <Map<String, dynamic>>[
+    {
+      'id': 'ES-2050',
+      'service_name': 'Behoerden & Formularhilfe',
+      'category': 'forms',
+      'date': '2026-11-02',
+      'time': '10:00',
+      'address': 'Frankfurt',
+      'status': 'pending',
+      'payment_status': 'unpaid',
+      'price': 120,
+    },
+  ];
+  final createdBookings = <Map<String, dynamic>>[];
+  final checkoutBookingIds = <String>[];
+
+  Map<String, dynamic>? _booking(String id) {
+    for (final booking in bookings) {
+      if (booking['id'] == id) return booking;
+    }
+    return null;
+  }
+
+  http.Response _json(Object data, [int status = 200]) => http.Response(
+    jsonEncode({'data': data}),
+    status,
+    headers: {'content-type': 'application/json'},
+  );
+
+  Future<http.Response> handle(http.Request request) async {
+    final path = request.url.path.replaceFirst(RegExp(r'^.*/api/'), '');
+    final method = request.method;
+
+    if (path == 'auth/login' || path == 'auth/register') {
+      final body = jsonDecode(request.body) as Map<String, dynamic>;
+      final email = body['email']?.toString() ?? 'customer@example.com';
+      final name = body['name']?.toString() ?? 'Customer User';
+      return _json({
+        'user': {
+          'id': 1,
+          'name': name,
+          'full_name': name,
+          'email': email,
+          'role': 'user',
+          'preferred_language': 'en',
+        },
+        'session': {'token': 'test-token'},
+      });
+    }
+    if (method == 'GET' && path == 'customer/dashboard') {
+      return _json({
+        'summary': {
+          'open_payments': bookings
+              .where((item) => item['payment_status'] != 'paid')
+              .length,
+        },
+        'upcoming_bookings': bookings,
+        'notifications': const [],
+      });
+    }
+    if (method == 'GET' && path == 'customer/bookings') {
+      return _json(bookings);
+    }
+    if (method == 'POST' && path == 'bookings') {
+      final payload = jsonDecode(request.body) as Map<String, dynamic>;
+      createdBookings.add(payload);
+      final booking = {
+        ...payload,
+        'id': 'ES-${2050 + bookings.length}',
+        'status': 'pending',
+        'payment_status': 'unpaid',
+      };
+      bookings.insert(0, booking);
+      return _json(booking, 201);
+    }
+    final checkout = RegExp(
+      r'^payments/bookings/([^/]+)/checkout$',
+    ).firstMatch(path);
+    if (method == 'POST' && checkout != null) {
+      checkoutBookingIds.add(checkout.group(1)!);
+      return _json({'url': 'https://checkout.stripe.test/session'});
+    }
+    final payment = RegExp(r'^payments/bookings/([^/]+)$').firstMatch(path);
+    if (method == 'GET' && payment != null) {
+      final booking = _booking(payment.group(1)!);
+      if (booking != null) return _json(booking);
+    }
+    return http.Response('{"message":"Not available in widget test."}', 503);
+  }
+
+  /// What the Stripe webhook does on the server after a successful payment.
+  void markPaid(String id) {
+    _booking(id)!['payment_status'] = 'paid';
+  }
+}
+
 void main() {
+  late _FakeBackend backend;
+
   tearDown(Get.reset);
 
   Future<void> pumpApp(WidgetTester tester, {bool useEnglish = true}) async {
     SharedPreferences.setMockInitialValues({});
+    backend = _FakeBackend();
     final session = AuthSession();
     Get.put<AuthSession>(session, permanent: true);
     final client = ApiClient(
       session: session,
-      httpClient: MockClient((request) async {
-        final path = request.url.path;
-        if (path.endsWith('/auth/login') || path.endsWith('/auth/register')) {
-          final body = jsonDecode(request.body) as Map<String, dynamic>;
-          final email = body['email']?.toString() ?? 'customer@example.com';
-          final name = body['name']?.toString() ?? 'Customer User';
-          return http.Response(
-            jsonEncode({
-              'data': {
-                'user': {
-                  'id': 1,
-                  'name': name,
-                  'full_name': name,
-                  'email': email,
-                  'role': 'user',
-                  'preferred_language': 'en',
-                },
-                'session': {'token': 'test-token'},
-              },
-            }),
-            200,
-            headers: {'content-type': 'application/json'},
-          );
-        }
-        return http.Response(
-          '{"message":"Not available in widget test."}',
-          503,
-        );
-      }),
+      httpClient: MockClient(backend.handle),
     );
     Get.put<ApiClient>(client, permanent: true);
     Get.put<CustomerApiService>(CustomerApiService(client), permanent: true);
@@ -62,6 +138,16 @@ void main() {
         initialLocale: useEnglish ? const Locale('en') : const Locale('ar'),
       ),
     );
+    await tester.pumpAndSettle();
+  }
+
+  // GetX keeps snackbars in a static queue that Get.reset does not clear. A
+  // snackbar still open when a test ends makes Get.back() in later tests close
+  // that stale snackbar instead of the current page, so let them finish.
+  Future<void> waitForSnackbars(WidgetTester tester) async {
+    for (var i = 0; i < 10 && Get.isSnackbarOpen; i++) {
+      await tester.pump(const Duration(seconds: 1));
+    }
     await tester.pumpAndSettle();
   }
 
@@ -78,8 +164,7 @@ void main() {
     await tester.tap(signInButton);
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 4));
-    await tester.pumpAndSettle();
+    await waitForSnackbars(tester);
   }
 
   testWidgets('allows a guest to browse home and protects booking', (tester) async {
@@ -145,9 +230,9 @@ void main() {
     );
     await tester.ensureVisible(createAccountButton);
     await tester.tap(createAccountButton);
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 4));
-    await tester.pumpAndSettle();
+    await waitForSnackbars(tester);
 
     expect(Get.find<AuthSession>().isAuthenticated, isTrue);
     expect(find.text('Customer Dashboard'), findsOneWidget);
@@ -179,6 +264,19 @@ void main() {
   testWidgets('opens profile, notification settings, and payment flows', (
     tester,
   ) async {
+    final launchedUrls = <String>[];
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    const urlLauncher = MethodChannel('plugins.flutter.io/url_launcher');
+    messenger.setMockMethodCallHandler(urlLauncher, (call) async {
+      final args = call.arguments;
+      if (args is Map && args['url'] != null) {
+        launchedUrls.add(args['url'].toString());
+      }
+      return true;
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(urlLauncher, null));
+
     await pumpApp(tester);
 
     await signIn(tester);
@@ -212,10 +310,23 @@ void main() {
     await tester.tap(payNowButton);
     await tester.pump(const Duration(milliseconds: 700));
     await tester.pumpAndSettle();
+
+    // Payment happens on the Stripe page; the app only opens it.
+    expect(backend.checkoutBookingIds, ['ES-2050']);
+    expect(launchedUrls, ['https://checkout.stripe.test/session']);
+    expect(find.text('Payment successful'), findsNothing);
+
+    // The Stripe webhook marks the booking paid; the customer checks again.
+    backend.markPaid('ES-2050');
+    final checkStatusButton = find.text('Check payment status');
+    await tester.ensureVisible(checkStatusButton);
+    await tester.tap(checkStatusButton);
+    await tester.pumpAndSettle();
     expect(find.text('Payment successful'), findsOneWidget);
+    expect(Get.find<PaymentController>().isPaid.value, isTrue);
   });
 
-  testWidgets('creates a local booking and shows it in my bookings', (
+  testWidgets('creates a booking through the API and shows it in my bookings', (
     tester,
   ) async {
     await pumpApp(tester);
@@ -232,9 +343,15 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     await tester.pumpAndSettle();
 
+    expect(backend.createdBookings, hasLength(1));
+    expect(backend.createdBookings.single['category'], 'forms');
+    expect(
+      backend.createdBookings.single['customer_email'],
+      'customer@example.com',
+    );
     expect(find.text('My Bookings'), findsOneWidget);
-    expect(find.text('ES-2053'), findsOneWidget);
-    expect(find.text('90 EUR'), findsOneWidget);
+    expect(find.text('ES-2051'), findsOneWidget);
+    expect(find.text('ES-2050'), findsOneWidget);
   });
 
   testWidgets('persists notification settings during navigation', (
