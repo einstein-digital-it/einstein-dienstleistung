@@ -124,7 +124,7 @@ export default function InvoicePreview({ booking, netAmount, vatAmount, totalAmo
     doc.setFontSize(22); doc.setFont('helvetica', 'bold'); doc.setTextColor(224, 213, 255);
     doc.text('Stein', margin + 14, 18);
     txt('Inhaber: Beshr Alhoury Alhomsi', margin, 24, { size: 8, color: [200, 180, 255] });
-    ['EinStein', 'Julius-Leber-Weg 8', '65936 Frankfurt am Main', 'Tel: 069 27246275', 'info@einsteindienstleistung.de', 'www.einsteindienstleistung.com'].forEach((l, i) => {
+    ['EinStein', 'Robert-Dißmann-Str. 8', '65936 Frankfurt am Main', 'Tel: 069 27246275', 'info@einsteindienstleistung.de', 'www.einsteindienstleistung.com'].forEach((l, i) => {
       txt(l, W - margin, 12 + i * 5, { size: 7.5, color: [220, 210, 255], align: 'right', style: i === 0 ? 'bold' : 'normal' });
     });
 
@@ -195,7 +195,7 @@ export default function InvoicePreview({ booking, netAmount, vatAmount, totalAmo
     // Footer
     line(margin, y, W - margin, y);
     y += 6;
-    txt('EinStein · Inh. Beshr Alhoury Alhomsi · Julius-Leber-Weg 8 · 65936 Frankfurt am Main · 069 27246275', W / 2, y, { size: 7.5, color: [130, 130, 130], align: 'center' });
+    txt('EinStein · Inh. Beshr Alhoury Alhomsi · Robert-Dißmann-Str. 8 · 65936 Frankfurt am Main · 069 27246275', W / 2, y, { size: 7.5, color: [130, 130, 130], align: 'center' });
     y += 5;
     txt('info@einsteindienstleistung.de · www.einsteindienstleistung.com', W / 2, y, { size: 7.5, color: [130, 130, 130], align: 'center' });
     y += 5;
@@ -286,7 +286,7 @@ export default function InvoicePreview({ booking, netAmount, vatAmount, totalAmo
             <div className="thank-you text-base text-[#6B46C1] font-bold mb-2">{t.thank_you}</div>
             <div className="company-details leading-relaxed">
               <p>EinStein · Inhaber: Beshr Alhoury Alhomsi</p>
-              <p>Julius-Leber-Weg 8, 65936 Frankfurt am Main</p>
+              <p>Robert-Dißmann-Str. 8, 65936 Frankfurt am Main</p>
               <p>Tel: 069 27246275 | info@einsteindienstleistung.de</p>
               <p>www.einsteindienstleistung.com</p>
             </div>

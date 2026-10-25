@@ -26,7 +26,7 @@ export default function Impressum() {
             <p className="text-gray-700 leading-relaxed">
               EinStein<br />
               Inhaber: Beshr Alhoury Alhomsi<br />
-              Julius-Leber-Weg 8<br />
+              Robert-Dißmann-Str. 8<br />
               65936 Frankfurt am Main<br />
               Deutschland
             </p>
@@ -88,7 +88,7 @@ export default function Impressum() {
             <Heading>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</Heading>
             <p className="text-gray-700 leading-relaxed">
               Beshr Alhoury Alhomsi<br />
-              Julius-Leber-Weg 8<br />
+              Robert-Dißmann-Str. 8<br />
               65936 Frankfurt am Main
             </p>
           </section>
