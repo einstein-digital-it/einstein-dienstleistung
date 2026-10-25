@@ -274,7 +274,7 @@ export default function RevenueReports() {
     doc.setDrawColor(200, 200, 200); doc.line(margin, y, W - margin, y);
     y += 5;
     doc.setFontSize(7); doc.setFont("helvetica", "normal"); doc.setTextColor(130, 130, 130);
-    doc.text("EinStein Institut UG (haftungsbeschränkt) · Frankfurt, Deutschland · info@einsteindienstleistung.de", W / 2, y, { align: "center" });
+    doc.text("EinStein · Inh. Beshr Alhoury Alhomsi · Frankfurt am Main · info@einsteindienstleistung.de", W / 2, y, { align: "center" });
 
     doc.save(`EinStein_Umsatzbericht_${selectedYear}.pdf`);
     toast.success({ ar: "تم تصدير PDF", en: "PDF exported", de: "PDF exportiert" }[lang] || "PDF exported");

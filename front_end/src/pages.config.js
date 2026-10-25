@@ -1,56 +1,5 @@
-/**
- * pages.config.js - Page routing configuration
- * 
- * This file is AUTO-GENERATED. Do not add imports or modify PAGES manually.
- * Pages are auto-registered when you create files in the ./pages/ folder.
- * 
- * THE ONLY EDITABLE VALUE: mainPage
- * This controls which page is the landing page (shown when users visit the app).
- * 
- * Example file structure:
- * 
- *   import HomePage from './pages/HomePage';
- *   import Dashboard from './pages/Dashboard';
-import Datenschutz from './pages/Datenschutz';
- *   import Settings from './pages/Settings';
- *   
- *   export const PAGES = {
- *       "HomePage": HomePage,
- *       "Dashboard": Dashboard,
-    "Datenschutz": Datenschutz,
- *       "Settings": Settings,
- *   }
- *   
- *   export const pagesConfig = {
- *       mainPage: "HomePage",
- *       Pages: PAGES,
- *   };
- * 
- * Example with Layout (wraps all pages):
- *
- *   import Home from './pages/Home';
-import Impressum from './pages/Impressum';
- *   import Settings from './pages/Settings';
- *   import __Layout from './Layout.jsx';
- *
- *   export const PAGES = {
- *       "Home": Home,
-    "Impressum": Impressum,
- *       "Settings": Settings,
- *   }
- *
- *   export const pagesConfig = {
- *       mainPage: "Home",
- *       Pages: PAGES,
- *       Layout: __Layout,
- *   };
- *
- * To change the main page from HomePage to Dashboard, use find_replace:
- *   Old: mainPage: "HomePage",
- *   New: mainPage: "Dashboard",
- *
- * The mainPage value must match a key in the PAGES object exactly.
- */
+// Page routing: every page here is served at /<Key> (see App.jsx).
+// mainPage is the landing page.
 import AGB from './pages/AGB';
 import AdminBookings from './pages/AdminBookings';
 import AdminUsers from './pages/AdminUsers';
@@ -65,8 +14,10 @@ import CustomerRequests from './pages/CustomerRequests';
 import CustomerService from './pages/CustomerService';
 import ClientWorkspace from './pages/ClientWorkspace';
 import Dashboard from './pages/Dashboard';
+import Datenschutz from './pages/Datenschutz';
 import EarningsReports from './pages/EarningsReports';
 import Home from './pages/Home';
+import Impressum from './pages/Impressum';
 import MyBookings from './pages/MyBookings';
 import NotificationSettings from './pages/NotificationSettings';
 import Notifications from './pages/Notifications';
@@ -109,8 +60,10 @@ export const PAGES = {
     "CustomerService": CustomerService,
     "ClientWorkspace": ClientWorkspace,
     "Dashboard": Dashboard,
+    "Datenschutz": Datenschutz,
     "EarningsReports": EarningsReports,
     "Home": Home,
+    "Impressum": Impressum,
     "MyBookings": MyBookings,
     "NotificationSettings": NotificationSettings,
     "Notifications": Notifications,

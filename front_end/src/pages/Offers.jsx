@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { publicApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
+import { toGrossPrice, allPricesNote } from "@/lib/priceUtils";
 import { motion } from "framer-motion";
 import {
   Home,
@@ -566,11 +567,12 @@ export default function Offers() {
                                 <div key={i} className="flex items-center justify-between bg-white/80 rounded-lg px-3 py-2">
                                   <span className="text-sm text-gray-700">{priceItem.label}</span>
                                   <Badge className="bg-[#c9a227] text-white font-semibold">
-                                    {priceItem.price} {priceItem.unit}
+                                    {toGrossPrice(priceItem.price, lang)} {priceItem.unit}
                                   </Badge>
                                 </div>
                               ))}
                             </div>
+                            <p className="text-xs text-gray-500 mt-2">{allPricesNote(lang)}</p>
                           </div>
                         )}
                       </div>

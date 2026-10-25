@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { publicApi } from "@/api/backendClient";
 import { getStoredAuthUser } from "@/lib/backendAuth";
+import { toGrossPrice, vatNote } from "@/lib/priceUtils";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
@@ -57,7 +58,7 @@ const translations = {
     about_desc: "EinStein ist ein ganzheitliches Organisation & Verwaltung für den Alltag. Es bündelt Bildung, Bürokratiehilfe und administrative Dienstleistungen unter einem Dach.",
     about_role: "EinStein versteht sich als persönlicher Alltagsassistent: organisierend, erklärend, ausführend – in mehreren Sprachen und zu fairen Preisen.",
     hauptunternehmer: "Hauptunternehmer – kein Vermittler",
-    hauptunternehmer_desc: "Die EinStein UG ist der alleinige Vertragspartner der Kund:innen und trägt die vollständige unternehmerische Verantwortung für Planung, Organisation, Qualitätssicherung und Abrechnung aller angebotenen Dienstleistungen.",
+    hauptunternehmer_desc: "EinStein ist der alleinige Vertragspartner der Kund:innen und trägt die vollständige unternehmerische Verantwortung für Planung, Organisation, Qualitätssicherung und Abrechnung aller angebotenen Dienstleistungen.",
     
     // Services
     our_services: "Unsere Dienstleistungen",
@@ -172,7 +173,7 @@ const translations = {
     about_desc: "آينشتاين هو مركز خدمات شامل للحياة اليومية. يجمع التعليم ومساعدة البيروقراطية والخدمات الإدارية تحت سقف واحد.",
     about_role: "يعتبر آينشتاين نفسه مساعداً شخصياً للحياة اليومية: منظم، شارح، منفذ - بعدة لغات وبأسعار عادلة.",
     hauptunternehmer: "مقاول رئيسي - وليس وسيط",
-    hauptunternehmer_desc: "شركة آينشتاين UG هي الشريك التعاقدي الوحيد للعملاء وتتحمل المسؤولية الكاملة عن التخطيط والتنظيم وضمان الجودة والفوترة لجميع الخدمات المقدمة.",
+    hauptunternehmer_desc: "آينشتاين هي الشريك التعاقدي الوحيد للعملاء وتتحمل المسؤولية الكاملة عن التخطيط والتنظيم وضمان الجودة والفوترة لجميع الخدمات المقدمة.",
     
     // Services
     our_services: "خدماتنا",
@@ -287,7 +288,7 @@ const translations = {
     about_desc: "EinStein is a comprehensive service center for daily life. It combines education, bureaucracy assistance, and administrative services under one roof.",
     about_role: "EinStein sees itself as a personal daily assistant: organizing, explaining, executing – in multiple languages and at fair prices.",
     hauptunternehmer: "Main Contractor – Not a Broker",
-    hauptunternehmer_desc: "EinStein UG is the sole contractual partner of customers and bears full entrepreneurial responsibility for planning, organization, quality assurance, and billing of all services offered.",
+    hauptunternehmer_desc: "EinStein is the sole contractual partner of customers and bears full entrepreneurial responsibility for planning, organization, quality assurance, and billing of all services offered.",
     
     // Services
     our_services: "Our Services",
@@ -402,7 +403,7 @@ const translations = {
     about_desc: "EinStein, gunluk yasam icin kapsamli bir hizmet merkezidir. Egitim, burokrasi yardimi ve idari hizmetleri tek cati altinda birlestirir.",
     about_role: "EinStein kendini kisisel gunluk asistan olarak gorur: organize eden, aciklayan, uygulayan - birden fazla dilde ve adil fiyatlarla.",
     hauptunternehmer: "Ana Yuklenici - Araci Degil",
-    hauptunternehmer_desc: "EinStein UG, musterilerin tek sozlesmeli ortagi olup sunulan tum hizmetlerin planlamasi, organizasyonu, kalite guvencesi ve faturalanmasi icin tam girisimci sorumlulugu tasir.",
+    hauptunternehmer_desc: "EinStein, musterilerin tek sozlesmeli ortagi olup sunulan tum hizmetlerin planlamasi, organizasyonu, kalite guvencesi ve faturalanmasi icin tam girisimci sorumlulugu tasir.",
     
     // Services
     our_services: "Hizmetlerimiz",
@@ -517,7 +518,7 @@ const translations = {
     about_desc: "EinStein es un centro de servicios integral para la vida diaria. Combina educación, asistencia burocrática y servicios administrativos bajo un mismo techo.",
     about_role: "EinStein se ve a sí mismo como un asistente personal diario: organiza, explica, ejecuta, en varios idiomas y a precios justos.",
     hauptunternehmer: "Contratista Principal - No Intermediario",
-    hauptunternehmer_desc: "EinStein UG es el único socio contractual de los clientes y asume la responsabilidad empresarial completa de planificación, organización, garantía de calidad y facturación de todos los servicios ofrecidos.",
+    hauptunternehmer_desc: "EinStein es el único socio contractual de los clientes y asume la responsabilidad empresarial completa de planificación, organización, garantía de calidad y facturación de todos los servicios ofrecidos.",
     
     // Services
     our_services: "Nuestros Servicios",
@@ -829,9 +830,9 @@ function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
     if (customPrices && customPrices[serviceKey] && customPrices[serviceKey][0]) {
       const p = customPrices[serviceKey][0];
       const unit = getUnitByLang(p);
-      return `${p.price}${unit ? " " + unit : ""}`;
+      return `${toGrossPrice(p.price, lang)}${unit ? " " + unit : ""}`;
     }
-    return t[`${serviceKey}_price`] || "";
+    return toGrossPrice(t[`${serviceKey}_price`] || "", lang);
   };
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
@@ -897,6 +898,7 @@ function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
                       <Badge className="bg-[#c9a227] text-white font-semibold">
                         {getServicePrice(service.key)}
                       </Badge>
+                      <span className="block text-[11px] text-gray-300 mt-1">{vatNote(lang)}</span>
                       <div className="mt-4 flex items-center text-white/80 font-medium text-sm group-hover:gap-2 transition-all">
                         {t.book_now}
                         <ArrowRight className="w-4 h-4 ms-1" />

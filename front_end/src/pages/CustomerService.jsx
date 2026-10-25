@@ -207,7 +207,7 @@ export default function CustomerService() {
             </p>
             <p className="flex items-center gap-3">
               <Mail className="h-4 w-4 text-pink-200" />
-              {contact.email || "info@e-in-s-tein.de"}
+              {contact.email || "info@einsteindienstleistung.de"}
             </p>
           </div>
           <div className="mt-5 border-t border-white/20 pt-4">

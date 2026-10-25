@@ -8,7 +8,6 @@ import {
   Clock,
   FileText,
   MapPin,
-  Search,
   User,
   XCircle
 } from "lucide-react";
@@ -22,50 +21,11 @@ import {
   StatusPill
 } from "@/components/design/PageScaffold";
 
-const requests = [
-  {
-    id: "ES-2048",
-    customer: "مريم الخطيب",
-    service: "مساعدة الدوائر والنماذج",
-    date: "12 يونيو 2026",
-    time: "10:30",
-    address: "فرانكفورت، شارع Kaiser 24",
-    price: "85 €",
-    status: "جديد",
-    tone: "gold",
-    description: "مراجعة طلب إقامة وتجهيز المستندات المطلوبة قبل الموعد."
-  },
-  {
-    id: "ES-2047",
-    customer: "أحمد منصور",
-    service: "خدمة المكتب والسكرتارية",
-    date: "13 يونيو 2026",
-    time: "14:00",
-    address: "أونلاين",
-    price: "120 €",
-    status: "قيد المراجعة",
-    tone: "blue",
-    description: "تنظيم رسائل البريد وجدولة مواعيد أسبوعية للشركة."
-  },
-  {
-    id: "ES-2046",
-    customer: "سارة النجار",
-    service: "التعليم ومرافقة التعلم",
-    date: "14 يونيو 2026",
-    time: "16:30",
-    address: "Offenbach",
-    price: "60 €",
-    status: "ينتظر المستندات",
-    tone: "purple",
-    description: "جلسة دعم دراسي للرياضيات مع متابعة خطة أسبوعية."
-  }
-];
-
 const statusMeta = {
-  new: { label: "New", tone: "gold" },
-  reviewing: { label: "In review", tone: "blue" },
-  accepted: { label: "Accepted", tone: "green" },
-  rejected: { label: "Rejected", tone: "red" },
+  new: { label: "جديد", tone: "gold" },
+  reviewing: { label: "قيد المراجعة", tone: "blue" },
+  accepted: { label: "مقبول", tone: "green" },
+  rejected: { label: "مرفوض", tone: "red" },
 };
 
 const formatPrice = (price) => {
@@ -110,7 +70,7 @@ export default function CustomerRequests() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["customer-requests"] }),
   });
 
-  const displayedRequests = backendRequests.length > 0 ? backendRequests.map(normalizeRequest) : requests;
+  const displayedRequests = backendRequests.map(normalizeRequest);
   const statCounts = backendRequests.reduce((acc, request) => {
     acc[request.status] = (acc[request.status] || 0) + 1;
     return acc;
@@ -121,35 +81,26 @@ export default function CustomerRequests() {
       title="طلبات العملاء"
       eyebrow="إدارة الطلبات"
       icon={AlertCircle}
-      description="عرض الطلبات الجديدة، مراجعة التفاصيل، وتحديد الإجراء المناسب بسرعة مع واجهة قريبة من لوحة الموقع."
-      actions={
-        <>
-          <SecondaryButton>
-            <Search className="h-4 w-4" />
-            بحث
-          </SecondaryButton>
-          <PrimaryButton>
-            <CheckCircle className="h-4 w-4" />
-            قبول المحدد
-          </PrimaryButton>
-        </>
-      }
+      description="عرض الطلبات الجديدة، مراجعة التفاصيل، وقبول الطلب أو رفضه."
     >
       <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
-        <StatCard icon={AlertCircle} label="طلبات جديدة" value="18" tone="gold" note="+4 اليوم" />
-        <StatCard icon={Clock} label="قيد المعالجة" value="9" tone="blue" note="متوسط الرد 22 دقيقة" />
-        <StatCard icon={CheckCircle} label="مقبولة" value="42" tone="green" note="هذا الشهر" />
-        <StatCard icon={XCircle} label="مرفوضة" value="3" tone="red" note="تحتاج مراجعة" />
+        <StatCard icon={AlertCircle} label="طلبات جديدة" value={String(statCounts.new || 0)} tone="gold" />
+        <StatCard icon={Clock} label="قيد المعالجة" value={String(statCounts.reviewing || 0)} tone="blue" />
+        <StatCard icon={CheckCircle} label="مقبولة" value={String(statCounts.accepted || 0)} tone="green" />
+        <StatCard icon={XCircle} label="مرفوضة" value={String(statCounts.rejected || 0)} tone="red" />
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1fr_360px]">
         <DesignCard>
           <CardHeader
             title="قائمة الطلبات"
-            description="بيانات تجريبية للتصميم فقط، بدون اتصال بالخادم."
-            action={<StatusPill tone="slate">آخر تحديث الآن</StatusPill>}
+            description="كل الطلبات من الخادم."
           />
           <div className="space-y-4 p-5">
+            {isLoading && <p className="text-sm font-semibold text-[#65758b]">جارٍ التحميل…</p>}
+            {!isLoading && displayedRequests.length === 0 && (
+              <p className="text-sm font-semibold text-[#65758b]">لا توجد طلبات حالياً.</p>
+            )}
             {displayedRequests.map((request) => (
               <article key={request.id} className="rounded-[15px] border border-[#e2ebf6] bg-[#fbfdff] p-5">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">

@@ -48,7 +48,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { format, isSameDay, addDays, startOfDay } from "date-fns";
-import { getPriceNumber } from "@/lib/priceUtils";
+import { getPriceNumber, toGrossPrice, vatNote } from "@/lib/priceUtils";
 import SecretariatPackages from "@/components/SecretariatPackages";
 
 const translations = {
@@ -75,7 +75,7 @@ const translations = {
       print: "Druck- & Stempeldienstleistungen",
       secretariat: "Büro & Sekretariat (Vor-Ort)",
       eur1: "Dokumentenservice EU–Syrien / EUR.1",
-      dokumentabo: "Dokumenten-Abo – 49 € / Monat"
+      dokumentabo: "Dokumenten-Abo – 58,31 € / Monat inkl. MwSt."
     },
     name: "Vollständiger Name",
     email: "E-Mail-Adresse",
@@ -123,7 +123,7 @@ const translations = {
       print: "خدمات الطباعة والأختام",
       secretariat: "المكتب والسكرتارية (حضوري)",
       eur1: "خدمة وثائق التصدير/الاستيراد EUR.1",
-      dokumentabo: "اشتراك المستندات – 49 يورو / شهرياً"
+      dokumentabo: "اشتراك المستندات – 58.31 يورو / شهرياً شامل الضريبة"
     },
     name: "الاسم الكامل",
     email: "البريد الإلكتروني",
@@ -171,7 +171,7 @@ const translations = {
       print: "Printing & Stamp Services",
       secretariat: "Office & Secretariat (On-Site)",
       eur1: "EU–Syria Document Service / EUR.1",
-      dokumentabo: "Document Subscription – €49 / month"
+      dokumentabo: "Document Subscription – €58.31 / month incl. VAT"
     },
     name: "Full Name",
     email: "Email Address",
@@ -219,7 +219,7 @@ const translations = {
       print: "Servicios de Impresión y Sellos",
       secretariat: "Oficina & Secretariado (Presencial)",
       eur1: "Servicio de Documentos UE–Siria / EUR.1",
-      dokumentabo: "Suscripción de Documentos – 49 € / mes"
+      dokumentabo: "Suscripción de Documentos – 58,31 € / mes IVA incl."
     },
     name: "Nombre Completo",
     email: "Correo Electrónico",
@@ -267,7 +267,7 @@ const translations = {
       print: "Baskı ve Damga Hizmetleri",
       secretariat: "Ofis & Sekreterlik (Yerinde)",
       eur1: "AB–Suriye Belge Hizmeti / EUR.1",
-      dokumentabo: "Belge Aboneliği – Aylık 49 €"
+      dokumentabo: "Belge Aboneliği – Aylık 58,31 € KDV dahil"
     },
     name: "Tam Ad",
     email: "E-posta Adresi",
@@ -817,7 +817,7 @@ export default function Booking() {
                         <p className="font-semibold text-[#1e3a5f] text-sm leading-tight">{getCategoryName(cat.key)}</p>
                         <p className="text-xs text-[#c9a227] font-medium mt-1">
                           {priceInfo
-                            ? `${priceInfo.price} ${priceInfo.unit}`
+                            ? `${toGrossPrice(priceInfo.price, lang)} ${priceInfo.unit} · ${vatNote(lang)}`
                             : ""
                           }
                         </p>
@@ -844,7 +844,7 @@ export default function Booking() {
                       <div className="text-center mb-4">
                         <Badge className="bg-green-100 text-green-800">
                           <CheckCircle className="w-3 h-3 me-1" />
-                          {selectedPackage.name} – {selectedPackage.price}
+                          {selectedPackage.name} – {toGrossPrice(selectedPackage.price, lang)}
                         </Badge>
                         <Button
                           variant="ghost"
@@ -968,7 +968,7 @@ export default function Booking() {
                         +
                       </Button>
                       <span className="text-sm text-gray-500 ms-2">
-                        × 45 € = <span className="font-bold text-[#6B46C1] text-lg">{(formData.hours || 1) * 45} €</span>
+                        × {toGrossPrice(45, lang)} € = <span className="font-bold text-[#6B46C1] text-lg">{toGrossPrice((formData.hours || 1) * 45, lang)} €</span>{" "}<span className="text-xs text-gray-400">{vatNote(lang)}</span>
                       </span>
                     </div>
                     <p className="text-xs text-gray-400 mt-2">
@@ -986,7 +986,7 @@ export default function Booking() {
                           {lang === "ar" ? "باكيج شهري" : lang === "en" ? "Monthly Package" : "Monatspaket"}
                         </Badge>
                         <p className="font-bold text-[#1e3a5f] text-lg">{selectedPackage.name}</p>
-                        <p className="text-2xl font-black text-[#6B46C1]">{selectedPackage.price}</p>
+                        <p className="text-2xl font-black text-[#6B46C1]">{toGrossPrice(selectedPackage.price, lang)}</p>
                       </div>
                       <Button
                         type="button"

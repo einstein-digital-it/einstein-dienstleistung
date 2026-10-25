@@ -640,7 +640,7 @@ export default function Layout({ children, currentPageName }) {
                 <p>Frankfurt, Deutschland</p>
                 <p>069 27246275</p>
                 <p>01573 1770487</p>
-                <p>www.e-in-s-tein.de</p>
+                <p>www.einsteindienstleistung.com</p>
                 <p>info@einsteindienstleistung.de</p>
               </div>
             </div>

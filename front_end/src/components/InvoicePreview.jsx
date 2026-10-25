@@ -123,8 +123,8 @@ export default function InvoicePreview({ booking, netAmount, vatAmount, totalAmo
     txt('Ein', margin, 18, { size: 22, style: 'bold', color: [255, 255, 255] });
     doc.setFontSize(22); doc.setFont('helvetica', 'bold'); doc.setTextColor(224, 213, 255);
     doc.text('Stein', margin + 14, 18);
-    txt('Institut UG (haftungsbeschränkt)', margin, 24, { size: 8, color: [200, 180, 255] });
-    ['EinStein Institut UG', 'Frankfurt, Deutschland', 'Tel: 069 27246275', 'info@einsteindienstleistung.de', 'www.e-in-s-tein.de'].forEach((l, i) => {
+    txt('Inhaber: Beshr Alhoury Alhomsi', margin, 24, { size: 8, color: [200, 180, 255] });
+    ['EinStein', 'Julius-Leber-Weg 8', '65936 Frankfurt am Main', 'Tel: 069 27246275', 'info@einsteindienstleistung.de', 'www.einsteindienstleistung.com'].forEach((l, i) => {
       txt(l, W - margin, 12 + i * 5, { size: 7.5, color: [220, 210, 255], align: 'right', style: i === 0 ? 'bold' : 'normal' });
     });
 
@@ -195,9 +195,9 @@ export default function InvoicePreview({ booking, netAmount, vatAmount, totalAmo
     // Footer
     line(margin, y, W - margin, y);
     y += 6;
-    txt('EinStein Institut UG (haftungsbeschränkt) · Frankfurt · 069 27246275', W / 2, y, { size: 7.5, color: [130, 130, 130], align: 'center' });
+    txt('EinStein · Inh. Beshr Alhoury Alhomsi · Julius-Leber-Weg 8 · 65936 Frankfurt am Main · 069 27246275', W / 2, y, { size: 7.5, color: [130, 130, 130], align: 'center' });
     y += 5;
-    txt('info@einsteindienstleistung.de · www.e-in-s-tein.de', W / 2, y, { size: 7.5, color: [130, 130, 130], align: 'center' });
+    txt('info@einsteindienstleistung.de · www.einsteindienstleistung.com', W / 2, y, { size: 7.5, color: [130, 130, 130], align: 'center' });
     y += 5;
     txt(t.thank_you, W / 2, y, { size: 8, style: 'bold', color: [107, 70, 193], align: 'center' });
 
@@ -285,10 +285,10 @@ export default function InvoicePreview({ booking, netAmount, vatAmount, totalAmo
           <div className="footer mt-10 text-center text-gray-600 text-sm border-t border-gray-200 pt-6">
             <div className="thank-you text-base text-[#6B46C1] font-bold mb-2">{t.thank_you}</div>
             <div className="company-details leading-relaxed">
-              <p>EinStein Institut UG (haftungsbeschränkt)</p>
-              <p>Frankfurt, Deutschland</p>
-              <p>Tel: 069 27246275 | info@e-in-s-tein.de</p>
-              <p>www.e-in-s-tein.de</p>
+              <p>EinStein · Inhaber: Beshr Alhoury Alhomsi</p>
+              <p>Julius-Leber-Weg 8, 65936 Frankfurt am Main</p>
+              <p>Tel: 069 27246275 | info@einsteindienstleistung.de</p>
+              <p>www.einsteindienstleistung.com</p>
             </div>
           </div>
         </div>

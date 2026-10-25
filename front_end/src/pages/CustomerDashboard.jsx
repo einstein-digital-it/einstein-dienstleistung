@@ -8,11 +8,12 @@ import {
   CheckCircle,
   Clock,
   CreditCard,
-  FileText,
   LayoutDashboard,
   MapPin,
   User
 } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { toGrossPrice } from "@/lib/priceUtils";
 import {
   CardHeader,
   DesignCard,
@@ -25,71 +26,102 @@ import {
   StatusPill
 } from "@/components/design/PageScaffold";
 
-const upcoming = [
-  { id: "ES-2048", title: "مساعدة الدوائر والنماذج", date: "12 يونيو", time: "10:30", status: "مؤكد", tone: "green" },
-  { id: "ES-2049", title: "خدمة المكتب والسكرتارية", date: "15 يونيو", time: "13:00", status: "بانتظار الدفع", tone: "gold" }
-];
+const customerEmail = () => localStorage.getItem("einstein_customer_email") || "";
 
-const customerEmail = () => localStorage.getItem("einstein_customer_email") || "customer@example.com";
+const bookingStatus = {
+  pending: { label: "قيد الانتظار", tone: "gold" },
+  confirmed: { label: "مؤكد", tone: "green" },
+  in_progress: { label: "قيد التنفيذ", tone: "blue" },
+};
 
-const normalizeUpcoming = (booking) => ({
-  id: booking.booking_number || booking.id,
-  title: booking.service_name || booking.category || "-",
-  date: booking.date || "-",
-  time: booking.time || "-",
-  address: booking.address || "-",
-  status: booking.status || "pending",
-  tone: booking.status === "confirmed" ? "green" : "gold",
-  category: booking.category,
-  customerName: booking.customer_name || "",
-  customerEmail: booking.customer_email || "",
-});
+const formatDate = (value) => {
+  const date = value ? new Date(value) : null;
+  if (!date || Number.isNaN(date.getTime())) return value || "-";
+  const two = (n) => String(n).padStart(2, "0");
+  return `${two(date.getUTCDate())}.${two(date.getUTCMonth() + 1)}.${date.getUTCFullYear()}`;
+};
+
+const normalizeUpcoming = (booking) => {
+  const status = bookingStatus[booking.status] || bookingStatus.pending;
+  const hasPrice = booking.price !== null && booking.price !== undefined && booking.price !== "";
+  return {
+    id: booking.booking_number || booking.id,
+    title: booking.service_name || booking.category || "-",
+    date: formatDate(booking.date),
+    time: booking.time || "-",
+    address: booking.address || "-",
+    status: status.label,
+    tone: status.tone,
+    category: booking.category,
+    customerName: booking.customer_name || "",
+    customerEmail: booking.customer_email || "",
+    // Stored net; customers see the gross price incl. VAT.
+    price: hasPrice ? `${toGrossPrice(Number(booking.price), "ar")} €` : "",
+  };
+};
 
 // Dokumenten-Abo can be cancelled any time to the end of the month (§ 312k BGB)
 const cancelUrl = (booking) =>
   `/Cancellation?${new URLSearchParams({ name: booking.customerName, email: booking.customerEmail, reference: booking.id }).toString()}`;
 
 export default function CustomerDashboard() {
-  const { data: dashboard } = useQuery({
-    queryKey: ["customer-dashboard", customerEmail()],
-    queryFn: () => customerApi.getDashboard(customerEmail()),
+  const email = customerEmail();
+  const { data: dashboard, isLoading } = useQuery({
+    queryKey: ["customer-dashboard", email],
+    queryFn: () => customerApi.getDashboard(email),
+    enabled: Boolean(email),
   });
 
   const profile = dashboard?.profile || {};
-  const upcomingBookings = dashboard?.upcoming_bookings?.length
-    ? dashboard.upcoming_bookings.map(normalizeUpcoming)
-    : upcoming;
+  const summary = dashboard?.summary || {};
+  const upcomingBookings = (dashboard?.upcoming_bookings || []).map(normalizeUpcoming);
 
   return (
     <PageScaffold
       title="لوحتي"
       eyebrow="مساحة العميل"
       icon={LayoutDashboard}
-      description="تصميم لوحة العميل بعد تسجيل الدخول، مع الحجوزات القادمة، المدفوعات، المستندات، وإعدادات الحساب."
+      description="حجوزاتك القادمة والمدفوعات وإعدادات حسابك."
       actions={
         <>
-          <SecondaryButton>
-            <Bell className="h-4 w-4" />
-            الإشعارات
-          </SecondaryButton>
-          <PrimaryButton>
-            <Calendar className="h-4 w-4" />
-            حجز جديد
-          </PrimaryButton>
+          <Link to={createPageUrl("Notifications")}>
+            <SecondaryButton>
+              <Bell className="h-4 w-4" />
+              الإشعارات
+            </SecondaryButton>
+          </Link>
+          <Link to={createPageUrl("Booking")}>
+            <PrimaryButton>
+              <Calendar className="h-4 w-4" />
+              حجز جديد
+            </PrimaryButton>
+          </Link>
         </>
       }
     >
       <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
-        <StatCard icon={Calendar} label="الحجوزات" value="12" tone="blue" note="2 قادمة" />
-        <StatCard icon={Clock} label="قيد المتابعة" value="3" tone="gold" note="تحتاج إجراء" />
-        <StatCard icon={CheckCircle} label="مكتملة" value="8" tone="green" note="هذا العام" />
-        <StatCard icon={CreditCard} label="فواتير مفتوحة" value="1" tone="purple" note="85 €" />
+        <StatCard icon={Calendar} label="الحجوزات" value={String(summary.total_bookings ?? 0)} tone="blue" />
+        <StatCard icon={Clock} label="قادمة" value={String(summary.upcoming ?? 0)} tone="gold" />
+        <StatCard icon={CheckCircle} label="مكتملة" value={String(summary.completed ?? 0)} tone="green" />
+        <StatCard icon={CreditCard} label="بانتظار الدفع" value={String(summary.open_payments ?? 0)} tone="purple" />
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1fr_380px]">
         <DesignCard>
-          <CardHeader title="الحجوزات القادمة" description="بطاقات تصميمية لتوضيح حالة خدمات العميل." />
+          <CardHeader title="الحجوزات القادمة" />
           <div className="space-y-4 p-5">
+            {!email && (
+              <p className="text-sm font-semibold text-[#65758b]">
+                يرجى <Link to="/Login" className="text-[#6B46C1] underline">تسجيل الدخول</Link>.
+              </p>
+            )}
+            {email && isLoading && <p className="text-sm font-semibold text-[#65758b]">جارٍ التحميل…</p>}
+            {email && !isLoading && upcomingBookings.length === 0 && (
+              <p className="text-sm font-semibold text-[#65758b]">
+                لا توجد حجوزات قادمة.{" "}
+                <Link to={createPageUrl("Booking")} className="text-[#6B46C1] underline">احجز خدمة</Link>
+              </p>
+            )}
             {upcomingBookings.map((booking) => (
               <article key={booking.id} className="rounded-[15px] border border-[#e2ebf6] bg-[#fbfdff] p-5">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -102,17 +134,21 @@ export default function CustomerDashboard() {
                     <div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold text-[#65758b]">
                       <span className="flex items-center gap-2"><Calendar className="h-4 w-4" />{booking.date}</span>
                       <span className="flex items-center gap-2"><Clock className="h-4 w-4" />{booking.time}</span>
-                      <span className="flex items-center gap-2"><MapPin className="h-4 w-4" />فرانكفورت</span>
+                      <span className="flex items-center gap-2"><MapPin className="h-4 w-4" />{booking.address}</span>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    {booking.category === "dokumentabo" && (
-                      <Link to={cancelUrl(booking)} className="inline-flex h-11 items-center justify-center rounded-[10px] border border-red-200 bg-white px-4 text-sm font-extrabold text-red-600 hover:bg-red-50">
-                        إلغاء الاشتراك
+                  <div className="flex flex-col items-end gap-3">
+                    {booking.price && <div className="text-xl font-black text-[#1e3a5f]">{booking.price}</div>}
+                    <div className="flex gap-2">
+                      {booking.category === "dokumentabo" && (
+                        <Link to={cancelUrl(booking)} className="inline-flex h-11 items-center justify-center rounded-[10px] border border-red-200 bg-white px-4 text-sm font-extrabold text-red-600 hover:bg-red-50">
+                          إلغاء الاشتراك
+                        </Link>
+                      )}
+                      <Link to={createPageUrl("MyBookings")}>
+                        <PrimaryButton className="px-4">تفاصيل</PrimaryButton>
                       </Link>
-                    )}
-                    <SecondaryButton className="px-4">تعديل</SecondaryButton>
-                    <PrimaryButton className="px-4">تفاصيل</PrimaryButton>
+                    </div>
                   </div>
                 </div>
               </article>
@@ -127,22 +163,23 @@ export default function CustomerDashboard() {
                 <User className="h-7 w-7" />
               </div>
               <div>
-                <h2 className="text-xl font-black text-[#13233a]">{profile.full_name || "A.A"}</h2>
-                <p className="text-sm font-semibold text-[#65758b]">عميل تجريبي للتصميم</p>
+                <h2 className="text-xl font-black text-[#13233a]">{profile.full_name || profile.name || "-"}</h2>
               </div>
             </div>
             <div className="mt-5 grid gap-4">
-              <FieldPreview label="البريد الإلكتروني" value={profile.email || customerEmail()} />
-              <FieldPreview label="اللغة" value="العربية" />
+              <FieldPreview label="البريد الإلكتروني" value={profile.email || email || "-"} />
             </div>
           </DesignCard>
 
           <DesignCard>
             <CardHeader title="اختصارات" />
             <div className="space-y-3 p-5">
-              <QuickLink icon={CreditCard} title="الدفع والفواتير" description="مراجعة الفواتير المفتوحة والمدفوعة." />
-              <QuickLink icon={FileText} title="المستندات" description="الملفات المطلوبة والمرفقة لكل خدمة." />
-              <QuickLink icon={Bell} title="إعدادات التنبيه" description="تفضيلات البريد والإشعارات." />
+              <Link to={createPageUrl("MyBookings")} className="block">
+                <QuickLink icon={CreditCard} title="حجوزاتي والدفع" description="كل حجوزاتك وحالة الدفع." />
+              </Link>
+              <Link to={createPageUrl("NotificationSettings")} className="block">
+                <QuickLink icon={Bell} title="إعدادات التنبيه" description="تفضيلات البريد والإشعارات." />
+              </Link>
             </div>
           </DesignCard>
         </div>

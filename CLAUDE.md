@@ -36,8 +36,7 @@ Working branch: `release/android` (not main). The team talks in Levantine Arabic
 - Mobile app has not been run on a device by Claude yet. Check with `flutter analyze`, `flutter test`, then a run on an emulator.
 - Open questions:
   - USt-IdNr for the Impressum.
-  - Prices shown net "zzgl. 19 % MwSt." or gross (PAngV)?
-  - The old Base44 site still says Kleinunternehmer.
+  - Website (front_end) still shows net prices; the app shows gross incl. 19 % MwSt. (PAngV).
 
 ## Rules
 - Never put passwords, API keys, the keystore or the MCP URL in code, commits or chat. The owner enters secrets herself.

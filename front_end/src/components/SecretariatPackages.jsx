@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Check, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createPageUrl } from "@/utils";
+import { toGrossPrice, allPricesNote } from "@/lib/priceUtils";
 
 const translations = {
   de: {
@@ -330,7 +331,7 @@ export default function SecretariatPackages({ lang = "de", onSelectPackage = nul
                   {pkg.name}
                 </h3>
                 <div className={`text-3xl font-extrabold mt-2 ${pkg.highlight ? "text-white" : "text-[#6B46C1]"}`}>
-                  {pkg.price}
+                  {toGrossPrice(pkg.price, lang)}
                   <span className={`text-sm font-normal ms-1 ${pkg.highlight ? "text-purple-200" : "text-gray-400"}`}>
                     {t.perMonth}
                   </span>
@@ -399,7 +400,8 @@ export default function SecretariatPackages({ lang = "de", onSelectPackage = nul
           ))}
         </div>
 
-        <p className="text-center text-sm text-gray-400 mt-8">* {t.upgrade}</p>
+        <p className="text-center text-sm text-gray-400 mt-8">{allPricesNote(lang)}</p>
+        <p className="text-center text-sm text-gray-400 mt-1">* {t.upgrade}</p>
     </div>
   );
 

@@ -72,35 +72,6 @@ const translations = {
   }
 };
 
-const systemPrompt = `Du bist der freundliche virtuelle Assistent von EinStein Institut, einem ganzheitlichen Dienstleistungszentrum in Frankfurt. 
-
-ÜBER EINSTEIN:
-- Bietet 8 Dienstleistungsbereiche: Bildung & Nachhilfe, Antragshilfe, Rechts- & Versicherungsservice, Reinigung, Transport & Umzug, Handwerk & Technik, Haus & Garten, Design & Druck
-- Mehrsprachiger Service: Deutsch, Arabisch, Kurdisch, Englisch, Russisch, Türkisch
-- Motto: "EinStein – Weil jeder Mensch Unterstützung verdient."
-
-PREISE:
-- Bildung & Nachhilfe: ab 15€/Std
-- Antragshilfe (Jobcenter, Wohngeld, etc.): ab 15€/Std
-- Reinigung: ab 25€/Std
-- Transport & Umzug: ab 15€/Std
-- Handwerk & Technik: ab 30€/Std
-- Haus & Garten: ab 25€/Std
-- Design & Druck: ab 1€/Formular
-
-KONTAKT:
-- Telefon: 069 27246275 oder 01573 1770487
-- E-Mail: info@e-in-s-tein.de
-- Website: www.e-in-s-tein.de
-- Standort: Frankfurt, Deutschland
-
-REGELN:
-1. Antworte freundlich und hilfsbereit
-2. Halte Antworten kurz und präzise (max 3-4 Sätze)
-3. Wenn du etwas nicht weißt, empfehle den Kontakt zum Team
-4. Antworte in der Sprache des Nutzers
-5. Bei komplexen Anfragen empfehle, direkt anzurufen oder zu buchen`;
-
 export default function ChatBot({ lang = "de" }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -217,10 +188,10 @@ export default function ChatBot({ lang = "de" }) {
                           <Phone className="w-4 h-4" /> 01573 1770487
                         </a>
                         <a 
-                          href="mailto:info@e-in-s-tein.de" 
+                          href="mailto:info@einsteindienstleistung.de" 
                           className="flex items-center gap-2 text-[#6B46C1] hover:underline text-sm"
                         >
-                          <Mail className="w-4 h-4" /> info@e-in-s-tein.de
+                          <Mail className="w-4 h-4" /> info@einsteindienstleistung.de
                         </a>
                       </div>
                     )}
