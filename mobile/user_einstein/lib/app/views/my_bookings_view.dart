@@ -197,17 +197,17 @@ class _BookingCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              _StatusPill(label: item.status, color: item.statusColor),
+              _StatusPill(label: item.statusKey.tr, color: item.statusColor),
               const SizedBox(width: 8),
               _StatusPill(
-                label: item.paymentStatus,
+                label: item.paymentStatusKey.tr,
                 color: item.paymentStatus == 'Paid'
                     ? const Color(0xFF10B981)
                     : AppColors.gold,
               ),
               const Spacer(),
               Text(
-                item.id,
+                item.number,
                 style: const TextStyle(
                   color: AppColors.muted,
                   fontWeight: FontWeight.w900,
@@ -218,7 +218,7 @@ class _BookingCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           Text(
-            item.service,
+            item.displayService,
             style: const TextStyle(
               color: AppColors.navy,
               fontSize: 19,
@@ -257,7 +257,10 @@ class _BookingCard extends StatelessWidget {
                       ? Get.toNamed(AppRoutes.payment, arguments: item.id)
                       : Get.snackbar(
                           'booking_details'.tr,
-                          '${item.id} is ${item.status.toLowerCase()}.',
+                          'booking_status_message'.trParams({
+                            'booking': item.number,
+                            'status': item.statusKey.tr,
+                          }),
                         ),
                   icon: item.paymentStatus == 'Unpaid'
                       ? Icons.credit_card_outlined

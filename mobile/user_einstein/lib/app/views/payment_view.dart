@@ -119,10 +119,10 @@ class _NoPaymentPanel extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'There is no unpaid booking selected right now.',
+          Text(
+            'no_payment_due_subtitle'.tr,
             textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.muted),
+            style: const TextStyle(color: AppColors.muted),
           ),
           const SizedBox(height: 22),
           PrimaryButton(
@@ -169,9 +169,9 @@ class _PaymentHero extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Review your booking and complete payment.',
-            style: TextStyle(
+          Text(
+            'payment_review_subtitle'.tr,
+            style: const TextStyle(
               color: Color(0xFFDDE7F4),
               fontSize: 15.5,
               height: 1.4,
@@ -254,13 +254,16 @@ class _SummaryLine extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          const Spacer(),
-          Text(
-            value,
-            style: TextStyle(
-              color: strong ? AppColors.navy : AppColors.text,
-              fontSize: strong ? 17 : 14,
-              fontWeight: strong ? FontWeight.w900 : FontWeight.w800,
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                color: strong ? AppColors.navy : AppColors.text,
+                fontSize: strong ? 17 : 14,
+                fontWeight: strong ? FontWeight.w900 : FontWeight.w800,
+              ),
             ),
           ),
         ],
@@ -364,7 +367,7 @@ class _SuccessPanel extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Booking $bookingNumber is now marked as paid.',
+            'payment_success_subtitle'.trParams({'booking': bookingNumber}),
             textAlign: TextAlign.center,
             style: const TextStyle(color: AppColors.muted),
           ),

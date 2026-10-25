@@ -264,6 +264,13 @@ final Map<String, String> _customerEn = {
   'total': 'Total',
   'payment_success': 'Payment successful',
   'payment_success_subtitle': 'Booking @booking is now marked as paid.',
+  'payment_review_subtitle': 'Review your booking and complete payment.',
+  'payment_status_paid': 'Paid',
+  'payment_status_unpaid': 'Unpaid',
+  'booking_status_awaiting_payment': 'Awaiting payment',
+  'booking_status_confirmed': 'Confirmed',
+  'booking_status_completed': 'Completed',
+  'booking_status_message': 'Booking @booking: @status',
   'notifications': 'Notifications',
   'read_all': 'Read all',
   'mark_all_read': 'Mark all as read',
@@ -752,6 +759,31 @@ final Map<String, String> _customerArFixed = {
   'status_pending':
       '\u0642\u064a\u062f \u0627\u0644\u0627\u0646\u062a\u0638\u0627\u0631',
   'status_cancelled': '\u0645\u0644\u063a\u0649',
+  'no_bookings_text':
+      '\u0644\u0627 \u062a\u0648\u062c\u062f \u062d\u062c\u0648\u0632\u0627\u062a \u0628\u0639\u062f. \u0627\u0636\u063a\u0637 + \u0644\u0625\u0646\u0634\u0627\u0621 \u062d\u062c\u0632\u0643 \u0627\u0644\u0623\u0648\u0644.',
+  'invoice_subtitle':
+      '\u0627\u0637\u0644\u0628 \u0641\u0627\u062a\u0648\u0631\u0629 \u0648\u0627\u062f\u0641\u0639 \u0644\u0627\u062d\u0642\u064b\u0627',
+  'pay_now':
+      '\u0627\u062f\u0641\u0639 \u0627\u0644\u0622\u0646 - @amount \u064a\u0648\u0631\u0648',
+  'no_payment_due':
+      '\u0644\u0627 \u062a\u0648\u062c\u062f \u062f\u0641\u0639\u0629 \u0645\u0633\u062a\u062d\u0642\u0629',
+  'no_payment_due_subtitle':
+      '\u0644\u0627 \u064a\u0648\u062c\u062f \u062d\u062c\u0632 \u063a\u064a\u0631 \u0645\u062f\u0641\u0648\u0639 \u0645\u062d\u062f\u062f \u062d\u0627\u0644\u064a\u064b\u0627.',
+  'go_my_bookings':
+      '\u0627\u0644\u0627\u0646\u062a\u0642\u0627\u0644 \u0625\u0644\u0649 \u062d\u062c\u0648\u0632\u0627\u062a\u064a',
+  'payment_success_subtitle':
+      '\u062a\u0645 \u0648\u0636\u0639 \u0639\u0644\u0627\u0645\u0629 \u0645\u062f\u0641\u0648\u0639 \u0639\u0644\u0649 \u0627\u0644\u062d\u062c\u0632 @booking.',
+  'no_notifications_text':
+      '\u0644\u0627 \u062a\u0648\u062c\u062f \u0625\u0634\u0639\u0627\u0631\u0627\u062a \u062d\u0627\u0644\u064a\u064b\u0627.',
+  'payment_review_subtitle':
+      '\u0631\u0627\u062c\u0639 \u062d\u062c\u0632\u0643 \u0648\u0623\u0643\u0645\u0644 \u0627\u0644\u062f\u0641\u0639.',
+  'payment_status_paid': '\u0645\u062f\u0641\u0648\u0639',
+  'payment_status_unpaid': '\u063a\u064a\u0631 \u0645\u062f\u0641\u0648\u0639',
+  'booking_status_awaiting_payment':
+      '\u0628\u0627\u0646\u062a\u0638\u0627\u0631 \u0627\u0644\u062f\u0641\u0639',
+  'booking_status_confirmed': '\u0645\u0624\u0643\u062f',
+  'booking_status_completed': '\u0645\u0643\u062a\u0645\u0644',
+  'booking_status_message': '\u0627\u0644\u062d\u062c\u0632 @booking: @status',
 };
 
 final Map<String, String> _customerDe = {
@@ -848,6 +880,14 @@ final Map<String, String> _customerDe = {
   'payment_success': 'Zahlung erfolgreich',
   'payment_success_subtitle':
       'Buchung @booking ist jetzt als bezahlt markiert.',
+  'payment_review_subtitle':
+      'Pruefen Sie Ihre Buchung und schliessen Sie die Zahlung ab.',
+  'payment_status_paid': 'Bezahlt',
+  'payment_status_unpaid': 'Unbezahlt',
+  'booking_status_awaiting_payment': 'Zahlung ausstehend',
+  'booking_status_confirmed': 'Bestaetigt',
+  'booking_status_completed': 'Abgeschlossen',
+  'booking_status_message': 'Buchung @booking: @status',
   'notifications': 'Benachrichtigungen',
   'read_all': 'Alle lesen',
   'mark_all_read': 'Alle als gelesen markieren',

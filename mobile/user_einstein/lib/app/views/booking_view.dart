@@ -76,7 +76,7 @@ class BookingView extends GetView<BookingController> {
                             ),
                             const Spacer(),
                             Text(
-                              controller.categoryLabels[id] ?? id,
+                              'service_${id}_title'.tr,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -87,7 +87,7 @@ class BookingView extends GetView<BookingController> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'from_price'.tr,
+                              'service_${id}_price'.tr,
                               style: const TextStyle(
                                 color: AppColors.gold,
                                 fontSize: 12,

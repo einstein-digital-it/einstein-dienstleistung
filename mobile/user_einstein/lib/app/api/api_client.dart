@@ -97,7 +97,9 @@ class ApiClient {
       throw ApiException('Unsupported HTTP method: $method');
     }
 
-    final response = await request.timeout(const Duration(seconds: 2));
+    // Generous on purpose: on slow mobile networks a short timeout reports
+    // failure for requests the server has already saved (e.g. bookings).
+    final response = await request.timeout(const Duration(seconds: 20));
 
     final decoded = response.body.isEmpty ? null : jsonDecode(response.body);
     if (response.statusCode < 200 || response.statusCode >= 300) {

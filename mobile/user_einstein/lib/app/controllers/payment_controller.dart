@@ -18,8 +18,8 @@ class PaymentController extends GetxController with WidgetsBindingObserver {
   final bookingId = RxnString();
 
   BookingItem? get booking => store.bookingById(bookingId.value);
-  String get bookingNumber => booking?.id ?? 'No booking';
-  String get serviceName => booking?.service ?? 'No service selected';
+  String get bookingNumber => booking?.number ?? 'No booking';
+  String get serviceName => booking?.displayService ?? 'No service selected';
   double get amount => booking?.amountValue ?? 0;
   // Prices are net; 19 % VAT is added (the server charges the same total).
   double get vat => double.parse((amount * 0.19).toStringAsFixed(2));

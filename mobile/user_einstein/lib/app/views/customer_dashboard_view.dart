@@ -89,7 +89,7 @@ class CustomerDashboardView extends GetView<CustomerDashboardController> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        item.service,
+                                        item.displayService,
                                         style: const TextStyle(
                                           color: AppColors.navy,
                                           fontWeight: FontWeight.w900,

@@ -43,7 +43,7 @@ class MyBookingsController extends GetxController {
         'email': store.currentEmail,
         'cancellation_type': 'ordinary',
         'termination_timing': 'soonest',
-        'reference_number': item.id,
+        'reference_number': item.number,
         'language': Get.locale?.languageCode ?? 'de',
       });
       Get.snackbar('cancel_subscription'.tr, 'cancel_subscription_done'.tr);

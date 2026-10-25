@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class BookingItem {
   const BookingItem({
@@ -12,9 +13,14 @@ class BookingItem {
     required this.price,
     required this.statusColor,
     this.category = '',
-  });
+    String? number,
+  }) : number = number ?? id;
 
+  /// Database id, used in API paths.
   final String id;
+
+  /// Booking number the customer sees (e.g. ES-20261025...).
+  final String number;
   final String service;
   final String date;
   final String time;
@@ -31,10 +37,12 @@ class BookingItem {
     final status = (json['status'] ?? 'pending').toString();
     final paymentStatus = _paymentLabel((json['payment_status'] ?? 'unpaid').toString());
     final price = json['price'];
+    final id = (json['id'] ?? json['booking_number'] ?? '').toString();
     return BookingItem(
-      id: (json['id'] ?? json['booking_number'] ?? '').toString(),
+      id: id,
+      number: (json['booking_number'] ?? id).toString(),
       service: (json['service_name'] ?? json['service'] ?? json['category'] ?? 'Service').toString(),
-      date: (json['date'] ?? '').toString(),
+      date: _date(json['date']),
       time: (json['time'] ?? '').toString(),
       address: (json['address'] ?? 'Online').toString(),
       status: _statusLabel(status),
@@ -53,8 +61,25 @@ class BookingItem {
 
   bool get isPaid => paymentStatus == 'Paid';
 
+  /// Service name in the app language; the server stores it in German.
+  String get displayService {
+    final key = 'service_${category}_title';
+    final translated = key.tr;
+    return translated == key ? service : translated;
+  }
+
+  /// Translation keys for the status labels above.
+  String get paymentStatusKey =>
+      isPaid ? 'payment_status_paid' : 'payment_status_unpaid';
+  String get statusKey => switch (status) {
+    'Completed' => 'booking_status_completed',
+    'Confirmed' => 'booking_status_confirmed',
+    _ => 'booking_status_awaiting_payment',
+  };
+
   BookingItem copyWith({
     String? id,
+    String? number,
     String? service,
     String? date,
     String? time,
@@ -67,6 +92,7 @@ class BookingItem {
   }) {
     return BookingItem(
       id: id ?? this.id,
+      number: number ?? this.number,
       service: service ?? this.service,
       date: date ?? this.date,
       time: time ?? this.time,
@@ -78,6 +104,16 @@ class BookingItem {
       category: category ?? this.category,
     );
   }
+}
+
+/// The API sends dates as "2026-10-26" or "2026-10-26T00:00:00.000000Z";
+/// show them as "26.10.2026".
+String _date(Object? value) {
+  final raw = (value ?? '').toString();
+  final parsed = DateTime.tryParse(raw);
+  if (parsed == null) return raw;
+  String two(int n) => n.toString().padLeft(2, '0');
+  return '${two(parsed.day)}.${two(parsed.month)}.${parsed.year}';
 }
 
 String _number(Object value) {
