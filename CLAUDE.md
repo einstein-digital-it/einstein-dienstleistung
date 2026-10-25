@@ -32,11 +32,10 @@ Working branch: `release/android` (not main). The team talks in Levantine Arabic
   1. Point the DNS A record `app.einsteindienstleistung.com` at the new IP. Do NOT touch the main domain's A record (it hosts WordPress).
   2. Run `server-setup.sh`.
   3. Set up the Stripe webhook (test mode first).
-- The backend has only been PHP-linted, never run against a real DB. First step: `composer install && php artisan migrate && php artisan test`.
-- Mobile app has not been run on a device by Claude yet. Check with `flutter analyze`, `flutter test`, then a run on an emulator.
+- Company: Einzelunternehmen, Inhaber Beshr Alhoury Alhomsi, Robert-Dißmann-Str. 8, 65936 Frankfurt am Main (Impressum, AGB, Datenschutz, invoices).
+- Backend: migrations and `php artisan test` pass on sqlite. Mobile: `flutter analyze` / `flutter test` pass; tried on emulator and as web build, not on a real device yet.
 - Open questions:
-  - USt-IdNr for the Impressum.
-  - Company address: Impressum, AGB, Datenschutz and invoices use Julius-Leber-Weg 8 — confirm whether it should be Robert-Dißmann-Str. 8.
+  - Steuernummer or USt-IdNr — required on invoices (§ 14 UStG) and USt-IdNr for the Impressum; not provided yet.
 
 ## Rules
 - Never put passwords, API keys, the keystore or the MCP URL in code, commits or chat. The owner enters secrets herself.
