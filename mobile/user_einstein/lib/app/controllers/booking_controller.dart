@@ -53,6 +53,16 @@ class BookingController extends GetxController {
   final dates = const <String>['12 Jun 2026', '15 Jun 2026', '18 Jun 2026'];
   final times = const <String>['09:00', '10:30', '13:00', '16:00'];
 
+  @override
+  void onInit() {
+    super.onInit();
+    // Opened from a service card: preselect that service
+    final args = Get.arguments;
+    if (args is Map && args['category'] is String && categories.contains(args['category'])) {
+      selectedCategory.value = args['category'] as String;
+    }
+  }
+
   void selectCategory(String value) {
     selectedCategory.value = value;
   }

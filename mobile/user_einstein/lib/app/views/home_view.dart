@@ -54,7 +54,14 @@ class HomeView extends GetView<HomeController> {
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 14),
                 itemBuilder: (context, index) {
-                  return ServiceCard(service: controller.services[index]);
+                  final service = controller.services[index];
+                  return ServiceCard(
+                    service: service,
+                    onTap: () => Get.toNamed(
+                      AppRoutes.services,
+                      arguments: {'expand': service.id},
+                    ),
+                  );
                 },
               ),
             ),

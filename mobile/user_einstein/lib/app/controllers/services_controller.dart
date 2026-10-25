@@ -142,6 +142,11 @@ class ServicesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // Opened from a card on the home screen: show that service expanded
+    final args = Get.arguments;
+    if (args is Map && args['expand'] is String) {
+      expandedId.value = args['expand'] as String;
+    }
     loadServices();
   }
 

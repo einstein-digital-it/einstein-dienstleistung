@@ -66,33 +66,41 @@ class ServicesView extends GetView<ServicesController> {
             ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 22, 20, 32),
-              sliver: Obx(
-                () => SliverList.separated(
-                  itemCount: controller.services.length,
+              sliver: Obx(() {
+                // Read reactive values here (not inside itemBuilder, which runs
+                // later during layout) so a tap rebuilds the list.
+                final expandedId = controller.expandedId.value;
+                final services = controller.services.toList();
+                return SliverList.separated(
+                  itemCount: services.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 14),
                   itemBuilder: (context, index) {
-                    final service = controller.services[index];
+                    final service = services[index];
+                    final isExpanded = expandedId == service.id;
                     return Column(
                       children: [
                         ServiceCard(
                           service: service,
-                          expanded: controller.expandedId.value == service.id,
+                          expanded: isExpanded,
                           onTap: () => controller.toggle(service.id),
                         ),
-                        if (controller.expandedId.value == service.id) ...[
+                        if (isExpanded) ...[
                           const SizedBox(height: 10),
                           PrimaryButton(
                             label: 'book_now'.tr,
                             icon: Icons.arrow_forward_rounded,
-                            onPressed: () => Get.toNamed(AppRoutes.bookings),
+                            onPressed: () => Get.toNamed(
+                              AppRoutes.bookings,
+                              arguments: {'category': service.id},
+                            ),
                           ),
                         ],
                       ],
                     );
                   },
-                ),
-              ),
+                );
+              }),
             ),
           ],
         ),
