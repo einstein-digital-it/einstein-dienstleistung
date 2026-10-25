@@ -4,8 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AuthSession;
+use App\Models\Booking;
+use App\Models\ManagedClient;
+use App\Models\Notification;
+use App\Models\NotificationPreference;
 use App\Models\ServiceProvider;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -183,6 +188,49 @@ class AuthController extends Controller
                 ->whereNull('revoked_at')
                 ->update(['revoked_at' => now()]);
         }
+
+        return response()->json(null, 204);
+    }
+
+    /**
+     * Customers delete their own account from the app (required by Google Play
+     * and the App Store). Bookings stay, because invoices must be kept by law.
+     */
+    public function deleteAccount(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'password' => ['required', 'string'],
+        ]);
+
+        $user = $request->user();
+        if (! Hash::check($data['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'password' => ['The password is incorrect.'],
+            ]);
+        }
+
+        // Deleting the account must not leave a Stripe subscription running.
+        $hasActiveAbo = Booking::query()
+            ->where('category', 'dokumentabo')
+            ->whereRaw('LOWER(customer_email) = ?', [strtolower($user->email)])
+            ->whereNotNull('stripe_subscription_id')
+            ->whereNotIn('status', ['cancelled', 'completed'])
+            ->exists();
+        if ($hasActiveAbo) {
+            return response()->json([
+                'message' => 'Please cancel your Dokumenten-Abo before deleting your account.',
+                'code' => 'active_subscription',
+            ], 409);
+        }
+
+        DB::transaction(function () use ($user): void {
+            AuthSession::query()->where('user_id', $user->id)->delete();
+            ManagedClient::query()->where('owner_user_id', $user->id)->delete();
+            Notification::query()->where('user_email', $user->email)->delete();
+            NotificationPreference::query()->where('user_email', $user->email)->delete();
+            UserNotification::query()->where('user_email', $user->email)->delete();
+            $user->delete();
+        });
 
         return response()->json(null, 204);
     }

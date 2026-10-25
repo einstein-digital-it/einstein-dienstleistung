@@ -1,5 +1,8 @@
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../api/api_client.dart';
+import '../api/api_exception.dart';
 import '../api/auth_session.dart';
 import '../api/customer_api_service.dart';
 import '../routes/app_routes.dart';
@@ -64,5 +67,47 @@ class ProfileController extends GetxController {
     store.clearCustomerData();
     Get.snackbar('auth_success'.tr, 'logout_success'.tr);
     Get.offAllNamed(AppRoutes.login);
+  }
+
+  /// Privacy policy page of the web app on the same domain as the API
+  /// (e.g. https://app.einsteindienstleistung.com/Datenschutz).
+  Uri get privacyPolicyUri {
+    final api = Uri.parse(Get.find<ApiClient>().baseUrl);
+    return api.replace(path: '/Datenschutz', query: null, fragment: null);
+  }
+
+  Future<void> openPrivacyPolicy() async {
+    var opened = false;
+    try {
+      opened = await launchUrl(
+        privacyPolicyUri,
+        mode: LaunchMode.externalApplication,
+      );
+    } catch (_) {
+      opened = false;
+    }
+    if (!opened) {
+      Get.snackbar('profile_privacy'.tr, 'link_open_failed'.tr);
+    }
+  }
+
+  /// Returns an error message to show, or null when the account was deleted.
+  Future<String?> deleteAccount(String password) async {
+    try {
+      await api.deleteAccount(password);
+    } on ApiException catch (error) {
+      return switch (error.statusCode) {
+        409 => 'delete_account_active_abo'.tr,
+        422 => 'delete_account_wrong_password'.tr,
+        _ => 'delete_account_failed'.tr,
+      };
+    } catch (_) {
+      return 'delete_account_failed'.tr;
+    }
+    await session.clear();
+    store.clearCustomerData();
+    Get.offAllNamed(AppRoutes.login);
+    Get.snackbar('delete_account'.tr, 'delete_account_done'.tr);
+    return null;
   }
 }

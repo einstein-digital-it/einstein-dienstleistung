@@ -36,6 +36,7 @@ class _FakeBackend {
   ];
   final createdBookings = <Map<String, dynamic>>[];
   final checkoutBookingIds = <String>[];
+  var accountDeleted = false;
 
   Map<String, dynamic>? _booking(String id) {
     for (final booking in bookings) {
@@ -69,6 +70,18 @@ class _FakeBackend {
         },
         'session': {'token': 'test-token'},
       });
+    }
+    if (method == 'DELETE' && path == 'auth/account') {
+      final body = jsonDecode(request.body) as Map<String, dynamic>;
+      if (body['password'] != '11111111') {
+        return http.Response(
+          '{"message":"The password is incorrect."}',
+          422,
+          headers: {'content-type': 'application/json'},
+        );
+      }
+      accountDeleted = true;
+      return http.Response('', 204);
     }
     if (method == 'GET' && path == 'customer/dashboard') {
       return _json({
@@ -417,6 +430,37 @@ void main() {
     expect(find.text('Mira Customer'), findsOneWidget);
     expect(find.text('+49 171 222333'), findsOneWidget);
     expect(find.text('Berlin'), findsOneWidget);
+  });
+
+  testWidgets('deletes the account after the password is confirmed', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signIn(tester);
+
+    await tester.tap(find.text('Profile').last);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Privacy policy'), 220);
+    expect(find.text('Privacy policy'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Delete account'), 220);
+    await tester.tap(find.text('Delete account'));
+    await tester.pumpAndSettle();
+
+    // Wrong password: the account stays.
+    await tester.enterText(find.byType(TextField).last, 'wrong');
+    await tester.tap(find.text('Delete permanently'));
+    await tester.pumpAndSettle();
+    expect(find.text('The password is incorrect.'), findsOneWidget);
+    expect(backend.accountDeleted, isFalse);
+
+    await tester.enterText(find.byType(TextField).last, '11111111');
+    await tester.tap(find.text('Delete permanently'));
+    await tester.pumpAndSettle();
+
+    expect(backend.accountDeleted, isTrue);
+    expect(Get.find<AuthSession>().isAuthenticated, isFalse);
+    expect(find.widgetWithText(FilledButton, 'Sign in'), findsOneWidget);
+    await waitForSnackbars(tester);
   });
 
   testWidgets('submits a customer service request locally', (tester) async {

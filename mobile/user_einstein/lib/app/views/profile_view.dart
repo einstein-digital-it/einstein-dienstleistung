@@ -85,10 +85,21 @@ class ProfileView extends GetView<ProfileController> {
                 onTap: () => Get.toNamed(AppRoutes.customerService),
               ),
               _ActionTile(
+                icon: Icons.privacy_tip_outlined,
+                title: 'profile_privacy'.tr,
+                onTap: controller.openPrivacyPolicy,
+              ),
+              _ActionTile(
                 icon: Icons.logout_rounded,
                 title: 'profile_logout'.tr,
                 destructive: true,
                 onTap: () => controller.logout(),
+              ),
+              _ActionTile(
+                icon: Icons.delete_forever_outlined,
+                title: 'delete_account'.tr,
+                destructive: true,
+                onTap: () => _showDeleteAccountDialog(controller),
               ),
             ],
           ),
@@ -201,6 +212,74 @@ void _showEditProfileSheet(BuildContext context, ProfileController controller) {
       ),
     ),
     isScrollControlled: true,
+  );
+}
+
+void _showDeleteAccountDialog(ProfileController controller) {
+  final passwordController = TextEditingController();
+  final errorText = ''.obs;
+  final isDeleting = false.obs;
+
+  Get.dialog(
+    AlertDialog(
+      title: Text('delete_account'.tr),
+      content: Obx(
+        () => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('delete_account_text'.tr),
+            const SizedBox(height: 14),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'delete_account_password'.tr,
+                prefixIcon: const Icon(Icons.lock_outline),
+              ),
+            ),
+            if (errorText.value.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Text(
+                errorText.value,
+                style: const TextStyle(
+                  color: Color(0xFFDC2626),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+          child: Text('cancel_back'.tr),
+        ),
+        Obx(
+          () => TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFFDC2626),
+            ),
+            onPressed: isDeleting.value
+                ? null
+                : () async {
+                    if (passwordController.text.isEmpty) {
+                      errorText.value = 'delete_account_wrong_password'.tr;
+                      return;
+                    }
+                    isDeleting.value = true;
+                    final error = await controller.deleteAccount(
+                      passwordController.text,
+                    );
+                    isDeleting.value = false;
+                    if (error != null) errorText.value = error;
+                  },
+            child: Text('delete_account_confirm'.tr),
+          ),
+        ),
+      ],
+    ),
   );
 }
 

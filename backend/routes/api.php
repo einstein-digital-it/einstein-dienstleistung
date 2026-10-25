@@ -47,6 +47,7 @@ Route::post('auth/provider/register', [AuthController::class, 'providerRegister'
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::get('auth/me', [AuthController::class, 'me']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
+Route::delete('auth/account', [AuthController::class, 'deleteAccount'])->middleware(['api.auth:user', 'throttle:10,1']);
 Route::post('chat/respond', [ChatController::class, 'respond']);
 Route::get('customer-support', [CustomerSupportController::class, 'index']);
 Route::post('customer-support/requests', [CustomerSupportController::class, 'store']);

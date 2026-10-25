@@ -271,6 +271,19 @@ final Map<String, String> _customerEn = {
   'booking_status_confirmed': 'Confirmed',
   'booking_status_completed': 'Completed',
   'booking_status_message': 'Booking @booking: @status',
+  'profile_privacy': 'Privacy policy',
+  'delete_account': 'Delete account',
+  'delete_account_text':
+      'Your account and personal data will be deleted permanently. Bookings and invoices are kept because the law requires it. Enter your password to confirm.',
+  'delete_account_password': 'Password',
+  'delete_account_confirm': 'Delete permanently',
+  'delete_account_done': 'Your account has been deleted.',
+  'delete_account_wrong_password': 'The password is incorrect.',
+  'delete_account_active_abo':
+      'Please cancel your document subscription first in My Bookings.',
+  'delete_account_failed':
+      'The account could not be deleted. Please try again.',
+  'link_open_failed': 'The page could not be opened.',
   'notifications': 'Notifications',
   'read_all': 'Read all',
   'mark_all_read': 'Mark all as read',
@@ -784,6 +797,24 @@ final Map<String, String> _customerArFixed = {
   'booking_status_confirmed': '\u0645\u0624\u0643\u062f',
   'booking_status_completed': '\u0645\u0643\u062a\u0645\u0644',
   'booking_status_message': '\u0627\u0644\u062d\u062c\u0632 @booking: @status',
+  'profile_privacy':
+      '\u0633\u064a\u0627\u0633\u0629 \u0627\u0644\u062e\u0635\u0648\u0635\u064a\u0629',
+  'delete_account': '\u062d\u0630\u0641 \u0627\u0644\u062d\u0633\u0627\u0628',
+  'delete_account_text':
+      '\u0633\u064a\u062a\u0645 \u062d\u0630\u0641 \u062d\u0633\u0627\u0628\u0643 \u0648\u0628\u064a\u0627\u0646\u0627\u062a\u0643 \u0627\u0644\u0634\u062e\u0635\u064a\u0629 \u0646\u0647\u0627\u0626\u064a\u064b\u0627. \u0646\u062d\u062a\u0641\u0638 \u0628\u0627\u0644\u062d\u062c\u0648\u0632\u0627\u062a \u0648\u0627\u0644\u0641\u0648\u0627\u062a\u064a\u0631 \u0644\u0623\u0646 \u0627\u0644\u0642\u0627\u0646\u0648\u0646 \u064a\u0641\u0631\u0636 \u0630\u0644\u0643. \u0623\u062f\u062e\u0644 \u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631 \u0644\u0644\u062a\u0623\u0643\u064a\u062f.',
+  'delete_account_password':
+      '\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631',
+  'delete_account_confirm': '\u062d\u0630\u0641 \u0646\u0647\u0627\u0626\u064a',
+  'delete_account_done':
+      '\u062a\u0645 \u062d\u0630\u0641 \u062d\u0633\u0627\u0628\u0643.',
+  'delete_account_wrong_password':
+      '\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d\u0629.',
+  'delete_account_active_abo':
+      '\u064a\u0631\u062c\u0649 \u0625\u0644\u063a\u0627\u0621 \u0627\u0634\u062a\u0631\u0627\u0643 \u0627\u0644\u0645\u0633\u062a\u0646\u062f\u0627\u062a \u0623\u0648\u0644\u064b\u0627 \u0645\u0646 \u0635\u0641\u062d\u0629 \u062d\u062c\u0648\u0632\u0627\u062a\u064a.',
+  'delete_account_failed':
+      '\u062a\u0639\u0630\u0651\u0631 \u062d\u0630\u0641 \u0627\u0644\u062d\u0633\u0627\u0628. \u062d\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062e\u0631\u0649.',
+  'link_open_failed':
+      '\u062a\u0639\u0630\u0651\u0631 \u0641\u062a\u062d \u0627\u0644\u0635\u0641\u062d\u0629.',
 };
 
 final Map<String, String> _customerDe = {
@@ -888,6 +919,19 @@ final Map<String, String> _customerDe = {
   'booking_status_confirmed': 'Bestaetigt',
   'booking_status_completed': 'Abgeschlossen',
   'booking_status_message': 'Buchung @booking: @status',
+  'profile_privacy': 'Datenschutzerklaerung',
+  'delete_account': 'Konto loeschen',
+  'delete_account_text':
+      'Ihr Konto und Ihre persoenlichen Daten werden endgueltig geloescht. Buchungen und Rechnungen bleiben wegen der gesetzlichen Aufbewahrungspflicht erhalten. Geben Sie zur Bestaetigung Ihr Passwort ein.',
+  'delete_account_password': 'Passwort',
+  'delete_account_confirm': 'Endgueltig loeschen',
+  'delete_account_done': 'Ihr Konto wurde geloescht.',
+  'delete_account_wrong_password': 'Das Passwort ist falsch.',
+  'delete_account_active_abo':
+      'Bitte kuendigen Sie zuerst Ihr Dokumenten-Abo unter Meine Buchungen.',
+  'delete_account_failed':
+      'Das Konto konnte nicht geloescht werden. Bitte erneut versuchen.',
+  'link_open_failed': 'Die Seite konnte nicht geoeffnet werden.',
   'notifications': 'Benachrichtigungen',
   'read_all': 'Alle lesen',
   'mark_all_read': 'Alle als gelesen markieren',

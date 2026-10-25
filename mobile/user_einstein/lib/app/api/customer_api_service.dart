@@ -39,6 +39,11 @@ class CustomerApiService {
     await client.post('auth/logout');
   }
 
+  /// Deletes the customer's own account (password required).
+  Future<void> deleteAccount(String password) async {
+    await client.delete('auth/account', body: {'password': password});
+  }
+
   Future<CustomerProfile> profile(String email) async {
     final data = await client.get('profile', query: {'email': email});
     return CustomerProfile.fromJson(Map<String, dynamic>.from(data as Map));
