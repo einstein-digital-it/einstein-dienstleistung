@@ -46,6 +46,12 @@ class EinsteinUserApp extends StatelessWidget {
     _ensureDependencies();
     final store = Get.find<CustomerStoreController>();
     final session = Get.find<AuthSession>();
+    // Logged in from a previous start: restore the account email so the
+    // dashboard, bookings and notifications load the customer's own data.
+    final savedEmail = session.email ?? '';
+    if (session.isAuthenticated && store.profile.value.email.isEmpty && savedEmail.isNotEmpty) {
+      store.profile.value = store.profile.value.copyWith(email: savedEmail);
+    }
     final preferredLocale = initialLocale ?? Locale(session.localeCode);
     if (store.locale.value != preferredLocale) {
       store.locale.value = preferredLocale;

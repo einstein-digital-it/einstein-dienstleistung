@@ -61,6 +61,7 @@ class ProfileController extends GetxController {
       // Local logout remains available when the API is unreachable.
     }
     await session.clear();
+    store.clearCustomerData();
     Get.snackbar('auth_success'.tr, 'logout_success'.tr);
     Get.offAllNamed(AppRoutes.login);
   }

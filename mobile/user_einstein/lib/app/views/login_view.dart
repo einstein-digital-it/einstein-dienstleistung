@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/auth_controller.dart';
 import '../theme/app_colors.dart';
@@ -63,24 +64,6 @@ class LoginView extends GetView<AuthController> {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    _SocialButton(
-                      label: 'continue_google'.tr,
-                      child: _GoogleMark(),
-                      onPressed: () {},
-                    ),
-                    const SizedBox(height: 14),
-                    _SocialButton(
-                      label: 'continue_facebook'.tr,
-                      child: const Icon(
-                        Icons.facebook,
-                        color: Color(0xFF1877F2),
-                        size: 28,
-                      ),
-                      onPressed: () {},
-                    ),
-                    const SizedBox(height: 36),
-                    const _DividerLabel(),
-                    const SizedBox(height: 34),
                     if (controller.isRegister.value) ...[
                       _AuthField(
                         label: 'name'.tr,
@@ -137,7 +120,11 @@ class LoginView extends GetView<AuthController> {
                     Row(
                       children: [
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () => launchUrl(
+                            Uri.parse(
+                              'mailto:info@einsteindienstleistung.de?subject=Passwort%20zur%C3%BCcksetzen',
+                            ),
+                          ),
                           child: Text(
                             'forgot_password'.tr,
                             style: TextStyle(
@@ -172,101 +159,8 @@ class LoginView extends GetView<AuthController> {
   }
 }
 
-class _SocialButton extends StatelessWidget {
-  const _SocialButton({
-    required this.label,
-    required this.child,
-    required this.onPressed,
-  });
 
-  final String label;
-  final Widget child;
-  final VoidCallback onPressed;
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 66,
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: const Color(0xFF334155),
-          side: const BorderSide(color: Color(0xFFDFE7F1)),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(13),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            child,
-            const SizedBox(width: 10),
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GoogleMark extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 25,
-      height: 25,
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white,
-      ),
-      alignment: Alignment.center,
-      child: const Text(
-        'G',
-        style: TextStyle(
-          color: Color(0xFF4285F4),
-          fontSize: 22,
-          fontWeight: FontWeight.w900,
-        ),
-      ),
-    );
-  }
-}
-
-class _DividerLabel extends StatelessWidget {
-  const _DividerLabel();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(child: Divider(color: AppColors.line)),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'or'.tr,
-            style: TextStyle(
-              color: Color(0xFF96A5BA),
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ),
-        Expanded(child: Divider(color: AppColors.line)),
-      ],
-    );
-  }
-}
 
 class _AuthField extends StatelessWidget {
   const _AuthField({

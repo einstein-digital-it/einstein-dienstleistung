@@ -1052,6 +1052,8 @@ final Map<String, String> _catalogEn = {
   'payment_pending_info': 'Complete the payment in your browser, then come back to the app.',
   'payment_start_failed': 'The payment could not be started. Please try again later.',
   'check_payment_status': 'Check payment status',
+  'login_required_to_book': 'Please log in or create an account to book.',
+  'booking_failed': 'The booking could not be sent. Please check your connection and try again.',
 };
 
 final Map<String, String> _catalogAr = {
@@ -1166,6 +1168,8 @@ final Map<String, String> _catalogAr = {
   'payment_pending_info': 'أكمل الدفع في المتصفح، ثم ارجع إلى التطبيق.',
   'payment_start_failed': 'تعذّر بدء الدفع. يرجى المحاولة لاحقاً.',
   'check_payment_status': 'تحقق من حالة الدفع',
+  'login_required_to_book': 'يرجى تسجيل الدخول أو إنشاء حساب للحجز.',
+  'booking_failed': 'تعذّر إرسال الحجز. تحقق من الاتصال وحاول مرة أخرى.',
 };
 
 final Map<String, String> _catalogDe = {
@@ -1288,4 +1292,6 @@ final Map<String, String> _catalogDe = {
   'payment_pending_info': 'Schließen Sie die Zahlung im Browser ab und kehren Sie dann zur App zurück.',
   'payment_start_failed': 'Die Zahlung konnte nicht gestartet werden. Bitte später erneut versuchen.',
   'check_payment_status': 'Zahlungsstatus prüfen',
+  'login_required_to_book': 'Bitte melden Sie sich an oder erstellen Sie ein Konto, um zu buchen.',
+  'booking_failed': 'Die Buchung konnte nicht gesendet werden. Bitte Verbindung prüfen und erneut versuchen.',
 };

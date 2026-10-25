@@ -10,86 +10,16 @@ import '../models/notification_item.dart';
 import '../models/support_request.dart';
 
 class CustomerStoreController extends GetxController {
+  // Empty until the customer logs in (filled from the API / session).
   final profile = const CustomerProfile(
-    fullName: 'Customer User',
-    email: 'asmlahmd98@gmail.com',
-    phone: '+49 170 000000',
-    address: 'Frankfurt am Main',
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
     language: 'Arabic',
   ).obs;
-
-  final bookings = <BookingItem>[
-    const BookingItem(
-      id: 'ES-2048',
-      service: 'Behoerden & Formularhilfe',
-      date: '12 Jun 2026',
-      time: '10:30',
-      address: 'Frankfurt',
-      status: 'Confirmed',
-      paymentStatus: 'Paid',
-      price: '85 EUR',
-      statusColor: Color(0xFF10B981),
-    ),
-    const BookingItem(
-      id: 'ES-2049',
-      service: 'Buero & Sekretariat',
-      date: '15 Jun 2026',
-      time: '13:00',
-      address: 'Online',
-      status: 'Awaiting payment',
-      paymentStatus: 'Unpaid',
-      price: '120 EUR',
-      statusColor: Color(0xFFC9A227),
-    ),
-    const BookingItem(
-      id: 'ES-2031',
-      service: 'Nachhilfe / Lernunterstuetzung',
-      date: '28 May 2026',
-      time: '16:00',
-      address: 'Offenbach',
-      status: 'Completed',
-      paymentStatus: 'Paid',
-      price: '60 EUR',
-      statusColor: Color(0xFF3B82F6),
-    ),
-  ].obs;
-
-  final notifications = <NotificationItem>[
-    const NotificationItem(
-      title: 'New booking request received',
-      message:
-          'Your forms assistance request ES-2048 has been received and is under review.',
-      time: '8 min ago',
-      icon: Icons.calendar_month_outlined,
-      color: Color(0xFFC9A227),
-      unread: true,
-    ),
-    const NotificationItem(
-      title: 'Payment received',
-      message: 'A payment of 85 EUR was recorded for your confirmed booking.',
-      time: '42 min ago',
-      icon: Icons.credit_card_outlined,
-      color: Color(0xFF10B981),
-      unread: true,
-    ),
-    const NotificationItem(
-      title: 'Provider available',
-      message:
-          'A provider is available for tutoring and learning support services.',
-      time: '2 hours ago',
-      icon: Icons.person_search_outlined,
-      color: Color(0xFF3B82F6),
-    ),
-    const NotificationItem(
-      title: 'Booking completed',
-      message:
-          'Your secretariat booking was completed and the invoice was issued.',
-      time: 'Yesterday',
-      icon: Icons.check_circle_outline,
-      color: Color(0xFF10B981),
-    ),
-  ].obs;
-
+  final bookings = <BookingItem>[].obs;
+  final notifications = <NotificationItem>[].obs;
   final supportRequests = <SupportRequest>[].obs;
 
   final bookingUpdates = true.obs;
@@ -115,6 +45,21 @@ class CustomerStoreController extends GetxController {
       notifications.take(3).toList();
 
   String get currentEmail => profile.value.email;
+
+  /// Forget everything about the logged-out customer.
+  void clearCustomerData() {
+    profile.value = CustomerProfile(
+      fullName: '',
+      email: '',
+      phone: '',
+      address: '',
+      language: profile.value.language,
+    );
+    bookings.clear();
+    notifications.clear();
+    supportRequests.clear();
+    dashboardOpenPayments.value = null;
+  }
 
   void setProfile(CustomerProfile nextProfile) {
     profile.value = nextProfile;
