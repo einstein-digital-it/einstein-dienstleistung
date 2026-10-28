@@ -3,6 +3,7 @@ import { CreditCard, Loader2, Lock, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { paymentApi } from "@/api/backendClient";
+import { SUBSCRIPTION_CATEGORIES } from "@/lib/priceUtils";
 
 const TEXT = {
   de: { title: "Sicher bezahlen", pay: "Jetzt bezahlen", subscribe: "Abo starten", monthly: "/ Monat", methods: "Karte, PayPal, SEPA-Lastschrift, Klarna, Apple Pay, Google Pay", secure: "Sie werden zur sicheren Zahlungsseite von Stripe weitergeleitet.", canceled: "Die Zahlung wurde abgebrochen. Sie können es erneut versuchen.", error: "Die Zahlung konnte nicht gestartet werden. Bitte versuchen Sie es später erneut.", noVat: "Gesamtbetrag inkl. 19 % MwSt." },
@@ -17,7 +18,7 @@ export default function StripeCheckoutButton({ booking, amount, lang = "de", can
   const t = TEXT[lang] || TEXT.de;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const isSubscription = booking?.category === "dokumentabo";
+  const isSubscription = SUBSCRIPTION_CATEGORIES.includes(booking?.category);
 
   const start = async () => {
     setLoading(true);

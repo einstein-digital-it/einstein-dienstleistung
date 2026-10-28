@@ -13,7 +13,7 @@ import {
   User
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
-import { toGrossPrice } from "@/lib/priceUtils";
+import { toGrossPrice, SUBSCRIPTION_CATEGORIES } from "@/lib/priceUtils";
 import {
   CardHeader,
   DesignCard,
@@ -140,7 +140,7 @@ export default function CustomerDashboard() {
                   <div className="flex flex-col items-end gap-3">
                     {booking.price && <div className="text-xl font-black text-[#1e3a5f]">{booking.price}</div>}
                     <div className="flex gap-2">
-                      {booking.category === "dokumentabo" && (
+                      {SUBSCRIPTION_CATEGORIES.includes(booking.category) && (
                         <Link to={cancelUrl(booking)} className="inline-flex h-11 items-center justify-center rounded-[10px] border border-red-200 bg-white px-4 text-sm font-extrabold text-red-600 hover:bg-red-50">
                           إلغاء الاشتراك
                         </Link>

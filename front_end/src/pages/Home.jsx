@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { publicApi } from "@/api/backendClient";
 import { getStoredAuthUser } from "@/lib/backendAuth";
-import { toGrossPrice, vatNote } from "@/lib/priceUtils";
+import { displayPrice, priceNote } from "@/lib/priceUtils";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
@@ -90,6 +90,9 @@ const translations = {
     dokumentabo: "EinStein Dokumenten-Abo",
     dokumentabo_desc: "Ihre Post. Unsere Aufgabe. Briefe von Behörden & Versicherungen – Sie schicken uns ein Foto, wir kümmern uns um den Rest.",
     dokumentabo_price: "49 € / Monat",
+    bueromanagement: "Büro-Management für Betriebe",
+    bueromanagement_desc: "Ihre gesamte Büro- und Personalorganisation zum festen Monatspreis – Mitarbeiterunterlagen, Verträge, Kammern, Fristen.",
+    bueromanagement_price: "ab 200 € / Monat",
     
     // Quality
     quality_title: "EinStein-geprüft – Qualität garantiert",
@@ -205,6 +208,9 @@ const translations = {
     dokumentabo: "اشتراك EinStein للمستندات",
     dokumentabo_desc: "بريدك علينا. رسالة من الجهات الرسمية أو التأمين؟ صوّرها وأرسلها لنا، ونحن نتابع الباقي.",
     dokumentabo_price: "49 يورو شهرياً",
+    bueromanagement: "إدارة المكتب للشركات",
+    bueromanagement_desc: "كامل تنظيم المكتب وشؤون الموظفين بسعر شهري ثابت – أوراق الموظفين، العقود، الغرف المهنية، المواعيد.",
+    bueromanagement_price: "من 200 € شهرياً",
     
     // Quality
     quality_title: "معتمد من آينشتاين - جودة مضمونة",
@@ -320,6 +326,9 @@ const translations = {
     dokumentabo: "EinStein Document Subscription",
     dokumentabo_desc: "Your mail. Our job. Letters from authorities & insurers – send us a photo, we take care of the rest.",
     dokumentabo_price: "€49 / month",
+    bueromanagement: "Office Management for Businesses",
+    bueromanagement_desc: "Your entire office and HR administration for a fixed monthly fee – employee documents, contracts, chambers, deadlines.",
+    bueromanagement_price: "from €200 / month",
     
     // Quality
     quality_title: "EinStein-Certified – Quality Guaranteed",
@@ -435,6 +444,9 @@ const translations = {
     dokumentabo: "EinStein Belge Aboneliği",
     dokumentabo_desc: "Postanız bize emanet. Bize bir fotoğraf gönderin – gerisini biz hallederiz.",
     dokumentabo_price: "49 € / ay",
+    bueromanagement: "İşletmeler için Büro Yönetimi",
+    bueromanagement_desc: "Tüm büro ve personel organizasyonunuz sabit aylık ücretle – çalışan belgeleri, sözleşmeler, odalar, süreler.",
+    bueromanagement_price: "200 €'dan / ay",
     
     // Quality
     quality_title: "EinStein Sertifikali - Kalite Garantili",
@@ -550,6 +562,9 @@ const translations = {
     dokumentabo: "Suscripción de Documentos EinStein",
     dokumentabo_desc: "Tu correo. Nuestro trabajo. Envíanos una foto – nosotros nos encargamos del resto.",
     dokumentabo_price: "49 € / mes",
+    bueromanagement: "Gestión de Oficina para Empresas",
+    bueromanagement_desc: "Toda su organización administrativa y de personal por una cuota mensual fija – documentos del personal, contratos, cámaras, plazos.",
+    bueromanagement_price: "desde 200 € / mes",
     
     // Quality
     quality_title: "Certificado por EinStein - Calidad Garantizada",
@@ -622,7 +637,8 @@ const services = [
   { key: "tutoring", icon: BookOpen, color: "bg-blue-500" },
   { key: "print", icon: Printer, color: "bg-pink-500" },
   { key: "eur1", icon: Ship, color: "bg-rose-600" },
-  { key: "dokumentabo", icon: Mail, color: "bg-purple-600" }
+  { key: "dokumentabo", icon: Mail, color: "bg-purple-600" },
+  { key: "bueromanagement", icon: Briefcase, color: "bg-sky-700" }
 ];
 
 const whyFeatures = [
@@ -830,9 +846,9 @@ function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
     if (customPrices && customPrices[serviceKey] && customPrices[serviceKey][0]) {
       const p = customPrices[serviceKey][0];
       const unit = getUnitByLang(p);
-      return `${toGrossPrice(p.price, lang)}${unit ? " " + unit : ""}`;
+      return `${displayPrice(p.price, lang, serviceKey)}${unit ? " " + unit : ""}`;
     }
-    return toGrossPrice(t[`${serviceKey}_price`] || "", lang);
+    return displayPrice(t[`${serviceKey}_price`] || "", lang, serviceKey);
   };
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
@@ -898,7 +914,7 @@ function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
                       <Badge className="bg-[#c9a227] text-white font-semibold">
                         {getServicePrice(service.key)}
                       </Badge>
-                      <span className="block text-[11px] text-gray-300 mt-1">{vatNote(lang)}</span>
+                      <span className="block text-[11px] text-gray-300 mt-1">{priceNote(lang, service.key)}</span>
                       <div className="mt-4 flex items-center text-white/80 font-medium text-sm group-hover:gap-2 transition-all">
                         {t.book_now}
                         <ArrowRight className="w-4 h-4 ms-1" />

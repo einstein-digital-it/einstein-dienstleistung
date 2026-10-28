@@ -211,14 +211,14 @@ class AuthController extends Controller
 
         // Deleting the account must not leave a Stripe subscription running.
         $hasActiveAbo = Booking::query()
-            ->where('category', 'dokumentabo')
+            ->whereIn('category', StripeController::SUBSCRIPTION_CATEGORIES)
             ->whereRaw('LOWER(customer_email) = ?', [strtolower($user->email)])
             ->whereNotNull('stripe_subscription_id')
             ->whereNotIn('status', ['cancelled', 'completed'])
             ->exists();
         if ($hasActiveAbo) {
             return response()->json([
-                'message' => 'Please cancel your Dokumenten-Abo before deleting your account.',
+                'message' => 'Please cancel your subscription before deleting your account.',
                 'code' => 'active_subscription',
             ], 409);
         }

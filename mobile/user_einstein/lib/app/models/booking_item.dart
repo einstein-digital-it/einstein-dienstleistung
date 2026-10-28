@@ -33,7 +33,8 @@ class BookingItem {
   final Color statusColor;
   final String category;
 
-  bool get isDocumentSubscription => category == 'dokumentabo';
+  /// Monthly Stripe subscriptions (Dokumenten-Abo, Büro-Management) — can be cancelled.
+  bool get isDocumentSubscription => category == 'dokumentabo' || category == 'bueromanagement';
 
   factory BookingItem.fromJson(Map<String, dynamic> json) {
     final status = (json['status'] ?? 'pending').toString();

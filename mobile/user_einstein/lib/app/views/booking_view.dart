@@ -104,6 +104,24 @@ class BookingView extends GetView<BookingController> {
                   },
                 );
               }),
+              // Büro-Management: package by number of employees
+              Obx(() {
+                if (!controller.isBueroManagement) return const SizedBox.shrink();
+                final labels = {
+                  for (final tier in BookingController.bueroTiers.keys)
+                    tier: 'bm_tier_$tier'.tr,
+                };
+                return Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: _ChoiceWrap(
+                    title: 'bm_choose_package'.tr,
+                    values: labels.values.toList(),
+                    selected: labels[controller.selectedTier.value]!,
+                    onSelected: (value) => controller.selectedTier.value =
+                        labels.entries.firstWhere((e) => e.value == value).key,
+                  ),
+                );
+              }),
               const SizedBox(height: 26),
               _DetailsCard(controller: controller),
               const SizedBox(height: 18),

@@ -16,15 +16,15 @@ use Throwable;
 /**
  * Online payment with Stripe Checkout (hosted payment page).
  * Card, PayPal, SEPA, Klarna, Apple/Google Pay — whatever is enabled in the Stripe dashboard.
- * The Dokumenten-Abo ("dokumentabo") is charged as a monthly subscription.
+ * The Dokumenten-Abo ("dokumentabo") and Büro-Management ("bueromanagement") are charged as monthly subscriptions.
  */
 class StripeController extends Controller
 {
     /** Categories billed monthly as a subscription. */
-    private const SUBSCRIPTION_CATEGORIES = ['dokumentabo'];
+    public const SUBSCRIPTION_CATEGORIES = ['dokumentabo', 'bueromanagement'];
 
     /** Fallback minimum prices when no price group exists for a category. */
-    private const DEFAULT_MIN_PRICES = ['dokumentabo' => 49, 'eur1' => 150];
+    private const DEFAULT_MIN_PRICES = ['dokumentabo' => 49, 'eur1' => 150, 'bueromanagement' => 200];
 
     /**
      * POST /api/payments/bookings/{booking}/checkout — returns { url } to redirect the customer to.
@@ -163,7 +163,7 @@ class StripeController extends Controller
             case 'customer.subscription.deleted': // Abo ended (after cancellation)
                 if ($booking = $this->bookingFromSubscription($object['id'] ?? null)) {
                     $booking->update(['status' => 'completed']);
-                    $this->notifyAdmins('Abo beendet', "Das Dokumenten-Abo {$booking->booking_number} ({$booking->customer_email}) ist beendet.", $booking);
+                    $this->notifyAdmins('Abo beendet', "Das Abo {$booking->booking_number} ({$booking->customer_email}) ist beendet.", $booking);
                 }
                 break;
         }

@@ -137,6 +137,20 @@ class ServicesController extends GetxController {
         'service_dokumentabo_feature_4',
       ],
     ),
+    const ServiceItem(
+      id: 'bueromanagement',
+      title: 'service_bueromanagement_title',
+      description: 'service_bueromanagement_description',
+      price: 'service_bueromanagement_price',
+      icon: Icons.work_outline,
+      color: Color(0xFF0369A1),
+      features: [
+        'service_bueromanagement_feature_1',
+        'service_bueromanagement_feature_2',
+        'service_bueromanagement_feature_3',
+        'service_bueromanagement_feature_4',
+      ],
+    ),
   ].obs;
 
   @override

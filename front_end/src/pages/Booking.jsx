@@ -48,7 +48,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { format, isSameDay, addDays, startOfDay } from "date-fns";
-import { getPriceNumber, toGrossPrice, vatNote } from "@/lib/priceUtils";
+import { getPriceNumber, toGrossPrice, vatNote, displayPrice, priceNote, plusVatNote, BUEROMANAGEMENT_TIERS } from "@/lib/priceUtils";
 import SecretariatPackages from "@/components/SecretariatPackages";
 
 const translations = {
@@ -75,7 +75,8 @@ const translations = {
       print: "Druck- & Stempeldienstleistungen",
       secretariat: "Büro & Sekretariat (Vor-Ort)",
       eur1: "Dokumentenservice EU–Syrien / EUR.1",
-      dokumentabo: "Dokumenten-Abo – 58,31 € / Monat inkl. MwSt."
+      dokumentabo: "Dokumenten-Abo – 58,31 € / Monat inkl. MwSt.",
+      bueromanagement: "Büro-Management (Betriebe)"
     },
     name: "Vollständiger Name",
     email: "E-Mail-Adresse",
@@ -123,7 +124,8 @@ const translations = {
       print: "خدمات الطباعة والأختام",
       secretariat: "المكتب والسكرتارية (حضوري)",
       eur1: "خدمة وثائق التصدير/الاستيراد EUR.1",
-      dokumentabo: "اشتراك المستندات – 58.31 يورو / شهرياً شامل الضريبة"
+      dokumentabo: "اشتراك المستندات – 58.31 يورو / شهرياً شامل الضريبة",
+      bueromanagement: "إدارة المكتب (للشركات)"
     },
     name: "الاسم الكامل",
     email: "البريد الإلكتروني",
@@ -171,7 +173,8 @@ const translations = {
       print: "Printing & Stamp Services",
       secretariat: "Office & Secretariat (On-Site)",
       eur1: "EU–Syria Document Service / EUR.1",
-      dokumentabo: "Document Subscription – €58.31 / month incl. VAT"
+      dokumentabo: "Document Subscription – €58.31 / month incl. VAT",
+      bueromanagement: "Office Management (businesses)"
     },
     name: "Full Name",
     email: "Email Address",
@@ -219,7 +222,8 @@ const translations = {
       print: "Servicios de Impresión y Sellos",
       secretariat: "Oficina & Secretariado (Presencial)",
       eur1: "Servicio de Documentos UE–Siria / EUR.1",
-      dokumentabo: "Suscripción de Documentos – 58,31 € / mes IVA incl."
+      dokumentabo: "Suscripción de Documentos – 58,31 € / mes IVA incl.",
+      bueromanagement: "Gestión de Oficina (empresas)"
     },
     name: "Nombre Completo",
     email: "Correo Electrónico",
@@ -267,7 +271,8 @@ const translations = {
       print: "Baskı ve Damga Hizmetleri",
       secretariat: "Ofis & Sekreterlik (Yerinde)",
       eur1: "AB–Suriye Belge Hizmeti / EUR.1",
-      dokumentabo: "Belge Aboneliği – Aylık 58,31 € KDV dahil"
+      dokumentabo: "Belge Aboneliği – Aylık 58,31 € KDV dahil",
+      bueromanagement: "Büro Yönetimi (işletmeler)"
     },
     name: "Tam Ad",
     email: "E-posta Adresi",
@@ -303,8 +308,18 @@ const categories = [
   { key: "print", icon: Printer, color: "bg-pink-500" },
   { key: "secretariat", icon: Building2, color: "bg-violet-600" },
   { key: "eur1", icon: Ship, color: "bg-rose-600" },
-  { key: "dokumentabo", icon: Mail, color: "bg-purple-500" }
+  { key: "dokumentabo", icon: Mail, color: "bg-purple-500" },
+  { key: "bueromanagement", icon: Briefcase, color: "bg-sky-700" }
 ];
+
+// Büro-Management: package chosen by number of employees (net prices, B2B)
+const BM_TEXT = {
+  de: { title: "Paket wählen", hint: "Nach Zahl der Mitarbeitenden, Minijobber eingeschlossen. Alle Pakete enthalten dieselben Leistungen.", klein: "Paket Klein", mittel: "Paket Mittel", gross: "Paket Groß", employees: "Mitarbeitende", month: "/ Monat" },
+  ar: { title: "اختر الباقة", hint: "حسب عدد الموظفين، بما فيهم موظفو Minijob. جميع الباقات تشمل نفس الخدمات.", klein: "باقة صغيرة", mittel: "باقة متوسطة", gross: "باقة كبيرة", employees: "موظفين", month: "/ شهرياً" },
+  en: { title: "Choose a package", hint: "By number of employees, Minijob employees included. All packages include the same services.", klein: "Small package", mittel: "Medium package", gross: "Large package", employees: "employees", month: "/ month" },
+  tr: { title: "Paket seçin", hint: "Çalışan sayısına göre, Minijob çalışanları dahil. Tüm paketler aynı hizmetleri içerir.", klein: "Küçük paket", mittel: "Orta paket", gross: "Büyük paket", employees: "çalışan", month: "/ ay" },
+  es: { title: "Elija un paquete", hint: "Según el número de empleados, incluidos los Minijob. Todos los paquetes incluyen los mismos servicios.", klein: "Paquete pequeño", mittel: "Paquete mediano", gross: "Paquete grande", employees: "empleados", month: "/ mes" },
+};
 
 const allTimeSlots = [
   "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
@@ -553,6 +568,9 @@ export default function Booking() {
         service_id: `secretariat_${pkgName.replace(/\s+/g, "_").toLowerCase()}`
       }));
       setStep(2);
+    } else if (cat === "bueromanagement") {
+      // Stay on step 1: the customer still has to pick a package
+      setFormData(prev => ({ ...prev, category: cat, service_id: `${cat}_main` }));
     } else if (serviceId) {
       setFormData(prev => ({ ...prev, service_id: serviceId }));
       if (cat) setFormData(prev => ({ ...prev, category: cat }));
@@ -603,6 +621,9 @@ export default function Booking() {
         const hrs = formData.hours || 1;
         defaultPrice = hourlyRate * hrs;
         serviceName = `${getCategoryName("secretariat")} (${hrs}h)`;
+      } else if (formData.category === "bueromanagement" && selectedPackage) {
+        defaultPrice = selectedPackage.price;
+        serviceName = `${getCategoryName("bueromanagement")} – ${selectedPackage.name}`;
       } else if (formData.service_id === `${formData.category}_main`) {
           // Priority: PriceSettings -> Service.price_from.
           const priceFromSettings = customPrices && customPrices[formData.category]?.[0]?.price
@@ -685,7 +706,7 @@ export default function Booking() {
 
   const canProceed = () => {
     switch (step) {
-      case 1: return !!(formData.category && formData.service_id);
+      case 1: return !!(formData.category && formData.service_id && (formData.category !== "bueromanagement" || selectedPackage));
       case 2: return !!(formData.customer_name && formData.customer_email && formData.customer_phone && formData.description);
       case 3: return formData.date !== undefined && formData.time !== "" && formData.agb_accepted;
       default: return true;
@@ -817,7 +838,7 @@ export default function Booking() {
                         <p className="font-semibold text-[#1e3a5f] text-sm leading-tight">{getCategoryName(cat.key)}</p>
                         <p className="text-xs text-[#c9a227] font-medium mt-1">
                           {priceInfo
-                            ? `${toGrossPrice(priceInfo.price, lang)} ${priceInfo.unit} · ${vatNote(lang)}`
+                            ? `${displayPrice(priceInfo.price, lang, cat.key)} ${priceInfo.unit} · ${priceNote(lang, cat.key)}`
                             : ""
                           }
                         </p>
@@ -868,6 +889,37 @@ export default function Booking() {
                     />
                   </div>
                 )}
+                {/* Büro-Management: package by number of employees */}
+                {formData.category === "bueromanagement" && (() => {
+                  const bm = BM_TEXT[lang] || BM_TEXT.de;
+                  return (
+                    <div className="mt-10 pt-8 border-t border-gray-100">
+                      <h3 className="text-xl font-bold text-center text-[#1e3a5f] mb-2">{bm.title}</h3>
+                      <p className="text-center text-gray-400 text-sm mb-6">{bm.hint}</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {BUEROMANAGEMENT_TIERS.map((tier) => {
+                          const active = selectedPackage?.tier === tier.key;
+                          return (
+                            <button
+                              key={tier.key}
+                              type="button"
+                              onClick={() => setSelectedPackage({ tier: tier.key, name: `${bm[tier.key]} (${tier.employees} ${bm.employees})`, price: tier.price })}
+                              className={`p-5 rounded-2xl border-2 text-start relative transition-all ${active ? "border-[#6B46C1] bg-[#6B46C1]/10" : "border-gray-100 hover:border-[#6B46C1]/40 bg-white"}`}
+                            >
+                              {active && <CheckCircle className="w-4 h-4 text-[#6B46C1] absolute top-2 end-2" />}
+                              <p className="font-semibold text-[#1e3a5f]">{bm[tier.key]}</p>
+                              <p className="text-xs text-gray-500">{tier.employees} {bm.employees}</p>
+                              <p className="text-2xl font-black text-[#6B46C1] mt-2">
+                                {displayPrice(tier.price, lang, "bueromanagement")} € <span className="text-sm font-medium text-gray-500">{bm.month}</span>
+                              </p>
+                              <p className="text-[11px] text-gray-400">{plusVatNote(lang)}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
               </motion.div>
             )}
 

@@ -30,6 +30,7 @@ class BookingController extends GetxController {
     'office',
     'eur1',
     'dokumentabo',
+    'bueromanagement',
   ];
 
   final categoryLabels = const <String, String>{
@@ -42,6 +43,7 @@ class BookingController extends GetxController {
     'office': 'Buero & Organisation',
     'eur1': 'Dokumentenservice EU-Syrien / EUR.1',
     'dokumentabo': 'Dokumenten-Abo (49 EUR / Monat)',
+    'bueromanagement': 'Büro-Management',
   };
 
   /// Fixed prices for services that have one (others are calculated later)
@@ -49,6 +51,25 @@ class BookingController extends GetxController {
     'eur1': 150,
     'dokumentabo': 49,
   };
+
+  /// Büro-Management: net monthly price by number of employees (Minijobber included).
+  static const bueroTiers = <String, num>{'klein': 200, 'mittel': 300, 'gross': 400};
+  static const _bueroTierNames = <String, String>{
+    'klein': 'Paket Klein (1–4 Mitarbeitende)',
+    'mittel': 'Paket Mittel (5–6 Mitarbeitende)',
+    'gross': 'Paket Groß (ab 7 Mitarbeitenden)',
+  };
+  final selectedTier = 'klein'.obs;
+
+  bool get isBueroManagement => selectedCategory.value == 'bueromanagement';
+
+  num get _price => isBueroManagement
+      ? bueroTiers[selectedTier.value]!
+      : (categoryPrices[selectedCategory.value] ?? 0);
+
+  String get _serviceName => isBueroManagement
+      ? 'Büro-Management – ${_bueroTierNames[selectedTier.value]}'
+      : (categoryLabels[selectedCategory.value] ?? selectedCategory.value);
 
   /// Next 14 days (without Sundays), shown as e.g. "Mo 26.10."; sent as yyyy-MM-dd.
   late final List<DateTime> _dateValues = _upcomingDays();
@@ -114,7 +135,7 @@ class BookingController extends GetxController {
         'customer_name': store.profile.value.fullName,
         'customer_email': store.profile.value.email,
         'customer_phone': store.profile.value.phone,
-        'service_name': categoryLabels[selectedCategory.value] ?? selectedCategory.value,
+        'service_name': _serviceName,
         'category': selectedCategory.value,
         'date': _selectedIsoDate,
         'time': selectedTime.value,
@@ -122,7 +143,7 @@ class BookingController extends GetxController {
         'description': note.value,
         'status': 'pending',
         'payment_status': 'unpaid',
-        'price': categoryPrices[selectedCategory.value] ?? 0,
+        'price': _price,
       });
       store.bookings.insert(0, booking);
       lastCreatedBooking.value = booking;

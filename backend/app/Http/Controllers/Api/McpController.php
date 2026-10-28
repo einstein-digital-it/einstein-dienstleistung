@@ -45,7 +45,7 @@ class McpController extends Controller
     private const RESOURCES = [
         'bookings' => [
             'model' => Booking::class,
-            'about' => 'Customer bookings (incl. Dokumenten-Abo subscriptions, category "dokumentabo"). Cancel by setting status "cancelled" instead of deleting.',
+            'about' => 'Customer bookings (incl. monthly subscriptions: Dokumenten-Abo "dokumentabo", Büro-Management "bueromanagement" with packages 200/300/400 € net by employee count). Cancel by setting status "cancelled" instead of deleting.',
             'writable' => ['status', 'payment_status', 'price', 'date', 'time', 'address', 'description', 'provider_id', 'provider_name', 'invoice_url', 'required_documents_hint', 'duration_hours', 'service_name', 'category', 'customer_name', 'customer_email', 'customer_phone'],
             'create' => true, 'delete' => false,
             'search' => ['booking_number', 'customer_name', 'customer_email', 'service_name', 'category'],
@@ -355,6 +355,7 @@ class McpController extends Controller
             'bookings_confirmed' => Booking::where('status', 'confirmed')->count(),
             'bookings_unpaid' => Booking::where('payment_status', 'unpaid')->whereNotIn('status', ['cancelled'])->count(),
             'dokumentabo_active' => Booking::where('category', 'dokumentabo')->whereNotIn('status', ['cancelled', 'completed'])->count(),
+            'bueromanagement_active' => Booking::where('category', 'bueromanagement')->whereNotIn('status', ['cancelled', 'completed'])->count(),
             'cancellations_new' => ContractCancellation::where('status', 'received')->count(),
             'support_requests_open' => CustomerSupportRequest::whereNotIn('status', ['closed', 'resolved', 'done'])->count(),
             'customer_requests_new' => CustomerRequest::where('status', 'new')->count(),

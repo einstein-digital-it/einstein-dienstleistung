@@ -14,6 +14,7 @@ Working branch: `release/android` (not main). The team talks in Levantine Arabic
 
 ## Features already built
 - Services: `eur1` (EUR.1, from 150 € net) and `dokumentabo` (Dokumenten-Abo, 49 €/month net).
+- `bueromanagement` (Büro-Management, B2B): monthly Stripe subscription, packages by employee count — Klein 1–4: 200 €, Mittel 5–6: 300 €, Groß 7+: 400 € net. Shown NET "zzgl. 19 % MwSt." (`isNetPriced()` in `front_end/src/lib/priceUtils.js`); all consumer services are shown gross. AGB § 8a.
 - VAT: 19 % is added on top of the net price (`config('services.tax.vat_rate')`, env `VAT_RATE`). AGB §5 and the Impressum say so.
 - Stripe Checkout (raw REST, no SDK):
   - Code: `app/Services/StripeClient.php`, `Api/StripeController.php`.

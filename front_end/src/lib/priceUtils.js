@@ -21,7 +21,23 @@ const ALL_PRICES_NOTES = {
   es: "Todos los precios incluyen el 19 % de IVA.",
 };
 
+// Business-only services (B2B) are quoted net, "zzgl. 19 % MwSt.", like on
+// the offer documents. The gross-price rule (PAngV) only covers consumers.
+export const NET_PRICED_CATEGORIES = ["bueromanagement"];
+export const isNetPriced = (category) => NET_PRICED_CATEGORIES.includes(category);
+
+const PLUS_VAT_NOTES = {
+  de: "zzgl. 19 % MwSt.",
+  en: "plus 19% VAT",
+  ar: "غير شامل ضريبة 19%",
+  tr: "%19 KDV hariç",
+  es: "más 19 % de IVA",
+};
+
 export const vatNote = (lang = "de") => VAT_NOTES[lang] || VAT_NOTES.de;
+export const plusVatNote = (lang = "de") => PLUS_VAT_NOTES[lang] || PLUS_VAT_NOTES.de;
+/** VAT note matching how this category's prices are shown. */
+export const priceNote = (lang = "de", category) => (isNetPriced(category) ? plusVatNote(lang) : vatNote(lang));
 export const allPricesNote = (lang = "de") => ALL_PRICES_NOTES[lang] || ALL_PRICES_NOTES.de;
 
 export function grossAmount(net) {
@@ -56,8 +72,24 @@ export function toGrossPrice(price, lang = "de") {
   });
 }
 
+/** Price as shown for a category: net for business services, gross otherwise. */
+export function displayPrice(price, lang = "de", category) {
+  if (!isNetPriced(category)) return toGrossPrice(price, lang);
+  return typeof price === "number" ? formatAmount(price, lang) : price;
+}
+
 // Fallback prices for services that may not have an entry in the price settings yet
-const DEFAULT_PRICES = { eur1: 150, dokumentabo: 49 };
+const DEFAULT_PRICES = { eur1: 150, dokumentabo: 49, bueromanagement: 200 };
+
+/** Büro-Management packages: net monthly price by number of employees (Minijobber included). */
+export const BUEROMANAGEMENT_TIERS = [
+  { key: "klein", price: 200, employees: "1–4" },
+  { key: "mittel", price: 300, employees: "5–6" },
+  { key: "gross", price: 400, employees: "7+" },
+];
+
+/** Categories billed monthly through a Stripe subscription. */
+export const SUBSCRIPTION_CATEGORIES = ["dokumentabo", "bueromanagement"];
 
 export function getPriceNumber(category, dbPriceSettings) {
   if (dbPriceSettings && dbPriceSettings[category]?.[0]?.price) {

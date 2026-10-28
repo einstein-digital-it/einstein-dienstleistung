@@ -65,13 +65,13 @@ class ContractCancellationController extends Controller
     }
 
     /**
-     * If the cancellation names a Dokumenten-Abo booking of the same customer,
+     * If the cancellation names a subscription booking (Dokumenten-Abo, Büro-Management) of the same customer,
      * stop the Stripe subscription at the end of the current month (AGB § 8).
      */
     private function cancelMatchingSubscription(ContractCancellation $c): void
     {
         $query = Booking::query()
-            ->where('category', 'dokumentabo')
+            ->whereIn('category', StripeController::SUBSCRIPTION_CATEGORIES)
             ->whereRaw('LOWER(customer_email) = ?', [strtolower($c->email)])
             ->whereNotNull('stripe_subscription_id')
             ->whereNotIn('status', ['cancelled', 'completed']);
