@@ -30,7 +30,15 @@ apt-get upgrade -y
 apt-get install -y ufw fail2ban unattended-upgrades git curl unzip sqlite3 \
   nginx certbot python3-certbot-nginx \
   php8.3-fpm php8.3-cli php8.3-sqlite3 php8.3-mbstring php8.3-xml php8.3-curl \
-  php8.3-zip php8.3-bcmath php8.3-intl composer nodejs npm
+  php8.3-zip php8.3-bcmath php8.3-intl composer
+
+# Node: keep an existing install (e.g. NodeSource, which already ships npm)
+if ! command -v node >/dev/null 2>&1; then
+  apt-get install -y nodejs npm
+fi
+if ! command -v npm >/dev/null 2>&1; then
+  apt-get install -y npm
+fi
 
 step "Firewall: allow only SSH + web"
 ufw allow OpenSSH
