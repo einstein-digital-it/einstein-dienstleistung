@@ -156,11 +156,11 @@ const translations = {
   },
   ar: {
     // Hero
-    hero_title: "مركز الخدمات",
-    hero_subtitle: "ننظم، نشرح وننفذ – بشكل احترافي ومتعدد اللغات",
-    hero_desc: "ألمانيا متنوعة – لكن الحياة اليومية معقدة في كثير من الأحيان. آينشتاين ينظم ويشرح وينفذ ما يثقل كاهل الناس في الحياة اليومية.",
-    hero_solution: "كمركز خدمات شامل، نقدم دعماً منظماً ومرافقة شخصية وتنفيذاً موثوقاً – بعدة لغات واحترافياً وبشكل آمن قانونياً.\n\nيشمل نطاق خدماتنا التعليم ومرافقة التعلم، والدعم التنظيمي في الطلبات والمستندات، بالإضافة إلى الدعم الرقمي والتصميمي والإداري.\n\nعلاوة على ذلك، ندعم في تنظيم المستندات والإجراءات الإدارية في السياق الدولي، من بين أمور أخرى في إطار الاتفاقيات القائمة مثل اتفاقية الاتحاد الأوروبي-ميركوسور (الأرجنتين، أوروغواي، باراغواي والاتحاد الأوروبي) – دون تقديم استشارات قانونية أو ضريبية أو متخصصة.",
-    motto: "آينشتاين - لأن كل إنسان يستحق الدعم.",
+    hero_title: "التنظيم والإدارة",
+    hero_subtitle: "نحمل عنك التعقيد.",
+    hero_desc: "تنظيم. إدارة. تنفيذ.\n\nألمانيا متنوعة – لكن الحياة اليومية غالباً بيروقراطية وتستهلك الوقت.\nآينشتاين يوفّر لك التنظيم والوضوح والراحة.",
+    hero_solution: "خدماتنا باختصار:\n\n✔ المساعدة في الدوائر الرسمية والاستمارات\nمن تقديم الطلب والإرسال الإلكتروني حتى المتابعة والاستلام.\n\n✔ خدمة المكتب والسكرتارية للعيادات والمستقلين والشركات\nدعم إداري مرن – وعند الحاجة حلول بديلة سريعة.\n\n✔ المرافقة التعليمية ودعم التعلّم\nدعم منظّم بدون استشارة رسمية.\n\n✔ خدمات التنظيم والتنسيق\nبعدة لغات، باحترافية وبشكل آمن قانونياً.\n\nلماذا آينشتاين؟\n\n• شخص تواصل ثابت\n• تواصل بعدة لغات\n• خطوات واضحة وشفافة\n• تنفيذ سريع\n• هيكل آمن قانونياً",
+    motto: "آينشتاين – لأن التنظيم يصنع الأمان.",
     book_now: "احجز الآن",
     view_services: "جميع الخدمات",
     
@@ -274,11 +274,11 @@ const translations = {
   },
   en: {
     // Hero
-    hero_title: "Service Center",
-    hero_subtitle: "We organize, explain and execute – professionally & multilingually",
-    hero_desc: "Germany is diverse – but everyday life is often complicated. EinStein organizes, explains and executes what burdens people in everyday life.",
-    hero_solution: "As a comprehensive service center, we offer structured support, personal accompaniment and reliable implementation – multilingual, professional and legally secure.\n\nOur range of services includes education and learning support, organizational support for applications and documents, as well as digital, creative and administrative support.\n\nIn addition, we support the organization of documents and administrative procedures in an international context, among others within the framework of existing agreements such as the EU-MERCOSUR Agreement (Argentina, Uruguay, Paraguay and European Union) – without providing legal, tax or professional advice.",
-    motto: "EinStein - Because everyone deserves support.",
+    hero_title: "Organisation & Administration",
+    hero_subtitle: "We take complexity off your hands.",
+    hero_desc: "Organisation. Administration. Execution.\n\nGermany is diverse – but daily life is often bureaucratic and time-consuming.\nEinStein provides structure, clarity and relief.",
+    hero_solution: "Our services at a glance:\n\n✔ Government & Form Assistance\nFrom application submission to digital filing, tracking and collection.\n\n✔ Office & Secretariat Service for Practices, Freelancers & Companies\nFlexible administrative support – with short-notice replacement solutions if needed.\n\n✔ Education & Learning Support\nStructured support without formal counselling.\n\n✔ Organisation & Coordination Services\nMultilingual, professional and legally secure.\n\nWhy EinStein?\n\n• Fixed contact person\n• Multilingual communication\n• Transparent processes\n• Fast implementation\n• Legally secure structure",
+    motto: "EinStein – Because structure creates security.",
     book_now: "Book Now",
     view_services: "All Services",
     
@@ -392,11 +392,11 @@ const translations = {
   },
   tr: {
     // Hero
-    hero_title: "Hizmet Merkezi",
-    hero_subtitle: "Organize ediyoruz, acikliyoruz ve uyguluyoruz – profesyonel ve cok dilli",
-    hero_desc: "Almanya cesitlidir – ancak gunluk yasam genellikle karmasiktir. EinStein, insanlarin gunluk hayatta yuklendigini organize eder, aciklarve uygular.",
-    hero_solution: "Kapsamli bir hizmet merkezi olarak yapilandirilmis destek, kisisel eslik ve guvenilir uygulama sunuyoruz – cok dilli, profesyonel ve yasal olarak guvenli.\n\nHizmet yelpazamiz egitim ve ogrenme destegi, basvurular ve belgeler icin organizasyonel destek ile dijital, yaratici ve idari destegi icermektedir.\n\nBuna ek olarak, mevcut anlasmalar cercevesinde uluslararasi baglamda belgelerin ve idari prosedürlerin organizasyonunu destekliyoruz, bunlarin arasinda AB-MERCOSUR Anlasmasi (Arjantin, Uruguay, Paraguay ve Avrupa Birligi) gibi – hukuki, vergi veya mesleki danismanlik saglamadan.",
-    motto: "EinStein - Cunku herkes destegi hak ediyor.",
+    hero_title: "Organizasyon ve Yönetim",
+    hero_subtitle: "Karmaşıklığı sizin yerinize üstleniyoruz.",
+    hero_desc: "Organizasyon. Yönetim. Uygulama.\n\nAlmanya çok çeşitli – ama günlük yaşam çoğu zaman bürokratik ve zaman alıcı.\nEinStein düzen, netlik ve rahatlık sağlar.",
+    hero_solution: "Hizmetlerimize genel bakış:\n\n✔ Resmi kurum ve form yardımı\nBaşvurudan dijital teslime, takipten teslim almaya kadar.\n\n✔ Muayenehaneler, serbest çalışanlar ve şirketler için büro ve sekreterlik hizmeti\nEsnek idari destek – gerekirse kısa sürede yedek çözüm.\n\n✔ Eğitim ve öğrenme desteği\nResmi danışmanlık olmadan yapılandırılmış destek.\n\n✔ Organizasyon ve koordinasyon hizmetleri\nÇok dilli, profesyonel ve hukuken güvenli.\n\nNeden EinStein?\n\n• Sabit iletişim kişisi\n• Çok dilli iletişim\n• Şeffaf süreçler\n• Hızlı uygulama\n• Hukuken güvenli yapı",
+    motto: "EinStein – Çünkü düzen güven yaratır.",
     book_now: "Simdi Rezervasyon Yap",
     view_services: "Tum Hizmetler",
     
@@ -510,11 +510,11 @@ const translations = {
   },
   es: {
     // Hero
-    hero_title: "Centro de Servicios",
-    hero_subtitle: "Organizamos, explicamos y ejecutamos – profesionalmente y multilingüe",
-    hero_desc: "Alemania es diversa – pero la vida cotidiana a menudo es complicada. EinStein organiza, explica y ejecuta lo que agobia a las personas en la vida cotidiana.",
-    hero_solution: "Como centro de servicios integral, ofrecemos apoyo estructurado, acompañamiento personal e implementación confiable – multilingüe, profesional y legalmente seguro.\n\nNuestra gama de servicios incluye educación y apoyo al aprendizaje, apoyo organizacional para solicitudes y documentos, así como apoyo digital, creativo y administrativo.\n\nAdemás, apoyamos la organización de documentos y procedimientos administrativos en un contexto internacional, entre otros en el marco de acuerdos existentes como el Acuerdo UE-MERCOSUR (Argentina, Uruguay, Paraguay y Unión Europea) – sin proporcionar asesoramiento legal, fiscal o profesional.",
-    motto: "EinStein - Porque todos merecen apoyo.",
+    hero_title: "Organización y Administración",
+    hero_subtitle: "Le quitamos la complejidad de encima.",
+    hero_desc: "Organización. Administración. Ejecución.\n\nAlemania es diversa – pero el día a día suele ser burocrático y lleva mucho tiempo.\nEinStein aporta estructura, claridad y alivio.",
+    hero_solution: "Nuestros servicios de un vistazo:\n\n✔ Ayuda con trámites y formularios\nDesde la solicitud y el envío digital hasta el seguimiento y la recogida.\n\n✔ Servicio de oficina y secretaría para consultas, autónomos y empresas\nApoyo administrativo flexible – con sustitución a corto plazo si hace falta.\n\n✔ Acompañamiento educativo y de aprendizaje\nApoyo estructurado sin asesoramiento formal.\n\n✔ Servicios de organización y coordinación\nMultilingüe, profesional y con seguridad jurídica.\n\n¿Por qué EinStein?\n\n• Persona de contacto fija\n• Comunicación multilingüe\n• Procesos transparentes\n• Ejecución rápida\n• Estructura jurídicamente segura",
+    motto: "EinStein – Porque la estructura da seguridad.",
     book_now: "Reservar ahora",
     view_services: "Todos los servicios",
     
@@ -1088,12 +1088,12 @@ export default function Home() {
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
               </span>
               <span className="text-sm font-medium text-white/90 tracking-wide">
-                {lang === "de" ? "Ihr Partner für den Alltag" : lang === "ar" ? "شريكك للحياة اليومية" : "Your partner for daily life"}
+                {({ de: "Ihr Partner für den Alltag", ar: "شريكك للحياة اليومية", tr: "Günlük yaşamda ortağınız", es: "Su aliado en el día a día" })[lang] || "Your partner for daily life"}
               </span>
             </motion.div>
 
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight px-2 w-full">
-              <span className="bg-gradient-to-r from-[#c9a227] via-[#e8c547] to-[#c9a227] bg-clip-text text-transparent drop-shadow-2xl text-center block break-words">
+              <span className="bg-gradient-to-r from-[#c9a227] via-[#e8c547] to-[#c9a227] bg-clip-text text-transparent drop-shadow-2xl text-center block break-words pb-2">
                 EinStein – {t.hero_title}
               </span>
             </h1>

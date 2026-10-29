@@ -18,7 +18,9 @@ import {
   CreditCard,
   Wrench as WrenchIcon,
   Briefcase,
-  TrendingUp
+  TrendingUp,
+  Eye,
+  Gift
 } from "lucide-react";
 
 import NotificationBell from "@/components/NotificationBell";
@@ -593,6 +595,26 @@ export default function Layout({ children, currentPageName }) {
                                               )}
         </div>
       </header>
+
+      {/* Promo bar */}
+      {(() => {
+        const promo = {
+          de: ["Kostenlose Vorschau Ihrer Anliegen", "Follower der EinStein-Seiten erhalten den ersten Auftrag gratis"],
+          ar: ["معاينة مجانية لطلباتك", "متابعو صفحات آينشتاين يحصلون على أول طلب مجاناً"],
+          en: ["Free preview of your requests", "Followers of EinStein's pages get their first order free"],
+          tr: ["Taleplerinizin ücretsiz ön incelemesi", "EinStein sayfalarının takipçileri ilk siparişi ücretsiz alır"],
+          es: ["Vista previa gratuita de sus solicitudes", "Los seguidores de las páginas de EinStein obtienen su primer pedido gratis"],
+        }[lang] || [];
+        return (
+          <div className="bg-gradient-to-r from-[#6B46C1] to-[#4c2f9e] text-white text-xs sm:text-sm font-semibold">
+            <div className="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-center">
+              <span className="flex items-center gap-2"><Eye className="w-4 h-4 text-white/80" />{promo[0]}</span>
+              <span className="hidden sm:inline text-white/40">|</span>
+              <span className="flex items-center gap-2"><Gift className="w-4 h-4 text-[#e8c547]" />{promo[1]}</span>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Main Content */}
       <main className="flex-1">
