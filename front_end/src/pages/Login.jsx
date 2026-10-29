@@ -4,26 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { authApi } from "@/api/backendClient";
 import EinsteinLogo from "@/components/EinsteinLogo";
 
-function GoogleIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="#4285F4" d="M21.6 12.23c0-.74-.07-1.45-.19-2.14H12v4.05h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.9-1.75 2.98-4.33 2.98-7.44Z" />
-      <path fill="#34A853" d="M12 22c2.7 0 4.97-.9 6.62-2.43l-3.24-2.51c-.9.6-2.04.96-3.38.96-2.6 0-4.8-1.76-5.59-4.12H3.07v2.59A10 10 0 0 0 12 22Z" />
-      <path fill="#FBBC05" d="M6.41 13.9A6 6 0 0 1 6.1 12c0-.66.11-1.3.31-1.9V7.51H3.07A10 10 0 0 0 2 12c0 1.61.39 3.14 1.07 4.49l3.34-2.59Z" />
-      <path fill="#EA4335" d="M12 5.98c1.47 0 2.79.51 3.82 1.5l2.87-2.87A9.64 9.64 0 0 0 12 2 10 10 0 0 0 3.07 7.51l3.34 2.59C7.21 7.74 9.4 5.98 12 5.98Z" />
-    </svg>
-  );
-}
-
-function FacebookIcon() {
-  return (
-    <svg width="25" height="25" viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="11" fill="#1877F2" />
-      <path fill="#fff" d="M13.62 18.5v-5.73h1.94l.29-2.24h-2.23V9.1c0-.65.18-1.09 1.12-1.09h1.2v-2a16.3 16.3 0 0 0-1.75-.09c-1.73 0-2.91 1.05-2.91 2.99v1.67H9.32v2.24h1.96v5.73h2.34Z" />
-    </svg>
-  );
-}
-
 export default function Login() {
   const navigate = useNavigate();
   const [mode, setMode] = useState("login");
@@ -91,32 +71,6 @@ export default function Login() {
           <p className="mb-[42px] text-center text-[19px] font-semibold text-[#66758c]">
             Sign in to continue
           </p>
-
-          <div className="flex w-full flex-col gap-4">
-            <button
-              type="button"
-              className="flex h-[68px] w-full items-center justify-center gap-[17px] rounded-[13px] border border-[#dfe7f1] bg-white text-[19px] font-semibold text-[#334155] transition hover:bg-[#f8fafc] focus:outline-none focus:ring-2 focus:ring-[#94a3b8] focus:ring-offset-2"
-              aria-label="Continue with Google"
-            >
-              <GoogleIcon />
-              Continue with Google
-            </button>
-
-            <button
-              type="button"
-              className="flex h-[66px] w-full items-center justify-center gap-[17px] rounded-[13px] border border-[#dfe7f1] bg-white text-[19px] font-semibold text-[#334155] transition hover:bg-[#f8fafc] focus:outline-none focus:ring-2 focus:ring-[#94a3b8] focus:ring-offset-2"
-              aria-label="Continue with Facebook"
-            >
-              <FacebookIcon />
-              Continue with Facebook
-            </button>
-          </div>
-
-          <div className="my-[38px] flex w-full items-center gap-4">
-            <div className="h-px flex-1 bg-[#dbe3ee]" />
-            <span className="text-[14px] font-bold uppercase text-[#96a5ba]">OR</span>
-            <div className="h-px flex-1 bg-[#dbe3ee]" />
-          </div>
 
           <form className="w-full" onSubmit={handleSubmit} noValidate>
             {mode === "register" && (
@@ -196,12 +150,12 @@ export default function Login() {
             </button>
 
             <div className="mt-[17px] flex w-full items-center justify-between gap-4 text-[15px] leading-5">
-              <button
-                type="button"
+              <a
+                href="mailto:info@einsteindienstleistung.de?subject=Passwort%20zur%C3%BCcksetzen"
                 className="font-semibold text-[#60718d] transition hover:text-[#334155] focus:outline-none focus:ring-2 focus:ring-[#94a3b8] focus:ring-offset-2"
               >
                 Forgot password?
-              </button>
+              </a>
               <p className="text-[#60718d]">
                 Need an account?{" "}
                 <button
