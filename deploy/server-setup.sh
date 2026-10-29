@@ -160,8 +160,12 @@ server {
 }
 EOF
 ln -sf /etc/nginx/sites-available/einstein /etc/nginx/sites-enabled/einstein
-rm -f /etc/nginx/sites-enabled/default
-nginx -t
+# Other sites may live on this server: leave their configs (and "default") alone.
+if ! nginx -t; then
+  echo "nginx config test failed - removing the EinStein site again so the other sites keep running."
+  rm -f /etc/nginx/sites-enabled/einstein
+  exit 1
+fi
 systemctl reload nginx
 
 step "HTTPS certificate (Let's Encrypt)"
