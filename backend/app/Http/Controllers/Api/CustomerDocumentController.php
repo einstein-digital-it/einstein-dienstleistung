@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessCustomerDocument;
 use App\Models\CustomerDocument;
 use App\Models\Notification;
 use App\Models\User;
@@ -104,7 +105,9 @@ class CustomerDocumentController extends Controller
     private function save(Request $request, string $email, string $uploadedBy): CustomerDocument
     {
         $data = $request->validate([
-            'folder' => ['required', Rule::in(CustomerDocument::FOLDERS)],
+            // "auto" = let Claude pick the folder
+            'folder' => ['required', Rule::in([...CustomerDocument::FOLDERS, 'auto'])],
+            'lang' => ['nullable', Rule::in(['ar', 'de', 'en', 'tr', 'es'])],
             'title' => ['nullable', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:2000'],
             'file' => self::FILE_RULES,
@@ -115,7 +118,7 @@ class CustomerDocumentController extends Controller
 
         $doc = CustomerDocument::create([
             'user_email' => strtolower($email),
-            'folder' => $data['folder'],
+            'folder' => $data['folder'] === 'auto' ? 'sonstiges' : $data['folder'],
             'title' => $data['title'] ?: pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
             'file_path' => $path,
             'original_name' => $file->getClientOriginalName(),
@@ -123,13 +126,28 @@ class CustomerDocumentController extends Controller
             'size' => $file->getSize(),
             'uploaded_by' => $uploadedBy,
             'note' => $data['note'] ?? null,
+            'translation_language' => $data['lang'] ?? $this->languageOf($email),
+            'ai_status' => ProcessCustomerDocument::enabled() ? 'pending' : 'none',
         ]);
+        if (ProcessCustomerDocument::enabled()) {
+            ProcessCustomerDocument::dispatchAfterResponse($doc->id, $data['folder'] === 'auto');
+        }
         Log::info('customer document uploaded', ['id' => $doc->id, 'by' => $uploadedBy]);
 
         return $doc;
     }
 
-    private function authorizeAccess(Request $request, CustomerDocument $document): void
+    /** The customer's chosen language (profile), Arabic by default. */
+    private function languageOf(string $email): string
+    {
+        $lang = strtolower((string) User::whereRaw('LOWER(email) = ?', [strtolower($email)])->value('preferred_language'));
+        $map = ['arabic' => 'ar', 'german' => 'de', 'deutsch' => 'de', 'english' => 'en', 'turkish' => 'tr', 'spanish' => 'es'];
+        $lang = $map[$lang] ?? substr($lang, 0, 2);
+
+        return in_array($lang, ['ar', 'de', 'en', 'tr', 'es'], true) ? $lang : 'ar';
+    }
+
+        private function authorizeAccess(Request $request, CustomerDocument $document): void
     {
         $user = $request->user();
         $isOwner = strcasecmp((string) $user?->email, $document->user_email) === 0;

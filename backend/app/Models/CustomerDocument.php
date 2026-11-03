@@ -15,7 +15,13 @@ class CustomerDocument extends Model
     protected $fillable = [
         'user_email', 'folder', 'title', 'file_path', 'original_name',
         'mime_type', 'size', 'uploaded_by', 'note',
+        'ai_status', 'translation_language', 'sender', 'summary', 'translation', 'deadline',
     ];
+
+    protected function casts(): array
+    {
+        return ['deadline' => 'date:Y-m-d'];
+    }
 
     /** The storage path is internal; files are only served through the download endpoint. */
     protected $hidden = ['file_path'];

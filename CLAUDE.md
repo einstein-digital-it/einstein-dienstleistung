@@ -26,6 +26,7 @@ Working branch: `release/android` (not main). The team talks in Levantine Arabic
   - Endpoint: `POST /api/public/cancellations`, which also cancels a matching Stripe Abo at the end of the period.
 - Legal pages: AGB, Datenschutz, Impressum (`front_end/src/content/legal.js`, `src/pages/*.jsx`).
 - MCP endpoint at `/api/mcp/{MCP_SECRET}` (`Api/McpController.php`) — manages bookings, services, prices, offers, etc.
+- "Meine Unterlagen" (`/MyDocuments`, `CustomerDocumentController`): customer files in 12 folders on the private disk; admins add files per customer. Upload with folder `auto` → `App\Jobs\ProcessCustomerDocument` (dispatchAfterResponse) sends PDF/images to the Claude API, picks the folder, and stores title, sender, summary, full translation (customer language) and deadline. Needs `ANTHROPIC_API_KEY` in `.env`; without it uploads still work, unsorted. Datenschutz 3 f) names Anthropic.
 - Customers cannot set `payment_status`, `price` or invoice fields themselves (`BookingController::withoutStaffOnlyFields`).
 
 ## Status / open

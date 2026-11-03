@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   Briefcase, Building2, ChevronLeft, ChevronRight, Download, FileText, Folder, GraduationCap,
-  HeartPulse, Home as HomeIcon, Landmark, Loader2, Lock, PiggyBank, Shield, Trash2, Upload, Users, Globe2, Baby,
+  HeartPulse, Home as HomeIcon, Sparkles, CalendarClock, ChevronDown, Landmark, Loader2, Lock, PiggyBank, Shield, Trash2, Upload, Users, Globe2, Baby,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +34,9 @@ const T = {
     byEinstein: "von EinStein", deleteConfirm: "Datei wirklich löschen?", login: "Bitte melden Sie sich an, um Ihre Unterlagen zu sehen.",
     error: "Das hat nicht geklappt. Bitte erneut versuchen.", customer: "Kunde (E-Mail)", open: "Öffnen", customers: "Kunden mit Unterlagen",
     hint: "PDF, Foto, Word oder Excel – bis 20 MB.",
+    autoTitle: "Hochladen – wir sortieren und übersetzen", autoDesc: "Laden Sie einen Brief hoch (PDF oder Foto). Er wird automatisch dem richtigen Ordner zugeordnet und in Ihre Sprache übersetzt.",
+    processing: "Wird sortiert und übersetzt…", failed: "Automatische Übersetzung fehlgeschlagen", summary: "Zusammenfassung", translation: "Übersetzung", showTranslation: "Übersetzung anzeigen", hideTranslation: "Übersetzung ausblenden", deadline: "Frist", from: "Von",
+    aiNote: "Die Datei wird zur Sortierung und Übersetzung automatisch mit Claude (Anthropic) ausgewertet. Die Übersetzung ist eine Hilfe, keine beglaubigte Übersetzung.",
   },
   ar: {
     title: "ملفاتي", subtitle: "كل مستنداتك مرتبة حسب الجهة والموضوع.",
@@ -44,6 +47,9 @@ const T = {
     byEinstein: "من آينشتاين", deleteConfirm: "هل تريد حذف الملف؟", login: "سجّل الدخول لترى ملفاتك.",
     error: "لم تنجح العملية. حاول مرة أخرى.", customer: "الزبون (الإيميل)", open: "فتح", customers: "زبائن لديهم ملفات",
     hint: "PDF أو صورة أو Word أو Excel – حتى 20 ميغابايت.",
+    autoTitle: "ارفع الملف – ونحن نرتّبه ونترجمه", autoDesc: "ارفع الرسالة (PDF أو صورة)، وتنحط تلقائياً بالمجلد الصحيح وتتترجم للغتك.",
+    processing: "جارٍ الترتيب والترجمة…", failed: "فشلت الترجمة التلقائية", summary: "الملخص", translation: "الترجمة", showTranslation: "عرض الترجمة", hideTranslation: "إخفاء الترجمة", deadline: "آخر موعد", from: "من",
+    aiNote: "يتم تحليل الملف تلقائياً بواسطة Claude (Anthropic) لترتيبه وترجمته. الترجمة للمساعدة فقط وليست ترجمة محلّفة.",
   },
   en: {
     title: "My documents", subtitle: "All your documents, sorted by authority and topic.",
@@ -54,10 +60,13 @@ const T = {
     byEinstein: "from EinStein", deleteConfirm: "Delete this file?", login: "Please sign in to see your documents.",
     error: "That didn't work. Please try again.", customer: "Customer (email)", open: "Open", customers: "Customers with documents",
     hint: "PDF, photo, Word or Excel – up to 20 MB.",
+    autoTitle: "Upload – we sort and translate it", autoDesc: "Upload a letter (PDF or photo). It is put into the right folder automatically and translated into your language.",
+    processing: "Sorting and translating…", failed: "Automatic translation failed", summary: "Summary", translation: "Translation", showTranslation: "Show translation", hideTranslation: "Hide translation", deadline: "Deadline", from: "From",
+    aiNote: "The file is analysed automatically by Claude (Anthropic) to sort and translate it. The translation is a help, not a certified translation.",
   },
 };
-T.tr = { ...T.en, title: "Belgelerim", subtitle: "Tüm belgeleriniz kurum ve konuya göre sıralı.", upload: "Dosya yükle", back: "Tüm klasörler" };
-T.es = { ...T.en, title: "Mis documentos", subtitle: "Todos sus documentos, ordenados por organismo y tema.", upload: "Subir archivo", back: "Todas las carpetas" };
+T.tr = { ...T.en, title: "Belgelerim", subtitle: "Tüm belgeleriniz kurum ve konuya göre sıralı.", upload: "Dosya yükle", back: "Tüm klasörler", autoTitle: "Yükleyin – biz sıralayıp çeviririz", processing: "Sıralanıyor ve çevriliyor…", summary: "Özet", translation: "Çeviri", showTranslation: "Çeviriyi göster", hideTranslation: "Çeviriyi gizle", deadline: "Son tarih", from: "Gönderen" };
+T.es = { ...T.en, title: "Mis documentos", subtitle: "Todos sus documentos, ordenados por organismo y tema.", upload: "Subir archivo", back: "Todas las carpetas", autoTitle: "Súbalo – nosotros lo ordenamos y traducimos", processing: "Ordenando y traduciendo…", summary: "Resumen", translation: "Traducción", showTranslation: "Mostrar traducción", hideTranslation: "Ocultar traducción", deadline: "Plazo", from: "De" };
 
 function formatSize(bytes) {
   if (!bytes) return "";
@@ -82,6 +91,8 @@ export default function MyDocuments() {
   const [error, setError] = useState("");
   const [emailInput, setEmailInput] = useState(adminEmail);
   const fileInput = useRef(null);
+  const autoInput = useRef(null);
+  const [openId, setOpenId] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -107,21 +118,30 @@ export default function MyDocuments() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adminEmail]);
 
+  // Refresh while documents are still being sorted/translated
+  const hasPending = data.documents.some((d) => d.ai_status === "pending");
+  useEffect(() => {
+    if (!hasPending) return undefined;
+    const timer = setInterval(() => { load(); }, 6000);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasPending]);
+
   const byFolder = useMemo(() => {
     const map = {};
     data.documents.forEach((d) => { (map[d.folder] = map[d.folder] || []).push(d); });
     return map;
   }, [data.documents]);
 
-  const onUpload = async (event) => {
+  const onUpload = async (event, targetFolder = folder) => {
     const file = event.target.files?.[0];
     event.target.value = "";
-    if (!file || !folder) return;
+    if (!file || !targetFolder) return;
     setUploading(true);
     setError("");
     try {
-      if (isAdmin) await customerDocumentsApi.adminUpload({ email: adminEmail, file, folder, title });
-      else await customerDocumentsApi.upload({ file, folder, title });
+      if (isAdmin) await customerDocumentsApi.adminUpload({ email: adminEmail, file, folder: targetFolder, title });
+      else await customerDocumentsApi.upload({ file, folder: targetFolder, title, lang });
       setTitle("");
       await load();
     } catch (e) {
@@ -186,6 +206,22 @@ export default function MyDocuments() {
             )}
           </div>
         ) : !folder ? (
+          <>
+          <div className="mb-6 rounded-2xl bg-gradient-to-br from-[#6B46C1] to-[#4c2f9e] p-5 md:p-6 text-white flex flex-col md:flex-row md:items-center gap-4">
+            <div className="flex-1">
+              <p className="flex items-center gap-2 text-lg font-bold"><Sparkles className="w-5 h-5 text-[#e8c547]" />{t.autoTitle}</p>
+              <p className="text-sm text-white/80 mt-1">{t.autoDesc}</p>
+              <p className="text-[11px] text-white/60 mt-2">{t.aiNote}</p>
+            </div>
+            <input ref={autoInput} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={(e) => onUpload(e, "auto")} />
+            <Button onClick={() => autoInput.current?.click()} disabled={uploading} className="bg-white text-[#4c2f9e] hover:bg-white/90 font-bold">
+              {uploading ? <Loader2 className="w-4 h-4 me-2 animate-spin" /> : <Upload className="w-4 h-4 me-2" />}
+              {uploading ? t.uploading : t.upload}
+            </Button>
+          </div>
+          {hasPending && (
+            <p className="mb-4 flex items-center gap-2 rounded-lg bg-purple-50 px-4 py-3 text-sm text-[#6B46C1]"><Loader2 className="w-4 h-4 animate-spin" />{t.processing}</p>
+          )}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {data.folders.map((key) => {
               const meta = FOLDER_META[key] || FOLDER_META.sonstiges;
@@ -200,6 +236,7 @@ export default function MyDocuments() {
               );
             })}
           </div>
+          </>
         ) : (
           <div className="bg-white rounded-2xl border border-gray-100 p-5 md:p-6">
             <button onClick={() => setFolder(null)} className="mb-4 inline-flex items-center gap-1 text-sm text-[#6B46C1] hover:underline"><BackIcon className="w-4 h-4" />{t.back}</button>
@@ -220,7 +257,8 @@ export default function MyDocuments() {
             ) : (
               <ul className="divide-y">
                 {byFolder[folder].map((doc) => (
-                  <li key={doc.id} className="flex items-center gap-3 py-3">
+                  <li key={doc.id} className="py-3">
+                   <div className="flex items-center gap-3">
                     <FileText className="w-5 h-5 text-[#6B46C1] shrink-0" />
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-[#1e3a5f] truncate">{doc.title}</p>
@@ -231,6 +269,31 @@ export default function MyDocuments() {
                     </div>
                     <Button variant="outline" size="icon" onClick={() => customerDocumentsApi.download(doc).catch(() => setError(t.error))} aria-label="Download"><Download className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => onDelete(doc)} aria-label="Delete" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
+                   </div>
+                   {doc.ai_status === "pending" && (
+                     <p className="mt-2 ms-8 flex items-center gap-2 text-xs text-[#6B46C1]"><Loader2 className="w-3.5 h-3.5 animate-spin" />{t.processing}</p>
+                   )}
+                   {doc.ai_status === "failed" && <p className="mt-2 ms-8 text-xs text-red-600">{t.failed}</p>}
+                   {doc.ai_status === "done" && (
+                     <div className="mt-2 ms-8 rounded-xl bg-gray-50 p-3 text-sm text-gray-700 space-y-2">
+                       {(doc.sender || doc.deadline) && (
+                         <p className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                           {doc.sender && <span><strong>{t.from}:</strong> {doc.sender}</span>}
+                           {doc.deadline && <span className="inline-flex items-center gap-1 rounded bg-amber-100 px-1.5 py-0.5 text-amber-800"><CalendarClock className="w-3.5 h-3.5" />{t.deadline}: {new Date(doc.deadline).toLocaleDateString(lang === "ar" ? "ar" : lang)}</span>}
+                         </p>
+                       )}
+                       {doc.summary && <p><strong>{t.summary}:</strong> {doc.summary}</p>}
+                       {doc.translation && (
+                         <div>
+                           <button onClick={() => setOpenId(openId === doc.id ? null : doc.id)} className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B46C1]">
+                             <ChevronDown className={`w-3.5 h-3.5 transition ${openId === doc.id ? "rotate-180" : ""}`} />
+                             {openId === doc.id ? t.hideTranslation : t.showTranslation}
+                           </button>
+                           {openId === doc.id && <p className="mt-2 whitespace-pre-line rounded-lg bg-white p-3 border border-gray-100 leading-relaxed">{doc.translation}</p>}
+                         </div>
+                       )}
+                     </div>
+                   )}
                   </li>
                 ))}
               </ul>

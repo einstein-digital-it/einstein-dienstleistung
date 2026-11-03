@@ -394,10 +394,11 @@ async function downloadFile(path, fileName) {
 
 export const customerDocumentsApi = {
   list: () => request("/customer/documents"),
-  upload: ({ file, folder, title, note }) => {
+  upload: ({ file, folder, title, note, lang }) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("folder", folder);
+    if (lang) formData.append("lang", lang);
     if (title) formData.append("title", title);
     if (note) formData.append("note", note);
     return uploadRequest("/customer/documents", formData);

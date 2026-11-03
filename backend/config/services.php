@@ -51,4 +51,11 @@ return [
         'secret' => env('MCP_SECRET', ''),
     ],
 
+
+    // Automatic sorting and translation of customer documents (Claude API)
+    'anthropic' => [
+        'key' => env('ANTHROPIC_API_KEY', ''),
+        'model' => env('ANTHROPIC_MODEL', 'claude-sonnet-5-5'),
+    ],
+
 ];
