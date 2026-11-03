@@ -266,6 +266,9 @@ export default function Layout({ children, currentPageName }) {
                   <Link to={createPageUrl("CustomerDashboard")} className="hover:text-[#6B46C1] transition-colors font-medium">
                     {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : "Mein Dashboard"}
                   </Link>
+                  <Link to={createPageUrl("MyDocuments")} className="hover:text-[#6B46C1] transition-colors font-medium">
+                    {lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : "Meine Unterlagen"}
+                  </Link>
                   {isProvider && (
                     <Link to={createPageUrl("ProviderDashboard")} className="hover:text-[#6B46C1] transition-colors">
                       {lang === "ar" ? "لوحة المزود" : lang === "en" ? "Provider Dashboard" : "Anbieter-Dashboard"}
@@ -316,6 +319,12 @@ export default function Layout({ children, currentPageName }) {
                       <Link to={createPageUrl("AdminServices")} className="flex items-center gap-2">
                         <WrenchIcon className="w-4 h-4 text-gray-400" />
                         {t.adminServices}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to={createPageUrl("MyDocuments")} className="flex items-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        {lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : "Kundenunterlagen"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -535,6 +544,17 @@ export default function Layout({ children, currentPageName }) {
                                             onClick={() => setIsMenuOpen(false)}
                                           >
                                             {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : "Mein Dashboard"}
+                                          </Link>
+                                        )}
+                                        {user && (
+                                          <Link
+                                            to={createPageUrl("MyDocuments")}
+                                            className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                            onClick={() => setIsMenuOpen(false)}
+                                          >
+                                            {isAdmin
+                                              ? (lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : "Kundenunterlagen")
+                                              : (lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : "Meine Unterlagen")}
                                           </Link>
                                         )}
                                         {isAdmin && (

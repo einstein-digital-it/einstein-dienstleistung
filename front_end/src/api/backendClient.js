@@ -373,3 +373,47 @@ export const seoSettingsApi = {
     method: "DELETE",
   }),
 };
+
+// "Meine Unterlagen": a customer's documents sorted into folders (private files)
+async function downloadFile(path, fileName) {
+  const token = getAuthToken();
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!response.ok) throw new Error(`Download failed (${response.status})`);
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName || "document";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+export const customerDocumentsApi = {
+  list: () => request("/customer/documents"),
+  upload: ({ file, folder, title, note }) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", folder);
+    if (title) formData.append("title", title);
+    if (note) formData.append("note", note);
+    return uploadRequest("/customer/documents", formData);
+  },
+  download: (doc) => downloadFile(`/customer/documents/${doc.id}/download`, doc.original_name),
+  remove: (id) => request(`/customer/documents/${id}`, { method: "DELETE" }),
+  // admin
+  adminCustomers: () => request("/admin/customer-documents"),
+  adminList: (email) => request(`/admin/customer-documents${toQuery({ email })}`),
+  adminUpload: ({ email, file, folder, title, note }) => {
+    const formData = new FormData();
+    formData.append("user_email", email);
+    formData.append("file", file);
+    formData.append("folder", folder);
+    if (title) formData.append("title", title);
+    if (note) formData.append("note", note);
+    return uploadRequest("/admin/customer-documents", formData);
+  },
+};

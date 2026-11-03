@@ -19,6 +19,7 @@ import EarningsReports from './pages/EarningsReports';
 import Home from './pages/Home';
 import Impressum from './pages/Impressum';
 import MyBookings from './pages/MyBookings';
+import MyDocuments from './pages/MyDocuments';
 import NotificationSettings from './pages/NotificationSettings';
 import Notifications from './pages/Notifications';
 import Offers from './pages/Offers';
@@ -65,6 +66,7 @@ export const PAGES = {
     "Home": Home,
     "Impressum": Impressum,
     "MyBookings": MyBookings,
+    "MyDocuments": MyDocuments,
     "NotificationSettings": NotificationSettings,
     "Notifications": Notifications,
     "Offers": Offers,

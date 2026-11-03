@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\ContractCancellationController;
 use App\Http\Controllers\Api\McpController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\CustomerClientController;
+use App\Http\Controllers\Api\CustomerDocumentController;
 use App\Http\Controllers\Api\CustomerPortalController;
 use App\Http\Controllers\Api\CustomerRequestController;
 use App\Http\Controllers\Api\CustomerSupportController;
@@ -78,6 +79,10 @@ Route::middleware('api.auth:admin,provider,user')->group(function () {
         Route::post('customer/clients/{managedClient}/files', [CustomerClientController::class, 'storeFile']);
         Route::post('customer/clients/{managedClient}/invoices', [CustomerClientController::class, 'storeInvoice']);
     });
+    Route::get('customer/documents', [CustomerDocumentController::class, 'index']);
+    Route::post('customer/documents', [CustomerDocumentController::class, 'store'])->middleware('throttle:60,1');
+    Route::get('customer/documents/{document}/download', [CustomerDocumentController::class, 'download']);
+    Route::delete('customer/documents/{document}', [CustomerDocumentController::class, 'destroy']);
     Route::get('customer/bookings', [CustomerPortalController::class, 'bookings']);
     Route::get('customer/notifications', [NotificationController::class, 'index']);
     Route::post('customer/notifications', [NotificationController::class, 'store']);
@@ -114,6 +119,8 @@ Route::middleware('api.auth:provider')->group(function () {
 
 Route::middleware('api.auth:admin')->group(function () {
     Route::get('admin/dashboard', [AdminDashboardController::class, 'index']);
+    Route::get('admin/customer-documents', [CustomerDocumentController::class, 'adminIndex']);
+    Route::post('admin/customer-documents', [CustomerDocumentController::class, 'adminStore']);
     Route::get('admin/cancellations', [ContractCancellationController::class, 'index']);
     Route::patch('admin/cancellations/{cancellation}', [ContractCancellationController::class, 'update']);
     Route::get('admin/client-workspaces', [AdminClientWorkspaceController::class, 'index']);

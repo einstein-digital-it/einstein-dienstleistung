@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class CustomerDocument extends Model
+{
+    /** Folder keys shown to customers (labels are translated in the frontend). */
+    public const FOLDERS = [
+        'jobcenter', 'auslaenderbehoerde', 'finanzamt', 'familienkasse', 'krankenkasse',
+        'rentenversicherung', 'wohnen', 'arbeit', 'schule', 'bank', 'versicherung', 'sonstiges',
+    ];
+
+    protected $fillable = [
+        'user_email', 'folder', 'title', 'file_path', 'original_name',
+        'mime_type', 'size', 'uploaded_by', 'note',
+    ];
+
+    /** The storage path is internal; files are only served through the download endpoint. */
+    protected $hidden = ['file_path'];
+}
