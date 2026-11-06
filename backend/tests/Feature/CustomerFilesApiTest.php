@@ -9,6 +9,7 @@ use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -61,6 +62,8 @@ class CustomerFilesApiTest extends TestCase
     {
         Storage::fake('local');
         config(['services.anthropic.key' => 'test-key']);
+        // The test runs the job itself below; stop the automatic after-response run
+        Bus::fake([ProcessCustomerDocument::class]);
         $due = now()->addDays(60)->toDateString();
         Http::fake([
             'api.anthropic.com/*' => Http::response(['content' => [['type' => 'text', 'text' => json_encode([

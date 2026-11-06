@@ -136,7 +136,7 @@ class CustomerDocumentController extends Controller
         $doc = CustomerDocument::create([
             'user_email' => strtolower($email),
             'folder' => $data['folder'] === 'auto' ? 'sonstiges' : $data['folder'],
-            'title' => $data['title'] ?: pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+            'title' => ($data['title'] ?? null) ?:pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
             'file_path' => $path,
             'original_name' => $file->getClientOriginalName(),
             'mime_type' => $file->getClientMimeType(),
