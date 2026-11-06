@@ -27,6 +27,12 @@ Working branch: `release/android` (not main). The team talks in Levantine Arabic
 - Legal pages: AGB, Datenschutz, Impressum (`front_end/src/content/legal.js`, `src/pages/*.jsx`).
 - MCP endpoint at `/api/mcp/{MCP_SECRET}` (`Api/McpController.php`) — manages bookings, services, prices, offers, etc.
 - "Meine Unterlagen" (`/MyDocuments`, `CustomerDocumentController`): customer files in 12 folders on the private disk; admins add files per customer. Upload with folder `auto` → `App\Jobs\ProcessCustomerDocument` (dispatchAfterResponse) sends PDF/images to the Claude API, picks the folder, and stores title, sender, summary, full translation (customer language) and deadline. Needs `ANTHROPIC_API_KEY` in `.env`; without it uploads still work, unsorted. Datenschutz 3 f) names Anthropic.
+- Reminders: `ProcessCustomerDocument` also stores `customer_reminders` (dates + lead time) from each letter; `php artisan reminders:send` runs daily 08:00 Europe/Berlin via the scheduler (cron for www-data is installed by `deploy/update.sh`). In-app notifications only (push needs Firebase, mail needs a mailer).
+- Applications (Anträge): `app/Support/FormTemplates.php` (Jobcenter WBA + Veränderungsmitteilung, ABH Verlängerung, Kindergeld, Anmeldung), `GET customer/forms`, `PUT customer/form-data` (users.form_data). The Flutter app fills the German letter, builds a PDF (`pdf` package), saves a copy to the file and opens the phone's mail app (`flutter_email_sender`) so it is sent from the customer's own address. Not on the website yet.
+- Providers can open every customer's file (owner's decision; Datenschutz 3 a).
+- `own.email` middleware: customer endpoints that take `?email=` always use the logged-in customer's email.
+- App design: IBM Plex Sans Arabic bundled, tokens in `lib/app/theme/app_colors.dart`, shared widgets in `lib/app/widgets/ui.dart`, bottom nav by role in `app_bottom_nav.dart`; new texts in `lib/app/lang/files_translations.dart`.
+- CI: `app-screens.yml` builds the app for web with a mocked API (`ci/app-screens/shoot.mjs`) and pushes phone screenshots to the `ci-screens` branch; `backend-tests.yml` runs `php artisan test`.
 - Customers cannot set `payment_status`, `price` or invoice fields themselves (`BookingController::withoutStaffOnlyFields`).
 
 ## Status / open
