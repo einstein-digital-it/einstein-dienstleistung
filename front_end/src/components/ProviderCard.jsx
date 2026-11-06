@@ -15,7 +15,6 @@ import {
   Palette,
   ClipboardList,
   Settings,
-  BookOpen,
   Printer
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,7 +28,6 @@ const categoryIcons = {
   admin: FileText,
   coordination: Settings,
   mercosur: Globe,
-  tutoring: BookOpen,
   print: Printer
 };
 
@@ -39,7 +37,6 @@ const categoryColors = {
   admin: "bg-green-100 text-green-700",
   coordination: "bg-indigo-100 text-indigo-700",
   mercosur: "bg-amber-100 text-amber-700",
-  tutoring: "bg-blue-100 text-blue-700",
   print: "bg-pink-100 text-pink-700"
 };
 

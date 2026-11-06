@@ -15,7 +15,6 @@ import {
   ClipboardList,
   Settings,
   Globe,
-  BookOpen,
   Printer,
   ChevronDown,
   ChevronUp,
@@ -90,20 +89,6 @@ const translations = {
         ],
         prices: [
           { label: "MERCOSUR Service", price: "150 €", unit: "/ Vorgang" }
-        ]
-      },
-      tutoring: {
-        name: "Nachhilfe / Lernunterstützung",
-        desc: "Individuelle Lernbegleitung und Nachhilfe für alle Altersgruppen.",
-        features: [
-          "Einzelunterricht",
-          "Gruppenunterricht",
-          "Hausaufgabenbetreuung",
-          "Prüfungsvorbereitung",
-          "Sprachförderung"
-        ],
-        prices: [
-          { label: "Nachhilfe / Lernunterstützung", price: "25 €", unit: "/ Stunde" }
         ]
       },
       print: {
@@ -218,20 +203,6 @@ const translations = {
           { label: "خدمة ميركوسور", price: "150 €", unit: "/ معاملة" }
         ]
       },
-      tutoring: {
-        name: "الدروس الخصوصية / دعم التعلم",
-        desc: "مرافقة تعليمية فردية ودروس خصوصية لجميع الأعمار.",
-        features: [
-          "دروس فردية",
-          "دروس جماعية",
-          "متابعة الواجبات المنزلية",
-          "التحضير للامتحانات",
-          "دعم لغوي"
-        ],
-        prices: [
-          { label: "الدروس الخصوصية / دعم التعلم", price: "25 €", unit: "/ ساعة" }
-        ]
-      },
       print: {
         name: "خدمات الطباعة والأختام",
         desc: "خدمات طباعة وأختام احترافية لجميع احتياجاتك.",
@@ -342,20 +313,6 @@ const translations = {
         ],
         prices: [
           { label: "MERCOSUR Service", price: "€150", unit: "/ case" }
-        ]
-      },
-      tutoring: {
-        name: "Tutoring / Learning Support",
-        desc: "Individual learning support and tutoring for all age groups.",
-        features: [
-          "Individual lessons",
-          "Group lessons",
-          "Homework supervision",
-          "Exam preparation",
-          "Language support"
-        ],
-        prices: [
-          { label: "Tutoring / Learning Support", price: "€25", unit: "/ hour" }
         ]
       },
       print: {
@@ -470,20 +427,6 @@ const translations = {
           { label: "MERCOSUR Hizmeti", price: "150 Euro", unit: "/ islem" }
         ]
       },
-      tutoring: {
-        name: "Ozel Ders / Ogrenme Destegi",
-        desc: "Tum yas gruplari icin bireysel ogrenme destegi ve ozel ders.",
-        features: [
-          "Bireysel dersler",
-          "Grup dersleri",
-          "Odev denetimi",
-          "Sinav hazirligi",
-          "Dil destegi"
-        ],
-        prices: [
-          { label: "Ozel Ders / Ogrenme Destegi", price: "25 Euro", unit: "/ saat" }
-        ]
-      },
       print: {
         name: "Baski ve Damga Hizmetleri",
         desc: "Tum ihtiyaclariniz icin profesyonel baski ve damga hizmetleri.",
@@ -596,20 +539,6 @@ const translations = {
           { label: "Servicio MERCOSUR", price: "150 €", unit: "/ caso" }
         ]
       },
-      tutoring: {
-        name: "Tutoría / Apoyo al Aprendizaje",
-        desc: "Apoyo de aprendizaje individual y tutoría para todas las edades.",
-        features: [
-          "Clases individuales",
-          "Clases grupales",
-          "Supervisión de tareas",
-          "Preparación de exámenes",
-          "Apoyo lingüístico"
-        ],
-        prices: [
-          { label: "Tutoría / Apoyo al Aprendizaje", price: "25 €", unit: "/ hora" }
-        ]
-      },
       print: {
         name: "Servicios de Impresión y Sellos",
         desc: "Servicios profesionales de impresión y sellos para todas sus necesidades.",
@@ -695,13 +624,6 @@ const serviceData = [
     color: "bg-amber-500", 
     lightColor: "bg-amber-50",
     image: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800&auto=format&fit=crop"
-  },
-  { 
-    key: "tutoring", 
-    icon: BookOpen, 
-    color: "bg-blue-500", 
-    lightColor: "bg-blue-50",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop"
   },
   { 
     key: "print", 

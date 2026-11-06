@@ -43,7 +43,7 @@ const translations = {
     vat: "MwSt. (19%)",
     total: "Gesamtbetrag",
     categories: {
-      education: "Bildung & Nachhilfe",
+      education: "Bildung",
       bureaucracy: "Antragshilfe",
       cleaning: "Reinigung",
       transport: "Transport & Umzug",
@@ -72,7 +72,7 @@ const translations = {
     vat: "ضريبة القيمة المضافة (19%)",
     total: "المبلغ الإجمالي",
     categories: {
-      education: "التعليم والدروس",
+      education: "التعليم",
       bureaucracy: "مساعدة الطلبات",
       cleaning: "التنظيف",
       transport: "النقل والانتقال",
@@ -145,7 +145,7 @@ const translations = {
     vat: "VAT (19%)",
     total: "Total Amount",
     categories: {
-      education: "Education & Tutoring",
+      education: "Education",
       bureaucracy: "Application Help",
       cleaning: "Cleaning",
       transport: "Transport & Moving",

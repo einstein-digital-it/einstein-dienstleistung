@@ -14,7 +14,6 @@ const translations = {
     quickQuestions: [
       "Welche Dienstleistungen bieten Sie an?",
       "Wie kann ich buchen?",
-      "Was kostet eine Nachhilfestunde?",
       "Sprechen Sie Arabisch?"
     ],
     escalate: "Mit Mitarbeiter sprechen",
@@ -30,7 +29,6 @@ const translations = {
     quickQuestions: [
       "ما هي الخدمات التي تقدمونها؟",
       "كيف يمكنني الحجز؟",
-      "كم تكلفة الدرس الخصوصي؟",
       "هل تتحدثون العربية؟"
     ],
     escalate: "التحدث مع موظف",
@@ -46,7 +44,6 @@ const translations = {
     quickQuestions: [
       "What services do you offer?",
       "How can I book?",
-      "How much does tutoring cost?",
       "Do you speak Arabic?"
     ],
     escalate: "Talk to a human",
@@ -62,7 +59,6 @@ const translations = {
     quickQuestions: [
       "¿Qué servicios ofrecen?",
       "¿Cómo puedo reservar?",
-      "¿Cuánto cuesta una clase particular?",
       "¿Hablan español?"
     ],
     escalate: "Hablar con una persona",

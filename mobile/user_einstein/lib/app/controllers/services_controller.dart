@@ -68,20 +68,6 @@ class ServicesController extends GetxController {
       ],
     ),
     const ServiceItem(
-      id: 'tutoring',
-      title: 'service_tutoring_title',
-      description: 'service_tutoring_description',
-      price: 'service_tutoring_price',
-      icon: Icons.menu_book_outlined,
-      color: Color(0xFFEC4899),
-      features: [
-        'service_tutoring_feature_1',
-        'service_tutoring_feature_2',
-        'service_tutoring_feature_3',
-        'service_tutoring_feature_4',
-      ],
-    ),
-    const ServiceItem(
       id: 'print',
       title: 'service_print_title',
       description: 'service_print_description',

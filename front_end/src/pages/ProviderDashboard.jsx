@@ -205,7 +205,6 @@ const categoryLabels = {
     admin: "Administrative Dienstleistungen",
     coordination: "Koordinationsleistungen",
     mercosur: "MERCOSUR (LATAM)",
-    tutoring: "Nachhilfe / Lernunterstützung",
     print: "Druck- und Stempeldienstleistungen"
   },
   ar: {
@@ -214,7 +213,6 @@ const categoryLabels = {
     admin: "الخدمات الإدارية",
     coordination: "خدمات التنسيق",
     mercosur: "ميركوسور (أمريكا اللاتينية)",
-    tutoring: "الدروس الخصوصية / دعم التعلم",
     print: "خدمات الطباعة والأختام"
   },
   en: {
@@ -223,7 +221,6 @@ const categoryLabels = {
     admin: "Administrative Services",
     coordination: "Coordination Services",
     mercosur: "MERCOSUR (LATAM)",
-    tutoring: "Tutoring / Learning Support",
     print: "Printing & Stamp Services"
   }
 };

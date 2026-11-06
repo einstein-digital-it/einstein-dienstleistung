@@ -81,8 +81,8 @@ const searchData = {
       key: "education", 
       icon: GraduationCap, 
       color: "bg-blue-500",
-      keywords: ["nachhilfe", "tutoring", "دروس", "تعليم", "schule", "lernen", "prüfung", "abitur", "sprache", "deutsch", "englisch", "mathe", "education", "eğitim", "educación"],
-      names: { de: "Bildung & Nachhilfe", ar: "التعليم والدروس", en: "Education & Tutoring", tr: "Eğitim ve Özel Ders", es: "Educación y Clases" }
+      keywords: ["تعليم", "schule", "lernen", "prüfung", "abitur", "sprache", "deutsch", "englisch", "mathe", "education", "eğitim", "educación"],
+      names: { de: "Bildung", ar: "التعليم", en: "Education", tr: "Eğitim", es: "Educación" }
     },
     { 
       key: "bureaucracy", 
@@ -168,11 +168,11 @@ const searchData = {
 };
 
 const trendingSearches = {
-  de: ["Nachhilfe", "Umzug", "Reinigung", "Antragshilfe", "Deutschkurs"],
-  ar: ["دروس خصوصية", "انتقال", "تنظيف", "مساعدة الطلبات", "دورة ألمانية"],
-  en: ["Tutoring", "Moving", "Cleaning", "Application Help", "German Course"],
-  tr: ["Özel Ders", "Taşınma", "Temizlik", "Başvuru Yardımı", "Almanca Kursu"],
-  es: ["Clases", "Mudanza", "Limpieza", "Ayuda Solicitudes", "Curso Alemán"]
+  de: ["Umzug", "Reinigung", "Antragshilfe", "Deutschkurs"],
+  ar: ["انتقال", "تنظيف", "مساعدة الطلبات", "دورة ألمانية"],
+  en: ["Moving", "Cleaning", "Application Help", "German Course"],
+  tr: ["Taşınma", "Temizlik", "Başvuru Yardımı", "Almanca Kursu"],
+  es: ["Mudanza", "Limpieza", "Ayuda Solicitudes", "Curso Alemán"]
 };
 
 export default function GlobalSearch({ lang = "de", variant = "hero" }) {

@@ -37,7 +37,6 @@ const translations = {
       admin: "Administrative Dienstleistungen",
       coordination: "Koordinationsleistungen",
       mercosur: "MERCOSUR (LATAM)",
-      tutoring: "Nachhilfe / Lernunterstützung",
       print: "Druck- und Stempeldienstleistungen"
     }
   },
@@ -56,7 +55,6 @@ const translations = {
       admin: "الخدمات الإدارية",
       coordination: "خدمات التنسيق",
       mercosur: "ميركوسور (أمريكا اللاتينية)",
-      tutoring: "الدروس الخصوصية / دعم التعلم",
       print: "خدمات الطباعة والأختام"
     }
   },
@@ -75,13 +73,12 @@ const translations = {
       admin: "Administrative Services",
       coordination: "Coordination Services",
       mercosur: "MERCOSUR (LATAM)",
-      tutoring: "Tutoring / Learning Support",
       print: "Printing & Stamp Services"
     }
   }
 };
 
-import { Briefcase, ClipboardList, Settings, Globe as GlobeIcon, BookOpen, Printer } from "lucide-react";
+import { Briefcase, ClipboardList, Settings, Globe as GlobeIcon, Printer } from "lucide-react";
 
 const categoryFilters = [
   { key: "all", icon: Users },
@@ -90,7 +87,6 @@ const categoryFilters = [
   { key: "admin", icon: FileText },
   { key: "coordination", icon: Settings },
   { key: "mercosur", icon: GlobeIcon },
-  { key: "tutoring", icon: BookOpen },
   { key: "print", icon: Printer }
 ];
 

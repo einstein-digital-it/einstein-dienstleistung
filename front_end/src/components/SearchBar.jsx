@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   X,
-  BookOpen,
   FileText,
   Briefcase,
   ClipboardList,
@@ -74,7 +73,6 @@ const serviceData = {
     { key: "admin", name: "Administrative Dienstleistungen", desc: "Dokumentenmanagement, Korrespondenz", icon: FileText, color: "bg-green-500" },
     { key: "coordination", name: "Koordinationsleistungen", desc: "Projektkoordination, Terminplanung", icon: Settings, color: "bg-indigo-500" },
     { key: "mercosur", name: "MERCOSUR (LATAM)", desc: "Apostille, Legalisation, Visum", icon: Globe, color: "bg-amber-500" },
-    { key: "tutoring", name: "Nachhilfe / Lernunterstützung", desc: "Einzelunterricht, Prüfungsvorbereitung", icon: BookOpen, color: "bg-blue-500" },
     { key: "print", name: "Druck- & Stempeldienstleistungen", desc: "Dokumentendruck, Kopien, Stempel", icon: Printer, color: "bg-pink-500" }
   ],
   ar: [
@@ -83,7 +81,6 @@ const serviceData = {
     { key: "admin", name: "الخدمات الإدارية", desc: "إدارة المستندات، المراسلات", icon: FileText, color: "bg-green-500" },
     { key: "coordination", name: "خدمات التنسيق", desc: "تنسيق المشاريع، جدولة المواعيد", icon: Settings, color: "bg-indigo-500" },
     { key: "mercosur", name: "ميركوسور (أمريكا اللاتينية)", desc: "أبوستيل، تصديق، تأشيرة", icon: Globe, color: "bg-amber-500" },
-    { key: "tutoring", name: "الدروس الخصوصية / دعم التعلم", desc: "دروس فردية، التحضير للامتحانات", icon: BookOpen, color: "bg-blue-500" },
     { key: "print", name: "خدمات الطباعة والأختام", desc: "طباعة مستندات، نسخ، أختام", icon: Printer, color: "bg-pink-500" }
   ],
   en: [
@@ -92,7 +89,6 @@ const serviceData = {
     { key: "admin", name: "Administrative Services", desc: "Document management, correspondence", icon: FileText, color: "bg-green-500" },
     { key: "coordination", name: "Coordination Services", desc: "Project coordination, scheduling", icon: Settings, color: "bg-indigo-500" },
     { key: "mercosur", name: "MERCOSUR (LATAM)", desc: "Apostille, legalization, visa", icon: Globe, color: "bg-amber-500" },
-    { key: "tutoring", name: "Tutoring / Learning Support", desc: "Individual lessons, exam preparation", icon: BookOpen, color: "bg-blue-500" },
     { key: "print", name: "Printing & Stamp Services", desc: "Document printing, copies, stamps", icon: Printer, color: "bg-pink-500" }
   ],
   tr: [
@@ -101,7 +97,6 @@ const serviceData = {
     { key: "admin", name: "İdari Hizmetler", desc: "Belge yönetimi, yazışma", icon: FileText, color: "bg-green-500" },
     { key: "coordination", name: "Koordinasyon Hizmetleri", desc: "Proje koordinasyonu, zamanlama", icon: Settings, color: "bg-indigo-500" },
     { key: "mercosur", name: "MERCOSUR (LATAM)", desc: "Apostil, legalizasyon, vize", icon: Globe, color: "bg-amber-500" },
-    { key: "tutoring", name: "Özel Ders / Öğrenme Desteği", desc: "Bireysel dersler, sınav hazırlığı", icon: BookOpen, color: "bg-blue-500" },
     { key: "print", name: "Baskı ve Damga Hizmetleri", desc: "Belge baskısı, kopyalar, damgalar", icon: Printer, color: "bg-pink-500" }
   ],
   es: [
@@ -110,17 +105,16 @@ const serviceData = {
     { key: "admin", name: "Servicios Administrativos", desc: "Gestión de documentos, correspondencia", icon: FileText, color: "bg-green-500" },
     { key: "coordination", name: "Servicios de Coordinación", desc: "Coordinación de proyectos, programación", icon: Settings, color: "bg-indigo-500" },
     { key: "mercosur", name: "MERCOSUR (LATAM)", desc: "Apostilla, legalización, visa", icon: Globe, color: "bg-amber-500" },
-    { key: "tutoring", name: "Tutoría / Apoyo al Aprendizaje", desc: "Clases individuales, preparación de exámenes", icon: BookOpen, color: "bg-blue-500" },
     { key: "print", name: "Servicios de Impresión y Sellos", desc: "Impresión de documentos, copias, sellos", icon: Printer, color: "bg-pink-500" }
   ]
 };
 
 const popularSearches = {
-  de: ["Nachhilfe", "Formulare", "Büroservice", "Dokumente", "Koordination"],
-  ar: ["دروس خصوصية", "نماذج", "خدمة مكتب", "وثائق", "تنسيق"],
-  en: ["Tutoring", "Forms", "Office Service", "Documents", "Coordination"],
-  tr: ["Özel ders", "Formlar", "Ofis Hizmeti", "Belgeler", "Koordinasyon"],
-  es: ["Clases", "Formularios", "Servicio de Oficina", "Documentos", "Coordinación"]
+  de: ["Formulare", "Büroservice", "Dokumente", "Koordination"],
+  ar: ["نماذج", "خدمة مكتب", "وثائق", "تنسيق"],
+  en: ["Forms", "Office Service", "Documents", "Coordination"],
+  tr: ["Formlar", "Ofis Hizmeti", "Belgeler", "Koordinasyon"],
+  es: ["Formularios", "Servicio de Oficina", "Documentos", "Coordinación"]
 };
 
 export default function SearchBar({ lang = "de", variant = "hero" }) {

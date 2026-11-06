@@ -105,7 +105,6 @@ const translations = {
     education_title: "Bildungs- & Kinderbetreuung im Rahmen der Pakete",
     education_desc: "Ein besonderer Schwerpunkt liegt auf der Begleitung von Kindern und Jugendlichen.",
     education_features: [
-      "Lernbegleitung und Nachhilfe",
       "Strukturierte Bildungsförderung nach modernem Konzept",
       "Unterstützung bei schulischen und administrativen Angelegenheiten",
       "Entlastung der Eltern durch zentrale Organisation"
@@ -212,7 +211,6 @@ const translations = {
     education_title: "رعاية التعليم والأطفال ضمن الباقات",
     education_desc: "يكمن التركيز الخاص على مرافقة الأطفال والمراهقين.",
     education_features: [
-      "مرافقة التعلم والدروس الخصوصية",
       "دعم تعليمي منظم وفق مفهوم حديث",
       "دعم في المسائل المدرسية والإدارية",
       "راحة الوالدين من خلال التنظيم المركزي"
@@ -319,7 +317,6 @@ const translations = {
     education_title: "Education & Childcare within Packages",
     education_desc: "A special focus is on supporting children and adolescents.",
     education_features: [
-      "Learning support and tutoring",
       "Structured educational support according to modern concepts",
       "Support with school and administrative matters",
       "Relief for parents through central organization"

@@ -28,7 +28,6 @@ const CATEGORY_LABELS = {
   admin: { de: "Verwaltung", ar: "إدارة", en: "Admin" },
   coordination: { de: "Koordination", ar: "تنسيق", en: "Coordination" },
   mercosur: { de: "Mercosur", ar: "ميركوسور", en: "Mercosur" },
-  tutoring: { de: "Nachhilfe", ar: "دروس خصوصية", en: "Tutoring" },
   print: { de: "Druck", ar: "طباعة", en: "Print" },
   education: { de: "Bildung", ar: "تعليم", en: "Education" },
   cleaning: { de: "Reinigung", ar: "تنظيف", en: "Cleaning" },

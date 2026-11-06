@@ -2,7 +2,6 @@ import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  BookOpen,
   Briefcase,
   CheckCircle2,
   ClipboardList,
@@ -53,7 +52,6 @@ const categoryMeta = (t) => ({
   admin: { label: t.categories.admin, icon: FileText, color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
   coordination: { label: t.categories.coordination, icon: Settings, color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
   mercosur: { label: t.categories.mercosur, icon: Globe, color: "bg-amber-50 text-amber-700 border-amber-200" },
-  tutoring: { label: t.categories.tutoring, icon: BookOpen, color: "bg-blue-50 text-blue-700 border-blue-200" },
   print: { label: t.categories.print, icon: Printer, color: "bg-pink-50 text-pink-700 border-pink-200" }
 });
 

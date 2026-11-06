@@ -14,7 +14,6 @@ import {
   ClipboardList,
   Settings,
   Globe as GlobeIcon,
-  BookOpen,
   Printer,
   Briefcase,
   Globe
@@ -58,7 +57,6 @@ const translations = {
     cat_admin: "Administrative Dienstleistungen",
     cat_coordination: "Koordinationsleistungen",
     cat_mercosur: "MERCOSUR (LATAM)",
-    cat_tutoring: "Nachhilfe / Lernunterstützung",
     cat_print: "Druck- und Stempeldienstleistungen",
     cat_office: "Büro- und Organisationsservice",
     days: {
@@ -102,7 +100,6 @@ const translations = {
     cat_admin: "الخدمات الإدارية",
     cat_coordination: "خدمات التنسيق",
     cat_mercosur: "ميركوسور (أمريكا اللاتينية)",
-    cat_tutoring: "الدروس الخصوصية / دعم التعلم",
     cat_print: "خدمات الطباعة والأختام",
     cat_office: "خدمة المكتب والتنظيم",
     days: {
@@ -146,7 +143,6 @@ const translations = {
     cat_admin: "Administrative Services",
     cat_coordination: "Coordination Services",
     cat_mercosur: "MERCOSUR (LATAM)",
-    cat_tutoring: "Tutoring / Learning Support",
     cat_print: "Printing & Stamp Services",
     cat_office: "Office & Organization Service",
     days: {
@@ -167,7 +163,6 @@ const categoryOptions = [
   { key: "admin", icon: FileText },
   { key: "coordination", icon: Settings },
   { key: "mercosur", icon: GlobeIcon },
-  { key: "tutoring", icon: BookOpen },
   { key: "print", icon: Printer }
 ];
 

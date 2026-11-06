@@ -18,7 +18,6 @@ import {
   ArrowRight,
   ClipboardList,
   Settings,
-  BookOpen,
   Printer,
   FileText,
   Loader2
@@ -52,7 +51,6 @@ const translations = {
       admin: "Administrative Dienstleistungen",
       coordination: "Koordinationsleistungen",
       mercosur: "MERCOSUR (LATAM)",
-      tutoring: "Nachhilfe / Lernunterstützung",
       print: "Druck- und Stempeldienstleistungen"
     },
     days: {
@@ -88,7 +86,6 @@ const translations = {
       admin: "الخدمات الإدارية",
       coordination: "خدمات التنسيق",
       mercosur: "ميركوسور (أمريكا اللاتينية)",
-      tutoring: "الدروس الخصوصية / دعم التعلم",
       print: "خدمات الطباعة والأختام"
     },
     days: {
@@ -124,7 +121,6 @@ const translations = {
       admin: "Administrative Services",
       coordination: "Coordination Services",
       mercosur: "MERCOSUR (LATAM)",
-      tutoring: "Tutoring / Learning Support",
       print: "Printing & Stamp Services"
     },
     days: {
@@ -145,7 +141,6 @@ const categoryIcons = {
   admin: FileText,
   coordination: Settings,
   mercosur: Globe,
-  tutoring: BookOpen,
   print: Printer
 };
 
@@ -155,7 +150,6 @@ const categoryColors = {
   admin: "bg-green-500",
   coordination: "bg-indigo-500",
   mercosur: "bg-amber-500",
-  tutoring: "bg-blue-500",
   print: "bg-pink-500"
 };
 
