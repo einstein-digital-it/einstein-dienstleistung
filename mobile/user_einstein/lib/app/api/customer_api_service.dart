@@ -269,7 +269,7 @@ class CustomerApiService {
       filename: filename,
       fields: {
         'folder': folder,
-        if (lang != null) 'lang': lang,
+        'lang': ?lang,
         if (title != null && title.isNotEmpty) 'title': title,
         'process': process ? '1' : '0',
       },

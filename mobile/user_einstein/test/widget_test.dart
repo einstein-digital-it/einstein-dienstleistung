@@ -13,7 +13,10 @@ import 'package:user_einstein/app/api/auth_session.dart';
 import 'package:user_einstein/app/api/customer_api_service.dart';
 import 'package:user_einstein/app/controllers/customer_clients_controller.dart';
 import 'package:user_einstein/app/controllers/payment_controller.dart';
+import 'package:user_einstein/app/controllers/documents_controller.dart';
+import 'package:user_einstein/app/controllers/forms_controller.dart';
 import 'package:user_einstein/app/lang/app_translations.dart';
+import 'package:user_einstein/app/models/customer_document.dart';
 import 'package:user_einstein/app/models/managed_client.dart';
 import 'package:user_einstein/app/routes/app_routes.dart';
 import 'package:user_einstein/app/views/client_workspace_view.dart';
@@ -37,6 +40,62 @@ class _FakeBackend {
   final createdBookings = <Map<String, dynamic>>[];
   final checkoutBookingIds = <String>[];
   var accountDeleted = false;
+
+  final documents = <Map<String, dynamic>>[
+    {
+      'id': 7,
+      'folder': 'auslaenderbehoerde',
+      'title': 'Residence permit expires soon',
+      'original_name': 'brief.pdf',
+      'size': 40960,
+      'created_at': '2026-11-01T09:00:00Z',
+      'uploaded_by': 'customer',
+      'ai_status': 'done',
+      'sender': 'Auslaenderbehoerde Frankfurt',
+      'summary': 'Your residence permit ends in two months.',
+      'translation': 'Dear customer, your residence permit ends soon.',
+      'translation_language': 'en',
+    },
+  ];
+
+  /// Raw multipart bodies of document uploads.
+  final uploads = <String>[];
+  final savedFormData = <Map<String, dynamic>>[];
+
+  static const _forms = {
+    'email': 'customer@example.com',
+    'personal': [
+      {
+        'key': 'full_name',
+        'type': 'text',
+        'required': true,
+        'label': {'en': 'Full name', 'de': 'Vollstaendiger Name'},
+      },
+    ],
+    'forms': [
+      {
+        'key': 'jobcenter_change',
+        'folder': 'jobcenter',
+        'authority': 'Jobcenter Frankfurt',
+        'recipient_field': 'jobcenter_email',
+        'title': {'en': 'Report a change', 'de': 'Veraenderungsmitteilung'},
+        'description': {'en': 'Tell the Jobcenter what changed.'},
+        'fields': [
+          {
+            'key': 'customer_number',
+            'type': 'text',
+            'required': true,
+            'label': {'en': 'Customer number'},
+          },
+        ],
+        'subject': 'Veraenderungsmitteilung - Kundennummer {{customer_number}}',
+        'body': 'Sehr geehrte Damen und Herren,\nmein Name ist {{full_name}}.',
+        'conditional': {},
+      },
+    ],
+    'data': {},
+    'suggestions': {},
+  };
 
   Map<String, dynamic>? _booking(String id) {
     for (final booking in bookings) {
@@ -109,6 +168,34 @@ class _FakeBackend {
       bookings.insert(0, booking);
       return _json(booking, 201);
     }
+    if (method == 'GET' && path == 'customer/documents') {
+      return _json({'folders': documentFolders, 'documents': documents});
+    }
+    if (method == 'POST' && path == 'customer/documents') {
+      uploads.add(utf8.decode(request.bodyBytes, allowMalformed: true));
+      final doc = {
+        'id': 100 + uploads.length,
+        'folder': 'sonstiges',
+        'title': 'scan',
+        'original_name': 'scan.jpg',
+        'size': 3,
+        'uploaded_by': 'customer',
+        // No AI key on this server: stored unsorted, nothing to poll
+        'ai_status': 'none',
+      };
+      documents.insert(0, doc);
+      return _json(doc, 201);
+    }
+    if (method == 'GET' && path == 'customer/reminders') {
+      return _json(const []);
+    }
+    if (method == 'GET' && path == 'customer/forms') {
+      return _json(_forms);
+    }
+    if (method == 'PUT' && path == 'customer/form-data') {
+      savedFormData.add(jsonDecode(request.body) as Map<String, dynamic>);
+      return _json({'ok': true});
+    }
     final checkout = RegExp(
       r'^payments/bookings/([^/]+)/checkout$',
     ).firstMatch(path);
@@ -180,7 +267,9 @@ void main() {
     await waitForSnackbars(tester);
   }
 
-  testWidgets('allows a guest to browse home and protects booking', (tester) async {
+  testWidgets('allows a guest to browse home and protects booking', (
+    tester,
+  ) async {
     await pumpApp(tester, useEnglish: false);
 
     expect(
@@ -189,9 +278,16 @@ void main() {
       ),
       findsWidgets,
     );
-    await tester.tap(find.text('\u0627\u062d\u062c\u0632 \u0627\u0644\u0622\u0646'));
+    await tester.tap(
+      find.text('\u0627\u062d\u062c\u0632 \u0627\u0644\u0622\u0646'),
+    );
     await tester.pumpAndSettle();
-    expect(find.text('\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644'), findsOneWidget);
+    expect(
+      find.text(
+        '\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644',
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('starts with Arabic as the default application language', (
@@ -206,17 +302,23 @@ void main() {
     );
   });
 
-  testWidgets('navigates from login to home and offers', (tester) async {
+  testWidgets('navigates from login to home and the customer tabs', (
+    tester,
+  ) async {
     await pumpApp(tester);
 
     await signIn(tester);
 
     expect(Get.find<AuthSession>().isAuthenticated, isTrue);
-    expect(find.text('Customer Dashboard'), findsOneWidget);
+    expect(find.text('Welcome back'), findsOneWidget);
 
-    await tester.tap(find.text('Offers').first);
+    await tester.tap(find.text('Bookings').last);
     await tester.pumpAndSettle();
+    expect(find.text('My Bookings'), findsOneWidget);
 
+    // The offers page is still reachable
+    Get.toNamed(AppRoutes.offers);
+    await tester.pumpAndSettle();
     expect(find.text('Offers from EinStein Institut'), findsOneWidget);
   });
 
@@ -248,7 +350,7 @@ void main() {
     await waitForSnackbars(tester);
 
     expect(Get.find<AuthSession>().isAuthenticated, isTrue);
-    expect(find.text('Customer Dashboard'), findsOneWidget);
+    expect(find.text('Welcome back'), findsOneWidget);
   });
 
   testWidgets('opens the customer dashboard when a session is restored', (
@@ -271,7 +373,7 @@ void main() {
     await tester.pumpWidget(const EinsteinUserApp(initialLocale: Locale('en')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Customer Dashboard'), findsOneWidget);
+    expect(find.text('Welcome back'), findsOneWidget);
   });
 
   testWidgets('opens profile, notification settings, and payment flows', (
@@ -294,7 +396,7 @@ void main() {
 
     await signIn(tester);
 
-    await tester.tap(find.text('Profile').last);
+    await tester.tap(find.text('Account').last);
     await tester.pumpAndSettle();
     expect(find.text('Customer User'), findsOneWidget);
 
@@ -305,7 +407,7 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('My').last);
+    await tester.tap(find.text('Bookings').last);
     await tester.pumpAndSettle();
     final payButton = find.widgetWithText(FilledButton, 'Pay');
     await tester.ensureVisible(payButton);
@@ -345,7 +447,7 @@ void main() {
     await pumpApp(tester);
     await signIn(tester);
 
-    await tester.tap(find.widgetWithText(FilledButton, 'New booking'));
+    await tester.tap(find.text('Book a service'));
     await tester.pumpAndSettle();
     expect(find.text('Book a service'), findsOneWidget);
 
@@ -373,7 +475,7 @@ void main() {
     await pumpApp(tester);
     await signIn(tester);
 
-    await tester.tap(find.text('Profile').last);
+    await tester.tap(find.text('Account').last);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Notification settings'), 220);
     await tester.tap(find.text('Notification settings'));
@@ -416,7 +518,7 @@ void main() {
     await pumpApp(tester);
     await signIn(tester);
 
-    await tester.tap(find.text('Profile').last);
+    await tester.tap(find.text('Account').last);
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'Edit profile'));
     await tester.pumpAndSettle();
@@ -438,7 +540,7 @@ void main() {
     await pumpApp(tester);
     await signIn(tester);
 
-    await tester.tap(find.text('Profile').last);
+    await tester.tap(find.text('Account').last);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Privacy policy'), 220);
     expect(find.text('Privacy policy'), findsOneWidget);
@@ -467,7 +569,7 @@ void main() {
     await pumpApp(tester);
     await signIn(tester);
 
-    await tester.tap(find.text('Profile').last);
+    await tester.tap(find.text('Account').last);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Customer service'), 220);
     await tester.tap(find.text('Customer service'));
@@ -484,6 +586,115 @@ void main() {
     expect(find.text('SUP-1001 sent successfully'), findsOneWidget);
     expect(find.text('Received'), findsWidgets);
     await tester.pump(const Duration(seconds: 4));
+  });
+
+  testWidgets('My file: opens a sorted letter and uploads a new one', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signIn(tester);
+
+    await tester.tap(find.text('My file').last);
+    await tester.pumpAndSettle();
+    expect(find.text('All your letters, sorted by authority.'), findsOneWidget);
+
+    // The letter sits in its authority's folder
+    final folder = find.text('Immigration office');
+    await tester.scrollUntilVisible(
+      folder,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(folder);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Residence permit expires soon'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Your residence permit ends in two months.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Auslaenderbehoerde Frankfurt'), findsOneWidget);
+    // The translation is open by default and can be folded away
+    const translation = 'Dear customer, your residence permit ends soon.';
+    expect(find.text(translation), findsOneWidget);
+    await tester.tap(find.text('Translation'));
+    await tester.pumpAndSettle();
+    expect(find.text(translation), findsNothing);
+
+    // Back on "My file", the upload button offers camera, photos and PDF
+    Get.back();
+    await tester.pumpAndSettle();
+    Get.back();
+    await tester.pumpAndSettle();
+    expect(Get.currentRoute, AppRoutes.documents);
+    await tester.scrollUntilVisible(
+      find.text('Upload a letter'),
+      -200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Upload a letter'));
+    await tester.pumpAndSettle();
+    expect(find.text('Take a photo'), findsOneWidget);
+    expect(find.text('Choose a file (PDF)'), findsOneWidget);
+    Get.back();
+    await tester.pumpAndSettle();
+
+    // The picker itself is native, so upload the picked bytes directly
+    final docs = Get.find<DocumentsController>();
+    await tester.runAsync(() => docs.upload([1, 2, 3], 'scan.jpg'));
+    await tester.pumpAndSettle();
+    await waitForSnackbars(tester);
+
+    expect(backend.uploads, hasLength(1));
+    final body = backend.uploads.single;
+    expect(body, contains('name="folder"\r\n\r\nauto'));
+    expect(body, contains('filename="scan.jpg"'));
+    // No title is sent: the server must name the file itself
+    expect(body, isNot(contains('name="title"')));
+    expect(docs.documents.first.title, 'scan');
+  });
+
+  testWidgets('Applications: fills a form and shows the German letter', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signIn(tester);
+
+    await tester.tap(find.text('Applications').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Report a change'), findsOneWidget);
+    expect(find.text('2 details missing'), findsOneWidget);
+
+    await tester.tap(find.text('Report a change'));
+    await tester.pumpAndSettle();
+    expect(find.text('Jobcenter Frankfurt'), findsOneWidget);
+    final sendButton = find.ancestor(
+      of: find.text('2 details missing'),
+      matching: find.byWidgetPredicate((w) => w is ButtonStyleButton),
+    );
+    expect(tester.widget<ButtonStyleButton>(sendButton).onPressed, isNull);
+
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Full name *'),
+      'Mira Customer',
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('1 details missing'), findsOneWidget);
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Customer number *'),
+      '123A456',
+    );
+    await tester.pumpAndSettle();
+
+    // Everything filled: ready to send, letter filled in German
+    expect(find.text('Create PDF and send'), findsOneWidget);
+    expect(
+      find.text('Veraenderungsmitteilung - Kundennummer 123A456'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('mein Name ist Mira Customer.'), findsOneWidget);
+    final forms = Get.find<FormsController>();
+    expect(forms.missing(forms.byKey('jobcenter_change')!), isEmpty);
   });
 
   testWidgets('renders a separate client workspace with structured tabs', (
