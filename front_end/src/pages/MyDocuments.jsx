@@ -35,6 +35,7 @@ const T = {
     error: "Das hat nicht geklappt. Bitte erneut versuchen.", customer: "Kunde (E-Mail)", open: "Öffnen", customers: "Kunden mit Unterlagen",
     hint: "PDF, Foto, Word oder Excel – bis 20 MB.",
     autoTitle: "Hochladen – wir sortieren und übersetzen", autoDesc: "Laden Sie einen Brief hoch (PDF oder Foto). Er wird automatisch dem richtigen Ordner zugeordnet und in Ihre Sprache übersetzt.",
+    reminders: "Erinnerungen", daysLeft: (n) => (n < 0 ? "überfällig" : n === 0 ? "heute" : `in ${n} Tagen`), done: "Erledigt", translateMine: "In meine Sprache übersetzen",
     processing: "Wird sortiert und übersetzt…", failed: "Automatische Übersetzung fehlgeschlagen", summary: "Zusammenfassung", translation: "Übersetzung", showTranslation: "Übersetzung anzeigen", hideTranslation: "Übersetzung ausblenden", deadline: "Frist", from: "Von",
     aiNote: "Die Datei wird zur Sortierung und Übersetzung automatisch mit Claude (Anthropic) ausgewertet. Die Übersetzung ist eine Hilfe, keine beglaubigte Übersetzung.",
   },
@@ -48,6 +49,7 @@ const T = {
     error: "لم تنجح العملية. حاول مرة أخرى.", customer: "الزبون (الإيميل)", open: "فتح", customers: "زبائن لديهم ملفات",
     hint: "PDF أو صورة أو Word أو Excel – حتى 20 ميغابايت.",
     autoTitle: "ارفع الملف – ونحن نرتّبه ونترجمه", autoDesc: "ارفع الرسالة (PDF أو صورة)، وتنحط تلقائياً بالمجلد الصحيح وتتترجم للغتك.",
+    reminders: "تذكيرات", daysLeft: (n) => (n < 0 ? "متأخر" : n === 0 ? "اليوم" : `بعد ${n} يوم`), done: "تم", translateMine: "ترجمها للغتي",
     processing: "جارٍ الترتيب والترجمة…", failed: "فشلت الترجمة التلقائية", summary: "الملخص", translation: "الترجمة", showTranslation: "عرض الترجمة", hideTranslation: "إخفاء الترجمة", deadline: "آخر موعد", from: "من",
     aiNote: "يتم تحليل الملف تلقائياً بواسطة Claude (Anthropic) لترتيبه وترجمته. الترجمة للمساعدة فقط وليست ترجمة محلّفة.",
   },
@@ -61,6 +63,7 @@ const T = {
     error: "That didn't work. Please try again.", customer: "Customer (email)", open: "Open", customers: "Customers with documents",
     hint: "PDF, photo, Word or Excel – up to 20 MB.",
     autoTitle: "Upload – we sort and translate it", autoDesc: "Upload a letter (PDF or photo). It is put into the right folder automatically and translated into your language.",
+    reminders: "Reminders", daysLeft: (n) => (n < 0 ? "overdue" : n === 0 ? "today" : `in ${n} days`), done: "Done", translateMine: "Translate into my language",
     processing: "Sorting and translating…", failed: "Automatic translation failed", summary: "Summary", translation: "Translation", showTranslation: "Show translation", hideTranslation: "Hide translation", deadline: "Deadline", from: "From",
     aiNote: "The file is analysed automatically by Claude (Anthropic) to sort and translate it. The translation is a help, not a certified translation.",
   },
@@ -79,7 +82,8 @@ export default function MyDocuments() {
   const t = T[lang] || T.de;
   const isRTL = lang === "ar";
   const user = getStoredAuthUser();
-  const isAdmin = user?.role === "admin";
+  // Admins and providers can open every customer's file
+  const isAdmin = user?.role === "admin" || user?.role === "provider";
   const adminEmail = isAdmin ? (searchParams.get("email") || "") : "";
 
   const [data, setData] = useState({ folders: Object.keys(FOLDER_META), documents: [] });
@@ -93,6 +97,7 @@ export default function MyDocuments() {
   const fileInput = useRef(null);
   const autoInput = useRef(null);
   const [openId, setOpenId] = useState(null);
+  const [reminders, setReminders] = useState([]);
 
   const load = async () => {
     setLoading(true);
@@ -104,6 +109,7 @@ export default function MyDocuments() {
       } else {
         const res = isAdmin ? await customerDocumentsApi.adminList(adminEmail) : await customerDocumentsApi.list();
         setData({ folders: res.folders || Object.keys(FOLDER_META), documents: res.documents || [] });
+        customerDocumentsApi.reminders(isAdmin ? adminEmail : undefined).then((r) => setReminders(Array.isArray(r) ? r : [])).catch(() => {});
       }
     } catch {
       setError(t.error);
@@ -219,6 +225,33 @@ export default function MyDocuments() {
               {uploading ? t.uploading : t.upload}
             </Button>
           </div>
+          {reminders.length > 0 && (
+            <div className="mb-6 bg-white rounded-2xl border border-gray-100 p-5">
+              <h2 className="font-bold text-[#1e3a5f] mb-3">{t.reminders}</h2>
+              <ul className="space-y-2">
+                {reminders.map((r) => {
+                  const days = Math.round((new Date(r.due_date) - new Date(new Date().toDateString())) / 86400000);
+                  const tone = days < 0 ? "bg-red-50 text-red-700" : days <= 14 ? "bg-amber-50 text-amber-800" : "bg-emerald-50 text-emerald-700";
+                  return (
+                    <li key={r.id} className="flex items-center gap-3 rounded-xl border border-gray-100 p-3">
+                      <CalendarClock className="w-5 h-5 text-[#6B46C1] shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-[#1e3a5f]">{r.title}</p>
+                        <p className="text-xs text-gray-500">{t.folders[r.folder] || r.folder} · {new Date(r.due_date).toLocaleDateString(lang === "ar" ? "ar" : lang)}</p>
+                        {r.details && <p className="text-xs text-gray-600 mt-1">{r.details}</p>}
+                      </div>
+                      <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${tone}`}>{(t.daysLeft || T.en.daysLeft)(days)}</span>
+                      {!isAdmin && (
+                        <Button size="sm" variant="outline" onClick={() => customerDocumentsApi.updateReminder(r.id, { status: "done" }).then(() => setReminders((x) => x.filter((y) => y.id !== r.id))).catch(() => setError(t.error))}>
+                          {t.done || T.en.done}
+                        </Button>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
           {hasPending && (
             <p className="mb-4 flex items-center gap-2 rounded-lg bg-purple-50 px-4 py-3 text-sm text-[#6B46C1]"><Loader2 className="w-4 h-4 animate-spin" />{t.processing}</p>
           )}
@@ -290,6 +323,14 @@ export default function MyDocuments() {
                              {openId === doc.id ? t.hideTranslation : t.showTranslation}
                            </button>
                            {openId === doc.id && <p className="mt-2 whitespace-pre-line rounded-lg bg-white p-3 border border-gray-100 leading-relaxed">{doc.translation}</p>}
+                           {doc.translation_language && doc.translation_language !== lang && !isAdmin && (
+                             <button
+                               onClick={() => customerDocumentsApi.translate(doc.id, lang).then(load).catch(() => setError(t.error))}
+                               className="ms-3 text-xs font-semibold text-[#6B46C1] underline"
+                             >
+                               {t.translateMine || T.en.translateMine}
+                             </button>
+                           )}
                          </div>
                        )}
                      </div>

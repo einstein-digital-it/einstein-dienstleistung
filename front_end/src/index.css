@@ -84,7 +84,8 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
+    /* Inter for Latin text, IBM Plex Sans Arabic for Arabic (same as the app) */
+    font-family: 'Inter', 'IBM Plex Sans Arabic', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
@@ -92,5 +93,10 @@
 
   h1, h2, h3 {
     letter-spacing: -0.02em;
+  }
+
+  /* Arabic script must not be letter-spaced */
+  [dir="rtl"], [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 {
+    letter-spacing: 0;
   }
 }

@@ -2,6 +2,7 @@
 
 const Map<String, String> filesEn = {
   'nav_documents': 'My file',
+  'nav_profile': 'Account',
   'nav_bookings': 'Bookings',
   'nav_forms': 'Applications',
   'see_all': 'See all',
@@ -92,6 +93,7 @@ const Map<String, String> filesEn = {
 
 const Map<String, String> filesAr = {
   'nav_documents': 'ملفي',
+  'nav_profile': 'حسابي',
   'nav_bookings': 'حجوزاتي',
   'nav_forms': 'الطلبات',
   'see_all': 'عرض الكل',
@@ -182,6 +184,7 @@ const Map<String, String> filesAr = {
 
 const Map<String, String> filesDe = {
   'nav_documents': 'Meine Akte',
+  'nav_profile': 'Konto',
   'nav_bookings': 'Buchungen',
   'nav_forms': 'Anträge',
   'see_all': 'Alle',

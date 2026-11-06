@@ -13,8 +13,10 @@ class LoginView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
+      backgroundColor: AppColors.navyDeep,
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppColors.heroGradient),
+        child: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
@@ -23,34 +25,31 @@ class LoginView extends GetView<AuthController> {
               constraints: const BoxConstraints(maxWidth: 560),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                border: const Border(
-                  top: BorderSide(color: Color(0xFFDBE7F5), width: 5),
-                ),
+                borderRadius: BorderRadius.circular(26),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF0F172A).withValues(alpha: 0.12),
-                    blurRadius: 70,
-                    offset: const Offset(0, 22),
+                    color: Colors.black.withValues(alpha: 0.25),
+                    blurRadius: 40,
+                    offset: const Offset(0, 18),
                   ),
                 ],
               ),
-              padding: const EdgeInsets.fromLTRB(22, 48, 22, 34),
+              padding: const EdgeInsets.fromLTRB(22, 28, 22, 26),
               child: Obx(
                 () => Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const EinsteinLogo(size: 122),
-                    const SizedBox(height: 34),
+                    const EinsteinLogo(size: 72),
+                    const SizedBox(height: 18),
                     Text(
                       'login_welcome'.tr,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppColors.text,
-                        fontSize: 36,
-                        height: 1.16,
-                        fontWeight: FontWeight.w900,
+                        fontSize: 25,
+                        height: 1.3,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -59,11 +58,11 @@ class LoginView extends GetView<AuthController> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppColors.muted,
-                        fontSize: 19,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 26),
                     if (controller.isRegister.value) ...[
                       _AuthField(
                         label: 'name'.tr,
@@ -78,7 +77,7 @@ class LoginView extends GetView<AuthController> {
                       icon: Icons.mail_outline,
                       keyboardType: TextInputType.emailAddress,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     _AuthField(
                       label: 'password'.tr,
                       controller: controller.passwordController,
@@ -112,7 +111,6 @@ class LoginView extends GetView<AuthController> {
                       label: controller.isRegister.value
                           ? 'create_account'.tr
                           : 'sign_in'.tr,
-                      dark: true,
                       isLoading: controller.isLoading.value,
                       onPressed: controller.submit,
                     ),
@@ -154,6 +152,7 @@ class LoginView extends GetView<AuthController> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

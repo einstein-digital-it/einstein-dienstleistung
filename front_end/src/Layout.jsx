@@ -267,7 +267,9 @@ export default function Layout({ children, currentPageName }) {
                     {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : "Mein Dashboard"}
                   </Link>
                   <Link to={createPageUrl("MyDocuments")} className="hover:text-[#6B46C1] transition-colors font-medium">
-                    {lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : "Meine Unterlagen"}
+                    {isProvider
+                      ? (lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : "Kundenunterlagen")
+                      : (lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : "Meine Unterlagen")}
                   </Link>
                   {isProvider && (
                     <Link to={createPageUrl("ProviderDashboard")} className="hover:text-[#6B46C1] transition-colors">
@@ -552,7 +554,7 @@ export default function Layout({ children, currentPageName }) {
                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
                                             onClick={() => setIsMenuOpen(false)}
                                           >
-                                            {isAdmin
+                                            {isAdmin || isProvider
                                               ? (lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : "Kundenunterlagen")
                                               : (lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : "Meine Unterlagen")}
                                           </Link>

@@ -94,10 +94,9 @@ class _Hero extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: FilledButton.icon(
+                child: FilledButton(
                   onPressed: () => Get.toNamed(AppRoutes.bookings),
-                  icon: const Icon(Icons.calendar_month_rounded, size: 20),
-                  label: Text('book_now'.tr),
+                  child: Text('book_now'.tr, maxLines: 1, overflow: TextOverflow.ellipsis),
                 ),
               ),
               const SizedBox(width: 10),
