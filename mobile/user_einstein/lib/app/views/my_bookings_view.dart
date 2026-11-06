@@ -14,7 +14,7 @@ class MyBookingsView extends GetView<MyBookingsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const AppBottomNav(currentIndex: 3),
+      bottomNavigationBar: const AppBottomNav(tab: NavTab.bookings),
       body: SafeArea(
         child: Obx(
           () => CustomScrollView(

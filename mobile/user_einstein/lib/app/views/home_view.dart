@@ -6,65 +6,42 @@ import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/public_header.dart';
-import '../widgets/primary_button.dart';
 import '../widgets/service_card.dart';
+import '../widgets/ui.dart';
 
+/// Home for visitors who are not signed in yet.
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const AppBottomNav(currentIndex: 0),
+      bottomNavigationBar: const AppBottomNav(tab: NavTab.home),
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const PublicHeader(),
-                    const SizedBox(height: 22),
-                    _HeroPanel(onBook: () => Get.toNamed(AppRoutes.bookings)),
-                    const SizedBox(height: 24),
-                    const _QuickActions(),
-                    const SizedBox(height: 24),
-                    _SectionHeading(
-                      title: 'home_promise'.tr,
-                      subtitle: 'home_promise_subtitle'.tr,
-                    ),
-                    const SizedBox(height: 14),
-                    _PromiseGrid(promises: controller.promises),
-                    const SizedBox(height: 28),
-                    _SectionHeading(
-                      title: 'home_services'.tr,
-                      subtitle: 'home_services_subtitle'.tr,
-                    ),
-                    const SizedBox(height: 14),
-                  ],
-                ),
-              ),
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+          children: [
+            const PublicHeader(),
+            const SizedBox(height: 18),
+            const _Hero(),
+            const SizedBox(height: 22),
+            const _FileFeature(),
+            const SizedBox(height: 26),
+            SectionTitle(title: 'home_promise'.tr),
+            _PromiseGrid(promises: controller.promises),
+            const SizedBox(height: 26),
+            SectionTitle(
+              title: 'home_services'.tr,
+              action: 'see_all'.tr,
+              onAction: () => Get.offNamed(AppRoutes.services),
             ),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-              sliver: SliverList.separated(
-                itemCount: controller.services.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 14),
-                itemBuilder: (context, index) {
-                  final service = controller.services[index];
-                  return ServiceCard(
-                    service: service,
-                    onTap: () => Get.toNamed(
-                      AppRoutes.services,
-                      arguments: {'expand': service.id},
-                    ),
-                  );
-                },
+            for (final service in controller.services) ...[
+              ServiceCard(
+                service: service,
+                onTap: () => Get.toNamed(AppRoutes.services, arguments: {'expand': service.id}),
               ),
-            ),
+              const SizedBox(height: 12),
+            ],
           ],
         ),
       ),
@@ -72,129 +49,66 @@ class HomeView extends GetView<HomeController> {
   }
 }
 
-class _QuickActions extends StatelessWidget {
-  const _QuickActions();
-
-  @override
-  Widget build(BuildContext context) {
-    final actions = [
-      (Icons.dashboard_outlined, 'dashboard'.tr, AppRoutes.customerDashboard),
-      (Icons.local_offer_outlined, 'nav_offers'.tr, AppRoutes.offers),
-      (Icons.support_agent_outlined, 'support'.tr, AppRoutes.customerService),
-    ];
-
-    return Row(
-      children: actions
-          .map(
-            (action) => Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () => Get.toNamed(action.$3),
-                  child: Container(
-                    height: 92,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFFE9EEF6)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(action.$1, color: AppColors.navy, size: 22),
-                        const Spacer(),
-                        Text(
-                          action.$2,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppColors.navy,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 12.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          )
-          .toList(),
-    );
-  }
-}
-
-class _HeroPanel extends StatelessWidget {
-  const _HeroPanel({required this.onBook});
-
-  final VoidCallback onBook;
+class _Hero extends StatelessWidget {
+  const _Hero();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
       decoration: BoxDecoration(
-        color: AppColors.navy,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.navy.withValues(alpha: 0.22),
-            blurRadius: 28,
-            offset: const Offset(0, 16),
-          ),
-        ],
+        gradient: AppColors.heroGradient,
+        borderRadius: BorderRadius.circular(26),
+        boxShadow: [BoxShadow(color: AppColors.navy.withValues(alpha: 0.28), blurRadius: 30, offset: const Offset(0, 16))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.12),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
             ),
-            child: Text(
-              'home_tagline'.tr,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w800,
-                fontSize: 12,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(width: 7, height: 7, decoration: const BoxDecoration(color: Color(0xFF34D399), shape: BoxShape.circle)),
+                const SizedBox(width: 8),
+                Text('home_tagline'.tr, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
           Text(
             'home_organisation'.tr,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 33,
-              height: 1.08,
-              fontWeight: FontWeight.w900,
-            ),
+            style: const TextStyle(color: AppColors.goldBright, fontSize: 30, height: 1.2, fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Text(
             'home_hero_subtitle'.tr,
-            style: TextStyle(
-              color: Color(0xFFDDE7F4),
-              fontSize: 15.5,
-              height: 1.45,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.82), fontSize: 15, height: 1.6),
           ),
-          const SizedBox(height: 22),
+          const SizedBox(height: 20),
           Row(
             children: [
               Expanded(
-                child: PrimaryButton(
-                  label: 'book_now'.tr,
-                  icon: Icons.arrow_forward_rounded,
-                  onPressed: onBook,
+                child: FilledButton.icon(
+                  onPressed: () => Get.toNamed(AppRoutes.bookings),
+                  icon: const Icon(Icons.calendar_month_rounded, size: 20),
+                  label: Text('book_now'.tr),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Get.toNamed(AppRoutes.login),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.white.withValues(alpha: 0.35)),
+                  ),
+                  child: Text('sign_in'.tr),
                 ),
               ),
             ],
@@ -205,21 +119,45 @@ class _HeroPanel extends StatelessWidget {
   }
 }
 
-class _SectionHeading extends StatelessWidget {
-  const _SectionHeading({required this.title, required this.subtitle});
-
-  final String title;
-  final String subtitle;
+/// Teaser for the customer file: upload, sort, translate, remind.
+class _FileFeature extends StatelessWidget {
+  const _FileFeature();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: Theme.of(context).textTheme.headlineMedium),
-        const SizedBox(height: 6),
-        Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
-      ],
+    final points = [
+      (Icons.document_scanner_outlined, 'feature_scan'.tr),
+      (Icons.translate_rounded, 'feature_translate'.tr),
+      (Icons.notifications_active_outlined, 'feature_remind'.tr),
+      (Icons.send_rounded, 'feature_forms'.tr),
+    ];
+    return AppCard(
+      padding: const EdgeInsets.all(18),
+      onTap: () => Get.toNamed(AppRoutes.login),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const IconTile(icon: Icons.auto_awesome_rounded, color: AppColors.purple, size: 40),
+              const SizedBox(width: 12),
+              Expanded(child: Text('feature_title'.tr, style: Theme.of(context).textTheme.titleLarge)),
+            ],
+          ),
+          const SizedBox(height: 14),
+          for (final p in points)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                children: [
+                  Icon(p.$1, size: 20, color: AppColors.gold),
+                  const SizedBox(width: 10),
+                  Expanded(child: Text(p.$2, style: const TextStyle(color: AppColors.text, height: 1.4))),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -237,34 +175,23 @@ class _PromiseGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisExtent: 106,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+        mainAxisExtent: 86,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
       ),
       itemBuilder: (context, index) {
-        return Container(
+        return AppCard(
           padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE9EEF6)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              const Icon(
-                Icons.check_circle,
-                color: Color(0xFF10B981),
-                size: 22,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                promises[index].tr,
-                style: const TextStyle(
-                  color: AppColors.navy,
-                  fontSize: 13.5,
-                  height: 1.2,
-                  fontWeight: FontWeight.w900,
+              const Icon(Icons.verified_rounded, color: AppColors.success, size: 22),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  promises[index].tr,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: AppColors.navy, fontSize: 13.5, height: 1.3, fontWeight: FontWeight.w600),
                 ),
               ),
             ],

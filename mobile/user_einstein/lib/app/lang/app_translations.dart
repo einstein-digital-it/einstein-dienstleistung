@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 
+import 'files_translations.dart';
+
 class AppTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
-    'en': _en,
-    'ar': _ar,
-    'de': _de,
+    'en': {..._en, ...filesEn},
+    'ar': {..._ar, ...filesAr},
+    'de': {..._de, ...filesDe},
   };
 }
 

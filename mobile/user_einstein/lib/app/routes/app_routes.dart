@@ -13,4 +13,9 @@ abstract class AppRoutes {
   static const customerService = '/customer-service';
   static const customerClients = '/customer-clients';
   static const clientWorkspace = '/customer-clients/workspace';
+  static const documents = '/documents';
+  static const documentFolder = '/documents/folder';
+  static const documentDetail = '/documents/detail';
+  static const forms = '/forms';
+  static const formFill = '/forms/fill';
 }

@@ -14,7 +14,7 @@ class ServicesView extends GetView<ServicesController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const AppBottomNav(currentIndex: 1),
+      bottomNavigationBar: const AppBottomNav(tab: NavTab.services),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [

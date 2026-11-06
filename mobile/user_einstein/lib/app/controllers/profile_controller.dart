@@ -7,6 +7,7 @@ import '../api/auth_session.dart';
 import '../api/customer_api_service.dart';
 import '../routes/app_routes.dart';
 import 'customer_store_controller.dart';
+import 'documents_controller.dart';
 
 class ProfileController extends GetxController {
   final store = Get.find<CustomerStoreController>();
@@ -65,6 +66,7 @@ class ProfileController extends GetxController {
     }
     await session.clear();
     store.clearCustomerData();
+    if (Get.isRegistered<DocumentsController>()) Get.find<DocumentsController>().clear();
     Get.snackbar('auth_success'.tr, 'logout_success'.tr);
     Get.offAllNamed(AppRoutes.login);
   }
@@ -106,6 +108,7 @@ class ProfileController extends GetxController {
     }
     await session.clear();
     store.clearCustomerData();
+    if (Get.isRegistered<DocumentsController>()) Get.find<DocumentsController>().clear();
     Get.offAllNamed(AppRoutes.login);
     Get.snackbar('delete_account'.tr, 'delete_account_done'.tr);
     return null;

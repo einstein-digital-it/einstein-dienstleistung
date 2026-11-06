@@ -5,6 +5,7 @@ import 'app/api/api_client.dart';
 import 'app/api/auth_session.dart';
 import 'app/api/customer_api_service.dart';
 import 'app/controllers/customer_store_controller.dart';
+import 'app/controllers/documents_controller.dart';
 import 'app/lang/app_translations.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
@@ -34,6 +35,7 @@ void _ensureDependencies() {
     );
   }
   Get.put<CustomerStoreController>(CustomerStoreController(), permanent: true);
+  Get.put<DocumentsController>(DocumentsController(), permanent: true);
 }
 
 class EinsteinUserApp extends StatelessWidget {

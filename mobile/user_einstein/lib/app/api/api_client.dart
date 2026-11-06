@@ -115,6 +115,56 @@ class ApiClient {
         : decoded;
   }
 
+  Uri _uri(String path) {
+    final normalizedBase = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
+    final normalizedPath = path.startsWith('/') ? path.substring(1) : path;
+    return Uri.parse('$normalizedBase/$normalizedPath');
+  }
+
+  /// Multipart upload of one file plus form fields.
+  Future<dynamic> upload(
+    String path, {
+    required List<int> bytes,
+    required String filename,
+    Map<String, String> fields = const {},
+  }) async {
+    await session.ensureLoaded();
+    final request = http.MultipartRequest('POST', _uri(path))
+      ..headers['Accept'] = 'application/json'
+      ..fields.addAll(fields)
+      ..files.add(http.MultipartFile.fromBytes('file', bytes, filename: filename));
+    if (session.token != null) {
+      request.headers['Authorization'] = 'Bearer ${session.token}';
+    }
+    final streamed = await _httpClient.send(request).timeout(const Duration(seconds: 90));
+    final response = await http.Response.fromStream(streamed);
+    final decoded = response.body.isEmpty ? null : jsonDecode(response.body);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw ApiException(
+        _messageFrom(decoded) ?? 'Upload failed.',
+        statusCode: response.statusCode,
+        errors: decoded is Map<String, dynamic> ? decoded['errors'] : null,
+      );
+    }
+    return decoded is Map<String, dynamic> && decoded.containsKey('data')
+        ? decoded['data']
+        : decoded;
+  }
+
+  /// Raw bytes of a protected file (e.g. a customer document).
+  Future<List<int>> getBytes(String path) async {
+    await session.ensureLoaded();
+    final response = await _httpClient.get(_uri(path), headers: {
+      if (session.token != null) 'Authorization': 'Bearer ${session.token}',
+    }).timeout(const Duration(seconds: 60));
+    if (response.statusCode != 200) {
+      throw ApiException('Download failed.', statusCode: response.statusCode);
+    }
+    return response.bodyBytes;
+  }
+
   String? _messageFrom(Object? decoded) {
     if (decoded is Map<String, dynamic>) {
       final message = decoded['message'];

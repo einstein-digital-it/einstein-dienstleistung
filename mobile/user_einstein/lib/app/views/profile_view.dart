@@ -14,7 +14,7 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const AppBottomNav(currentIndex: 5),
+      bottomNavigationBar: const AppBottomNav(tab: NavTab.profile),
       body: SafeArea(
         child: Obx(
           () => ListView(

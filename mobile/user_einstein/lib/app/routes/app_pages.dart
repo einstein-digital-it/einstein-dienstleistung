@@ -5,6 +5,7 @@ import '../controllers/booking_controller.dart';
 import '../controllers/customer_dashboard_controller.dart';
 import '../controllers/customer_clients_controller.dart';
 import '../controllers/customer_service_controller.dart';
+import '../controllers/forms_controller.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/my_bookings_controller.dart';
 import '../controllers/notification_settings_controller.dart';
@@ -18,6 +19,8 @@ import '../views/customer_dashboard_view.dart';
 import '../views/customer_clients_view.dart';
 import '../views/client_workspace_view.dart';
 import '../views/customer_service_view.dart';
+import '../views/documents_view.dart';
+import '../views/forms_view.dart';
 import '../views/home_view.dart';
 import '../views/login_view.dart';
 import '../views/my_bookings_view.dart';
@@ -148,6 +151,37 @@ abstract class AppPages {
         Get.lazyPut<ClientWorkspaceController>(
           () => ClientWorkspaceController(clientId: Get.arguments.toString()),
         );
+      }),
+    ),
+    GetPage(
+      name: AppRoutes.documents,
+      page: () => const DocumentsView(),
+      middlewares: _customerAuthMiddleware,
+    ),
+    GetPage(
+      name: AppRoutes.documentFolder,
+      page: () => const FolderView(),
+      middlewares: _customerAuthMiddleware,
+    ),
+    GetPage(
+      name: AppRoutes.documentDetail,
+      page: () => const DocumentDetailView(),
+      middlewares: _customerAuthMiddleware,
+    ),
+    GetPage(
+      name: AppRoutes.forms,
+      page: () => const FormsView(),
+      middlewares: _customerAuthMiddleware,
+      binding: BindingsBuilder(() {
+        Get.lazyPut<FormsController>(FormsController.new, fenix: true);
+      }),
+    ),
+    GetPage(
+      name: AppRoutes.formFill,
+      page: () => const FormFillView(),
+      middlewares: _customerAuthMiddleware,
+      binding: BindingsBuilder(() {
+        Get.lazyPut<FormsController>(FormsController.new, fenix: true);
       }),
     ),
   ];

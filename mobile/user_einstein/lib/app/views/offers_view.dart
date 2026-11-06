@@ -13,7 +13,7 @@ class OffersView extends GetView<OffersController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const AppBottomNav(currentIndex: 2),
+      bottomNavigationBar: const AppBottomNav(tab: NavTab.offers),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [

@@ -1,4 +1,5 @@
 import '../models/booking_item.dart';
+import '../models/customer_document.dart';
 import '../models/customer_profile.dart';
 import '../models/managed_client.dart';
 import '../models/notification_item.dart';
@@ -242,5 +243,69 @@ class CustomerApiService {
     Map<String, dynamic> payload,
   ) async {
     await client.post('customer/clients/$id/invoices', body: payload);
+  }
+
+  // ------------------------------------------------ customer file ("My file")
+
+  Future<List<CustomerDocument>> documents() async {
+    final data = await client.get('customer/documents');
+    final list = data is Map<String, dynamic> ? data['documents'] : null;
+    return list is List
+        ? list.whereType<Map<String, dynamic>>().map(CustomerDocument.fromJson).toList()
+        : <CustomerDocument>[];
+  }
+
+  Future<CustomerDocument> uploadDocument({
+    required List<int> bytes,
+    required String filename,
+    String folder = 'auto',
+    String? lang,
+    String? title,
+    bool process = true,
+  }) async {
+    final data = await client.upload(
+      'customer/documents',
+      bytes: bytes,
+      filename: filename,
+      fields: {
+        'folder': folder,
+        if (lang != null) 'lang': lang,
+        if (title != null && title.isNotEmpty) 'title': title,
+        'process': process ? '1' : '0',
+      },
+    );
+    return CustomerDocument.fromJson(Map<String, dynamic>.from(data as Map));
+  }
+
+  Future<List<int>> downloadDocument(int id) => client.getBytes('customer/documents/$id/download');
+
+  Future<void> deleteDocument(int id) async {
+    await client.delete('customer/documents/$id');
+  }
+
+  Future<void> translateDocument(int id, String lang) async {
+    await client.post('customer/documents/$id/translate', body: {'lang': lang});
+  }
+
+  Future<List<CustomerReminder>> reminders() async {
+    final data = await client.get('customer/reminders');
+    return data is List
+        ? data.whereType<Map<String, dynamic>>().map(CustomerReminder.fromJson).toList()
+        : <CustomerReminder>[];
+  }
+
+  Future<void> updateReminder(int id, Map<String, dynamic> payload) async {
+    await client.patch('customer/reminders/$id', body: payload);
+  }
+
+  // ------------------------------------------------ applications (Anträge)
+
+  Future<Map<String, dynamic>> forms() async {
+    final data = await client.get('customer/forms');
+    return data is Map<String, dynamic> ? data : <String, dynamic>{};
+  }
+
+  Future<void> saveFormData(Map<String, String> data) async {
+    await client.put('customer/form-data', body: {'data': data});
   }
 }

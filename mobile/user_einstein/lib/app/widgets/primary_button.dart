@@ -20,9 +20,9 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final background = dark ? AppColors.navyDark : AppColors.navy;
+    final background = dark ? AppColors.navy : AppColors.purple;
     return SizedBox(
-      height: 58,
+      height: 54,
       width: double.infinity,
       child: FilledButton(
         onPressed: isLoading ? null : onPressed,
@@ -30,7 +30,7 @@ class PrimaryButton extends StatelessWidget {
           backgroundColor: background,
           foregroundColor: Colors.white,
           disabledBackgroundColor: background.withValues(alpha: 0.65),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         ),
         child: isLoading
             ? const SizedBox(
@@ -51,7 +51,7 @@ class PrimaryButton extends StatelessWidget {
                       label,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ],

@@ -2,301 +2,166 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/customer_dashboard_controller.dart';
+import '../controllers/documents_controller.dart';
+import '../models/booking_item.dart';
 import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/app_bottom_nav.dart';
-import '../widgets/einstein_logo.dart';
-import '../widgets/primary_button.dart';
+import '../widgets/ui.dart';
+import 'documents_view.dart';
 
+/// Home for logged-in customers: upload a letter, reminders, shortcuts,
+/// latest documents and upcoming bookings.
 class CustomerDashboardView extends GetView<CustomerDashboardController> {
   const CustomerDashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final docs = Get.find<DocumentsController>();
+    if (!docs.loadedOnce.value && !docs.isLoading.value) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => docs.load());
+    }
     return Scaffold(
-      bottomNavigationBar: const AppBottomNav(currentIndex: 0),
+      bottomNavigationBar: const AppBottomNav(tab: NavTab.home),
       body: SafeArea(
-        child: Obx(() {
-          controller.store.locale.value;
-          return CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _DashboardTopBar(
-                        name: controller.store.profile.value.fullName,
-                      ),
-                      const SizedBox(height: 20),
-                      _WelcomeCard(
-                        openPayments: controller.store.openPaymentsCount,
-                      ),
-                      const SizedBox(height: 18),
-                      const _QuickGrid(),
-                      const SizedBox(height: 26),
-                      Text(
-                        'upcoming_bookings'.tr,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 12),
-                    ],
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await Future.wait([controller.refreshDashboard(), docs.load()]);
+          },
+          child: Obx(() {
+            controller.store.locale.value;
+            final store = controller.store;
+            final upcoming = store.upcomingBookings;
+            return ListView(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
+              children: [
+                _TopBar(name: store.profile.value.fullName, unread: store.unreadNotificationsCount),
+                const SizedBox(height: 18),
+                const UploadHeroCard(compact: true),
+                if (docs.reminders.isNotEmpty) ...[
+                  const SizedBox(height: 24),
+                  SectionTitle(
+                    title: 'reminders_title'.tr,
+                    action: docs.reminders.length > 3 ? 'see_all'.tr : null,
+                    onAction: () => Get.offNamed(AppRoutes.documents),
                   ),
+                  for (final r in docs.reminders.take(3)) ...[
+                    ReminderCard(reminder: r),
+                    const SizedBox(height: 10),
+                  ],
+                ],
+                const SizedBox(height: 22),
+                const _QuickGrid(),
+                const SizedBox(height: 24),
+                SectionTitle(
+                  title: 'files_recent'.tr,
+                  action: docs.documents.isEmpty ? null : 'see_all'.tr,
+                  onAction: () => Get.offNamed(AppRoutes.documents),
                 ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                sliver: controller.store.upcomingBookings.isEmpty
-                    ? SliverToBoxAdapter(
-                        child: _EmptyPanel(message: 'no_bookings'.tr),
-                      )
-                    : SliverList.separated(
-                        itemCount: controller.store.upcomingBookings.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          final item = controller.store.upcomingBookings[index];
-                          return Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(18),
-                              border: Border.all(
-                                color: const Color(0xFFE9EEF6),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 48,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    color: item.statusColor.withValues(
-                                      alpha: 0.12,
-                                    ),
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  child: Icon(
-                                    Icons.calendar_today_outlined,
-                                    color: item.statusColor,
-                                  ),
-                                ),
-                                const SizedBox(width: 13),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.displayService,
-                                        style: const TextStyle(
-                                          color: AppColors.navy,
-                                          fontWeight: FontWeight.w900,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        '${item.date} - ${item.time}',
-                                        style: const TextStyle(
-                                          color: AppColors.muted,
-                                          fontSize: 12.5,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      item.grossPrice,
-                                      style: const TextStyle(
-                                        color: AppColors.gold,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                    Text(
-                                      'incl_vat'.tr,
-                                      style: const TextStyle(
-                                        color: AppColors.muted,
-                                        fontSize: 10.5,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'recent_notifications'.tr,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 12),
-                      if (controller.store.recentNotifications.isEmpty)
-                        _EmptyPanel(message: 'no_notifications'.tr)
-                      else
-                        ...controller.store.recentNotifications.map(
-                          (item) => Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: const Color(0xFFE9EEF6),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(item.icon, color: item.color),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    item.title,
-                                    style: const TextStyle(
-                                      color: AppColors.navy,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                ),
-                                const Icon(
-                                  Icons.chevron_right,
-                                  color: AppColors.muted,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+                if (docs.documents.isEmpty)
+                  AppCard(child: EmptyState(icon: Icons.folder_open_outlined, text: 'files_empty_dashboard'.tr))
+                else
+                  for (final d in docs.recent) ...[
+                    DocumentTile(doc: d, showFolder: true),
+                    const SizedBox(height: 10),
+                  ],
+                const SizedBox(height: 18),
+                SectionTitle(
+                  title: 'upcoming_bookings'.tr,
+                  action: upcoming.isEmpty ? null : 'see_all'.tr,
+                  onAction: () => Get.offNamed(AppRoutes.myBookings),
                 ),
-              ),
-            ],
-          );
-        }),
+                if (upcoming.isEmpty)
+                  AppCard(child: EmptyState(icon: Icons.event_available_outlined, text: 'no_bookings'.tr))
+                else
+                  for (final b in upcoming) ...[
+                    _BookingRow(item: b),
+                    const SizedBox(height: 10),
+                  ],
+              ],
+            );
+          }),
+        ),
       ),
     );
   }
 }
 
-class _DashboardTopBar extends StatelessWidget {
-  const _DashboardTopBar({required this.name});
+class _TopBar extends StatelessWidget {
+  const _TopBar({required this.name, required this.unread});
 
   final String name;
+  final int unread;
 
   @override
   Widget build(BuildContext context) {
+    final first = name.trim().isEmpty ? '' : name.trim().split(' ').first;
+    final initials = name.trim().isEmpty
+        ? 'ES'
+        : name.trim().split(RegExp(r'\s+')).take(2).map((p) => p.isEmpty ? '' : p[0].toUpperCase()).join();
     return Row(
       children: [
-        const EinsteinLogo(size: 48),
+        GestureDetector(
+          onTap: () => Get.offNamed(AppRoutes.profile),
+          child: CircleAvatar(
+            radius: 24,
+            backgroundColor: AppColors.navy,
+            child: Text(initials, style: const TextStyle(color: AppColors.goldBright, fontWeight: FontWeight.w700)),
+          ),
+        ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'welcome_back'.tr,
-                style: const TextStyle(
-                  color: AppColors.muted,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Text(
-                name,
-                style: const TextStyle(
-                  color: AppColors.navy,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
+              Text('welcome_back'.tr, style: Theme.of(context).textTheme.bodySmall),
+              Text(first.isEmpty ? 'EinStein' : first,
+                  style: Theme.of(context).textTheme.headlineSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
             ],
           ),
         ),
-        IconButton(
-          onPressed: () => Get.toNamed(AppRoutes.notifications),
-          icon: const Icon(
-            Icons.notifications_none_rounded,
-            color: AppColors.navy,
-          ),
-          style: IconButton.styleFrom(backgroundColor: Colors.white),
+        _RoundIconButton(
+          icon: Icons.notifications_none_rounded,
+          badge: unread,
+          onTap: () => Get.toNamed(AppRoutes.notifications),
         ),
       ],
     );
   }
 }
 
-class _WelcomeCard extends StatelessWidget {
-  const _WelcomeCard({required this.openPayments});
+class _RoundIconButton extends StatelessWidget {
+  const _RoundIconButton({required this.icon, required this.onTap, this.badge = 0});
 
-  final int openPayments;
+  final IconData icon;
+  final VoidCallback onTap;
+  final int badge;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(22),
-      decoration: BoxDecoration(
-        color: AppColors.navy,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'customer_dashboard'.tr,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 30,
-              fontWeight: FontWeight.w900,
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Material(
+          color: Colors.white,
+          shape: const CircleBorder(side: BorderSide(color: AppColors.line)),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: onTap,
+            child: SizedBox(width: 46, height: 46, child: Icon(icon, color: AppColors.navy)),
+          ),
+        ),
+        if (badge > 0)
+          PositionedDirectional(
+            top: -2,
+            end: -2,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              decoration: BoxDecoration(color: AppColors.danger, borderRadius: BorderRadius.circular(99), border: Border.all(color: Colors.white, width: 2)),
+              child: Text('$badge', style: const TextStyle(color: Colors.white, fontSize: 10.5, fontWeight: FontWeight.w700)),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'dashboard_summary'.tr,
-            style: const TextStyle(color: Color(0xFFDDE7F4), height: 1.4),
-          ),
-          const SizedBox(height: 18),
-          Row(
-            children: [
-              Expanded(
-                child: PrimaryButton(
-                  label: 'new_booking'.tr,
-                  icon: Icons.add_rounded,
-                  onPressed: () => Get.toNamed(AppRoutes.bookings),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Container(
-                height: 58,
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  'due_count'.trParams({'count': openPayments.toString()}),
-                  style: const TextStyle(
-                    color: AppColors.gold,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+      ],
     );
   }
 }
@@ -307,89 +172,66 @@ class _QuickGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      (
-        Icons.calendar_month_outlined,
-        'quick_my_bookings'.tr,
-        AppRoutes.myBookings,
-      ),
-      (Icons.credit_card_outlined, 'quick_payment'.tr, AppRoutes.payment),
-      (
-        Icons.support_agent_outlined,
-        'quick_support'.tr,
-        AppRoutes.customerService,
-      ),
-      (Icons.groups_2_outlined, 'quick_clients'.tr, AppRoutes.customerClients),
-      (
-        Icons.settings_outlined,
-        'quick_notifications'.tr,
-        AppRoutes.notificationSettings,
-      ),
-      (Icons.person_outline, 'nav_profile'.tr, AppRoutes.profile),
+      (Icons.add_task_rounded, 'quick_book'.tr, 'quick_book_sub'.tr, AppColors.purple, AppRoutes.bookings, false),
+      (Icons.folder_rounded, 'nav_documents'.tr, 'quick_files_sub'.tr, const Color(0xFF2563EB), AppRoutes.documents, true),
+      (Icons.edit_document, 'nav_forms'.tr, 'quick_forms_sub'.tr, AppColors.gold, AppRoutes.forms, true),
+      (Icons.support_agent_rounded, 'quick_support'.tr, 'quick_support_sub'.tr, const Color(0xFF059669), AppRoutes.customerService, false),
     ];
-    return GridView.builder(
-      itemCount: items.length,
+    return GridView.count(
+      crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisExtent: 104,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return InkWell(
-          borderRadius: BorderRadius.circular(17),
-          onTap: () => Get.toNamed(item.$3),
-          child: Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(17),
-              border: Border.all(color: const Color(0xFFE9EEF6)),
-            ),
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      childAspectRatio: 1.55,
+      children: [
+        for (final item in items)
+          AppCard(
+            padding: const EdgeInsets.all(14),
+            onTap: () => item.$6 ? Get.offNamed(item.$5) : Get.toNamed(item.$5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(item.$1, color: AppColors.gold),
+                IconTile(icon: item.$1, color: item.$4, size: 36),
                 const Spacer(),
-                Text(
-                  item.$2,
-                  style: const TextStyle(
-                    color: AppColors.navy,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
+                Text(item.$2, maxLines: 1, overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w700, fontSize: 14.5)),
+                Text(item.$3, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
           ),
-        );
-      },
+      ],
     );
   }
 }
 
-class _EmptyPanel extends StatelessWidget {
-  const _EmptyPanel({required this.message});
+class _BookingRow extends StatelessWidget {
+  const _BookingRow({required this.item});
 
-  final String message;
+  final BookingItem item;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE9EEF6)),
-      ),
-      child: Text(
-        message,
-        style: const TextStyle(
-          color: AppColors.muted,
-          fontWeight: FontWeight.w700,
-        ),
+    return AppCard(
+      padding: const EdgeInsets.all(14),
+      onTap: () => Get.offNamed(AppRoutes.myBookings),
+      child: Row(
+        children: [
+          IconTile(icon: Icons.event_rounded, color: item.statusColor, size: 42),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(item.displayService, maxLines: 1, overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w700)),
+                const SizedBox(height: 3),
+                Text('${item.date} · ${item.time}', style: Theme.of(context).textTheme.bodySmall),
+              ],
+            ),
+          ),
+          Pill(label: item.statusKey.tr, color: item.statusColor),
+        ],
       ),
     );
   }

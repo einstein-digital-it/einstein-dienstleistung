@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class NotificationItem {
   const NotificationItem({
@@ -31,7 +32,8 @@ class NotificationItem {
 }
 
 String _localized(Map<String, dynamic> json, String key) {
-  return (json['${key}_de'] ?? json['${key}_en'] ?? json['${key}_ar'] ?? json[key] ?? '').toString();
+  final lang = Get.locale?.languageCode ?? 'ar';
+  return (json['${key}_$lang'] ?? json['${key}_de'] ?? json['${key}_en'] ?? json['${key}_ar'] ?? json[key] ?? '').toString();
 }
 
 IconData _icon(String type) {

@@ -13,7 +13,7 @@ class NotificationsView extends GetView<NotificationsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const AppBottomNav(currentIndex: 4),
+      bottomNavigationBar: const AppBottomNav(tab: NavTab.home),
       body: SafeArea(
         child: Obx(
           () => CustomScrollView(
