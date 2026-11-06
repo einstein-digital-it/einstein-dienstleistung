@@ -16,6 +16,10 @@ php artisan config:cache
 php artisan route:cache
 chown -R www-data:www-data storage bootstrap/cache database
 
+# Laravel scheduler (daily document reminders), runs as www-data; safe to repeat
+CRON_LINE="* * * * * cd $APP_DIR/backend && php artisan schedule:run >> /dev/null 2>&1"
+( crontab -u www-data -l 2>/dev/null | grep -v 'artisan schedule:run' || true; echo "$CRON_LINE" ) | crontab -u www-data -
+
 echo "==> Frontend"
 cd "$APP_DIR/front_end"
 DOMAIN="$(grep '^APP_URL=' "$APP_DIR/backend/.env" | cut -d/ -f3)"

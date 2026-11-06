@@ -13,6 +13,8 @@ use App\Http\Controllers\Api\McpController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\CustomerClientController;
 use App\Http\Controllers\Api\CustomerDocumentController;
+use App\Http\Controllers\Api\CustomerFormController;
+use App\Http\Controllers\Api\CustomerReminderController;
 use App\Http\Controllers\Api\CustomerPortalController;
 use App\Http\Controllers\Api\CustomerRequestController;
 use App\Http\Controllers\Api\CustomerSupportController;
@@ -65,9 +67,9 @@ Route::get('seo-settings/page/{pageName}', [SeoSettingController::class, 'byPage
 
 Route::middleware('api.auth:admin,provider,user')->group(function () {
     Route::post('uploads', [FileUploadController::class, 'store']);
-    Route::get('profile', [ProfileController::class, 'show']);
-    Route::patch('profile', [ProfileController::class, 'update']);
-    Route::get('customer/dashboard', [CustomerPortalController::class, 'dashboard']);
+    Route::get('profile', [ProfileController::class, 'show'])->middleware('own.email');
+    Route::patch('profile', [ProfileController::class, 'update'])->middleware('own.email');
+    Route::get('customer/dashboard', [CustomerPortalController::class, 'dashboard'])->middleware('own.email');
     Route::middleware('api.auth:user')->group(function () {
         Route::get('customer/clients', [CustomerClientController::class, 'index']);
         Route::post('customer/clients', [CustomerClientController::class, 'store']);
@@ -83,14 +85,20 @@ Route::middleware('api.auth:admin,provider,user')->group(function () {
     Route::post('customer/documents', [CustomerDocumentController::class, 'store'])->middleware('throttle:60,1');
     Route::get('customer/documents/{document}/download', [CustomerDocumentController::class, 'download']);
     Route::delete('customer/documents/{document}', [CustomerDocumentController::class, 'destroy']);
-    Route::get('customer/bookings', [CustomerPortalController::class, 'bookings']);
-    Route::get('customer/notifications', [NotificationController::class, 'index']);
-    Route::post('customer/notifications', [NotificationController::class, 'store']);
-    Route::patch('customer/notifications/{notification}/read', [NotificationController::class, 'markRead']);
-    Route::patch('customer/notifications/mark-all-read', [NotificationController::class, 'markAllRead']);
-    Route::delete('customer/notifications/read', [NotificationController::class, 'deleteRead']);
-    Route::get('customer/notification-preferences', [NotificationPreferenceController::class, 'show']);
-    Route::put('customer/notification-preferences', [NotificationPreferenceController::class, 'update']);
+    Route::post('customer/documents/{document}/translate', [CustomerDocumentController::class, 'translate'])->middleware('throttle:20,1');
+    Route::get('customer/reminders', [CustomerReminderController::class, 'index']);
+    Route::post('customer/reminders', [CustomerReminderController::class, 'store']);
+    Route::patch('customer/reminders/{reminder}', [CustomerReminderController::class, 'update']);
+    Route::get('customer/forms', [CustomerFormController::class, 'index']);
+    Route::put('customer/form-data', [CustomerFormController::class, 'saveData']);
+    Route::get('customer/bookings', [CustomerPortalController::class, 'bookings'])->middleware('own.email');
+    Route::get('customer/notifications', [NotificationController::class, 'index'])->middleware('own.email');
+    Route::post('customer/notifications', [NotificationController::class, 'store'])->middleware('own.email');
+    Route::patch('customer/notifications/{notification}/read', [NotificationController::class, 'markRead'])->middleware('own.email');
+    Route::patch('customer/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->middleware('own.email');
+    Route::delete('customer/notifications/read', [NotificationController::class, 'deleteRead'])->middleware('own.email');
+    Route::get('customer/notification-preferences', [NotificationPreferenceController::class, 'show'])->middleware('own.email');
+    Route::put('customer/notification-preferences', [NotificationPreferenceController::class, 'update'])->middleware('own.email');
     Route::get('payments/bookings/{booking}', [PaymentController::class, 'show']);
     Route::post('payments/bookings/{booking}/checkout', [StripeController::class, 'checkout']);
     Route::apiResource('bookings', BookingController::class);
@@ -108,6 +116,9 @@ Route::middleware('api.auth:admin,provider')->group(function () {
     Route::patch('provider/bookings/{booking}/documents', [ProviderDashboardController::class, 'updateDocuments']);
     Route::patch('provider/profile/{serviceProvider}', [ProviderDashboardController::class, 'updateProfile']);
     Route::apiResource('provider-documents', ProviderDocumentController::class)->only(['index', 'store', 'destroy']);
+    // Customer files: admins and providers
+    Route::get('admin/customer-documents', [CustomerDocumentController::class, 'adminIndex']);
+    Route::post('admin/customer-documents', [CustomerDocumentController::class, 'adminStore']);
 });
 
 Route::middleware('api.auth:provider')->group(function () {
@@ -119,8 +130,6 @@ Route::middleware('api.auth:provider')->group(function () {
 
 Route::middleware('api.auth:admin')->group(function () {
     Route::get('admin/dashboard', [AdminDashboardController::class, 'index']);
-    Route::get('admin/customer-documents', [CustomerDocumentController::class, 'adminIndex']);
-    Route::post('admin/customer-documents', [CustomerDocumentController::class, 'adminStore']);
     Route::get('admin/cancellations', [ContractCancellationController::class, 'index']);
     Route::patch('admin/cancellations/{cancellation}', [ContractCancellationController::class, 'update']);
     Route::get('admin/client-workspaces', [AdminClientWorkspaceController::class, 'index']);

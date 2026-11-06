@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
         $middleware->alias([
+            'own.email' => \App\Http\Middleware\ForceOwnEmail::class,
             'api.auth' => \App\Http\Middleware\ApiTokenAuth::class,
         ]);
     })

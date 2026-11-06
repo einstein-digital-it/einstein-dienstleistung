@@ -1,0 +1,35 @@
+name: Backend tests
+
+on:
+  push:
+    branches: [release/android]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: sqlite3, pdo_sqlite, mbstring, intl, bcmath, zip
+          coverage: none
+      - name: Install
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Prepare
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          touch database/database.sqlite
+      - name: Tests
+        run: php artisan test 2>&1 | tee ../test-output.txt
+      - name: Annotate failures
+        if: failure()
+        run: |
+          grep -E "FAILED|Tests:|Error|Exception|expected|Failed asserting" ../test-output.txt | head -60 | while IFS= read -r line; do echo "::error::$line"; done

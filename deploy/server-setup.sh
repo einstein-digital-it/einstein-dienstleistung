@@ -123,6 +123,10 @@ php artisan route:cache
 chown -R www-data:www-data storage bootstrap/cache database
 chmod -R ug+rw storage bootstrap/cache database
 
+# Laravel scheduler (daily document reminders), runs as www-data; safe to repeat
+CRON_LINE="* * * * * cd $APP_DIR/backend && php artisan schedule:run >> /dev/null 2>&1"
+( crontab -u www-data -l 2>/dev/null | grep -v 'artisan schedule:run' || true; echo "$CRON_LINE" ) | crontab -u www-data -
+
 # ---------------------------------------------------------------- 4. React frontend
 step "Frontend (React)"
 cd "$APP_DIR/front_end"

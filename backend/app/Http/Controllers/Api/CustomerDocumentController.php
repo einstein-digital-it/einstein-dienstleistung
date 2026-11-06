@@ -55,6 +55,20 @@ class CustomerDocumentController extends Controller
         return response()->json(null, 204);
     }
 
+    /** POST customer/documents/{document}/translate { lang } — translate again into another language. */
+    public function translate(Request $request, CustomerDocument $document): JsonResponse
+    {
+        $this->authorizeAccess($request, $document);
+        $data = $request->validate(['lang' => ['required', Rule::in(['ar', 'de', 'en', 'tr', 'es'])]]);
+        if (! ProcessCustomerDocument::enabled()) {
+            return response()->json(['message' => 'Automatic translation is not set up.'], 503);
+        }
+        $document->update(['translation_language' => $data['lang'], 'ai_status' => 'pending']);
+        ProcessCustomerDocument::dispatchAfterResponse($document->id, false);
+
+        return response()->json(['data' => $document->fresh()]);
+    }
+
     // ------------------------------------------------------------ admin
 
     /** GET admin/customer-documents?email=... — one customer's folders, or a list of customers with documents. */
@@ -108,11 +122,14 @@ class CustomerDocumentController extends Controller
             // "auto" = let Claude pick the folder
             'folder' => ['required', Rule::in([...CustomerDocument::FOLDERS, 'auto'])],
             'lang' => ['nullable', Rule::in(['ar', 'de', 'en', 'tr', 'es'])],
+            // false for files the app made itself (e.g. a filled application)
+            'process' => ['nullable', 'boolean'],
             'title' => ['nullable', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:2000'],
             'file' => self::FILE_RULES,
         ]);
 
+        $process = ProcessCustomerDocument::enabled() && $request->boolean('process', true);
         $file = $request->file('file');
         $path = $file->store('customer-documents/'.sha1(strtolower($email)), self::DISK);
 
@@ -127,9 +144,9 @@ class CustomerDocumentController extends Controller
             'uploaded_by' => $uploadedBy,
             'note' => $data['note'] ?? null,
             'translation_language' => $data['lang'] ?? $this->languageOf($email),
-            'ai_status' => ProcessCustomerDocument::enabled() ? 'pending' : 'none',
+            'ai_status' => $process ? 'pending' : 'none',
         ]);
-        if (ProcessCustomerDocument::enabled()) {
+        if ($process) {
             ProcessCustomerDocument::dispatchAfterResponse($doc->id, $data['folder'] === 'auto');
         }
         Log::info('customer document uploaded', ['id' => $doc->id, 'by' => $uploadedBy]);
@@ -151,7 +168,8 @@ class CustomerDocumentController extends Controller
     {
         $user = $request->user();
         $isOwner = strcasecmp((string) $user?->email, $document->user_email) === 0;
-        if (! $isOwner && $user?->role !== 'admin') {
+        // Admins and EinStein's providers may open every customer's file
+        if (! $isOwner && ! in_array($user?->role, ['admin', 'provider'], true)) {
             abort(404);
         }
     }

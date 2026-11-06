@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\CustomerDocument;
+use App\Models\CustomerReminder;
+use Illuminate\Support\Carbon;
 use App\Models\Notification;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Http;
@@ -60,11 +62,13 @@ class ProcessCustomerDocument
             'folder' => $this->autoFolder && in_array($folder, CustomerDocument::FOLDERS, true) ? $folder : $doc->folder,
             'title' => $this->autoFolder && ! empty($result['title']) ? mb_substr($result['title'], 0, 255) : $doc->title,
             'sender' => isset($result['sender']) ? mb_substr((string) $result['sender'], 0, 255) : null,
+            'sender_email' => filter_var($result['sender_email'] ?? null, FILTER_VALIDATE_EMAIL) ?: null,
             'summary' => $result['summary'] ?? null,
             'translation' => $result['translation'] ?? null,
             'deadline' => $this->validDate($result['deadline'] ?? null),
             'ai_status' => 'done',
         ]);
+        $this->saveReminders($doc, $result['dates'] ?? []);
 
         $titles = ['ar' => 'تمت ترجمة مستند', 'de' => 'Dokument übersetzt', 'en' => 'Document translated'];
         Notification::create([
@@ -93,9 +97,17 @@ class ProcessCustomerDocument
           "folder": one of [$folders] — the authority or topic it belongs to (jobcenter = Jobcenter/Bürgergeld, auslaenderbehoerde = immigration office/residence permit, familienkasse = Kindergeld/child benefits, wohnen = landlord/rent/housing, arbeit = employer/payslips/contracts, sonstiges if unclear),
           "title": a short title in $language (max 8 words, e.g. sender + subject + date),
           "sender": who sent it (organisation name as written),
+          "sender_email": the sender's e-mail address if one is printed on the letter, else null,
           "summary": 2-4 plain sentences in $language: what it is about, what the customer must do, and any deadline or amount,
           "translation": a faithful full translation of the document text into $language (keep names, numbers, dates, reference numbers; use line breaks),
-          "deadline": the most important deadline as YYYY-MM-DD, or null
+          "deadline": the most important deadline as YYYY-MM-DD, or null,
+          "dates": a list of every future date the customer must act on, each
+            {"date": "YYYY-MM-DD",
+             "kind": "deadline" (reply/pay/submit by), "expiry" (something ends: residence permit, Bürgergeld approval period (Bewilligungszeitraum), contract, ID) or "appointment",
+             "title": short action in $language (e.g. "Apply for extension of residence permit", "Submit continuation application (WBA) to Jobcenter"),
+             "details": one sentence in $language on what to do and where,
+             "remind_days_before": how many days before the date to remind (residence permit expiry: 56, Bürgergeld period end: 35, passport/ID expiry: 60, other deadlines: 7, appointments: 2)}
+            — an empty list if there are none
         }
         TXT;
 
@@ -121,6 +133,40 @@ class ProcessCustomerDocument
         }
 
         return $json;
+    }
+
+    /** Turn the dates Claude found into reminders (replacing earlier ones for this document). */
+    private function saveReminders(CustomerDocument $doc, mixed $dates): void
+    {
+        CustomerReminder::where('customer_document_id', $doc->id)->where('status', 'open')->delete();
+        if (! is_array($dates)) {
+            return;
+        }
+        $today = Carbon::today();
+        $defaults = ['expiry' => 56, 'deadline' => 7, 'appointment' => 2];
+        foreach (array_slice($dates, 0, 10) as $item) {
+            if (! is_array($item) || ! ($date = $this->validDate($item['date'] ?? null))) {
+                continue;
+            }
+            $due = Carbon::parse($date);
+            if ($due->lt($today)) {
+                continue;
+            }
+            $kind = in_array($item['kind'] ?? '', ['deadline', 'expiry', 'appointment'], true) ? $item['kind'] : 'deadline';
+            $before = (int) ($item['remind_days_before'] ?? $defaults[$kind]);
+            $before = max(1, min(120, $before ?: $defaults[$kind]));
+            $remindOn = $due->copy()->subDays($before);
+            CustomerReminder::create([
+                'user_email' => $doc->user_email,
+                'customer_document_id' => $doc->id,
+                'folder' => $doc->folder,
+                'kind' => $kind,
+                'title' => mb_substr((string) ($item['title'] ?? $doc->title), 0, 255),
+                'details' => isset($item['details']) ? mb_substr((string) $item['details'], 0, 2000) : null,
+                'due_date' => $due->toDateString(),
+                'remind_on' => ($remindOn->lt($today) ? $today : $remindOn)->toDateString(),
+            ]);
+        }
     }
 
     private function mimeOf(CustomerDocument $doc): string

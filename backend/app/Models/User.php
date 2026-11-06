@@ -29,6 +29,7 @@ class User extends Authenticatable
         'avatar_url',
         'is_active',
         'password',
+        'form_data',
     ];
 
     /**
@@ -39,6 +40,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'form_data',
     ];
 
     /**
@@ -52,6 +54,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'is_active' => 'boolean',
             'password' => 'hashed',
+            'form_data' => 'array',
         ];
     }
 }
