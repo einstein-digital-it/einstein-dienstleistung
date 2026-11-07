@@ -177,7 +177,7 @@ export default function ProviderDocumentsTab({ providerId, lang = "de" }) {
               <Input
                 value={newDoc.name}
                 onChange={e => setNewDoc(prev => ({ ...prev, name: e.target.value }))}
-                placeholder={lang === "ar" ? "مثال: شهادة ماجستير" : lang === "en" ? "e.g. Master's Certificate" : "z.B. Masterurkunde"}
+                placeholder={lang === "ar" ? "مثال: شهادة ماجستير" : lang === "en" ? "e.g. Master's Certificate" : lang === "uk" ? "напр. диплом майстра" : "z.B. Masterurkunde"}
               />
             </div>
             <div>

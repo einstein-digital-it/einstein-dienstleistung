@@ -82,6 +82,24 @@ const T = {
 };
 T.tr = { ...T.en, aboTitle: "Sıralama ve çeviri", aboSubscribe: "Şimdi abone ol", aboPrice: (p) => `${p} € / ay KDV dahil · aylık iptal`, title: "Belgelerim", subtitle: "Tüm belgeleriniz kurum ve konuya göre sıralı.", upload: "Dosya yükle", back: "Tüm klasörler", autoTitle: "Yükleyin – biz sıralayıp çeviririz", processing: "Sıralanıyor ve çevriliyor…", summary: "Özet", translation: "Çeviri", showTranslation: "Çeviriyi göster", hideTranslation: "Çeviriyi gizle", deadline: "Son tarih", from: "Gönderen" };
 T.es = { ...T.en, aboTitle: "Ordenar y traducir", aboSubscribe: "Suscribirse ahora", aboPrice: (p) => `${p} € / mes IVA incl. · cancelable mensualmente`, title: "Mis documentos", subtitle: "Todos sus documentos, ordenados por organismo y tema.", upload: "Subir archivo", back: "Todas las carpetas", autoTitle: "Súbalo – nosotros lo ordenamos y traducimos", processing: "Ordenando y traduciendo…", summary: "Resumen", translation: "Traducción", showTranslation: "Mostrar traducción", hideTranslation: "Ocultar traducción", deadline: "Plazo", from: "De" };
+T.uk = {
+  title: "Мої документи", subtitle: "Усі ваші документи, впорядковані за установами та темами.",
+  private: "Ці файли бачите лише ви та EinStein.",
+  folders: { jobcenter: "Jobcenter", auslaenderbehoerde: "Відомство у справах іноземців", finanzamt: "Податкова", familienkasse: "Сімейна каса / Kindergeld", krankenkasse: "Медична каса", rentenversicherung: "Пенсійне страхування", wohnen: "Житло / орендодавець", arbeit: "Робота / роботодавець", schule: "Школа / садок", bank: "Банк", versicherung: "Страхування", sonstiges: "Інше" },
+  files: (n) => `Файлів: ${n}`, back: "Усі папки", upload: "Завантажити файл",
+  titleField: "Назва (необов’язково)", empty: "У цій папці ще немає файлів.", uploading: "Завантаження…",
+  byEinstein: "від EinStein", deleteConfirm: "Видалити цей файл?", login: "Увійдіть, щоб побачити свої документи.",
+  error: "Не вдалося. Спробуйте ще раз.", customer: "Клієнт (e-mail)", open: "Відкрити", customers: "Клієнти з документами",
+  hint: "PDF, фото, Word або Excel – до 20 МБ.",
+  autoTitle: "Завантажте – ми впорядкуємо й перекладемо", autoDesc: "Завантажте лист (PDF або фото). Він автоматично потрапить у потрібну папку й буде перекладений вашою мовою.",
+  reminders: "Нагадування", daysLeft: (n) => (n < 0 ? "прострочено" : n === 0 ? "сьогодні" : `через ${n} дн.`), done: "Виконано", translateMine: "Перекласти моєю мовою",
+  processing: "Впорядковуємо й перекладаємо…", failed: "Автоматичний переклад не вдався", summary: "Коротко", translation: "Переклад", showTranslation: "Показати переклад", hideTranslation: "Сховати переклад", deadline: "Строк", from: "Від",
+  aiNote: "Файл автоматично аналізує Claude (Anthropic), щоб упорядкувати й перекласти його. Переклад – це допомога, а не завірений переклад.",
+  aboTitle: "Впорядкування та переклад", aboPitch: "Ми розкладаємо кожен лист у потрібну папку, перекладаємо вашою мовою та нагадуємо про строки.",
+  aboPrice: (p) => `${p} € / міс. з ПДВ · скасування щомісяця`, aboSubscribe: "Підписатися", aboActive: "Впорядкування та переклад активні",
+  aboUntil: (d) => `Скасовано – активно до ${d}`, aboCancel: "Скасувати підписку", aboCancelConfirm: "Скасувати підписку? Вона діє до кінця оплаченого місяця.",
+  aboNeeded: "Без підписки лист лише зберігається, без впорядкування й перекладу.", aboThanks: "Дякуємо! Підписка почне діяти, щойно оплату буде підтверджено.", aboTerms: "Діють наші умови (AGB § 8b).",
+};
 
 function formatSize(bytes) {
   if (!bytes) return "";

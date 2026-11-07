@@ -3,7 +3,7 @@
 // gross price (PAngV), so every public price goes through toGrossPrice().
 export const VAT_RATE = 0.19;
 
-const NUMBER_LOCALES = { de: "de-DE", tr: "tr-TR", es: "es-ES" };
+const NUMBER_LOCALES = { de: "de-DE", tr: "tr-TR", es: "es-ES", uk: "uk-UA" };
 
 const VAT_NOTES = {
   de: "inkl. 19 % MwSt.",
@@ -11,6 +11,7 @@ const VAT_NOTES = {
   ar: "شامل ضريبة 19%",
   tr: "%19 KDV dahil",
   es: "IVA del 19 % incluido",
+  uk: "з ПДВ 19%",
 };
 
 const ALL_PRICES_NOTES = {
@@ -19,6 +20,7 @@ const ALL_PRICES_NOTES = {
   ar: "جميع الأسعار شاملة ضريبة القيمة المضافة 19%.",
   tr: "Tüm fiyatlara %19 KDV dahildir.",
   es: "Todos los precios incluyen el 19 % de IVA.",
+  uk: "Усі ціни з ПДВ 19%.",
 };
 
 // Business-only services (B2B) are quoted net, "zzgl. 19 % MwSt.", like on
@@ -32,6 +34,7 @@ const PLUS_VAT_NOTES = {
   ar: "غير شامل ضريبة 19%",
   tr: "%19 KDV hariç",
   es: "más 19 % de IVA",
+  uk: "плюс ПДВ 19%",
 };
 
 export const vatNote = (lang = "de") => VAT_NOTES[lang] || VAT_NOTES.de;

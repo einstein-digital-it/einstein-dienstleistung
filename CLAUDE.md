@@ -34,6 +34,7 @@ Working branch: `release/android` (not main). The team talks in Levantine Arabic
 - `own.email` middleware: customer endpoints that take `?email=` always use the logged-in customer's email.
 - App design: IBM Plex Sans Arabic bundled, tokens in `lib/app/theme/app_colors.dart`, shared widgets in `lib/app/widgets/ui.dart`, bottom nav by role in `app_bottom_nav.dart`; new texts in `lib/app/lang/files_translations.dart`.
 - CI: `app-screens.yml` builds the app for web with a mocked API (`ci/app-screens/shoot.mjs`) and pushes phone screenshots to the `ci-screens` branch; `backend-tests.yml` runs `php artisan test`.
+- Languages: website de/ar/en/tr/es/uk (each page has its own translation object; admin pages stay German/Arabic/English); app en/ar/de/uk (`lib/app/lang/uk_translations.dart`, a test fails if a text has no Ukrainian version). Letters can be translated into ar/de/en/tr/es/uk. Tutoring/education is no longer offered: do not bring back "Institut", "Bildung" or education texts.
 - Customers cannot set `payment_status`, `price` or invoice fields themselves (`BookingController::withoutStaffOnlyFields`).
 
 ## Status / open

@@ -137,6 +137,27 @@ const translations = {
     transport: "Transporte y Mudanza",
     garden: "Casa y Jardín",
     design: "Diseño e Impresión"
+  },
+  uk: {
+    home: "Головна",
+    services: "Послуги",
+    booking: "Забронювати",
+    myBookings: "Мої бронювання",
+    dashboard: "Кабінет",
+    payments: "Оплати",
+    adminServices: "Керування послугами",
+    providers: "Виконавці",
+    ourExperts: "Наші фахівці",
+    providerDashboard: "Кабінет виконавця",
+    login: "Увійти",
+    logout: "Вийти",
+    education: "Освіта",
+    bureaucracy: "Адміністративна допомога",
+    legal: "Юридичні та страхові послуги",
+    cleaning: "Прибирання",
+    transport: "Транспорт і переїзд",
+    garden: "Дім і сад",
+    design: "Дизайн і друк"
   }
 };
 
@@ -258,22 +279,22 @@ export default function Layout({ children, currentPageName }) {
               </Link>
               {(isProvider || isAdmin) && (
                 <Link to={createPageUrl("CustomerRequests")} className="hover:text-[#6B46C1] transition-colors">
-                  {lang === "ar" ? "طلبات العملاء" : lang === "en" ? "Customer Requests" : "Kundenanfragen"}
+                  {lang === "ar" ? "طلبات العملاء" : lang === "en" ? "Customer Requests" : lang === "uk" ? "Запити клієнтів" : "Kundenanfragen"}
                 </Link>
               )}
               {user && !isAdmin && (
                 <>
                   <Link to={createPageUrl("CustomerDashboard")} className="hover:text-[#6B46C1] transition-colors font-medium">
-                    {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : "Mein Dashboard"}
+                    {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : lang === "uk" ? "Мій кабінет" : "Mein Dashboard"}
                   </Link>
                   <Link to={createPageUrl("MyDocuments")} className="hover:text-[#6B46C1] transition-colors font-medium">
                     {isProvider
-                      ? (lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : "Kundenunterlagen")
-                      : (lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : "Meine Unterlagen")}
+                      ? (lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : lang === "uk" ? "Документи клієнтів" : "Kundenunterlagen")
+                      : (lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : lang === "uk" ? "Мої документи" : "Meine Unterlagen")}
                   </Link>
                   {isProvider && (
                     <Link to={createPageUrl("ProviderDashboard")} className="hover:text-[#6B46C1] transition-colors">
-                      {lang === "ar" ? "لوحة المزود" : lang === "en" ? "Provider Dashboard" : "Anbieter-Dashboard"}
+                      {lang === "ar" ? "لوحة المزود" : lang === "en" ? "Provider Dashboard" : lang === "uk" ? "Кабінет виконавця" : "Anbieter-Dashboard"}
                     </Link>
                   )}
                 </>
@@ -282,7 +303,7 @@ export default function Layout({ children, currentPageName }) {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="text-[#1e3a5f] hover:text-[#6B46C1] hover:bg-purple-50 font-medium px-2">
-                      {lang === "ar" ? "الإدارة" : lang === "en" ? "Admin" : "Admin"}
+                      {lang === "ar" ? "الإدارة" : lang === "en" ? "Admin" : lang === "uk" ? "Адмін" : "Admin"}
                       <ChevronDown className="w-3 h-3 ms-1" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -290,19 +311,19 @@ export default function Layout({ children, currentPageName }) {
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("AdminBookings")} className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "الحجوزات" : lang === "en" ? "Bookings" : "Buchungen"}
+                        {lang === "ar" ? "الحجوزات" : lang === "en" ? "Bookings" : lang === "uk" ? "Бронювання" : "Buchungen"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("BookingReports")} className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "التقارير" : lang === "en" ? "Reports" : "Berichte"}
+                        {lang === "ar" ? "التقارير" : lang === "en" ? "Reports" : lang === "uk" ? "Звіти" : "Berichte"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("ProviderApprovals")} className="flex items-center gap-2">
                         <User className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "طلبات المزودين" : lang === "en" ? "Providers" : "Fachkraft-Anträge"}
+                        {lang === "ar" ? "طلبات المزودين" : lang === "en" ? "Providers" : lang === "uk" ? "Виконавці" : "Fachkraft-Anträge"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -326,25 +347,25 @@ export default function Layout({ children, currentPageName }) {
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("MyDocuments")} className="flex items-center gap-2">
                         <FileText className="w-4 h-4" />
-                        {lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : "Kundenunterlagen"}
+                        {lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : lang === "uk" ? "Документи клієнтів" : "Kundenunterlagen"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("AdminUsers")} className="flex items-center gap-2">
                         <User className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "المستخدمون" : lang === "en" ? "Users" : "Benutzer"}
+                        {lang === "ar" ? "المستخدمون" : lang === "en" ? "Users" : lang === "uk" ? "Користувачі" : "Benutzer"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("PriceAdmin")} className="flex items-center gap-2">
                         <CreditCard className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "الأسعار" : lang === "en" ? "Prices" : "Preise"}
+                        {lang === "ar" ? "الأسعار" : lang === "en" ? "Prices" : lang === "uk" ? "Ціни" : "Preise"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("ClientWorkspace")} className="flex items-center gap-2">
                         <Briefcase className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "مساحة عمل العملاء" : lang === "en" ? "Client Workspace" : "Kundenbereich"}
+                        {lang === "ar" ? "مساحة عمل العملاء" : lang === "en" ? "Client Workspace" : lang === "uk" ? "Простір клієнтів" : "Kundenbereich"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -363,7 +384,7 @@ export default function Layout({ children, currentPageName }) {
                 </DropdownMenu>
               )}
                                                                                                                           <Link to={createPageUrl("CustomerService")} className="hover:text-[#6B46C1] transition-colors">
-                                                                                                                          {lang === "ar" ? "خدمة العملاء" : lang === "en" ? "Customer Service" : "Kundenservice"}
+                                                                                                                          {lang === "ar" ? "خدمة العملاء" : lang === "en" ? "Customer Service" : lang === "uk" ? "Служба підтримки" : "Kundenservice"}
                                                                                                                           </Link>
                                                                                                                           </nav>
 
@@ -396,6 +417,9 @@ export default function Layout({ children, currentPageName }) {
                   <DropdownMenuItem onClick={() => changeLang("es")}>
                     🇪🇸 Español
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => changeLang("uk")}>
+                    🇺🇦 Українська
+                  </DropdownMenuItem>
                   </DropdownMenuContent>
               </DropdownMenu>
 
@@ -413,26 +437,26 @@ export default function Layout({ children, currentPageName }) {
                     <DropdownMenuItem asChild>
                                                 <Link to={createPageUrl("Profile")}>
                                                   <User className="w-4 h-4 me-2" />
-                                                  {lang === "ar" ? "ملفي الشخصي" : lang === "en" ? "My Profile" : "Mein Profil"}
+                                                  {lang === "ar" ? "ملفي الشخصي" : lang === "en" ? "My Profile" : lang === "uk" ? "Мій профіль" : "Mein Profil"}
                                                 </Link>
                                               </DropdownMenuItem>
                                               <DropdownMenuItem asChild>
                                                 <Link to={createPageUrl("NotificationSettings")}>
                                                   <Bell className="w-4 h-4 me-2" />
-                                                  {lang === "ar" ? "إعدادات الإشعارات" : lang === "en" ? "Notifications" : "Benachrichtigungen"}
+                                                  {lang === "ar" ? "إعدادات الإشعارات" : lang === "en" ? "Notifications" : lang === "uk" ? "Сповіщення" : "Benachrichtigungen"}
                                                 </Link>
                                               </DropdownMenuItem>
                                               <DropdownMenuItem asChild>
                                                 <Link to={createPageUrl("CustomerDashboard")}>
                                                   <Calendar className="w-4 h-4 me-2" />
-                                                  {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : "Mein Dashboard"}
+                                                  {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : lang === "uk" ? "Мій кабінет" : "Mein Dashboard"}
                                                 </Link>
                                               </DropdownMenuItem>
                                               {isProvider && (
                                               <DropdownMenuItem asChild>
                                                 <Link to={createPageUrl("ProviderDashboard")}>
                                                   <Briefcase className="w-4 h-4 me-2" />
-                                                  {lang === "ar" ? "لوحة المزود" : lang === "en" ? "Provider Dashboard" : "Anbieter-Dashboard"}
+                                                  {lang === "ar" ? "لوحة المزود" : lang === "en" ? "Provider Dashboard" : lang === "uk" ? "Кабінет виконавця" : "Anbieter-Dashboard"}
                                                 </Link>
                                               </DropdownMenuItem>
                                               )}
@@ -441,7 +465,7 @@ export default function Layout({ children, currentPageName }) {
                                                     <DropdownMenuItem asChild>
                                                       <Link to={createPageUrl("ProviderApprovals")}>
                                                         <User className="w-4 h-4 me-2" />
-                                                        {lang === "ar" ? "طلبات المزودين" : lang === "en" ? "Provider Applications" : "Fachkraft-Anträge"}
+                                                        {lang === "ar" ? "طلبات المزودين" : lang === "en" ? "Provider Applications" : lang === "uk" ? "Заявки виконавців" : "Fachkraft-Anträge"}
                                                       </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
@@ -529,7 +553,7 @@ export default function Layout({ children, currentPageName }) {
                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
                                              onClick={() => setIsMenuOpen(false)}
                                            >
-                                             {lang === "ar" ? "طلبات العملاء" : lang === "en" ? "Customer Requests" : "Kundenanfragen"}
+                                             {lang === "ar" ? "طلبات العملاء" : lang === "en" ? "Customer Requests" : lang === "uk" ? "Запити клієнтів" : "Kundenanfragen"}
                                            </Link>
                                          )}
                                          <Link 
@@ -537,7 +561,7 @@ export default function Layout({ children, currentPageName }) {
                                            className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
                                            onClick={() => setIsMenuOpen(false)}
                                          >
-                                           {lang === "ar" ? "خدمة العملاء" : lang === "en" ? "Support" : "Hilfe"}
+                                           {lang === "ar" ? "خدمة العملاء" : lang === "en" ? "Support" : lang === "uk" ? "Підтримка" : "Hilfe"}
                                          </Link>
                                         {user && !isAdmin && (
                                           <Link 
@@ -545,7 +569,7 @@ export default function Layout({ children, currentPageName }) {
                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
                                             onClick={() => setIsMenuOpen(false)}
                                           >
-                                            {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : "Mein Dashboard"}
+                                            {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : lang === "uk" ? "Мій кабінет" : "Mein Dashboard"}
                                           </Link>
                                         )}
                                         {user && (
@@ -555,8 +579,8 @@ export default function Layout({ children, currentPageName }) {
                                             onClick={() => setIsMenuOpen(false)}
                                           >
                                             {isAdmin || isProvider
-                                              ? (lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : "Kundenunterlagen")
-                                              : (lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : "Meine Unterlagen")}
+                                              ? (lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : lang === "uk" ? "Документи клієнтів" : "Kundenunterlagen")
+                                              : (lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : lang === "uk" ? "Мої документи" : "Meine Unterlagen")}
                                           </Link>
                                         )}
                                         {isAdmin && (
@@ -601,14 +625,14 @@ export default function Layout({ children, currentPageName }) {
                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
                                              onClick={() => setIsMenuOpen(false)}
                                             >
-                                             {lang === "ar" ? "الأسعار" : lang === "en" ? "Prices" : "Preise"}
+                                             {lang === "ar" ? "الأسعار" : lang === "en" ? "Prices" : lang === "uk" ? "Ціни" : "Preise"}
                                             </Link>
                                             <Link 
                                              to={createPageUrl("AdminUsers")} 
                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
                                              onClick={() => setIsMenuOpen(false)}
                                             >
-                                             {lang === "ar" ? "المستخدمون" : lang === "en" ? "Users" : "Benutzer"}
+                                             {lang === "ar" ? "المستخدمون" : lang === "en" ? "Users" : lang === "uk" ? "Користувачі" : "Benutzer"}
                                             </Link>
                                              </>
                                              )}
@@ -626,6 +650,7 @@ export default function Layout({ children, currentPageName }) {
           en: ["Free preview of your requests", "Followers of EinStein's pages get their first order free"],
           tr: ["Taleplerinizin ücretsiz ön incelemesi", "EinStein sayfalarının takipçileri ilk siparişi ücretsiz alır"],
           es: ["Vista previa gratuita de sus solicitudes", "Los seguidores de las páginas de EinStein obtienen su primer pedido gratis"],
+          uk: ["Безкоштовний попередній огляд ваших запитів", "Підписники сторінок EinStein отримують перше замовлення безкоштовно"],
         }[lang] || [];
         return (
           <div className="bg-gradient-to-r from-[#6B46C1] to-[#4c2f9e] text-white text-xs sm:text-sm font-semibold">
@@ -653,9 +678,14 @@ export default function Layout({ children, currentPageName }) {
                     {/* About */}
                     <div>
                       <p className="text-gray-300 text-sm mb-4">
-                {lang === "de" && "Ganzheitliches Dienstleistungszentrum für den Alltag"}
-                {lang === "ar" && "مركز خدمات شامل للحياة اليومية والتعليم والحرف"}
-                {lang === "en" && "Comprehensive Service Center for Daily Life, Education & Crafts"}
+                {{
+                  de: "Behördengänge, Unterlagen und Büro – an einem Ort, in Ihrer Sprache.",
+                  ar: "المعاملات والأوراق والمكتب – بمكان واحد وبلغتك.",
+                  en: "Paperwork, documents and office help – in one place, in your language.",
+                  tr: "Resmi işler, belgeler ve büro – tek yerde, kendi dilinizde.",
+                  es: "Trámites, documentos y oficina – en un solo lugar, en su idioma.",
+                  uk: "Справи з установами, документи та офіс – в одному місці, вашою мовою.",
+                }[lang]}
               </p>
               <p className="text-purple-200 font-semibold text-sm">
                 „EinStein – Weil jeder Mensch Unterstützung verdient."
@@ -678,7 +708,7 @@ export default function Layout({ children, currentPageName }) {
             {/* Contact */}
             <div>
               <h4 className="font-semibold mb-4 text-purple-200">
-                {lang === "de" ? "Kontakt" : lang === "ar" ? "اتصل بنا" : "Contact"}
+                {lang === "de" ? "Kontakt" : lang === "ar" ? "اتصل بنا" : lang === "uk" ? "Контакти" : "Contact"}
               </h4>
               <div className="space-y-2 text-sm text-gray-300">
                 <p>Frankfurt, Deutschland</p>
@@ -693,7 +723,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="border-t border-[#805AD5] mt-8 pt-8 text-center text-sm text-gray-300">
             <div className="mb-4">
               <Link to="/Cancellation" className="inline-block rounded-lg border border-white/40 px-4 py-2 font-semibold text-white hover:bg-white/10 transition-colors">
-                {lang === "ar" ? "إلغاء العقود هنا" : lang === "en" ? "Cancel contracts here" : lang === "tr" ? "Sözleşmeleri burada iptal edin" : lang === "es" ? "Cancelar contratos aquí" : "Verträge hier kündigen"}
+                {lang === "ar" ? "إلغاء العقود هنا" : lang === "en" ? "Cancel contracts here" : lang === "uk" ? "Скасувати договори тут" : lang === "tr" ? "Sözleşmeleri burada iptal edin" : lang === "es" ? "Cancelar contratos aquí" : "Verträge hier kündigen"}
               </Link>
             </div>
             <div className="flex flex-wrap justify-center gap-4 mb-3">

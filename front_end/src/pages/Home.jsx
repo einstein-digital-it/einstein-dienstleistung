@@ -39,7 +39,7 @@ const translations = {
     // Hero
     hero_title: "Organisation & Verwaltung",
     hero_desc: "Organisation. Verwaltung. Umsetzung.\n\nDeutschland ist vielfältig – aber der Alltag oft bürokratisch und zeitintensiv.\nEinStein sorgt für Struktur, Klarheit und Entlastung.",
-    hero_solution: "Unsere Leistungen im Überblick:\n\n✔ Behörden- & Formularhilfe\nVon Antragstellung über digitale Einreichung bis zur Nachverfolgung und Abholung.\n\n✔ Büro- & Sekretariatsservice für Praxen, Selbstständige & Unternehmen\nFlexible administrative Unterstützung – bei Bedarf auch mit kurzfristiger Ersatzlösung.\n\n✔ Bildungs- & Lernbegleitung\nStrukturierte Unterstützung ohne formale Beratung.\n\n✔ Organisations- & Koordinationsleistungen\nMehrsprachig, professionell und rechtssicher umgesetzt.\n\nWarum EinStein?\n\n• Fester Ansprechpartner\n• Mehrsprachige Kommunikation\n• Transparente Abläufe\n• Schnelle Umsetzung\n• Rechtssichere Struktur",
+    hero_solution: "Unsere Leistungen im Überblick:\n\n✔ Behörden- & Formularhilfe\nVon Antragstellung über digitale Einreichung bis zur Nachverfolgung und Abholung.\n\n✔ Büro- & Sekretariatsservice für Praxen, Selbstständige & Unternehmen\nFlexible administrative Unterstützung – bei Bedarf auch mit kurzfristiger Ersatzlösung.\n\n✔ Organisations- & Koordinationsleistungen\nMehrsprachig, professionell und rechtssicher umgesetzt.\n\nWarum EinStein?\n\n• Fester Ansprechpartner\n• Mehrsprachige Kommunikation\n• Transparente Abläufe\n• Schnelle Umsetzung\n• Rechtssichere Struktur",
     motto: "EinStein – Weil Struktur Sicherheit schafft.",
     book_now: "Jetzt buchen",
     view_services: "Alle Dienstleistungen",
@@ -52,8 +52,8 @@ const translations = {
     promise4: "Du hast das Gefühl, als hättest du eine eigene Sekretärin oder einen persönlichen Hausmanager",
     
     // About
-    about_title: "Über EinStein Institut",
-    about_desc: "EinStein ist ein ganzheitliches Organisation & Verwaltung für den Alltag. Es bündelt Bildung, Bürokratiehilfe und administrative Dienstleistungen unter einem Dach.",
+    about_title: "Über EinStein",
+    about_desc: "EinStein ist ein Dienstleistungszentrum für den Alltag. Es bündelt Behördenhilfe, Unterlagen und administrative Dienstleistungen unter einem Dach.",
     about_role: "EinStein versteht sich als persönlicher Alltagsassistent: organisierend, erklärend, ausführend – in mehreren Sprachen und zu fairen Preisen.",
     hauptunternehmer: "Hauptunternehmer – kein Vermittler",
     hauptunternehmer_desc: "EinStein ist der alleinige Vertragspartner der Kund:innen und trägt die vollständige unternehmerische Verantwortung für Planung, Organisation, Qualitätssicherung und Abrechnung aller angebotenen Dienstleistungen.",
@@ -153,7 +153,7 @@ const translations = {
     // Hero
     hero_title: "التنظيم والإدارة",
     hero_desc: "تنظيم. إدارة. تنفيذ.\n\nألمانيا متنوعة – لكن الحياة اليومية غالباً بيروقراطية وتستهلك الوقت.\nآينشتاين يوفّر لك التنظيم والوضوح والراحة.",
-    hero_solution: "خدماتنا باختصار:\n\n✔ المساعدة في الدوائر الرسمية والاستمارات\nمن تقديم الطلب والإرسال الإلكتروني حتى المتابعة والاستلام.\n\n✔ خدمة المكتب والسكرتارية للعيادات والمستقلين والشركات\nدعم إداري مرن – وعند الحاجة حلول بديلة سريعة.\n\n✔ المرافقة التعليمية ودعم التعلّم\nدعم منظّم بدون استشارة رسمية.\n\n✔ خدمات التنظيم والتنسيق\nبعدة لغات، باحترافية وبشكل آمن قانونياً.\n\nلماذا آينشتاين؟\n\n• شخص تواصل ثابت\n• تواصل بعدة لغات\n• خطوات واضحة وشفافة\n• تنفيذ سريع\n• هيكل آمن قانونياً",
+    hero_solution: "خدماتنا باختصار:\n\n✔ المساعدة في الدوائر الرسمية والاستمارات\nمن تقديم الطلب والإرسال الإلكتروني حتى المتابعة والاستلام.\n\n✔ خدمة المكتب والسكرتارية للعيادات والمستقلين والشركات\nدعم إداري مرن – وعند الحاجة حلول بديلة سريعة.\n\n✔ خدمات التنظيم والتنسيق\nبعدة لغات، باحترافية وبشكل آمن قانونياً.\n\nلماذا آينشتاين؟\n\n• شخص تواصل ثابت\n• تواصل بعدة لغات\n• خطوات واضحة وشفافة\n• تنفيذ سريع\n• هيكل آمن قانونياً",
     motto: "آينشتاين – لأن التنظيم يصنع الأمان.",
     book_now: "احجز الآن",
     view_services: "جميع الخدمات",
@@ -166,8 +166,8 @@ const translations = {
     promise4: "ستشعر وكأن لديك سكرتيرة خاصة أو مدير منزل شخصي",
     
     // About
-    about_title: "عن معهد آينشتاين",
-    about_desc: "آينشتاين هو مركز خدمات شامل للحياة اليومية. يجمع التعليم ومساعدة البيروقراطية والخدمات الإدارية تحت سقف واحد.",
+    about_title: "عن آينشتاين",
+    about_desc: "آينشتاين هو مركز خدمات شامل للحياة اليومية. يجمع المساعدة في المعاملات والأوراق والخدمات الإدارية تحت سقف واحد.",
     about_role: "يعتبر آينشتاين نفسه مساعداً شخصياً للحياة اليومية: منظم، شارح، منفذ - بعدة لغات وبأسعار عادلة.",
     hauptunternehmer: "مقاول رئيسي - وليس وسيط",
     hauptunternehmer_desc: "آينشتاين هي الشريك التعاقدي الوحيد للعملاء وتتحمل المسؤولية الكاملة عن التخطيط والتنظيم وضمان الجودة والفوترة لجميع الخدمات المقدمة.",
@@ -267,7 +267,7 @@ const translations = {
     // Hero
     hero_title: "Organisation & Administration",
     hero_desc: "Organisation. Administration. Execution.\n\nGermany is diverse – but daily life is often bureaucratic and time-consuming.\nEinStein provides structure, clarity and relief.",
-    hero_solution: "Our services at a glance:\n\n✔ Government & Form Assistance\nFrom application submission to digital filing, tracking and collection.\n\n✔ Office & Secretariat Service for Practices, Freelancers & Companies\nFlexible administrative support – with short-notice replacement solutions if needed.\n\n✔ Education & Learning Support\nStructured support without formal counselling.\n\n✔ Organisation & Coordination Services\nMultilingual, professional and legally secure.\n\nWhy EinStein?\n\n• Fixed contact person\n• Multilingual communication\n• Transparent processes\n• Fast implementation\n• Legally secure structure",
+    hero_solution: "Our services at a glance:\n\n✔ Government & Form Assistance\nFrom application submission to digital filing, tracking and collection.\n\n✔ Office & Secretariat Service for Practices, Freelancers & Companies\nFlexible administrative support – with short-notice replacement solutions if needed.\n\n✔ Organisation & Coordination Services\nMultilingual, professional and legally secure.\n\nWhy EinStein?\n\n• Fixed contact person\n• Multilingual communication\n• Transparent processes\n• Fast implementation\n• Legally secure structure",
     motto: "EinStein – Because structure creates security.",
     book_now: "Book Now",
     view_services: "All Services",
@@ -280,8 +280,8 @@ const translations = {
     promise4: "You'll feel like you have your own secretary or personal house manager",
     
     // About
-    about_title: "About EinStein Institut",
-    about_desc: "EinStein is a comprehensive service center for daily life. It combines education, bureaucracy assistance, and administrative services under one roof.",
+    about_title: "About EinStein",
+    about_desc: "EinStein is a comprehensive service center for daily life. It combines help with authorities, documents and administrative services under one roof.",
     about_role: "EinStein sees itself as a personal daily assistant: organizing, explaining, executing – in multiple languages and at fair prices.",
     hauptunternehmer: "Main Contractor – Not a Broker",
     hauptunternehmer_desc: "EinStein is the sole contractual partner of customers and bears full entrepreneurial responsibility for planning, organization, quality assurance, and billing of all services offered.",
@@ -377,11 +377,125 @@ const translations = {
     discounts: "Discounts for long-term care",
     note: "Note: EinStein only provides services that do not require a permit."
   },
+  uk: {
+    // Hero
+    hero_title: "Організація та адміністрування",
+    hero_desc: "Організація. Адміністрування. Виконання.\n\nНімеччина різноманітна – але повсякденне життя часто бюрократичне й забирає багато часу.\nEinStein дає структуру, ясність і полегшення.",
+    hero_solution: "Наші послуги коротко:\n\n✔ Допомога з установами та формулярами\nВід подання заяви до цифрового архіву, контролю строків і отримання документів.\n\n✔ Офісні та секретарські послуги для практик, фрилансерів і компаній\nГнучка адміністративна підтримка – за потреби з швидкою заміною.\n\n✔ Організація та координація\nБагатьма мовами, професійно й юридично надійно.\n\nЧому EinStein?\n\n• Постійна контактна особа\n• Спілкування кількома мовами\n• Прозорі процеси\n• Швидке виконання\n• Юридично надійна структура",
+    motto: "EinStein – бо структура дає впевненість.",
+    book_now: "Забронювати",
+    view_services: "Усі послуги",
+
+    // Promises
+    promises_title: "Наша обіцянка",
+    promise1: "Вам не потрібно мати справу з п’ятьма різними фірмами – у нас усе з одних рук",
+    promise2: "Вам не потрібно бути знавцем німецької – ми говоримо вашою мовою",
+    promise3: "Вам не доведеться довго чекати – ми відповідаємо швидко й надійно",
+    promise4: "Ви відчуєте, ніби маєте власного секретаря чи особистого помічника вдома",
+
+    // About
+    about_title: "Про EinStein",
+    about_desc: "EinStein – сервісний центр для повсякденного життя. Ми поєднуємо допомогу з установами, документами та адміністративні послуги під одним дахом.",
+    about_role: "EinStein – ваш особистий помічник у повсякденних справах: організовує, пояснює, виконує – кількома мовами та за чесними цінами.",
+    hauptunternehmer: "Генеральний підрядник – не посередник",
+    hauptunternehmer_desc: "EinStein є єдиним договірним партнером клієнтів і несе повну відповідальність за планування, організацію, контроль якості та розрахунки за всі послуги.",
+
+    // Services
+    our_services: "Наші послуги",
+    services_subtitle: "Усе з одних рук – для вашого повсякденного життя",
+    forms: "Допомога з установами та формулярами",
+    forms_desc: "Допомога зі справами в установах, заповнення формулярів і заяв",
+    forms_price: "40 €/год.",
+    admin: "Адміністративні послуги",
+    admin_desc: "Ведення документів, листування, узгодження зустрічей і загальна офісна робота",
+    admin_price: "40 €/год.",
+    coordination: "Послуги координації",
+    coordination_desc: "Координація проєктів, планування строків, комунікація з виконавцями",
+    coordination_price: "30 €/год.",
+    mercosur: "MERCOSUR (Латинська Америка)",
+    mercosur_desc: "Апостиль, легалізація, переклад документів, візові питання",
+    mercosur_price: "150 €/справа",
+    print: "Друк і печатки",
+    print_desc: "Друк документів, копіювання, виготовлення печаток, ламінування",
+    print_price: "від 1 €",
+    office: "Офісні та організаційні послуги",
+    office_desc: "Ведення пошти, планування зустрічей, підготовка документів і рахунків",
+    office_price: "40 €/год.",
+    eur1: "Документи ЄС–Сирія / EUR.1",
+    eur1_desc: "Адміністративна підготовка експортних/імпортних документів, чек-листи, підготовка EUR.1, переклад",
+    eur1_price: "від 150 €",
+    dokumentabo: "Документна підписка EinStein",
+    dokumentabo_desc: "Ваша пошта – наша робота. Листи від установ і страховиків – надішліть фото, решту зробимо ми.",
+    dokumentabo_price: "49 € / міс.",
+    bueromanagement: "Офіс-менеджмент для бізнесу",
+    bueromanagement_desc: "Уся офісна та кадрова організація за фіксовану місячну плату – документи працівників, договори, палати, строки.",
+    bueromanagement_price: "від 200 € / міс.",
+
+    // Quality
+    quality_title: "Сертифіковано EinStein – якість гарантована",
+    quality_desc: "Усі фахівці проходять перевірку та сертифікацію перед роботою",
+    quality_steps: [
+      "Перевірка особи та діяльності",
+      "Перевірка кваліфікації та досвіду",
+      "Особиста співбесіда",
+      "Пробне завдання",
+      "Допуск до системи EinStein"
+    ],
+
+    // Why Einstein
+    why_einstein: "Чому EinStein?",
+    why_quality: "Перевірена якість",
+    why_quality_desc: "Усі фахівці проходять перевірку та сертифікацію перед роботою",
+    why_multilingual: "Багатомовність",
+    why_multilingual_desc: "Німецька, арабська, курдська, англійська, російська, турецька та інші",
+    why_one_stop: "Усе в одному місці",
+    why_one_stop_desc: "Один контакт для всіх повсякденних справ",
+    why_fair: "Чесні ціни",
+    why_fair_desc: "Прозорі ціни без прихованих витрат",
+    why_fast: "Швидко й надійно",
+    why_fast_desc: "Короткий час відповіді та вчасне виконання",
+    why_responsible: "Повна відповідальність",
+    why_responsible_desc: "EinStein – ваш прямий договірний партнер з гарантією",
+
+    // Target Groups
+    target_title: "Для кого EinStein?",
+    target_subtitle: "Для людей, яким потрібна ясність. Для бізнесу, якому потрібна структура.",
+    targets: [
+      "Приватні особи та родини",
+      "Багатомовні домогосподарства",
+      "Самозайняті та малий бізнес",
+      "Практики й офіси з адміністративними потребами"
+    ],
+
+    // Packages
+    packages_title: "Вигідні пакети",
+    packages_desc: "Поєднуйте кілька послуг і заощаджуйте до 25%",
+    package1_title: "Адміністративний пакет",
+    package1_desc: "Допомога з установами + ведення документів + узгодження зустрічей",
+    package1_save: "Економія: близько 22%",
+    package2_title: "Пакет інтеграції",
+    package2_desc: "Мовна підтримка + допомога із заявами + супровід",
+    package2_save: "150 €/міс. замість 200 €",
+    package3_title: "Пакет для старту кар’єри",
+    package3_desc: "Резюме + друк заяви + супровід до агентства",
+    package3_save: "75 € замість 120 €",
+
+    // CTA
+    become_provider: "Стати виконавцем",
+    become_provider_desc: "Працюйте гнучко як незалежний фахівець у мережі EinStein. Передбачувані замовлення, чесні умови.",
+    apply_now: "Подати заявку",
+
+    // Footer info
+    no_hidden: "Без прихованих витрат",
+    flexible: "Доступні гнучкі пакети",
+    discounts: "Знижки для довгострокової співпраці",
+    note: "Примітка: EinStein надає лише послуги, які не потребують дозволу."
+  },
   tr: {
     // Hero
     hero_title: "Organizasyon ve Yönetim",
     hero_desc: "Organizasyon. Yönetim. Uygulama.\n\nAlmanya çok çeşitli – ama günlük yaşam çoğu zaman bürokratik ve zaman alıcı.\nEinStein düzen, netlik ve rahatlık sağlar.",
-    hero_solution: "Hizmetlerimize genel bakış:\n\n✔ Resmi kurum ve form yardımı\nBaşvurudan dijital teslime, takipten teslim almaya kadar.\n\n✔ Muayenehaneler, serbest çalışanlar ve şirketler için büro ve sekreterlik hizmeti\nEsnek idari destek – gerekirse kısa sürede yedek çözüm.\n\n✔ Eğitim ve öğrenme desteği\nResmi danışmanlık olmadan yapılandırılmış destek.\n\n✔ Organizasyon ve koordinasyon hizmetleri\nÇok dilli, profesyonel ve hukuken güvenli.\n\nNeden EinStein?\n\n• Sabit iletişim kişisi\n• Çok dilli iletişim\n• Şeffaf süreçler\n• Hızlı uygulama\n• Hukuken güvenli yapı",
+    hero_solution: "Hizmetlerimize genel bakış:\n\n✔ Resmi kurum ve form yardımı\nBaşvurudan dijital teslime, takipten teslim almaya kadar.\n\n✔ Muayenehaneler, serbest çalışanlar ve şirketler için büro ve sekreterlik hizmeti\nEsnek idari destek – gerekirse kısa sürede yedek çözüm.\n\n✔ Organizasyon ve koordinasyon hizmetleri\nÇok dilli, profesyonel ve hukuken güvenli.\n\nNeden EinStein?\n\n• Sabit iletişim kişisi\n• Çok dilli iletişim\n• Şeffaf süreçler\n• Hızlı uygulama\n• Hukuken güvenli yapı",
     motto: "EinStein – Çünkü düzen güven yaratır.",
     book_now: "Simdi Rezervasyon Yap",
     view_services: "Tum Hizmetler",
@@ -394,8 +508,8 @@ const translations = {
     promise4: "Kendi sekreterine veya kisisel ev yoneticine sahipmissin gibi hissedeceksin",
     
     // About
-    about_title: "EinStein Enstitusu Hakkinda",
-    about_desc: "EinStein, gunluk yasam icin kapsamli bir hizmet merkezidir. Egitim, burokrasi yardimi ve idari hizmetleri tek cati altinda birlestirir.",
+    about_title: "EinStein Hakkında",
+    about_desc: "EinStein, gunluk yasam icin kapsamli bir hizmet merkezidir. Resmi işlerde yardımı, belgeleri ve idari hizmetleri tek çatı altında birleştirir.",
     about_role: "EinStein kendini kisisel gunluk asistan olarak gorur: organize eden, aciklayan, uygulayan - birden fazla dilde ve adil fiyatlarla.",
     hauptunternehmer: "Ana Yuklenici - Araci Degil",
     hauptunternehmer_desc: "EinStein, musterilerin tek sozlesmeli ortagi olup sunulan tum hizmetlerin planlamasi, organizasyonu, kalite guvencesi ve faturalanmasi icin tam girisimci sorumlulugu tasir.",
@@ -495,7 +609,7 @@ const translations = {
     // Hero
     hero_title: "Organización y Administración",
     hero_desc: "Organización. Administración. Ejecución.\n\nAlemania es diversa – pero el día a día suele ser burocrático y lleva mucho tiempo.\nEinStein aporta estructura, claridad y alivio.",
-    hero_solution: "Nuestros servicios de un vistazo:\n\n✔ Ayuda con trámites y formularios\nDesde la solicitud y el envío digital hasta el seguimiento y la recogida.\n\n✔ Servicio de oficina y secretaría para consultas, autónomos y empresas\nApoyo administrativo flexible – con sustitución a corto plazo si hace falta.\n\n✔ Acompañamiento educativo y de aprendizaje\nApoyo estructurado sin asesoramiento formal.\n\n✔ Servicios de organización y coordinación\nMultilingüe, profesional y con seguridad jurídica.\n\n¿Por qué EinStein?\n\n• Persona de contacto fija\n• Comunicación multilingüe\n• Procesos transparentes\n• Ejecución rápida\n• Estructura jurídicamente segura",
+    hero_solution: "Nuestros servicios de un vistazo:\n\n✔ Ayuda con trámites y formularios\nDesde la solicitud y el envío digital hasta el seguimiento y la recogida.\n\n✔ Servicio de oficina y secretaría para consultas, autónomos y empresas\nApoyo administrativo flexible – con sustitución a corto plazo si hace falta.\n\n✔ Servicios de organización y coordinación\nMultilingüe, profesional y con seguridad jurídica.\n\n¿Por qué EinStein?\n\n• Persona de contacto fija\n• Comunicación multilingüe\n• Procesos transparentes\n• Ejecución rápida\n• Estructura jurídicamente segura",
     motto: "EinStein – Porque la estructura da seguridad.",
     book_now: "Reservar ahora",
     view_services: "Todos los servicios",
@@ -508,8 +622,8 @@ const translations = {
     promise4: "Te sentirás como si tuvieras tu propia secretaria o administrador de casa personal",
     
     // About
-    about_title: "Sobre el Instituto EinStein",
-    about_desc: "EinStein es un centro de servicios integral para la vida diaria. Combina educación, asistencia burocrática y servicios administrativos bajo un mismo techo.",
+    about_title: "Sobre EinStein",
+    about_desc: "EinStein es un centro de servicios integral para la vida diaria. Combina ayuda con trámites, documentos y servicios administrativos bajo un mismo techo.",
     about_role: "EinStein se ve a sí mismo como un asistente personal diario: organiza, explica, ejecuta, en varios idiomas y a precios justos.",
     hauptunternehmer: "Contratista Principal - No Intermediario",
     hauptunternehmer_desc: "EinStein es el único socio contractual de los clientes y asume la responsabilidad empresarial completa de planificación, organización, garantía de calidad y facturación de todos los servicios ofrecidos.",
@@ -799,6 +913,7 @@ function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
     if (lang === "en") return p.label_en || p.label_de || p.label;
     if (lang === "tr") return p.label_tr || p.label_de || p.label;
     if (lang === "es") return p.label_es || p.label_de || p.label;
+    if (lang === "uk") return p.label_en || p.label_de || p.label;
     return p.label_de || p.label;
   };
   
@@ -807,6 +922,7 @@ function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
     if (lang === "en") return p.unit_en || p.unit_de || p.unit;
     if (lang === "tr") return p.unit_tr || p.unit_de || p.unit;
     if (lang === "es") return p.unit_es || p.unit_de || p.unit;
+    if (lang === "uk") return p.unit_en || p.unit_de || p.unit;
     return p.unit_de || p.unit;
   };
 
@@ -935,10 +1051,6 @@ function AuthenticatedArabicHero() {
       description: "دعم إداري مرن - مع حلول بديلة عند الحاجة."
     },
     {
-      title: "التعليم ومرافقة التعلم",
-      description: "دعم منظم بدون استشارة رسمية."
-    },
-    {
       title: "خدمات التنظيم والتنسيق",
       description: "متعدد اللغات، احترافي وآمن قانونياً."
     }
@@ -1062,7 +1174,7 @@ export default function Home() {
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
               </span>
               <span className="text-sm font-medium text-white/90 tracking-wide">
-                {({ de: "Ihr Partner für den Alltag", ar: "شريكك للحياة اليومية", tr: "Günlük yaşamda ortağınız", es: "Su aliado en el día a día" })[lang] || "Your partner for daily life"}
+                {({ de: "Ihr Partner für den Alltag", ar: "شريكك للحياة اليومية", tr: "Günlük yaşamda ortağınız", es: "Su aliado en el día a día", uk: "Ваш партнер у повсякденних справах" })[lang] || "Your partner for daily life"}
               </span>
             </motion.div>
 

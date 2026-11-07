@@ -73,6 +73,27 @@ const translations = {
     save: "Save",
     enable: "Enable",
     disable: "Disable"
+  },
+  uk: {
+    title: "Налаштування сповіщень",
+    description: "Керуйте своїми сповіщеннями",
+    bookingConfirmed: "Підтвердження бронювання",
+    bookingChanged: "Зміна бронювання",
+    bookingCancelled: "Скасування бронювання",
+    appointmentReminder: "Нагадування про зустріч",
+    providerDocuments: "Завантаження документів виконавцем",
+    paymentDue: "Нагадування про оплату",
+    paymentReceived: "Підтвердження оплати",
+    reviewRequest: "Запит на відгук",
+    emailNotifications: "Сповіщення електронною поштою",
+    inAppNotifications: "Сповіщення в застосунку",
+    notificationLanguage: "Мова сповіщень",
+    reminderTiming: "Час нагадування",
+    saved: "Налаштування збережено!",
+    saving: "Збереження...",
+    save: "Зберегти",
+    enable: "Увімкнути",
+    disable: "Вимкнути"
   }
 };
 
@@ -82,7 +103,8 @@ export default function NotificationSettings() {
   const [saved, setSaved] = useState(false);
   const queryClient = useQueryClient();
 
-  const t = translations[lang];
+  // tr, es and uk had no entry here and crashed the page
+  const t = translations[lang] || translations.en;
 
   useEffect(() => {
     const init = async () => {

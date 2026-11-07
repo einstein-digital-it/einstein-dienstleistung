@@ -29,7 +29,7 @@ import SecretariatPackages from "@/components/SecretariatPackages";
 const translations = {
   de: {
     title: "Unsere Dienstleistungen",
-    subtitle: "Ganzheitliches Dienstleistungszentrum für Alltag, Bildung & Handwerk",
+    subtitle: "Behördengänge, Unterlagen und Büro – an einem Ort, in Ihrer Sprache",
     book_now: "Jetzt buchen",
     from: "ab",
     per_hour: "/ Std.",
@@ -141,7 +141,7 @@ const translations = {
   },
   ar: {
     title: "خدماتنا",
-    subtitle: "مركز خدمات شامل للحياة اليومية والتعليم والحرف",
+    subtitle: "المعاملات والأوراق والمكتب – بمكان واحد وبلغتك",
     book_now: "احجز الآن",
     from: "من",
     per_hour: "/ ساعة",
@@ -253,7 +253,7 @@ const translations = {
   },
   en: {
     title: "Our Services",
-    subtitle: "Comprehensive Service Center for Daily Life, Education & Crafts",
+    subtitle: "Paperwork, documents and office help – in one place, in your language",
     book_now: "Book Now",
     from: "from",
     per_hour: "/ hour",
@@ -363,9 +363,121 @@ const translations = {
       bueromanagement: {name: "Office Management for Small Businesses", desc: "Less paperwork on your mind, more time for your customers. We take over your entire office and HR administration – from new employees' documents to coordinating with your tax advisor, chambers and authorities. Fixed monthly fee based on company size.", features: ["Recording, maintaining and checking employee master data (e.g. tax ID, IBAN)", "Personnel questionnaires, Minijob pension exemption requests and other forms", "Writing service: employment contracts, amendments and employee letters based on your instructions", "Paperwork for business takeovers, openings or relocations", "Forms for the Chamber of Crafts, Berufsgenossenschaft and registration offices", "Work permit forms and monitoring of residence document validity", "Correspondence with tax advisors, chambers, authorities and landlords", "Monitoring filing and reporting deadlines", "Digitising and filing documents per employee", "Explaining documents in Arabic, German, English and Turkish"], prices: [{label: "Small package (1–4 employees)", price: "200 €", unit: "/ month"}, {label: "Medium package (5–6 employees)", price: "300 €", unit: "/ month"}, {label: "Large package (7+ employees)", price: "400 €", unit: "/ month"}], note: "All packages include the same services; Minijob employees count. If the number of employees changes, the matching package applies from the following month. No legal services (RDG) and no tax assistance (StBerG): payroll, social security reports and tax returns are handled by your tax advisor – we prepare the documents. We do not represent you before courts, authorities or third parties. Not included: in-person visits to authorities, certified translations and fees of chambers, authorities and third parties. Cancellable monthly."},
     }
   },
+  uk: {
+    title: "Наші послуги",
+    subtitle: "Справи з установами, документи та офіс – в одному місці, вашою мовою",
+    book_now: "Забронювати",
+    from: "від",
+    per_hour: "/ год.",
+    per_project: "/ проєкт",
+    services: {
+      forms: {
+        name: "Допомога з установами та формулярами",
+        desc: "Допомога зі справами в установах, заповнення формулярів і заяв.",
+        features: [
+          "Заповнення заяв і формулярів",
+          "Супровід на прийомах в установах",
+          "Пояснення офіційних листів",
+          "Підготовка документів",
+          "Допомога з перекладом документів"
+        ],
+        prices: [
+          { label: "Допомога з установами та формулярами", price: "40 €", unit: "/ год." }
+        ]
+      },
+      admin: {
+        name: "Адміністративні послуги",
+        desc: "Повна адміністративна підтримка для всіх ваших справ.",
+        features: [
+          "Ведення документів",
+          "Листування та письмова комунікація",
+          "Узгодження зустрічей",
+          "Ведення та впорядкування даних",
+          "Загальна офісна робота"
+        ],
+        prices: [
+          { label: "Адміністративні послуги", price: "40 €", unit: "/ год." }
+        ]
+      },
+      coordination: {
+        name: "Послуги координації",
+        desc: "Професійна координація та супровід ваших проєктів.",
+        features: [
+          "Координація проєктів",
+          "Планування строків і контроль",
+          "Комунікація з виконавцями",
+          "Контроль якості",
+          "Звітність"
+        ],
+        prices: [
+          { label: "Послуги координації", price: "30 €", unit: "/ год." }
+        ]
+      },
+      mercosur: {
+        name: "MERCOSUR (Латинська Америка)",
+        desc: "Спеціалізовані послуги для документів і справ, пов’язаних з Латинською Америкою.",
+        features: [
+          "Апостиль і легалізація",
+          "Переклад документів",
+          "Консультація щодо угоди MERCOSUR",
+          "Допомога з візовими питаннями",
+          "Визнання кваліфікацій"
+        ],
+        prices: [
+          { label: "Послуга MERCOSUR", price: "150 €", unit: "/ справа" }
+        ]
+      },
+      print: {
+        name: "Друк і печатки",
+        desc: "Професійний друк і виготовлення печаток для всіх ваших потреб.",
+        features: [
+          "Друк документів",
+          "Копіювання",
+          "Виготовлення печаток",
+          "Ламінування та палітурка",
+          "Сканування"
+        ],
+        prices: [
+          { label: "Друк і печатки", price: "від 1 €", unit: "" }
+        ]
+      },
+      office: {
+        name: "Проєктні офісні та організаційні послуги",
+        desc: "Офісні та організаційні послуги для фрилансерів, малого бізнесу та приватних осіб.",
+        features: [
+          "Ведення пошти",
+          "Планування зустрічей і календаря",
+          "Створення та оформлення документів",
+          "Підготовка рахунків і пропозицій",
+          "Цифрове впорядкування документів"
+        ],
+        prices: [
+          { label: "Офісні та організаційні послуги", price: "40 €", unit: "/ год." }
+        ]
+      },
+      secretariat: {
+        name: "Офіс і секретаріат (на місці)",
+        desc: "Професійні секретарські послуги на місці – погодинно або як вигідний місячний пакет.",
+        features: [
+          "Погодинне бронювання",
+          "Виїзд до клієнта",
+          "Ведення пошти та листування",
+          "Керування зустрічами та календарем",
+          "Спілкування кількома мовами",
+          "За бажанням: вигідні місячні пакети"
+        ],
+        prices: [
+          { label: "Погодинна ставка (на місці)", price: "45 €", unit: "/ год." }
+        ]
+      },
+      eur1: {name:"Документи для торгівлі ЄС–Сирія / EUR.1",desc:"Адміністративна підготовка експортних/імпортних документів для торгівлі ЄС–Сирія.",features:["Адміністративна підготовка експортних/імпортних документів","Чек-листи","Підготовка EUR.1","Переклади"],note:"Примітка: EinStein не здійснює митного представництва, юридичних чи податкових консультацій. Послуга обмежується адміністративною підтримкою, впорядкуванням документів, перекладом і комунікацією. Остаточну перевірку митних питань і походження товарів здійснюють компетентні митні органи або уповноважені фахові установи.",prices:[{label:"Послуга ЄС–Сирія / EUR.1",price:"від 150 €",unit:""}]},
+      dokumentabo: {name:"Документна підписка EinStein – ваша пошта, наша робота.",desc:"Листи від Jobcenter, відомства у справах іноземців, податкової, медичної каси чи орендодавця? Надішліть фото – решту зробимо ми.",features:["Читаємо, перекладаємо й пояснюємо вашу пошту (до 8 листів на місяць)","Нагадування про строки та зустрічі","Заповнення формулярів і заяв","Прості відповіді: подання документів, підтвердження зустрічей, зміна адреси","Цифровий архів","Постійна контактна особа"],prices:[{label:"Місячна підписка (до 8 листів)",price:"49 €",unit:"/ міс."},{label:"Додаткові листи",price:"20 €",unit:"/ год."}],note:"Не входить: юридичні консультації, заперечення, позови та спори (ми направляємо до адвокатів або консультаційних центрів) | страхові чи податкові консультації. Адміністративна послуга, не юридична послуга за німецьким законом RDG. Мінімальний строк 1 місяць, далі скасування щомісяця."},
+      bueromanagement: {name: "Офіс-менеджмент для малого бізнесу", desc: "Менше паперів – більше часу для клієнтів. Ми беремо на себе всю офісну та кадрову організацію – від документів нових працівників до листування з податковим консультантом, палатами та установами. Фіксована місячна плата залежно від розміру компанії.", features: ["Внесення, ведення та перевірка даних працівників (напр. податковий номер, IBAN)", "Кадрові анкети, заяви щодо звільнення Minijob від пенсійних внесків та інші форми", "Підготовка текстів: трудові договори, зміни та листи працівникам за вашими вказівками", "Документи при передачі, відкритті чи переїзді бізнесу", "Форми для ремісничої палати, Berufsgenossenschaft і реєстраційних установ", "Форми дозволу на роботу та контроль дійсності документів на проживання", "Листування з податковими консультантами, палатами, установами та орендодавцями", "Контроль строків подання та звітності", "Оцифрування та архівування документів за працівниками", "Пояснення документів арабською, німецькою, англійською та турецькою"], prices: [{label: "Малий пакет (1–4 працівники)", price: "200 €", unit: "/ міс."}, {label: "Середній пакет (5–6 працівників)", price: "300 €", unit: "/ міс."}, {label: "Великий пакет (7+ працівників)", price: "400 €", unit: "/ міс."}], note: "Усі пакети містять однакові послуги; працівники Minijob враховуються. Якщо кількість працівників змінюється, відповідний пакет діє з наступного місяця. Без юридичних послуг (RDG) і податкової допомоги (StBerG): зарплату, звіти до соцстраху та податкові декларації веде ваш податковий консультант – ми готуємо документи. Ми не представляємо вас у судах, установах чи перед третіми особами. Не входить: особисті візити до установ, завірені переклади та збори палат, установ і третіх осіб. Скасування щомісяця."},
+    }
+  },
   tr: {
     title: "Hizmetlerimiz",
-    subtitle: "Gunluk Yasam, Egitim ve El Sanatlari icin Kapsamli Hizmet Merkezi",
+    subtitle: "Resmi işler, belgeler ve büro – tek yerde, kendi dilinizde",
     book_now: "Simdi Rezervasyon Yap",
     from: "itibaren",
     per_hour: "/ saat",
@@ -477,7 +589,7 @@ const translations = {
   },
   es: {
     title: "Nuestros Servicios",
-    subtitle: "Centro de Servicios Integral para la Vida Diaria, Educación y Artesanía",
+    subtitle: "Trámites, documentos y oficina – en un solo lugar, en su idioma",
     book_now: "Reservar Ahora",
     from: "desde",
     per_hour: "/ hora",
@@ -722,6 +834,7 @@ export default function Services() {
     if (lang === "en") return p.label_en || p.label_de || p.label;
     if (lang === "tr") return p.label_tr || p.label_de || p.label;
     if (lang === "es") return p.label_es || p.label_de || p.label;
+    if (lang === "uk") return p.label_en || p.label_de || p.label;
     return p.label_de || p.label;
   };
   
@@ -730,6 +843,7 @@ export default function Services() {
     if (lang === "en") return p.unit_en || p.unit_de || p.unit;
     if (lang === "tr") return p.unit_tr || p.unit_de || p.unit;
     if (lang === "es") return p.unit_es || p.unit_de || p.unit;
+    if (lang === "uk") return p.unit_en || p.unit_de || p.unit;
     return p.unit_de || p.unit;
   };
 
@@ -883,7 +997,7 @@ export default function Services() {
                               className="w-full flex items-center justify-between bg-violet-100 hover:bg-violet-200 text-[#6B46C1] font-semibold px-4 py-3 rounded-xl transition-colors"
                             >
                               <span>
-                                {lang === "ar" ? "عرض الباقات الشهرية" : lang === "en" ? "View Monthly Packages" : "Monatspakete anzeigen"}
+                                {lang === "ar" ? "عرض الباقات الشهرية" : lang === "en" ? "View Monthly Packages" : lang === "uk" ? "Переглянути місячні пакети" : "Monatspakete anzeigen"}
                               </span>
                               {packagesOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                             </button>

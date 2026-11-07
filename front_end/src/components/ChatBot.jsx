@@ -10,7 +10,7 @@ const translations = {
     title: "EinStein Support",
     subtitle: "Wie können wir helfen?",
     placeholder: "Schreiben Sie Ihre Nachricht...",
-    welcome: "Hallo! 👋 Willkommen bei EinStein Institut. Ich bin Ihr virtueller Assistent. Wie kann ich Ihnen heute helfen?",
+    welcome: "Hallo! 👋 Willkommen bei EinStein. Ich bin Ihr virtueller Assistent. Wie kann ich Ihnen heute helfen?",
     quickQuestions: [
       "Welche Dienstleistungen bieten Sie an?",
       "Wie kann ich buchen?",
@@ -25,7 +25,7 @@ const translations = {
     title: "دعم آينشتاين",
     subtitle: "كيف يمكننا مساعدتك؟",
     placeholder: "اكتب رسالتك...",
-    welcome: "مرحباً! 👋 أهلاً بك في معهد آينشتاين. أنا مساعدك الافتراضي. كيف يمكنني مساعدتك اليوم؟",
+    welcome: "مرحباً! 👋 أهلاً بك في آينشتاين. أنا مساعدك الافتراضي. كيف يمكنني مساعدتك اليوم؟",
     quickQuestions: [
       "ما هي الخدمات التي تقدمونها؟",
       "كيف يمكنني الحجز؟",
@@ -40,7 +40,7 @@ const translations = {
     title: "EinStein Support",
     subtitle: "How can we help?",
     placeholder: "Type your message...",
-    welcome: "Hello! 👋 Welcome to EinStein Institut. I'm your virtual assistant. How can I help you today?",
+    welcome: "Hello! 👋 Welcome to EinStein. I'm your virtual assistant. How can I help you today?",
     quickQuestions: [
       "What services do you offer?",
       "How can I book?",
@@ -55,7 +55,7 @@ const translations = {
     title: "Soporte EinStein",
     subtitle: "¿Cómo podemos ayudarte?",
     placeholder: "Escribe tu mensaje...",
-    welcome: "¡Hola! 👋 Bienvenido al Instituto EinStein. Soy tu asistente virtual. ¿Cómo puedo ayudarte hoy?",
+    welcome: "¡Hola! 👋 Bienvenido a EinStein. Soy tu asistente virtual. ¿Cómo puedo ayudarte hoy?",
     quickQuestions: [
       "¿Qué servicios ofrecen?",
       "¿Cómo puedo reservar?",
@@ -65,6 +65,21 @@ const translations = {
     escalateMessage: "Te conectaré con nuestro equipo. Puedes contactarnos en:",
     thinking: "Escribiendo...",
     errorMessage: "Lo siento, hubo un problema. Por favor inténtalo de nuevo."
+  },
+  uk: {
+    title: "Підтримка EinStein",
+    subtitle: "Чим можемо допомогти?",
+    placeholder: "Напишіть повідомлення...",
+    welcome: "Вітаємо! 👋 Ласкаво просимо до EinStein. Я ваш віртуальний помічник. Чим можу допомогти сьогодні?",
+    quickQuestions: [
+      "Які послуги ви пропонуєте?",
+      "Як забронювати?",
+      "Чи перекладаєте ви листи українською?"
+    ],
+    escalate: "Поговорити з працівником",
+    escalateMessage: "Я з’єднаю вас з нашою командою. Зв’язатися з нами можна:",
+    thinking: "Друкує...",
+    errorMessage: "Вибачте, сталася помилка. Спробуйте ще раз."
   }
 };
 

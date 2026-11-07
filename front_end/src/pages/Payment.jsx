@@ -152,6 +152,28 @@ const translations = {
       handwerk: "Handcraft",
       design: "Design & Print"
     }
+  },
+  uk: {
+    title: "Оплата",
+    booking_details: "Деталі бронювання",
+    booking_number: "Номер бронювання",
+    service: "Послуга",
+    provider: "Виконавець",
+    date: "Дата",
+    time: "Час",
+    address: "Адреса",
+    back: "Назад",
+    already_paid: "Це бронювання вже оплачено",
+    go_to_bookings: "До моїх бронювань",
+    payment_success: "Оплата успішна!",
+    payment_success_msg: "Дякуємо за оплату. Ваше бронювання підтверджено.",
+    no_price: "Ціну ще не встановлено",
+    no_price_msg: "Зачекайте, поки ми встановимо ціну для вашого бронювання. Ми скоро зв’яжемося з вами.",
+    price_breakdown: "Розрахунок ціни",
+    net_amount: "Сума без ПДВ",
+    vat: "ПДВ (19%)",
+    total: "Загальна сума",
+    categories: {}
   }
 };
 
@@ -323,14 +345,14 @@ export default function Payment() {
               <h1 className="text-2xl font-bold">{t.title}</h1>
             </div>
             <p className="text-white/80 text-sm">
-              {lang === "ar" ? "أكمل الدفع بأمان لتأكيد حجزك نهائياً" : lang === "en" ? "Complete your secure payment to confirm your booking" : lang === "tr" ? "Rezervasyonunuzu onaylamak için güvenli ödemeyi tamamlayın" : lang === "es" ? "Completa tu pago seguro para confirmar tu reserva" : "Zahlung sicher abschließen, um Ihre Buchung zu bestätigen"}
+              {lang === "ar" ? "أكمل الدفع بأمان لتأكيد حجزك نهائياً" : lang === "en" ? "Complete your secure payment to confirm your booking" : lang === "uk" ? "Завершіть безпечну оплату, щоб підтвердити бронювання" : lang === "tr" ? "Rezervasyonunuzu onaylamak için güvenli ödemeyi tamamlayın" : lang === "es" ? "Completa tu pago seguro para confirmar tu reserva" : "Zahlung sicher abschließen, um Ihre Buchung zu bestätigen"}
             </p>
             {/* Steps indicator */}
             <div className="flex items-center gap-2 mt-4">
               {[
-                { label: lang === "ar" ? "تفاصيل الحجز" : lang === "en" ? "Booking Details" : lang === "tr" ? "Rezervasyon Detayı" : lang === "es" ? "Detalles" : "Buchungsdetails", done: true },
-                { label: lang === "ar" ? "الدفع الآمن" : lang === "en" ? "Secure Payment" : lang === "tr" ? "Güvenli Ödeme" : lang === "es" ? "Pago Seguro" : "Sichere Zahlung", done: false },
-                { label: lang === "ar" ? "التأكيد" : lang === "en" ? "Confirmation" : lang === "tr" ? "Onay" : lang === "es" ? "Confirmación" : "Bestätigung", done: false },
+                { label: lang === "ar" ? "تفاصيل الحجز" : lang === "en" ? "Booking Details" : lang === "uk" ? "Деталі бронювання" : lang === "tr" ? "Rezervasyon Detayı" : lang === "es" ? "Detalles" : "Buchungsdetails", done: true },
+                { label: lang === "ar" ? "الدفع الآمن" : lang === "en" ? "Secure Payment" : lang === "uk" ? "Безпечна оплата" : lang === "tr" ? "Güvenli Ödeme" : lang === "es" ? "Pago Seguro" : "Sichere Zahlung", done: false },
+                { label: lang === "ar" ? "التأكيد" : lang === "en" ? "Confirmation" : lang === "uk" ? "Підтвердження" : lang === "tr" ? "Onay" : lang === "es" ? "Confirmación" : "Bestätigung", done: false },
               ].map((s, i) => (
                 <React.Fragment key={i}>
                   <div className="flex items-center gap-1.5">

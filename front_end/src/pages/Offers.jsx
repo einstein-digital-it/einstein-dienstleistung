@@ -12,7 +12,6 @@ import {
   CalendarClock,
   Sparkles,
   Users,
-  GraduationCap,
   FileText,
   Wrench,
   CheckCircle,
@@ -29,15 +28,14 @@ import { Badge } from "@/components/ui/badge";
 
 const translations = {
   de: {
-    title: "Angebote bei EinStein Institut",
+    title: "Angebote bei EinStein",
     subtitle: "Ganzheitliche Betreuung aus einer Hand",
-    intro_title: "Das EinStein Institut bietet strukturierte und umfassende Dienstleistungspakete",
+    intro_title: "EinStein bietet strukturierte und umfassende Dienstleistungspakete",
     intro_desc: "Ziel ist es, eine vollständige Versorgung und Organisation zu gewährleisten – ohne die Notwendigkeit, mehrere externe Dienstleister zu beauftragen. EinStein fungiert dabei als zentrale Institution und alleiniger Ansprechpartner.",
     concept_title: "Unser Konzept: Eine Institution – alle Dienstleistungen",
     concept_desc: "EinStein steht für ein ganzheitliches Betreuungskonzept. Unsere Angebote verbinden:",
     concept_items: [
       "Haushalts- und Immobiliendienstleistungen",
-      "Bildungs- und Betreuungsangebote für Kinder",
       "Bürokratische und organisatorische Unterstützung",
       "Handwerks- und technische Leistungen",
       "Digitale und administrative Koordination"
@@ -64,7 +62,6 @@ const translations = {
           "Laufende Haushalts- und Immobilienorganisation",
           "Regelmäßige Koordination von Reinigung, Wartung und Reparaturen",
           "Kontinuierliche bürokratische Begleitung",
-          "Organisation von Bildungs- und Förderangeboten für Kinder",
           "Feste Ansprechpartner und strukturierte Abläufe"
         ]
       },
@@ -76,7 +73,6 @@ const translations = {
           "Monatliche Organisation von Haushalts- und Alltagsaufgaben",
           "Bürokratische Unterstützung und Terminmanagement",
           "Koordination von Handwerks- und Technikleistungen bei Bedarf",
-          "Begleitung schulischer und organisatorischer Themen der Kinder"
         ]
       },
       weekly: {
@@ -102,13 +98,6 @@ const translations = {
         ]
       }
     },
-    education_title: "Bildungs- & Kinderbetreuung im Rahmen der Pakete",
-    education_desc: "Ein besonderer Schwerpunkt liegt auf der Begleitung von Kindern und Jugendlichen.",
-    education_features: [
-      "Strukturierte Bildungsförderung nach modernem Konzept",
-      "Unterstützung bei schulischen und administrativen Angelegenheiten",
-      "Entlastung der Eltern durch zentrale Organisation"
-    ],
     bureaucracy_title: "Bürokratie & Organisation – zentral gesteuert",
     bureaucracy_desc: "Alle Angebote beinhalten auf Wunsch eine kontinuierliche bürokratische und organisatorische Begleitung:",
     bureaucracy_features: [
@@ -135,15 +124,14 @@ const translations = {
     prices_title: "Preise"
   },
   ar: {
-    title: "عروض معهد آينشتاين",
+    title: "عروض آينشتاين",
     subtitle: "رعاية شاملة من مصدر واحد",
-    intro_title: "يقدم معهد آينشتاين باقات خدمات منظمة وشاملة",
+    intro_title: "يقدم آينشتاين باقات خدمات منظمة وشاملة",
     intro_desc: "الهدف هو ضمان الرعاية والتنظيم الكامل – دون الحاجة إلى التعاقد مع عدة مزودي خدمات خارجيين. يعمل آينشتاين كمؤسسة مركزية ونقطة اتصال وحيدة.",
     concept_title: "مفهومنا: مؤسسة واحدة – جميع الخدمات",
     concept_desc: "آينشتاين يمثل مفهوم رعاية شاملة. تجمع عروضنا بين:",
     concept_items: [
       "خدمات الأعمال المنزلية والعقارات",
-      "عروض التعليم والرعاية للأطفال",
       "الدعم البيروقراطي والتنظيمي",
       "الخدمات الحرفية والتقنية",
       "التنسيق الرقمي والإداري"
@@ -170,7 +158,6 @@ const translations = {
           "تنظيم مستمر للمنزل والعقارات",
           "تنسيق منتظم للتنظيف والصيانة والإصلاحات",
           "مرافقة بيروقراطية مستمرة",
-          "تنظيم عروض التعليم والدعم للأطفال",
           "جهات اتصال ثابتة وعمليات منظمة"
         ]
       },
@@ -182,7 +169,6 @@ const translations = {
           "تنظيم شهري لمهام المنزل والحياة اليومية",
           "الدعم البيروقراطي وإدارة المواعيد",
           "تنسيق الخدمات الحرفية والتقنية عند الحاجة",
-          "مرافقة المواضيع المدرسية والتنظيمية للأطفال"
         ]
       },
       weekly: {
@@ -208,13 +194,6 @@ const translations = {
         ]
       }
     },
-    education_title: "رعاية التعليم والأطفال ضمن الباقات",
-    education_desc: "يكمن التركيز الخاص على مرافقة الأطفال والمراهقين.",
-    education_features: [
-      "دعم تعليمي منظم وفق مفهوم حديث",
-      "دعم في المسائل المدرسية والإدارية",
-      "راحة الوالدين من خلال التنظيم المركزي"
-    ],
     bureaucracy_title: "البيروقراطية والتنظيم – إدارة مركزية",
     bureaucracy_desc: "تتضمن جميع العروض، حسب الرغبة، مرافقة بيروقراطية وتنظيمية مستمرة:",
     bureaucracy_features: [
@@ -241,15 +220,14 @@ const translations = {
     prices_title: "الأسعار"
   },
   en: {
-    title: "Offers at EinStein Institut",
+    title: "Offers at EinStein",
     subtitle: "Comprehensive care from a single source",
-    intro_title: "EinStein Institut offers structured and comprehensive service packages",
+    intro_title: "EinStein offers structured and comprehensive service packages",
     intro_desc: "The goal is to ensure complete care and organization – without the need to hire multiple external service providers. EinStein acts as a central institution and sole point of contact.",
     concept_title: "Our Concept: One Institution – All Services",
     concept_desc: "EinStein stands for a holistic care concept. Our offers combine:",
     concept_items: [
       "Household and property services",
-      "Educational and childcare services",
       "Bureaucratic and organizational support",
       "Craft and technical services",
       "Digital and administrative coordination"
@@ -276,7 +254,6 @@ const translations = {
           "Ongoing household and property organization",
           "Regular coordination of cleaning, maintenance and repairs",
           "Continuous bureaucratic support",
-          "Organization of educational and support services for children",
           "Fixed contact persons and structured processes"
         ]
       },
@@ -288,7 +265,6 @@ const translations = {
           "Monthly organization of household and daily tasks",
           "Bureaucratic support and appointment management",
           "Coordination of craft and technical services as needed",
-          "Support with school and organizational matters for children"
         ]
       },
       weekly: {
@@ -314,13 +290,6 @@ const translations = {
         ]
       }
     },
-    education_title: "Education & Childcare within Packages",
-    education_desc: "A special focus is on supporting children and adolescents.",
-    education_features: [
-      "Structured educational support according to modern concepts",
-      "Support with school and administrative matters",
-      "Relief for parents through central organization"
-    ],
     bureaucracy_title: "Bureaucracy & Organization – Centrally Managed",
     bureaucracy_desc: "All offers include, if desired, continuous bureaucratic and organizational support:",
     bureaucracy_features: [
@@ -345,6 +314,102 @@ const translations = {
     cta: "Get advice now",
     contact_us: "Contact us",
     prices_title: "Prices"
+  },
+  uk: {
+    title: "Пропозиції EinStein",
+    subtitle: "Повна підтримка з одних рук",
+    intro_title: "EinStein пропонує структуровані та комплексні пакети послуг",
+    intro_desc: "Мета – забезпечити повну підтримку й організацію без потреби наймати кількох сторонніх виконавців. EinStein – центральний партнер і єдина контактна особа.",
+    concept_title: "Наша концепція: один партнер – усі послуги",
+    concept_desc: "EinStein – це цілісний підхід до підтримки. Наші пропозиції поєднують:",
+    concept_items: [
+      "Домашні послуги та обслуговування нерухомості",
+      "Допомогу з установами та організацією",
+      "Ремонтні й технічні послуги",
+      "Цифрову та адміністративну координацію"
+    ],
+    packages: {
+      fullservice: {
+        title: "Повна підтримка дому та родини",
+        subtitle: "Повний сервіс",
+        desc: "Для власників житла, родин і людей, які хочуть повного полегшення в повсякденному житті.",
+        features: [
+          "Організація та координація всіх домашніх справ",
+          "Прибирання, догляд і обслуговування приміщень і території",
+          "Координація ремонтів, майстрів і фахівців",
+          "Допомога з установами щодо дому, нерухомості та родини",
+          "Централізована підтримка без сторонніх виконавців"
+        ]
+      },
+      yearly: {
+        title: "Річна підтримка",
+        subtitle: "Цілорічна модель",
+        desc: "Річна підтримка – постійний довгостроковий супровід.",
+        suitable: "Підходить для: власників житла, родин з дітьми, працюючих людей з великим обсягом організаційних справ",
+        features: [
+          "Постійна організація домашніх справ і нерухомості",
+          "Регулярна координація прибирання, обслуговування та ремонтів",
+          "Постійна допомога з установами",
+          "Постійні контактні особи та структуровані процеси"
+        ]
+      },
+      monthly: {
+        title: "Щомісячна підтримка",
+        subtitle: "Гнучка підписка",
+        desc: "Щомісячна підтримка – для клієнтів, яким потрібна регулярна допомога, але які хочуть залишатися гнучкими.",
+        features: [
+          "Щомісячна організація домашніх і повсякденних справ",
+          "Допомога з установами та керування зустрічами",
+          "Координація ремонтних і технічних робіт за потреби"
+        ]
+      },
+      weekly: {
+        title: "Щотижнева підтримка",
+        subtitle: "Короткострокове полегшення",
+        desc: "Щотижнева підтримка ідеальна для напружених періодів, хвороби чи стресових ситуацій і обмежених у часі проєктів.",
+        features: [
+          "Короткострокова організація домашніх справ",
+          "Допомога з установами та зустрічами",
+          "Координація потрібних послуг",
+          "Структуроване полегшення на визначений період"
+        ]
+      },
+      single: {
+        title: "Окремі та разові послуги",
+        desc: "Для конкретних потреб EinStein також пропонує разові послуги.",
+        examples: [
+          "Організація переїзду чи ремонту",
+          "Допомога з конкретними заявами",
+          "Разовий ремонт або технічна координація",
+          "Організація домашніх справ або генеральне прибирання",
+          "Цифрова чи адміністративна підтримка"
+        ]
+      }
+    },
+    bureaucracy_title: "Установи та організація – централізовано",
+    bureaucracy_desc: "Усі пропозиції за бажанням містять постійну допомогу з установами та організацією:",
+    bureaucracy_features: [
+      "Допомога з формулярами та заявами",
+      "Пояснення офіційних листів",
+      "Організація зустрічей і контроль",
+      "Цифровий порядок і ведення документів"
+    ],
+    flexible_title: "Гнучко поєднується",
+    flexible_items: [
+      "Поєднання різних напрямів послуг",
+      "Адаптація до індивідуальних потреб",
+      "Можливість переходу між моделями підтримки"
+    ],
+    promise_title: "Наша обіцянка",
+    promise_items: [
+      "Один партнер замість багатьох виконавців",
+      "Чітка відповідальність і постійні контактні особи",
+      "Структуровані, юридично надійні процеси",
+      "Повна підтримка дому, родини та повсякденного життя"
+    ],
+    cta: "Отримати консультацію",
+    contact_us: "Зв’язатися з нами",
+    prices_title: "Ціни"
   }
 };
 
@@ -402,6 +467,8 @@ export default function Offers() {
 
   const getOfferText = (offer, field) => {
     if (!offer) return "";
+    // Ukrainian offers are not in the database yet: English reads better than German
+    if (lang === "uk") return offer[`${field}_uk`] || offer[`${field}_en`] || offer[`${field}_de`] || offer[field] || "";
     return offer[`${field}_${lang}`] || offer[`${field}_de`] || offer[`${field}_en`] || offer[field] || "";
   };
 
@@ -409,6 +476,7 @@ export default function Offers() {
     const value = offer?.[field];
     if (!value) return [];
     if (Array.isArray(value)) return value;
+    if (lang === "uk") return value.uk || value.en || value.de || [];
     return value[lang] || value.de || value.en || value.ar || [];
   };
 
@@ -582,36 +650,6 @@ export default function Offers() {
         </div>
 
         {/* Education Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="mb-8"
-        >
-          <Card className="border-0 shadow-lg bg-blue-50">
-            <CardContent className="p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
-                  <GraduationCap className="w-6 h-6 text-white" />
-                </div>
-                <h2 className="text-2xl font-bold text-[#1e3a5f]">
-                  {t.education_title}
-                </h2>
-              </div>
-              <p className="text-gray-600 mb-4">
-                {t.education_desc}
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {t.education_features.map((feature, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
 
         {/* Bureaucracy Section */}
         <motion.div

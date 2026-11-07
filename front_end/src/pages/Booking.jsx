@@ -290,6 +290,54 @@ const translations = {
     loading_slots: "Müsait randevular yükleniyor...",
     login_required: "Giriş Gerekli",
     login_required_message: "Devam etmek için lütfen giriş yapın. Sağ üstteki 'Giriş Yap'a tıklayın."
+  },
+  uk: {
+    title: "Забронювати послугу",
+    step1: "Оберіть категорію",
+    step2: "Оберіть послугу",
+    step3: "Введіть дані",
+    step4: "Оберіть дату й час",
+    select_provider: "Оберіть виконавця",
+    any_provider: "Будь-який вільний виконавець",
+    any_provider_desc: "Ми призначимо вам найкращого вільного фахівця",
+    selected_provider: "Обраний виконавець",
+    change_provider: "Змінити",
+    no_providers: "Для цієї категорії немає виконавців",
+    reviews: "відгуків",
+    categories: {
+      office: "Офісні та організаційні послуги",
+      forms: "Допомога з установами та формулярами",
+      admin: "Адміністративні послуги",
+      coordination: "Послуги координації",
+      mercosur: "MERCOSUR (Латинська Америка)",
+      print: "Друк і печатки",
+      secretariat: "Офіс і секретаріат (на місці)",
+      eur1: "Документи ЄС–Сирія / EUR.1",
+      dokumentabo: "Документна підписка – 58,31 € / міс. з ПДВ",
+      bueromanagement: "Офіс-менеджмент (для бізнесу)"
+    },
+    name: "Повне ім’я",
+    email: "E-mail",
+    phone: "Номер телефону",
+    address: "Адреса (необов’язково)",
+    description: "Опишіть, що вам потрібно",
+    description_placeholder: "Що саме вам потрібно? Опишіть якомога детальніше...",
+    upload_docs: "Завантажити документи (необов’язково)",
+    select_date: "Оберіть дату",
+    select_time: "Оберіть час",
+    next: "Далі",
+    back: "Назад",
+    submit: "Надіслати бронювання",
+    success_title: "Бронювання успішне!",
+    success_message: "Ми отримали ваш запит і незабаром зв’яжемося з вами.",
+    booking_number: "Номер бронювання",
+    available: "Вільно",
+    booked: "Зайнято",
+    slots_available: "вільних слотів",
+    no_slots: "Немає вільних слотів",
+    loading_slots: "Завантаження вільних слотів...",
+    login_required: "Потрібен вхід",
+    login_required_message: "Будь ласка, увійдіть, щоб продовжити. Натисніть «Увійти» вгорі праворуч."
   }
     };
 
@@ -312,6 +360,7 @@ const BM_TEXT = {
   en: { title: "Choose a package", hint: "By number of employees, Minijob employees included. All packages include the same services.", klein: "Small package", mittel: "Medium package", gross: "Large package", employees: "employees", month: "/ month" },
   tr: { title: "Paket seçin", hint: "Çalışan sayısına göre, Minijob çalışanları dahil. Tüm paketler aynı hizmetleri içerir.", klein: "Küçük paket", mittel: "Orta paket", gross: "Büyük paket", employees: "çalışan", month: "/ ay" },
   es: { title: "Elija un paquete", hint: "Según el número de empleados, incluidos los Minijob. Todos los paquetes incluyen los mismos servicios.", klein: "Paquete pequeño", mittel: "Paquete mediano", gross: "Paquete grande", employees: "empleados", month: "/ mes" },
+  uk: { title: "Оберіть пакет", hint: "За кількістю працівників, включно з Minijob. Усі пакети містять однакові послуги.", klein: "Малий пакет", mittel: "Середній пакет", gross: "Великий пакет", employees: "працівників", month: "/ міс." },
 };
 
 const allTimeSlots = [
@@ -354,6 +403,7 @@ export default function Booking() {
     if (lang === "en") return p.label_en || p.label_de || p.label;
     if (lang === "tr") return p.label_tr || p.label_de || p.label;
     if (lang === "es") return p.label_es || p.label_de || p.label;
+    if (lang === "uk") return p.label_en || p.label_de || p.label;
     return p.label_de || p.label;
   };
 
@@ -363,6 +413,7 @@ export default function Booking() {
     if (lang === "en") return p.unit_en || p.unit_de || p.unit;
     if (lang === "tr") return p.unit_tr || p.unit_de || p.unit;
     if (lang === "es") return p.unit_es || p.unit_de || p.unit;
+    if (lang === "uk") return p.unit_en || p.unit_de || p.unit;
     return p.unit_de || p.unit;
   };
 
@@ -759,13 +810,13 @@ export default function Booking() {
           className="text-center mb-10"
         >
           <span className="inline-block px-4 py-1.5 bg-[#6B46C1]/10 text-[#6B46C1] rounded-full text-sm font-semibold mb-4 tracking-wide">
-            {lang === "ar" ? "احجز خدمتك" : lang === "en" ? "BOOK YOUR SERVICE" : "JETZT BUCHEN"}
+            {lang === "ar" ? "احجز خدمتك" : lang === "en" ? "BOOK YOUR SERVICE" : lang === "uk" ? "ЗАБРОНЮЙТЕ ПОСЛУГУ" : "JETZT BUCHEN"}
           </span>
           <h1 className="text-3xl md:text-4xl font-black text-[#1e3a5f] mb-3 tracking-tight">
             {t.title}
           </h1>
           <p className="text-gray-500 text-base max-w-xl mx-auto">
-            {lang === "ar" ? "خطوات بسيطة لحجز الخدمة التي تحتاجها" : lang === "en" ? "A few simple steps to book the service you need" : "In wenigen Schritten zur gewünschten Dienstleistung"}
+            {lang === "ar" ? "خطوات بسيطة لحجز الخدمة التي تحتاجها" : lang === "en" ? "A few simple steps to book the service you need" : lang === "uk" ? "Кілька простих кроків, щоб забронювати потрібну послугу" : "In wenigen Schritten zur gewünschten Dienstleistung"}
           </p>
         </motion.div>
 
@@ -773,9 +824,9 @@ export default function Booking() {
         <div className="flex justify-center mb-10">
           <div className="flex items-center gap-2">
             {[
-              { num: 1, label: lang === "ar" ? "اختر الخدمة" : lang === "en" ? "Choose Service" : "Dienst wählen" },
-              { num: 2, label: lang === "ar" ? "بياناتك" : lang === "en" ? "Your Details" : "Ihre Daten" },
-              { num: 3, label: lang === "ar" ? "الموعد" : lang === "en" ? "Date & Time" : "Termin" },
+              { num: 1, label: lang === "ar" ? "اختر الخدمة" : lang === "en" ? "Choose Service" : lang === "uk" ? "Оберіть послугу" : "Dienst wählen" },
+              { num: 2, label: lang === "ar" ? "بياناتك" : lang === "en" ? "Your Details" : lang === "uk" ? "Ваші дані" : "Ihre Daten" },
+              { num: 3, label: lang === "ar" ? "الموعد" : lang === "en" ? "Date & Time" : lang === "uk" ? "Дата і час" : "Termin" },
             ].map((s, idx) => (
               <React.Fragment key={s.num}>
                 <div className="flex flex-col items-center">
@@ -804,7 +855,7 @@ export default function Booking() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <h2 className="text-2xl font-black text-[#1e3a5f] mb-1 tracking-tight">{t.step1}</h2>
                 <p className="text-gray-400 text-sm mb-6">
-                  {lang === "ar" ? "اختر نوع الخدمة التي تحتاجها" : lang === "en" ? "Choose the service you need" : "Wählen Sie die gewünschte Dienstleistung"}
+                  {lang === "ar" ? "اختر نوع الخدمة التي تحتاجها" : lang === "en" ? "Choose the service you need" : lang === "uk" ? "Оберіть потрібну послугу" : "Wählen Sie die gewünschte Dienstleistung"}
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {categories.map((cat) => {
@@ -845,14 +896,14 @@ export default function Booking() {
                   <div className="mt-10 pt-8 border-t border-gray-100">
                     <div className="text-center mb-2">
                       <span className="inline-block px-3 py-1 bg-purple-50 text-[#6B46C1] rounded-full text-xs font-semibold">
-                        {lang === "ar" ? "اختياري" : lang === "en" ? "OPTIONAL" : "OPTIONAL"}
+                        {lang === "ar" ? "اختياري" : lang === "en" ? "OPTIONAL" : lang === "uk" ? "НЕОБОВ’ЯЗКОВО" : "OPTIONAL"}
                       </span>
                     </div>
                     <h3 className="text-xl font-bold text-center text-[#1e3a5f] mb-2">
-                      {lang === "ar" ? "أو اختر باكيج شهري جاهز" : lang === "en" ? "Or choose a monthly package" : "Oder wählen Sie ein Monatspaket"}
+                      {lang === "ar" ? "أو اختر باكيج شهري جاهز" : lang === "en" ? "Or choose a monthly package" : lang === "uk" ? "Або оберіть місячний пакет" : "Oder wählen Sie ein Monatspaket"}
                     </h3>
                     <p className="text-center text-gray-400 text-sm mb-6">
-                      {lang === "ar" ? "وفّر مع باقاتنا الشهرية" : lang === "en" ? "Save with our monthly plans" : "Sparen Sie mit unseren Monatsplänen"}
+                      {lang === "ar" ? "وفّر مع باقاتنا الشهرية" : lang === "en" ? "Save with our monthly plans" : lang === "uk" ? "Заощаджуйте з місячними планами" : "Sparen Sie mit unseren Monatsplänen"}
                     </p>
                     {selectedPackage && (
                       <div className="text-center mb-4">
@@ -866,7 +917,7 @@ export default function Booking() {
                           onClick={() => setSelectedPackage(null)}
                           className="text-xs text-gray-500 ms-2"
                         >
-                          {lang === "ar" ? "إزالة" : lang === "en" ? "Remove" : "Entfernen"}
+                          {lang === "ar" ? "إزالة" : lang === "en" ? "Remove" : lang === "uk" ? "Видалити" : "Entfernen"}
                         </Button>
                       </div>
                     )}
@@ -980,7 +1031,7 @@ export default function Booking() {
                   <div className="bg-gradient-to-br from-purple-50 to-white border-2 border-purple-100 rounded-2xl p-5">
                     <Label className="flex items-center gap-2 mb-3 font-semibold text-[#1e3a5f]">
                       <Clock className="w-4 h-4 text-[#6B46C1]" />
-                      {lang === "ar" ? "عدد الساعات المطلوبة" : lang === "en" ? "Number of hours" : "Anzahl der Stunden"}
+                      {lang === "ar" ? "عدد الساعات المطلوبة" : lang === "en" ? "Number of hours" : lang === "uk" ? "Кількість годин" : "Anzahl der Stunden"}
                     </Label>
                     <div className="flex items-center gap-3">
                       <Button
@@ -1017,7 +1068,7 @@ export default function Booking() {
                       </span>
                     </div>
                     <p className="text-xs text-gray-400 mt-2">
-                      {lang === "ar" ? "أو يمكنك العودة لاختيار باكيج شهري بسعر مخفّض" : lang === "en" ? "Or go back and choose a discounted monthly package" : "Oder wählen Sie ein vergünstigtes Monatspaket"}
+                      {lang === "ar" ? "أو يمكنك العودة لاختيار باكيج شهري بسعر مخفّض" : lang === "en" ? "Or go back and choose a discounted monthly package" : lang === "uk" ? "Або поверніться й оберіть вигідний місячний пакет" : "Oder wählen Sie ein vergünstigtes Monatspaket"}
                     </p>
                   </div>
                 )}
@@ -1028,7 +1079,7 @@ export default function Booking() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Badge className="bg-[#6B46C1] text-white mb-2">
-                          {lang === "ar" ? "باكيج شهري" : lang === "en" ? "Monthly Package" : "Monatspaket"}
+                          {lang === "ar" ? "باكيج شهري" : lang === "en" ? "Monthly Package" : lang === "uk" ? "Місячний пакет" : "Monatspaket"}
                         </Badge>
                         <p className="font-bold text-[#1e3a5f] text-lg">{selectedPackage.name}</p>
                         <p className="text-2xl font-black text-[#6B46C1]">{toGrossPrice(selectedPackage.price, lang)}</p>
@@ -1042,7 +1093,7 @@ export default function Booking() {
                           setFormData(prev => ({ ...prev, service_id: "secretariat_main" }));
                         }}
                       >
-                        {lang === "ar" ? "تغيير" : lang === "en" ? "Change" : "Ändern"}
+                        {lang === "ar" ? "تغيير" : lang === "en" ? "Change" : lang === "uk" ? "Змінити" : "Ändern"}
                       </Button>
                     </div>
                   </div>
@@ -1175,13 +1226,13 @@ export default function Booking() {
                       className="mt-0.5"
                     />
                     <span className="text-sm text-gray-700">
-                      {lang === "ar" ? "لقد قرأت " : lang === "en" ? "I have read the " : lang === "tr" ? "Okudum ve kabul ediyorum: " : lang === "es" ? "He leído y acepto las " : "Ich habe die "}
+                      {lang === "ar" ? "لقد قرأت " : lang === "en" ? "I have read the " : lang === "uk" ? "Я прочитав(-ла) " : lang === "tr" ? "Okudum ve kabul ediyorum: " : lang === "es" ? "He leído y acepto las " : "Ich habe die "}
                       <Link to="/AGB" target="_blank" className="font-semibold text-[#6B46C1] underline">AGB</Link>
-                      {lang === "ar" ? " و" : lang === "en" ? " and the " : lang === "tr" ? " ve " : lang === "es" ? " y la " : " und die "}
+                      {lang === "ar" ? " و" : lang === "en" ? " and the " : lang === "uk" ? " та " : lang === "tr" ? " ve " : lang === "es" ? " y la " : " und die "}
                       <Link to="/Datenschutz" target="_blank" className="font-semibold text-[#6B46C1] underline">
-                        {lang === "ar" ? "سياسة الخصوصية" : lang === "en" ? "Privacy Policy" : lang === "tr" ? "Gizlilik Politikası" : lang === "es" ? "Política de Privacidad" : "Datenschutzerklärung"}
+                        {lang === "ar" ? "سياسة الخصوصية" : lang === "en" ? "Privacy Policy" : lang === "uk" ? "Політику конфіденційності" : lang === "tr" ? "Gizlilik Politikası" : lang === "es" ? "Política de Privacidad" : "Datenschutzerklärung"}
                       </Link>
-                      {lang === "ar" ? " وأوافق عليها. *" : lang === "en" ? " and accept them. *" : lang === "tr" ? " ve kabul ediyorum. *" : lang === "es" ? " y las acepto. *" : " gelesen und akzeptiere sie. *"}
+                      {lang === "ar" ? " وأوافق عليها. *" : lang === "en" ? " and accept them. *" : lang === "uk" ? " і погоджуюся з ними. *" : lang === "tr" ? " ve kabul ediyorum. *" : lang === "es" ? " y las acepto. *" : " gelesen und akzeptiere sie. *"}
                     </span>
                   </label>
                   <label className="flex items-start gap-3 cursor-pointer">
@@ -1251,7 +1302,7 @@ export default function Booking() {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>{lang === "ar" ? "حسناً" : lang === "en" ? "OK" : "OK"}</AlertDialogCancel>
+              <AlertDialogCancel>{lang === "ar" ? "حسناً" : lang === "en" ? "OK" : lang === "uk" ? "OK" : "OK"}</AlertDialogCancel>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
