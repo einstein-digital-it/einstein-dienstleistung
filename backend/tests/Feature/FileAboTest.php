@@ -86,6 +86,25 @@ class FileAboTest extends TestCase
         $this->assertFalse($user->fresh()->hasFileAbo());
     }
 
+    public function test_cancel_form_without_login_stops_the_abo_at_period_end(): void
+    {
+        config(['services.stripe.secret' => 'sk_test_x']);
+        $end = now()->addDays(20)->startOfSecond();
+        Http::fake(['api.stripe.com/*' => Http::response(['id' => 'sub_5', 'current_period_end' => $end->timestamp])]);
+        $user = $this->withApiUser('user', 'leave@example.com');
+        $user->forceFill(['file_abo_status' => 'active', 'file_abo_subscription_id' => 'sub_5'])->save();
+
+        $this->postJson('/api/public/cancellations', [
+            'name' => 'Leave', 'email' => 'LEAVE@example.com',
+            'cancellation_type' => 'ordinary', 'termination_timing' => 'soonest',
+        ])->assertCreated();
+
+        Http::assertSent(fn ($r) => str_ends_with($r->url(), 'subscriptions/sub_5') && $r->data()['cancel_at_period_end'] === 'true');
+        $user->refresh();
+        $this->assertSame($end->timestamp, $user->file_abo_ends_at->timestamp);
+        $this->assertTrue($user->hasFileAbo()); // still active until the paid month ends
+    }
+
     public function test_staff_always_have_processing(): void
     {
         $this->assertTrue((new User(['role' => 'admin']))->hasFileAbo());

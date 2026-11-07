@@ -395,6 +395,10 @@ async function downloadFile(path, fileName) {
 export const customerDocumentsApi = {
   list: () => request("/customer/documents"),
   translate: (id, lang) => request(`/customer/documents/${id}/translate`, { method: "POST", body: JSON.stringify({ lang }) }),
+  // Unterlagen-Abo: automatic sorting + translation (monthly, VAT included)
+  subscription: () => request("/customer/subscription"),
+  subscribe: (lang) => request("/customer/subscription/checkout", { method: "POST", body: JSON.stringify({ lang }) }),
+  cancelSubscription: () => request("/customer/subscription/cancel", { method: "POST", body: "{}" }),
   reminders: (email) => request(`/customer/reminders${toQuery({ email })}`),
   updateReminder: (id, payload) => request(`/customer/reminders/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   upload: ({ file, folder, title, note, lang }) => {

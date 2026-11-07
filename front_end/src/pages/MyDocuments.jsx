@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
-  Briefcase, Building2, ChevronLeft, ChevronRight, Download, FileText, Folder, GraduationCap,
+  BadgeCheck, Briefcase, Building2, ChevronLeft, ChevronRight, Download, FileText, Folder, GraduationCap,
   HeartPulse, Home as HomeIcon, Sparkles, CalendarClock, ChevronDown, Landmark, Loader2, Lock, PiggyBank, Shield, Trash2, Upload, Users, Globe2, Baby,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,10 @@ const T = {
     reminders: "Erinnerungen", daysLeft: (n) => (n < 0 ? "überfällig" : n === 0 ? "heute" : `in ${n} Tagen`), done: "Erledigt", translateMine: "In meine Sprache übersetzen",
     processing: "Wird sortiert und übersetzt…", failed: "Automatische Übersetzung fehlgeschlagen", summary: "Zusammenfassung", translation: "Übersetzung", showTranslation: "Übersetzung anzeigen", hideTranslation: "Übersetzung ausblenden", deadline: "Frist", from: "Von",
     aiNote: "Die Datei wird zur Sortierung und Übersetzung automatisch mit Claude (Anthropic) ausgewertet. Die Übersetzung ist eine Hilfe, keine beglaubigte Übersetzung.",
+    aboTitle: "Sortieren & Übersetzen", aboPitch: "Wir sortieren jeden Brief in den richtigen Ordner, übersetzen ihn in Ihre Sprache und erinnern Sie an Fristen.",
+    aboPrice: (p) => `${p} € / Monat inkl. MwSt. · monatlich kündbar`, aboSubscribe: "Jetzt abonnieren", aboActive: "Sortieren & Übersetzen ist aktiv",
+    aboUntil: (d) => `Gekündigt – aktiv bis ${d}`, aboCancel: "Abo kündigen", aboCancelConfirm: "Abo kündigen? Es bleibt bis zum Ende des bezahlten Monats aktiv.",
+    aboNeeded: "Ohne Abo wird der Brief nur gespeichert, nicht sortiert oder übersetzt.", aboThanks: "Danke! Ihr Abo wird aktiviert, sobald die Zahlung bestätigt ist.", aboTerms: "Es gelten die AGB (§ 8b).",
   },
   ar: {
     title: "ملفاتي", subtitle: "كل مستنداتك مرتبة حسب الجهة والموضوع.",
@@ -52,6 +56,10 @@ const T = {
     reminders: "تذكيرات", daysLeft: (n) => (n < 0 ? "متأخر" : n === 0 ? "اليوم" : `بعد ${n} يوم`), done: "تم", translateMine: "ترجمها للغتي",
     processing: "جارٍ الترتيب والترجمة…", failed: "فشلت الترجمة التلقائية", summary: "الملخص", translation: "الترجمة", showTranslation: "عرض الترجمة", hideTranslation: "إخفاء الترجمة", deadline: "آخر موعد", from: "من",
     aiNote: "يتم تحليل الملف تلقائياً بواسطة Claude (Anthropic) لترتيبه وترجمته. الترجمة للمساعدة فقط وليست ترجمة محلّفة.",
+    aboTitle: "ترتيب وترجمة", aboPitch: "نرتّب كل رسالة في المجلد الصحيح، ونترجمها للغتك، ونذكّرك بالمواعيد.",
+    aboPrice: (p) => `${p} € شهرياً شامل الضريبة · يمكن الإلغاء شهرياً`, aboSubscribe: "اشترك الآن", aboActive: "الترتيب والترجمة مفعّلان",
+    aboUntil: (d) => `تم الإلغاء – مفعّل حتى ${d}`, aboCancel: "إلغاء الاشتراك", aboCancelConfirm: "إلغاء الاشتراك؟ يبقى مفعّلاً حتى نهاية الشهر المدفوع.",
+    aboNeeded: "بدون اشتراك تُحفظ الرسالة فقط، بدون ترتيب أو ترجمة.", aboThanks: "شكراً! يتفعّل اشتراكك فور تأكيد الدفع.", aboTerms: "تسري الشروط العامة (§ 8b).",
   },
   en: {
     title: "My documents", subtitle: "All your documents, sorted by authority and topic.",
@@ -66,10 +74,14 @@ const T = {
     reminders: "Reminders", daysLeft: (n) => (n < 0 ? "overdue" : n === 0 ? "today" : `in ${n} days`), done: "Done", translateMine: "Translate into my language",
     processing: "Sorting and translating…", failed: "Automatic translation failed", summary: "Summary", translation: "Translation", showTranslation: "Show translation", hideTranslation: "Hide translation", deadline: "Deadline", from: "From",
     aiNote: "The file is analysed automatically by Claude (Anthropic) to sort and translate it. The translation is a help, not a certified translation.",
+    aboTitle: "Sorting & translation", aboPitch: "We sort every letter into the right folder, translate it into your language and remind you of deadlines.",
+    aboPrice: (p) => `${p} € / month incl. VAT · cancel monthly`, aboSubscribe: "Subscribe now", aboActive: "Sorting & translation is active",
+    aboUntil: (d) => `Cancelled – active until ${d}`, aboCancel: "Cancel subscription", aboCancelConfirm: "Cancel the subscription? It stays active until the end of the paid month.",
+    aboNeeded: "Without a subscription the letter is only stored, not sorted or translated.", aboThanks: "Thank you! Your subscription starts as soon as the payment is confirmed.", aboTerms: "Our terms apply (AGB § 8b).",
   },
 };
-T.tr = { ...T.en, title: "Belgelerim", subtitle: "Tüm belgeleriniz kurum ve konuya göre sıralı.", upload: "Dosya yükle", back: "Tüm klasörler", autoTitle: "Yükleyin – biz sıralayıp çeviririz", processing: "Sıralanıyor ve çevriliyor…", summary: "Özet", translation: "Çeviri", showTranslation: "Çeviriyi göster", hideTranslation: "Çeviriyi gizle", deadline: "Son tarih", from: "Gönderen" };
-T.es = { ...T.en, title: "Mis documentos", subtitle: "Todos sus documentos, ordenados por organismo y tema.", upload: "Subir archivo", back: "Todas las carpetas", autoTitle: "Súbalo – nosotros lo ordenamos y traducimos", processing: "Ordenando y traduciendo…", summary: "Resumen", translation: "Traducción", showTranslation: "Mostrar traducción", hideTranslation: "Ocultar traducción", deadline: "Plazo", from: "De" };
+T.tr = { ...T.en, aboTitle: "Sıralama ve çeviri", aboSubscribe: "Şimdi abone ol", aboPrice: (p) => `${p} € / ay KDV dahil · aylık iptal`, title: "Belgelerim", subtitle: "Tüm belgeleriniz kurum ve konuya göre sıralı.", upload: "Dosya yükle", back: "Tüm klasörler", autoTitle: "Yükleyin – biz sıralayıp çeviririz", processing: "Sıralanıyor ve çevriliyor…", summary: "Özet", translation: "Çeviri", showTranslation: "Çeviriyi göster", hideTranslation: "Çeviriyi gizle", deadline: "Son tarih", from: "Gönderen" };
+T.es = { ...T.en, aboTitle: "Ordenar y traducir", aboSubscribe: "Suscribirse ahora", aboPrice: (p) => `${p} € / mes IVA incl. · cancelable mensualmente`, title: "Mis documentos", subtitle: "Todos sus documentos, ordenados por organismo y tema.", upload: "Subir archivo", back: "Todas las carpetas", autoTitle: "Súbalo – nosotros lo ordenamos y traducimos", processing: "Ordenando y traduciendo…", summary: "Resumen", translation: "Traducción", showTranslation: "Mostrar traducción", hideTranslation: "Ocultar traducción", deadline: "Plazo", from: "De" };
 
 function formatSize(bytes) {
   if (!bytes) return "";
@@ -98,6 +110,46 @@ export default function MyDocuments() {
   const autoInput = useRef(null);
   const [openId, setOpenId] = useState(null);
   const [reminders, setReminders] = useState([]);
+  const [abo, setAbo] = useState(null);
+  const [aboBusy, setAboBusy] = useState(false);
+  const aboReturn = searchParams.get("abo");
+
+  const loadAbo = () => customerDocumentsApi.subscription().then(setAbo).catch(() => {});
+
+  const subscribe = async () => {
+    setAboBusy(true);
+    setError("");
+    try {
+      const res = await customerDocumentsApi.subscribe(lang);
+      window.location.href = res.url;
+    } catch (e) {
+      setError(e?.message || t.error);
+      setAboBusy(false);
+    }
+  };
+
+  const cancelAbo = async () => {
+    if (!window.confirm(t.aboCancelConfirm)) return;
+    setAboBusy(true);
+    try {
+      setAbo(await customerDocumentsApi.cancelSubscription());
+    } catch (e) {
+      setError(e?.message || t.error);
+    } finally {
+      setAboBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!user || isAdmin) return undefined;
+    loadAbo();
+    // Back from Stripe: the webhook may need a few seconds to activate the Abo
+    if (aboReturn !== "1") return undefined;
+    const timer = setInterval(loadAbo, 4000);
+    const stop = setTimeout(() => clearInterval(timer), 40000);
+    return () => { clearInterval(timer); clearTimeout(stop); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aboReturn]);
 
   const load = async () => {
     setLoading(true);
@@ -225,6 +277,30 @@ export default function MyDocuments() {
               {uploading ? t.uploading : t.upload}
             </Button>
           </div>
+          {abo && (abo.active ? (
+            <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-100 bg-white p-4">
+              <BadgeCheck className="w-5 h-5 text-emerald-600" />
+              <p className="flex-1 font-semibold text-[#1e3a5f]">
+                {abo.ends_at ? t.aboUntil(new Date(abo.ends_at).toLocaleDateString(lang === "ar" ? "ar" : lang)) : t.aboActive}
+              </p>
+              {!abo.ends_at && (
+                <Button variant="ghost" onClick={cancelAbo} disabled={aboBusy} className="text-gray-600">{t.aboCancel}</Button>
+              )}
+            </div>
+          ) : (
+            <div className="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-5 flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex-1">
+                <p className="font-bold text-[#1e3a5f]">{t.aboTitle}</p>
+                <p className="text-sm text-[#1e3a5f]/80 mt-1">{aboReturn === "1" ? t.aboThanks : `${t.aboPitch} ${t.aboNeeded}`}</p>
+                <p className="mt-2 font-bold text-[#6B46C1]">{t.aboPrice(Number(abo.price).toFixed(2).replace(".", ","))}</p>
+                <p className="text-[11px] text-gray-500 mt-1">{t.aboTerms}</p>
+              </div>
+              <Button onClick={subscribe} disabled={aboBusy || aboReturn === "1"} className="bg-[#6B46C1] hover:bg-[#805AD5] font-bold">
+                {aboBusy ? <Loader2 className="w-4 h-4 me-2 animate-spin" /> : <Sparkles className="w-4 h-4 me-2" />}
+                {t.aboSubscribe}
+              </Button>
+            </div>
+          ))}
           {reminders.length > 0 && (
             <div className="mb-6 bg-white rounded-2xl border border-gray-100 p-5">
               <h2 className="font-bold text-[#1e3a5f] mb-3">{t.reminders}</h2>

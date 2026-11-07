@@ -85,17 +85,30 @@ class CustomerSubscriptionController extends Controller
         if (! $user->file_abo_subscription_id || ! StripeClient::configured()) {
             return response()->json(['message' => 'No active subscription.'], 404);
         }
+        if (! self::cancelAtPeriodEnd($user)) {
+            return response()->json(['message' => 'The subscription could not be cancelled. Please try again later.'], 502);
+        }
+
+        return response()->json(['data' => $this->state($user)]);
+    }
+
+    /** Stop the Stripe subscription at the end of the paid month. Also used by the § 312k cancel form. */
+    public static function cancelAtPeriodEnd(User $user): bool
+    {
+        if (! $user->file_abo_subscription_id || ! StripeClient::configured()) {
+            return false;
+        }
         try {
             $sub = (new StripeClient())->post('subscriptions/'.$user->file_abo_subscription_id, ['cancel_at_period_end' => 'true']);
         } catch (Throwable $e) {
             Log::error('Stripe file abo cancel failed', ['user' => $user->id, 'error' => $e->getMessage()]);
 
-            return response()->json(['message' => 'The subscription could not be cancelled. Please try again later.'], 502);
+            return false;
         }
         $end = $sub['current_period_end'] ?? $sub['items']['data'][0]['current_period_end'] ?? null;
         $user->forceFill(['file_abo_ends_at' => $end ? now()->setTimestamp((int) $end) : now()])->save();
 
-        return response()->json(['data' => $this->state($user)]);
+        return true;
     }
 
     /** Called by StripeController::webhook. Returns true if the event belongs to this Abo. */

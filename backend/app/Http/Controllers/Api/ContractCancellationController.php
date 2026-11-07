@@ -81,6 +81,15 @@ class ContractCancellationController extends Controller
         }
 
         $bookings = $query->get();
+        // No booking Abo matches: it is the Unterlagen-Abo (sorting + translation, AGB § 8b)
+        if ($bookings->isEmpty()) {
+            $user = User::whereRaw('LOWER(email) = ?', [strtolower($c->email)])->first();
+            if ($user && CustomerSubscriptionController::cancelAtPeriodEnd($user)) {
+                $c->update(['status' => 'confirmed']);
+            }
+
+            return;
+        }
         // Without a reference only act when the customer has exactly one active Abo
         if (! $c->reference_number && $bookings->count() !== 1) {
             return;
