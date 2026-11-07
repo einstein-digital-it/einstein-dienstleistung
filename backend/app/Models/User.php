@@ -55,6 +55,17 @@ class User extends Authenticatable
             'is_active' => 'boolean',
             'password' => 'hashed',
             'form_data' => 'array',
+            'file_abo_ends_at' => 'datetime',
         ];
+    }
+
+    /** Automatic sorting + translation in "Meine Unterlagen" (staff always have it). */
+    public function hasFileAbo(): bool
+    {
+        if (in_array($this->role, ['admin', 'provider'], true)) {
+            return true;
+        }
+
+        return in_array($this->file_abo_status, ['active', 'past_due'], true);
     }
 }

@@ -61,6 +61,7 @@ class _FakeBackend {
   /// Raw multipart bodies of document uploads.
   final uploads = <String>[];
   final savedFormData = <Map<String, dynamic>>[];
+  bool aboActive = false;
 
   static const _forms = {
     'email': 'customer@example.com',
@@ -188,6 +189,9 @@ class _FakeBackend {
     }
     if (method == 'GET' && path == 'customer/reminders') {
       return _json(const []);
+    }
+    if (method == 'GET' && path == 'customer/subscription') {
+      return _json({'active': aboActive, 'status': aboActive ? 'active' : 'none', 'ends_at': null, 'price': 5, 'vat_included': true});
     }
     if (method == 'GET' && path == 'customer/forms') {
       return _json(_forms);
@@ -597,6 +601,10 @@ void main() {
     await tester.tap(find.text('My file').last);
     await tester.pumpAndSettle();
     expect(find.text('All your letters, sorted by authority.'), findsOneWidget);
+    // Without the Abo, sorting & translation is offered for 5 € a month
+    expect(find.text('Sorting & translation'), findsOneWidget);
+    expect(find.text('5,00 € / month incl. VAT · cancel any time'), findsOneWidget);
+    expect(find.text('Subscribe'), findsOneWidget);
 
     // The letter sits in its authority's folder
     final folder = find.text('Immigration office');
@@ -605,6 +613,9 @@ void main() {
       200,
       scrollable: find.byType(Scrollable).first,
     );
+    // Lift it clear of the bottom navigation bar
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -200));
+    await tester.pumpAndSettle();
     await tester.tap(folder);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Residence permit expires soon'));
@@ -627,11 +638,8 @@ void main() {
     Get.back();
     await tester.pumpAndSettle();
     expect(Get.currentRoute, AppRoutes.documents);
-    await tester.scrollUntilVisible(
-      find.text('Upload a letter'),
-      -200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 2000));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Upload a letter'));
     await tester.pumpAndSettle();
     expect(find.text('Take a photo'), findsOneWidget);
@@ -652,6 +660,13 @@ void main() {
     // No title is sent: the server must name the file itself
     expect(body, isNot(contains('name="title"')));
     expect(docs.documents.first.title, 'scan');
+
+    // Once Stripe confirms the Abo, the card says it is active
+    backend.aboActive = true;
+    await tester.runAsync(docs.loadSubscription);
+    await tester.pumpAndSettle();
+    expect(find.text('Sorting & translation is active'), findsOneWidget);
+    expect(find.text('Subscribe'), findsNothing);
   });
 
   testWidgets('Applications: fills a form and shows the German letter', (

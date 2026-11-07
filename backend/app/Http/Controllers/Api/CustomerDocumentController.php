@@ -34,9 +34,11 @@ class CustomerDocumentController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $doc = $this->save($request, $request->user()->email, 'customer');
+        $user = $request->user();
+        // Sorting and translation are part of the Unterlagen-Abo; without it the file is only stored.
+        $doc = $this->save($request, $user->email, 'customer', $user->hasFileAbo());
 
-        return response()->json(['data' => $doc], 201);
+        return response()->json(['data' => $doc, 'needs_subscription' => ! $user->hasFileAbo()], 201);
     }
 
     public function download(Request $request, CustomerDocument $document): StreamedResponse
@@ -60,6 +62,9 @@ class CustomerDocumentController extends Controller
     {
         $this->authorizeAccess($request, $document);
         $data = $request->validate(['lang' => ['required', Rule::in(['ar', 'de', 'en', 'tr', 'es'])]]);
+        if (! $request->user()->hasFileAbo()) {
+            return response()->json(['message' => 'Translation is part of the monthly subscription.', 'needs_subscription' => true], 402);
+        }
         if (! ProcessCustomerDocument::enabled()) {
             return response()->json(['message' => 'Automatic translation is not set up.'], 503);
         }
@@ -116,7 +121,7 @@ class CustomerDocumentController extends Controller
         return ['folders' => CustomerDocument::FOLDERS, 'documents' => $docs];
     }
 
-    private function save(Request $request, string $email, string $uploadedBy): CustomerDocument
+    private function save(Request $request, string $email, string $uploadedBy, bool $allowProcessing = true): CustomerDocument
     {
         $data = $request->validate([
             // "auto" = let Claude pick the folder
@@ -129,7 +134,7 @@ class CustomerDocumentController extends Controller
             'file' => self::FILE_RULES,
         ]);
 
-        $process = ProcessCustomerDocument::enabled() && $request->boolean('process', true);
+        $process = $allowProcessing && ProcessCustomerDocument::enabled() && $request->boolean('process', true);
         $file = $request->file('file');
         $path = $file->store('customer-documents/'.sha1(strtolower($email)), self::DISK);
 

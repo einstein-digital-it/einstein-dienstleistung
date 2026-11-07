@@ -50,6 +50,10 @@ class _DocumentsViewState extends State<DocumentsView> {
                 Text('files_subtitle'.tr, style: Theme.of(context).textTheme.bodyMedium),
                 const SizedBox(height: 18),
                 const UploadHeroCard(),
+                if (controller.aboKnown.value) ...[
+                  const SizedBox(height: 12),
+                  const AboCard(),
+                ],
                 if (controller.hasProcessing) ...[
                   const SizedBox(height: 12),
                   const _ProcessingBanner(),
@@ -140,6 +144,83 @@ class _FolderTile extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// The monthly Abo for automatic sorting + translation: offer it, or show it is active.
+class AboCard extends StatelessWidget {
+  const AboCard({super.key});
+
+  Future<void> _confirmCancel(DocumentsController c) async {
+    final ok = await Get.dialog<bool>(AlertDialog(
+      title: Text('abo_cancel'.tr),
+      content: Text('abo_cancel_confirm'.tr),
+      actions: [
+        TextButton(onPressed: () => Get.back(result: false), child: Text('abo_keep'.tr)),
+        TextButton(onPressed: () => Get.back(result: true), child: Text('abo_cancel'.tr)),
+      ],
+    ));
+    if (ok == true) await c.cancelSubscription();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Get.find<DocumentsController>();
+    return Obx(() {
+      if (c.aboActive.value) {
+        final ends = c.aboEndsAt.value;
+        return AppCard(
+          child: Row(
+            children: [
+              const Icon(Icons.verified_rounded, color: AppColors.success),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  ends == null ? 'abo_active'.tr : 'abo_active_until'.trParams({'date': formatDate(ends)}),
+                  style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
+                ),
+              ),
+              if (ends == null)
+                TextButton(
+                  onPressed: c.aboBusy.value ? null : () => _confirmCancel(c),
+                  child: Text('abo_cancel'.tr),
+                ),
+            ],
+          ),
+        );
+      }
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(color: AppColors.purpleSoft, borderRadius: BorderRadius.circular(18)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              const Icon(Icons.auto_awesome_rounded, color: AppColors.purple),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text('abo_title'.tr,
+                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: AppColors.navy)),
+              ),
+            ]),
+            const SizedBox(height: 8),
+            Text('abo_pitch'.tr, style: const TextStyle(color: AppColors.navy, height: 1.5)),
+            const SizedBox(height: 4),
+            Text('abo_price'.trParams({'price': c.aboPriceText}),
+                style: const TextStyle(color: AppColors.purple, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: c.aboBusy.value ? null : c.subscribe,
+                icon: const Icon(Icons.lock_open_rounded),
+                label: Text('abo_subscribe'.tr),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 

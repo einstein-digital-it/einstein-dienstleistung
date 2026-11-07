@@ -122,6 +122,11 @@ class StripeController extends Controller
 
         $object = $event['data']['object'] ?? [];
 
+        // "Meine Unterlagen" Abo (not tied to a booking)
+        if (CustomerSubscriptionController::handleWebhook((string) ($event['type'] ?? ''), $object)) {
+            return response()->json(['received' => true]);
+        }
+
         switch ($event['type'] ?? '') {
             case 'checkout.session.completed':
                 $booking = $this->bookingFromMetadata($object);

@@ -287,6 +287,23 @@ class CustomerApiService {
     await client.post('customer/documents/$id/translate', body: {'lang': lang});
   }
 
+  /// "My file" Abo: automatic sorting + translation (monthly, VAT included).
+  Future<Map<String, dynamic>> fileSubscription() async {
+    final data = await client.get('customer/subscription');
+    return data is Map ? Map<String, dynamic>.from(data) : <String, dynamic>{};
+  }
+
+  /// Starts the Stripe subscription checkout and returns the payment page URL.
+  Future<String> startFileSubscription(String lang) async {
+    final data = await client.post('customer/subscription/checkout', body: {'lang': lang});
+    return (Map<String, dynamic>.from(data as Map))['url'].toString();
+  }
+
+  Future<Map<String, dynamic>> cancelFileSubscription() async {
+    final data = await client.post('customer/subscription/cancel', body: const {});
+    return data is Map ? Map<String, dynamic>.from(data) : <String, dynamic>{};
+  }
+
   Future<List<CustomerReminder>> reminders() async {
     final data = await client.get('customer/reminders');
     return data is List

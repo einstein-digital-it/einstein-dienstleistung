@@ -78,12 +78,15 @@ class CustomerFilesApiTest extends TestCase
             ])]]]),
         ]);
 
-        $this->withApiUser('user', 'amina@example.com');
+        $this->withApiUser('user', 'amina@example.com')->forceFill(['file_abo_status' => 'active'])->save();
         $id = $this->post('/api/customer/documents', [
             'folder' => 'auto',
             'lang' => 'ar',
             'file' => UploadedFile::fake()->create('brief.pdf', 40, 'application/pdf'),
-        ], ['Accept' => 'application/json'])->assertCreated()->json('data.id');
+        ], ['Accept' => 'application/json'])->assertCreated()
+            ->assertJsonPath('data.ai_status', 'pending')
+            ->assertJsonPath('needs_subscription', false)
+            ->json('data.id');
 
         (new ProcessCustomerDocument($id, true))->handle();
 
