@@ -86,7 +86,7 @@ class _DocumentsViewState extends State<DocumentsView> {
                       crossAxisCount: 3,
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
-                      mainAxisExtent: 118,
+                      mainAxisExtent: 104,
                     ),
                     itemBuilder: (context, i) {
                       final folder = documentFolders[i];
@@ -119,27 +119,26 @@ class _FolderTile extends StatelessWidget {
     return AppCard(
       onTap: onTap,
       padding: const EdgeInsets.all(12),
+      color: count > 0 ? null : AppColors.surface.withValues(alpha: 0.6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              IconTile(icon: folderIcon(folder), color: folderColor(folder), size: 38),
-              const Spacer(),
-              if (count > 0)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(color: AppColors.navy, borderRadius: BorderRadius.circular(99)),
-                  child: Text('$count', style: const TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w700)),
-                ),
-            ],
-          ),
+          IconTile(icon: folderIcon(folder), color: folderColor(folder), size: 36),
           const Spacer(),
           Text(
             folderName(folder),
-            maxLines: 2,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(color: AppColors.navy, fontSize: 13, height: 1.25, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            count == 0 ? 'files_tile_empty'.tr : 'files_tile_count'.trParams({'count': '$count'}),
+            style: TextStyle(
+              color: count == 0 ? AppColors.muted : folderColor(folder),
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
@@ -362,6 +361,7 @@ class ReminderCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       onTap: () => _showReminder(reminder),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           IconTile(icon: folderIcon(reminder.folder), color: folderColor(reminder.folder), size: 42),
           const SizedBox(width: 12),
@@ -371,14 +371,20 @@ class ReminderCard extends StatelessWidget {
               children: [
                 Text(reminder.title, maxLines: 2, overflow: TextOverflow.ellipsis,
                     style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w700, height: 1.3)),
-                const SizedBox(height: 4),
-                Text('${folderName(reminder.folder)} · ${formatDate(reminder.dueDate)}',
-                    style: Theme.of(context).textTheme.bodySmall),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Pill(label: label, color: color, icon: Icons.schedule_rounded),
+                    Text('${folderName(reminder.folder)} · ${formatDate(reminder.dueDate)}',
+                        style: Theme.of(context).textTheme.bodySmall),
+                  ],
+                ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          Pill(label: label, color: color, icon: Icons.schedule_rounded),
         ],
       ),
     );

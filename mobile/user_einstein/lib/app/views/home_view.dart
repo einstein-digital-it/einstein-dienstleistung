@@ -102,12 +102,13 @@ class _Hero extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () => Get.toNamed(AppRoutes.login),
+                  // Sign-in is already in the header and the bottom bar
+                  onPressed: () => Get.toNamed(AppRoutes.services),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                     side: BorderSide(color: Colors.white.withValues(alpha: 0.35)),
                   ),
-                  child: Text('sign_in'.tr),
+                  child: Text('nav_services'.tr, maxLines: 1, overflow: TextOverflow.ellipsis),
                 ),
               ),
             ],

@@ -63,7 +63,7 @@ class BookingItem {
   }
 
   /// What the customer pays: net price + 19 % VAT, e.g. "178.50 EUR".
-  String get grossPrice => '${formatAmount(grossFromNet(amountValue))} EUR';
+  String get grossPrice => '${formatAmount(grossFromNet(amountValue)).replaceAll('.', ',')} €';
 
   bool get isPaid => paymentStatus == 'Paid';
 

@@ -96,18 +96,11 @@ class _TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final first = name.trim().isEmpty ? '' : name.trim().split(' ').first;
-    final initials = name.trim().isEmpty
-        ? 'ES'
-        : name.trim().split(RegExp(r'\s+')).take(2).map((p) => p.isEmpty ? '' : p[0].toUpperCase()).join();
     return Row(
       children: [
         GestureDetector(
           onTap: () => Get.offNamed(AppRoutes.profile),
-          child: CircleAvatar(
-            radius: 24,
-            backgroundColor: AppColors.navy,
-            child: Text(initials, style: const TextStyle(color: AppColors.goldBright, fontWeight: FontWeight.w700)),
-          ),
+          child: UserAvatar(name: name),
         ),
         const SizedBox(width: 12),
         Expanded(

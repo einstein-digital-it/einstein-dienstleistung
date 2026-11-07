@@ -185,7 +185,7 @@ final Map<String, String> _customerEn = {
       'Could not reach the server. Check your connection and try again.',
   'secure_payment': 'Secure payment',
   'offer_consultation': 'Request a consultation',
-  'offers_title': 'Offers from EinStein Institut',
+  'offers_title': 'Offers from EinStein',
   'client_intro':
       'EinStein will use these details when communicating on your behalf.',
   'channel': 'Channel',
@@ -202,7 +202,7 @@ final Map<String, String> _customerEn = {
   'home_hero_subtitle':
       'We take complexity off your hands. Organisation, administration and delivery - multilingual, professional and reliable.',
   'request_sent': '@id sent successfully',
-  'login_welcome': 'Welcome to EinStein Institut',
+  'login_welcome': 'Welcome to EinStein',
   'login_subtitle': 'Sign in to continue',
   'continue_google': 'Continue with Google',
   'continue_facebook': 'Continue with Facebook',
@@ -226,7 +226,7 @@ final Map<String, String> _customerEn = {
   'book_now': 'Book now',
   'services_title': 'Our services',
   'services_subtitle':
-      'A complete service centre for everyday life, education and organisation.',
+      'All your paperwork in one place – in your language.',
   'quality_guaranteed': 'EinStein verified - quality guaranteed',
   'book_service': 'Book a service',
   'quick_booking': 'Quick booking',
@@ -425,7 +425,7 @@ final Map<String, String> _customerArRaw = {
   'home_hero_subtitle':
       'Ù†Ù‚Ù„Ù„ Ø¹Ù†Ùƒ Ø§Ù„ØªØ¹Ù‚ÙŠØ¯. ØªÙ†Ø¸ÙŠÙ… ÙˆØ¥Ø¯Ø§Ø±Ø© ÙˆØªÙ†ÙÙŠØ° Ø¨Ø§Ø­ØªØ±Ø§Ù ÙˆØ¨Ø¹Ø¯Ø© Ù„ØºØ§Øª.',
   'request_sent': 'ØªÙ… Ø¥Ø±Ø³Ø§Ù„ @id Ø¨Ù†Ø¬Ø§Ø­',
-  'login_welcome': 'مرحبًا بك في معهد آينشتاين',
+  'login_welcome': 'أهلاً بك في آينشتاين',
   'login_subtitle': 'سجل الدخول للمتابعة',
   'continue_google': 'المتابعة باستخدام Google',
   'continue_facebook': 'المتابعة باستخدام Facebook',
@@ -446,7 +446,7 @@ final Map<String, String> _customerArRaw = {
   'support': 'الدعم',
   'book_now': 'احجز الآن',
   'services_title': 'خدماتنا',
-  'services_subtitle': 'مركز خدمات متكامل للحياة اليومية والتعليم والتنظيم.',
+  'services_subtitle': 'كل معاملاتك وأوراقك بمكان واحد – بلغتك.',
   'quality_guaranteed': 'معتمد من آينشتاين - جودة مضمونة',
   'book_service': 'حجز خدمة',
   'quick_booking': 'حجز سريع',
@@ -560,7 +560,7 @@ final Map<String, String> _customerArFixed = {
   'auth_connection_error':
       '\u062a\u0639\u0630\u0631 \u0627\u0644\u0627\u062a\u0635\u0627\u0644 \u0628\u0627\u0644\u062e\u0627\u062f\u0645. \u062a\u062d\u0642\u0642 \u0645\u0646 \u0627\u0644\u0627\u062a\u0635\u0627\u0644 \u0648\u062d\u0627\u0648\u0644 \u0645\u062c\u062f\u062f\u064b\u0627.',
   'login_welcome':
-      '\u0645\u0631\u062d\u0628\u064b\u0627 \u0628\u0643 \u0641\u064a \u0645\u0639\u0647\u062f \u0622\u064a\u0646\u0634\u062a\u0627\u064a\u0646',
+      '\u0623\u0647\u0644\u0627\u064b \u0628\u0643 \u0641\u064a \u0622\u064a\u0646\u0634\u062a\u0627\u064a\u0646',
   'login_subtitle':
       '\u0633\u062c\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0644\u0644\u0645\u062a\u0627\u0628\u0639\u0629',
   'continue_google':
@@ -600,7 +600,7 @@ final Map<String, String> _customerArFixed = {
   'offer_consultation':
       '\u0627\u0637\u0644\u0628 \u0627\u0633\u062a\u0634\u0627\u0631\u0629',
   'offers_title':
-      '\u0639\u0631\u0648\u0636 \u0645\u0639\u0647\u062f \u0622\u064a\u0646\u0634\u062a\u0627\u064a\u0646',
+      '\u0639\u0631\u0648\u0636 \u0622\u064a\u0646\u0634\u062a\u0627\u064a\u0646',
   'client_intro':
       '\u0633\u064a\u0633\u062a\u062e\u062f\u0645 \u0622\u064a\u0646\u0634\u062a\u0627\u064a\u0646 \u0647\u0630\u0647 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0639\u0646\u062f \u0627\u0644\u062a\u0648\u0627\u0635\u0644 \u0628\u0627\u0633\u0645\u0643.',
   'channel':
@@ -617,7 +617,7 @@ final Map<String, String> _customerArFixed = {
   'status_sent': '\u0645\u0631\u0633\u0644\u0629',
   'services_title': '\u062e\u062f\u0645\u0627\u062a\u0646\u0627',
   'services_subtitle':
-      '\u0645\u0631\u0643\u0632 \u062e\u062f\u0645\u0627\u062a \u0645\u062a\u0643\u0627\u0645\u0644 \u0644\u0644\u062d\u064a\u0627\u0629 \u0627\u0644\u064a\u0648\u0645\u064a\u0629 \u0648\u0627\u0644\u062a\u0639\u0644\u064a\u0645 \u0648\u0627\u0644\u062a\u0646\u0638\u064a\u0645.',
+      '\u0643\u0644 \u0645\u0639\u0627\u0645\u0644\u0627\u062a\u0643 \u0648\u0623\u0648\u0631\u0627\u0642\u0643 \u0628\u0645\u0643\u0627\u0646 \u0648\u0627\u062d\u062f \u2013 \u0628\u0644\u063a\u062a\u0643.',
   'quality_guaranteed':
       '\u0645\u0639\u062a\u0645\u062f \u0645\u0646 \u0622\u064a\u0646\u0634\u062a\u0627\u064a\u0646 - \u062c\u0648\u062f\u0629 \u0645\u0636\u0645\u0648\u0646\u0629',
   'book_service': '\u062d\u062c\u0632 \u062e\u062f\u0645\u0629',
@@ -831,7 +831,7 @@ final Map<String, String> _customerDe = {
       'Der Server ist nicht erreichbar. Bitte Verbindung pruefen und erneut versuchen.',
   'secure_payment': 'Sichere Zahlung',
   'offer_consultation': 'Beratung anfragen',
-  'offers_title': 'Angebote bei EinStein Institut',
+  'offers_title': 'Angebote bei EinStein',
   'client_intro':
       'EinStein verwendet diese Angaben bei der Kommunikation in Ihrem Namen.',
   'channel': 'Kanal',
@@ -848,7 +848,7 @@ final Map<String, String> _customerDe = {
   'home_hero_subtitle':
       'Wir nehmen Ihnen Komplexitaet ab. Organisation, Verwaltung und Umsetzung - mehrsprachig, professionell und rechtssicher.',
   'request_sent': '@id wurde erfolgreich gesendet',
-  'login_welcome': 'Willkommen beim EinStein Institut',
+  'login_welcome': 'Willkommen bei EinStein',
   'login_subtitle': 'Melden Sie sich an, um fortzufahren',
   'continue_google': 'Mit Google fortfahren',
   'continue_facebook': 'Mit Facebook fortfahren',
@@ -872,7 +872,7 @@ final Map<String, String> _customerDe = {
   'book_now': 'Jetzt buchen',
   'services_title': 'Unsere Dienstleistungen',
   'services_subtitle':
-      'Ganzheitliches Dienstleistungszentrum fuer Alltag, Bildung und Organisation.',
+      'Alle Behördengänge und Unterlagen an einem Ort – in Ihrer Sprache.',
   'quality_guaranteed': 'EinStein-geprueft - Qualitaet garantiert',
   'book_service': 'Dienstleistung buchen',
   'quick_booking': 'Schnelle Buchung',

@@ -230,9 +230,9 @@ class _BookingCard extends StatelessWidget {
             spacing: 14,
             runSpacing: 8,
             children: [
-              _Meta(icon: Icons.calendar_today_outlined, text: item.date),
-              _Meta(icon: Icons.access_time_rounded, text: item.time),
-              _Meta(icon: Icons.location_on_outlined, text: item.address),
+              if (item.date.trim().isNotEmpty) _Meta(icon: Icons.calendar_today_outlined, text: item.date),
+              if (item.time.trim().isNotEmpty) _Meta(icon: Icons.access_time_rounded, text: item.time),
+              if (item.address.trim().isNotEmpty) _Meta(icon: Icons.location_on_outlined, text: item.address),
             ],
           ),
           const SizedBox(height: 14),
@@ -243,6 +243,7 @@ class _BookingCard extends StatelessWidget {
                 children: [
                   Text(
                     item.grossPrice,
+                    textDirection: TextDirection.ltr,
                     style: const TextStyle(
                       color: AppColors.navy,
                       fontSize: 22,
@@ -260,26 +261,26 @@ class _BookingCard extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              SizedBox(
-                width: 126,
-                child: PrimaryButton(
-                  label: item.paymentStatus == 'Unpaid'
-                      ? 'pay'.tr
-                      : 'details'.tr,
-                  onPressed: () => item.paymentStatus == 'Unpaid'
-                      ? Get.toNamed(AppRoutes.payment, arguments: item.id)
-                      : Get.snackbar(
-                          'booking_details'.tr,
-                          'booking_status_message'.trParams({
-                            'booking': item.number,
-                            'status': item.statusKey.tr,
-                          }),
-                        ),
-                  icon: item.paymentStatus == 'Unpaid'
-                      ? Icons.credit_card_outlined
-                      : Icons.arrow_forward_rounded,
+              if (item.paymentStatus == 'Unpaid')
+                SizedBox(
+                  width: 126,
+                  child: PrimaryButton(
+                    label: 'pay'.tr,
+                    onPressed: () => Get.toNamed(AppRoutes.payment, arguments: item.id),
+                    icon: Icons.credit_card_outlined,
+                  ),
+                )
+              else
+                OutlinedButton(
+                  onPressed: () => Get.snackbar(
+                    'booking_details'.tr,
+                    'booking_status_message'.trParams({
+                      'booking': item.number,
+                      'status': item.statusKey.tr,
+                    }),
+                  ),
+                  child: Text('details'.tr),
                 ),
-              ),
             ],
           ),
           if (item.isDocumentSubscription) ...[

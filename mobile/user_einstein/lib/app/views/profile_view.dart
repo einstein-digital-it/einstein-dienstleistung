@@ -5,8 +5,8 @@ import '../controllers/profile_controller.dart';
 import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/app_bottom_nav.dart';
-import '../widgets/einstein_logo.dart';
 import '../widgets/primary_button.dart';
+import '../widgets/ui.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
@@ -29,7 +29,7 @@ class ProfileView extends GetView<ProfileController> {
                 ),
                 child: Column(
                   children: [
-                    const EinsteinLogo(size: 92),
+                    UserAvatar(name: controller.fullName, radius: 44),
                     const SizedBox(height: 18),
                     Text(
                       controller.fullName,

@@ -30,6 +30,8 @@ class BookingView extends GetView<BookingController> {
                 'choose_category'.tr,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
+              const SizedBox(height: 4),
+              Text('prices_gross_note'.tr, style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: 12),
               Obx(() {
                 final selectedCategory = controller.selectedCategory.value;
@@ -39,8 +41,8 @@ class BookingView extends GetView<BookingController> {
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    // Room for two lines of name and two of the gross price.
-                    mainAxisExtent: 148,
+                    // Room for two lines of name and one or two of the price.
+                    mainAxisExtent: 132,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
                   ),
@@ -88,7 +90,8 @@ class BookingView extends GetView<BookingController> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'service_${id}_price'.tr,
+                              // VAT is said once above the grid; net-priced offers keep their note
+                              'service_${id}_price'.tr.replaceAll(' ${'incl_vat'.tr}', ''),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(

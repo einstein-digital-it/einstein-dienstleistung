@@ -103,6 +103,32 @@ class IconTile extends StatelessWidget {
   }
 }
 
+/// Round avatar with the person's initials (EinStein's "ES" when no name is known).
+class UserAvatar extends StatelessWidget {
+  const UserAvatar({super.key, required this.name, this.radius = 24});
+
+  final String name;
+  final double radius;
+
+  static String initialsOf(String name) {
+    final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).take(2);
+    final initials = parts.map((p) => p.characters.first.toUpperCase()).join();
+    return initials.isEmpty ? 'ES' : initials;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: AppColors.navy,
+      child: Text(
+        initialsOf(name),
+        style: TextStyle(color: AppColors.goldBright, fontWeight: FontWeight.w800, fontSize: radius * 0.72),
+      ),
+    );
+  }
+}
+
 class EmptyState extends StatelessWidget {
   const EmptyState({super.key, required this.icon, required this.text});
 

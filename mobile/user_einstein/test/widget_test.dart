@@ -323,7 +323,7 @@ void main() {
     // The offers page is still reachable
     Get.toNamed(AppRoutes.offers);
     await tester.pumpAndSettle();
-    expect(find.text('Offers from EinStein Institut'), findsOneWidget);
+    expect(find.text('Offers from EinStein'), findsOneWidget);
   });
 
   testWidgets('registers a user and stores the issued session token', (
