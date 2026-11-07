@@ -3,13 +3,16 @@ import 'dart:convert';
 import 'package:get/get.dart';
 
 import 'files_translations.dart';
+import 'uk_translations.dart';
 
 class AppTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
-    'en': {..._en, ...filesEn},
-    'ar': {..._ar, ...filesAr},
-    'de': {..._de, ...filesDe},
+    'en': {..._en, ...filesEn, 'language_ukrainian': 'Українська'},
+    'ar': {..._ar, ...filesAr, 'language_ukrainian': 'Українська'},
+    'de': {..._de, ...filesDe, 'language_ukrainian': 'Українська'},
+    // Missing Ukrainian keys fall back to English
+    'uk': {..._en, ...filesEn, ...ukTranslations},
   };
 }
 
@@ -200,7 +203,7 @@ final Map<String, String> _customerEn = {
   'status_sent': 'Sent',
   'home_tagline': 'EinStein - Structure creates confidence.',
   'home_hero_subtitle':
-      'We take complexity off your hands. Organisation, administration and delivery - multilingual, professional and reliable.',
+      'Organisation, administration and delivery – multilingual, professional and reliable.',
   'request_sent': '@id sent successfully',
   'login_welcome': 'Welcome to EinStein',
   'login_subtitle': 'Sign in to continue',
@@ -423,7 +426,7 @@ final Map<String, String> _customerArRaw = {
   'home_tagline':
       'Ø¢ÙŠÙ†Ø´ØªØ§ÙŠÙ† - Ø§Ù„ØªÙ†Ø¸ÙŠÙ… ÙŠØµÙ†Ø¹ Ø§Ù„Ø·Ù…Ø£Ù†ÙŠÙ†Ø©.',
   'home_hero_subtitle':
-      'Ù†Ù‚Ù„Ù„ Ø¹Ù†Ùƒ Ø§Ù„ØªØ¹Ù‚ÙŠØ¯. ØªÙ†Ø¸ÙŠÙ… ÙˆØ¥Ø¯Ø§Ø±Ø© ÙˆØªÙ†ÙÙŠØ° Ø¨Ø§Ø­ØªØ±Ø§Ù ÙˆØ¨Ø¹Ø¯Ø© Ù„ØºØ§Øª.',
+      '\u062a\u0646\u0638\u064a\u0645 \u0648\u0625\u062f\u0627\u0631\u0629 \u0648\u062a\u0646\u0641\u064a\u0630 \u0628\u0627\u062d\u062a\u0631\u0627\u0641 \u0648\u0628\u0639\u062f\u0629 \u0644\u063a\u0627\u062a.',
   'request_sent': 'ØªÙ… Ø¥Ø±Ø³Ø§Ù„ @id Ø¨Ù†Ø¬Ø§Ø­',
   'login_welcome': 'أهلاً بك في آينشتاين',
   'login_subtitle': 'سجل الدخول للمتابعة',
@@ -593,7 +596,7 @@ final Map<String, String> _customerArFixed = {
   'home_tagline':
       '\u0622\u064a\u0646\u0634\u062a\u0627\u064a\u0646 - \u0627\u0644\u062a\u0646\u0638\u064a\u0645 \u064a\u0635\u0646\u0639 \u0627\u0644\u0637\u0645\u0623\u0646\u064a\u0646\u0629.',
   'home_hero_subtitle':
-      '\u0646\u0642\u0644\u0644 \u0639\u0646\u0643 \u0627\u0644\u062a\u0639\u0642\u064a\u062f. \u062a\u0646\u0638\u064a\u0645 \u0648\u0625\u062f\u0627\u0631\u0629 \u0648\u062a\u0646\u0641\u064a\u0630 \u0628\u0627\u062d\u062a\u0631\u0627\u0641 \u0648\u0628\u0639\u062f\u0629 \u0644\u063a\u0627\u062a.',
+      '\u062a\u0646\u0638\u064a\u0645 \u0648\u0625\u062f\u0627\u0631\u0629 \u0648\u062a\u0646\u0641\u064a\u0630 \u0628\u0627\u062d\u062a\u0631\u0627\u0641 \u0648\u0628\u0639\u062f\u0629 \u0644\u063a\u0627\u062a.',
   'request_sent':
       '\u062a\u0645 \u0625\u0631\u0633\u0627\u0644 @id \u0628\u0646\u062c\u0627\u062d',
   'secure_payment': '\u062f\u0641\u0639 \u0622\u0645\u0646',
@@ -846,7 +849,7 @@ final Map<String, String> _customerDe = {
   'status_sent': 'Gesendet',
   'home_tagline': 'EinStein - Weil Struktur Sicherheit schafft.',
   'home_hero_subtitle':
-      'Wir nehmen Ihnen Komplexitaet ab. Organisation, Verwaltung und Umsetzung - mehrsprachig, professionell und rechtssicher.',
+      'Organisation, Verwaltung und Umsetzung – mehrsprachig, professionell und zuverlässig.',
   'request_sent': '@id wurde erfolgreich gesendet',
   'login_welcome': 'Willkommen bei EinStein',
   'login_subtitle': 'Melden Sie sich an, um fortzufahren',

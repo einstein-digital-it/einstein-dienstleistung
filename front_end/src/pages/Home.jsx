@@ -38,7 +38,6 @@ const translations = {
   de: {
     // Hero
     hero_title: "Organisation & Verwaltung",
-    hero_subtitle: "Wir nehmen Ihnen Komplexität ab.",
     hero_desc: "Organisation. Verwaltung. Umsetzung.\n\nDeutschland ist vielfältig – aber der Alltag oft bürokratisch und zeitintensiv.\nEinStein sorgt für Struktur, Klarheit und Entlastung.",
     hero_solution: "Unsere Leistungen im Überblick:\n\n✔ Behörden- & Formularhilfe\nVon Antragstellung über digitale Einreichung bis zur Nachverfolgung und Abholung.\n\n✔ Büro- & Sekretariatsservice für Praxen, Selbstständige & Unternehmen\nFlexible administrative Unterstützung – bei Bedarf auch mit kurzfristiger Ersatzlösung.\n\n✔ Bildungs- & Lernbegleitung\nStrukturierte Unterstützung ohne formale Beratung.\n\n✔ Organisations- & Koordinationsleistungen\nMehrsprachig, professionell und rechtssicher umgesetzt.\n\nWarum EinStein?\n\n• Fester Ansprechpartner\n• Mehrsprachige Kommunikation\n• Transparente Abläufe\n• Schnelle Umsetzung\n• Rechtssichere Struktur",
     motto: "EinStein – Weil Struktur Sicherheit schafft.",
@@ -153,7 +152,6 @@ const translations = {
   ar: {
     // Hero
     hero_title: "التنظيم والإدارة",
-    hero_subtitle: "نحمل عنك التعقيد.",
     hero_desc: "تنظيم. إدارة. تنفيذ.\n\nألمانيا متنوعة – لكن الحياة اليومية غالباً بيروقراطية وتستهلك الوقت.\nآينشتاين يوفّر لك التنظيم والوضوح والراحة.",
     hero_solution: "خدماتنا باختصار:\n\n✔ المساعدة في الدوائر الرسمية والاستمارات\nمن تقديم الطلب والإرسال الإلكتروني حتى المتابعة والاستلام.\n\n✔ خدمة المكتب والسكرتارية للعيادات والمستقلين والشركات\nدعم إداري مرن – وعند الحاجة حلول بديلة سريعة.\n\n✔ المرافقة التعليمية ودعم التعلّم\nدعم منظّم بدون استشارة رسمية.\n\n✔ خدمات التنظيم والتنسيق\nبعدة لغات، باحترافية وبشكل آمن قانونياً.\n\nلماذا آينشتاين؟\n\n• شخص تواصل ثابت\n• تواصل بعدة لغات\n• خطوات واضحة وشفافة\n• تنفيذ سريع\n• هيكل آمن قانونياً",
     motto: "آينشتاين – لأن التنظيم يصنع الأمان.",
@@ -268,7 +266,6 @@ const translations = {
   en: {
     // Hero
     hero_title: "Organisation & Administration",
-    hero_subtitle: "We take complexity off your hands.",
     hero_desc: "Organisation. Administration. Execution.\n\nGermany is diverse – but daily life is often bureaucratic and time-consuming.\nEinStein provides structure, clarity and relief.",
     hero_solution: "Our services at a glance:\n\n✔ Government & Form Assistance\nFrom application submission to digital filing, tracking and collection.\n\n✔ Office & Secretariat Service for Practices, Freelancers & Companies\nFlexible administrative support – with short-notice replacement solutions if needed.\n\n✔ Education & Learning Support\nStructured support without formal counselling.\n\n✔ Organisation & Coordination Services\nMultilingual, professional and legally secure.\n\nWhy EinStein?\n\n• Fixed contact person\n• Multilingual communication\n• Transparent processes\n• Fast implementation\n• Legally secure structure",
     motto: "EinStein – Because structure creates security.",
@@ -383,7 +380,6 @@ const translations = {
   tr: {
     // Hero
     hero_title: "Organizasyon ve Yönetim",
-    hero_subtitle: "Karmaşıklığı sizin yerinize üstleniyoruz.",
     hero_desc: "Organizasyon. Yönetim. Uygulama.\n\nAlmanya çok çeşitli – ama günlük yaşam çoğu zaman bürokratik ve zaman alıcı.\nEinStein düzen, netlik ve rahatlık sağlar.",
     hero_solution: "Hizmetlerimize genel bakış:\n\n✔ Resmi kurum ve form yardımı\nBaşvurudan dijital teslime, takipten teslim almaya kadar.\n\n✔ Muayenehaneler, serbest çalışanlar ve şirketler için büro ve sekreterlik hizmeti\nEsnek idari destek – gerekirse kısa sürede yedek çözüm.\n\n✔ Eğitim ve öğrenme desteği\nResmi danışmanlık olmadan yapılandırılmış destek.\n\n✔ Organizasyon ve koordinasyon hizmetleri\nÇok dilli, profesyonel ve hukuken güvenli.\n\nNeden EinStein?\n\n• Sabit iletişim kişisi\n• Çok dilli iletişim\n• Şeffaf süreçler\n• Hızlı uygulama\n• Hukuken güvenli yapı",
     motto: "EinStein – Çünkü düzen güven yaratır.",
@@ -498,7 +494,6 @@ const translations = {
   es: {
     // Hero
     hero_title: "Organización y Administración",
-    hero_subtitle: "Le quitamos la complejidad de encima.",
     hero_desc: "Organización. Administración. Ejecución.\n\nAlemania es diversa – pero el día a día suele ser burocrático y lleva mucho tiempo.\nEinStein aporta estructura, claridad y alivio.",
     hero_solution: "Nuestros servicios de un vistazo:\n\n✔ Ayuda con trámites y formularios\nDesde la solicitud y el envío digital hasta el seguimiento y la recogida.\n\n✔ Servicio de oficina y secretaría para consultas, autónomos y empresas\nApoyo administrativo flexible – con sustitución a corto plazo si hace falta.\n\n✔ Acompañamiento educativo y de aprendizaje\nApoyo estructurado sin asesoramiento formal.\n\n✔ Servicios de organización y coordinación\nMultilingüe, profesional y con seguridad jurídica.\n\n¿Por qué EinStein?\n\n• Persona de contacto fija\n• Comunicación multilingüe\n• Procesos transparentes\n• Ejecución rápida\n• Estructura jurídicamente segura",
     motto: "EinStein – Porque la estructura da seguridad.",
@@ -963,10 +958,6 @@ function AuthenticatedArabicHero() {
           آينشتاين – التنظيم والإدارة
         </h1>
 
-        <p className="mt-8 text-[28px] font-extrabold leading-tight text-white sm:text-[34px]">
-          نحن نزيل التعقيد عنك.
-        </p>
-
         <p className="mt-8 max-w-[780px] text-[16px] font-medium leading-[1.9] text-white/80 sm:text-[18px]">
           التنظيم، الإدارة، التنفيذ. ألمانيا متنوعة - لكن الحياة اليومية بيروقراطية ومستهلكة للوقت.
           آينشتاين يوفر الهيكل والوضوح والتخفيف.
@@ -1080,10 +1071,6 @@ export default function Home() {
                 EinStein – {t.hero_title}
               </span>
             </h1>
-
-            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/90 font-medium mb-6 tracking-wide px-2">
-              {t.hero_subtitle}
-            </p>
 
             <p className="text-sm sm:text-base md:text-lg text-white/60 mb-8 max-w-2xl mx-auto leading-relaxed px-2">
               {t.hero_desc}

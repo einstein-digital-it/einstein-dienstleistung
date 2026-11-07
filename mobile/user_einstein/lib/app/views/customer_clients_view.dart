@@ -132,6 +132,10 @@ class CustomerClientsView extends GetView<CustomerClientsController> {
                         value: 'ar',
                         child: Text('language_arabic'.tr),
                       ),
+                      DropdownMenuItem(
+                        value: 'uk',
+                        child: Text('language_ukrainian'.tr),
+                      ),
                     ],
                     onChanged: (value) =>
                         setState(() => language = value ?? 'de'),

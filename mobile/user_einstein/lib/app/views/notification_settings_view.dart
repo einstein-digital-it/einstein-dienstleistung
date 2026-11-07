@@ -86,7 +86,7 @@ class NotificationSettingsView extends GetView<NotificationSettingsController> {
                 title: 'language'.tr,
                 value: _languageTitle(controller.selectedLanguage.value),
                 icon: Icons.language_outlined,
-                items: const ['Deutsch', 'English', 'Arabic'],
+                items: const ['Deutsch', 'English', 'Arabic', 'Ukrainian'],
                 itemLabel: _languageTitle,
                 onSelected: controller.setLanguage,
               ),
@@ -295,6 +295,7 @@ String _languageTitle(String language) {
   return switch (language.toLowerCase()) {
     'arabic' || 'ar' => 'language_arabic'.tr,
     'english' || 'en' => 'language_english'.tr,
+    'ukrainian' || 'uk' => 'language_ukrainian'.tr,
     _ => 'language_deutsch'.tr,
   };
 }

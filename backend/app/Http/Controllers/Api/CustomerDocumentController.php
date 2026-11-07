@@ -61,7 +61,7 @@ class CustomerDocumentController extends Controller
     public function translate(Request $request, CustomerDocument $document): JsonResponse
     {
         $this->authorizeAccess($request, $document);
-        $data = $request->validate(['lang' => ['required', Rule::in(['ar', 'de', 'en', 'tr', 'es'])]]);
+        $data = $request->validate(['lang' => ['required', Rule::in(['ar', 'de', 'en', 'tr', 'es', 'uk'])]]);
         if (! $request->user()->hasFileAbo()) {
             return response()->json(['message' => 'Translation is part of the monthly subscription.', 'needs_subscription' => true], 402);
         }
@@ -126,7 +126,7 @@ class CustomerDocumentController extends Controller
         $data = $request->validate([
             // "auto" = let Claude pick the folder
             'folder' => ['required', Rule::in([...CustomerDocument::FOLDERS, 'auto'])],
-            'lang' => ['nullable', Rule::in(['ar', 'de', 'en', 'tr', 'es'])],
+            'lang' => ['nullable', Rule::in(['ar', 'de', 'en', 'tr', 'es', 'uk'])],
             // false for files the app made itself (e.g. a filled application)
             'process' => ['nullable', 'boolean'],
             'title' => ['nullable', 'string', 'max:255'],
@@ -163,10 +163,10 @@ class CustomerDocumentController extends Controller
     private function languageOf(string $email): string
     {
         $lang = strtolower((string) User::whereRaw('LOWER(email) = ?', [strtolower($email)])->value('preferred_language'));
-        $map = ['arabic' => 'ar', 'german' => 'de', 'deutsch' => 'de', 'english' => 'en', 'turkish' => 'tr', 'spanish' => 'es'];
+        $map = ['arabic' => 'ar', 'german' => 'de', 'deutsch' => 'de', 'english' => 'en', 'turkish' => 'tr', 'spanish' => 'es', 'ukrainian' => 'uk'];
         $lang = $map[$lang] ?? substr($lang, 0, 2);
 
-        return in_array($lang, ['ar', 'de', 'en', 'tr', 'es'], true) ? $lang : 'ar';
+        return in_array($lang, ['ar', 'de', 'en', 'tr', 'es', 'uk'], true) ? $lang : 'ar';
     }
 
         private function authorizeAccess(Request $request, CustomerDocument $document): void

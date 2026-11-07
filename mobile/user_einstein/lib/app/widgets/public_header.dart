@@ -76,6 +76,7 @@ class PublicHeader extends StatelessWidget {
                         'Arabic',
                         'English',
                         'Deutsch',
+                        'Ukrainian',
                       ])
                         RadioListTile<String>(
                           value: option,
@@ -98,6 +99,7 @@ String _shortLanguage(String localeCode) {
   return switch (localeCode) {
     'ar' => 'AR',
     'de' => 'DE',
+    'uk' => 'UK',
     _ => 'EN',
   };
 }
@@ -106,6 +108,7 @@ String _languageTitle(String language) {
   return switch (language) {
     'Arabic' => 'language_arabic'.tr,
     'Deutsch' => 'language_deutsch'.tr,
+    'Ukrainian' => 'language_ukrainian'.tr,
     _ => 'language_english'.tr,
   };
 }

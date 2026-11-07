@@ -58,6 +58,7 @@ String normalizeLanguageLabel(String value) {
   return switch (value.toLowerCase()) {
     'ar' || 'arabic' => 'Arabic',
     'en' || 'english' => 'English',
+    'uk' || 'ukrainian' || 'українська' => 'Ukrainian',
     _ => 'Deutsch',
   };
 }
@@ -66,6 +67,7 @@ String languageCodeFromLabel(String value) {
   return switch (value.toLowerCase()) {
     'arabic' || 'ar' => 'ar',
     'english' || 'en' => 'en',
+    'ukrainian' || 'uk' || 'українська' => 'uk',
     _ => 'de',
   };
 }
