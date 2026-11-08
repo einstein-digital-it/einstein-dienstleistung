@@ -10,6 +10,7 @@ import { customerDocumentsApi } from "@/api/backendClient";
 import { getStoredAuthUser } from "@/lib/backendAuth";
 import { shareFiles } from "@/lib/shareFiles";
 import CustomerCases from "@/components/CustomerCases";
+import OriginalViewer from "@/components/OriginalViewer";
 
 const FOLDER_META = {
   jobcenter: { icon: Briefcase, color: "bg-blue-600" },
@@ -413,6 +414,7 @@ export default function MyDocuments() {
                         {doc.uploaded_by === "einstein" && <span className="ms-2 rounded bg-purple-50 px-1.5 py-0.5 text-[#6B46C1]">{t.byEinstein}</span>}
                       </p>
                     </div>
+                    <OriginalViewer doc={doc} lang={lang} />
                     <Button variant="outline" size="icon" onClick={() => onShare(doc)} aria-label="Share" title="Share"><Share2 className="w-4 h-4" /></Button>
                     <Button variant="outline" size="icon" onClick={() => customerDocumentsApi.download(doc).catch(() => setError(t.error))} aria-label="Download"><Download className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => onDelete(doc)} aria-label="Delete" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>

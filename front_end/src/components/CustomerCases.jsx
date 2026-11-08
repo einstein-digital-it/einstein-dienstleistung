@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { customerDocumentsApi } from "@/api/backendClient";
 import { shareFiles } from "@/lib/shareFiles";
+import OriginalViewer from "@/components/OriginalViewer";
 
 const OVERVIEW = "__overview";
 const UNSORTED = "__unsorted";
@@ -206,6 +207,7 @@ export default function CustomerCases({ lang, abo, onOpenChange }) {
                   <p className="font-medium text-[#1e3a5f] truncate">{doc.title}</p>
                   <p className="text-xs text-gray-500">{new Date(doc.created_at).toLocaleDateString(lang === "ar" ? "ar" : lang)}</p>
                 </div>
+                <OriginalViewer doc={doc} lang={lang} />
                 <ShareButton docs={[doc]} title={doc.title} />
                 <Button variant="outline" size="icon" onClick={() => customerDocumentsApi.download(doc).catch(() => setNotice(t.error))} aria-label="Download"><Download className="w-4 h-4" /></Button>
                 <Button variant="ghost" size="icon" onClick={() => removeDoc(doc)} aria-label="Delete" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>

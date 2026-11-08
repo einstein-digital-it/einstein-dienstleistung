@@ -1,5 +1,6 @@
 const MIME_TYPES = {
   pdf: "application/pdf",
+  gif: "image/gif",
   jpg: "image/jpeg",
   jpeg: "image/jpeg",
   png: "image/png",
@@ -7,6 +8,9 @@ const MIME_TYPES = {
   heic: "image/heic",
   txt: "text/plain",
 };
+
+/** The file's type from its name; the server may only say "binary". */
+export const mimeOf = (name) => MIME_TYPES[String(name).split(".").pop().toLowerCase()] || "";
 
 function saveFile(file) {
   const url = URL.createObjectURL(file);
