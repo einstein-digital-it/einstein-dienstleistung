@@ -15,7 +15,7 @@ export default function SEOHead({ pageName, lang = "de" }) {
     if (!seoSettings) return;
 
     // Set title
-    const title = seoSettings[`meta_title_${lang}`] || seoSettings.meta_title_de || "EinStein Institut";
+    const title = seoSettings[`meta_title_${lang}`] || seoSettings.meta_title_de || "EinStein";
     document.title = title;
 
     // Helper to set or create meta tag

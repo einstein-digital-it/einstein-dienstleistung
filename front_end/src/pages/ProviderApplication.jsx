@@ -356,7 +356,7 @@ Servicegebiet / Service Area: ${formData.service_area || "-"}
 Bitte überprüfen Sie die Bewerbung im Admin-Dashboard.
 Please review the application in the admin dashboard.
 
-EinStein Institut
+EinStein
             `
           });
         }

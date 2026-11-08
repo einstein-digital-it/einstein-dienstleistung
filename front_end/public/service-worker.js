@@ -1,4 +1,4 @@
-// EinStein Institut - Service Worker
+// EinStein - Service Worker
 const CACHE_NAME = 'einstein-v1';
 
 self.addEventListener('install', (event) => {

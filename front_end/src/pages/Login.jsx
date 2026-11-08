@@ -66,7 +66,7 @@ export default function Login() {
           </div>
 
           <h1 className="mb-[14px] max-w-[430px] text-center text-[38px] font-extrabold leading-[1.16] text-[#111827] [letter-spacing:0]">
-            Welcome to EinStein Institut
+            Welcome to EinStein
           </h1>
           <p className="mb-[42px] text-center text-[19px] font-semibold text-[#66758c]">
             Sign in to continue

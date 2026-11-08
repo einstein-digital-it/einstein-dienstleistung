@@ -187,10 +187,10 @@ export default function ProviderDocumentUpload({ booking, lang = "de", onUploade
       : `Ihre Dokumente sind fertig - ${booking.booking_number}`;
 
     const body = lang === "ar"
-      ? `عزيزي/عزيزتي ${booking.customer_name}،\n\nتم إنجاز المستندات الخاصة بك (${booking.booking_number}).\n\nيمكنك تحميل المستندات من خلال الروابط التالية:\n${fileLinks}\n\nأو من خلال حسابك على:\nhttps://institut.einsteindienstleistung.com\n\nمع أطيب التحيات،\nفريق معهد آينشتاين`
+      ? `عزيزي/عزيزتي ${booking.customer_name}،\n\nتم إنجاز المستندات الخاصة بك (${booking.booking_number}).\n\nيمكنك تحميل المستندات من خلال الروابط التالية:\n${fileLinks}\n\nأو من خلال حسابك على:\nhttps://institut.einsteindienstleistung.com\n\nمع أطيب التحيات،\nفريق آينشتاين`
       : lang === "en"
-      ? `Dear ${booking.customer_name},\n\nYour documents for booking (${booking.booking_number}) are ready.\n\nDownload your documents:\n${fileLinks}\n\nOr visit your account at:\nhttps://institut.einsteindienstleistung.com\n\nBest regards,\nEinStein Institut Team`
-      : `Sehr geehrte/r ${booking.customer_name},\n\nIhre Dokumente für Buchung (${booking.booking_number}) sind fertig.\n\nDokumente herunterladen:\n${fileLinks}\n\nOder besuchen Sie Ihr Konto:\nhttps://institut.einsteindienstleistung.com\n\nMit freundlichen Grüßen,\nIhr EinStein Institut Team`;
+      ? `Dear ${booking.customer_name},\n\nYour documents for booking (${booking.booking_number}) are ready.\n\nDownload your documents:\n${fileLinks}\n\nOr visit your account at:\nhttps://institut.einsteindienstleistung.com\n\nBest regards,\nEinStein Team`
+      : `Sehr geehrte/r ${booking.customer_name},\n\nIhre Dokumente für Buchung (${booking.booking_number}) sind fertig.\n\nDokumente herunterladen:\n${fileLinks}\n\nOder besuchen Sie Ihr Konto:\nhttps://institut.einsteindienstleistung.com\n\nMit freundlichen Grüßen,\nIhr EinStein Team`;
 
     // Send email
     await Promise.resolve({

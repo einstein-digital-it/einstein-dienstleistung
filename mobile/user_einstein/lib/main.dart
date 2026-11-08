@@ -70,7 +70,7 @@ class EinsteinUserApp extends StatelessWidget {
     return Obx(() {
       final locale = store.locale.value;
       return GetMaterialApp(
-        title: 'EinStein Institut',
+        title: 'EinStein',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
         translations: AppTranslations(),

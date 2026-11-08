@@ -2,7 +2,7 @@ import React from "react";
 import { ArrowUpRight } from "lucide-react";
 
 export function PageScaffold({
-  eyebrow = "EinStein Institut",
+  eyebrow = "EinStein",
   title,
   description,
   icon: Icon,

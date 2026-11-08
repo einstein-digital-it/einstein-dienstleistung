@@ -229,7 +229,7 @@ export default function Layout({ children, currentPageName }) {
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       <meta name="apple-mobile-web-app-title" content="EinStein" />
-      <meta name="application-name" content="EinStein Institut" />
+      <meta name="application-name" content="EinStein" />
       <meta name="theme-color" content="#6B46C1" />
       <meta name="msapplication-TileColor" content="#6B46C1" />
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
@@ -262,7 +262,7 @@ export default function Layout({ children, currentPageName }) {
               <EinsteinLogo size={36} />
               <div className="hidden sm:block">
                 <span className="font-bold text-xl">EinStein</span>
-                <span className="text-purple-200 text-xs block -mt-1">Institut</span>
+                <span className="text-purple-200 text-xs block -mt-1">Dienstleistung</span>
               </div>
             </Link>
 

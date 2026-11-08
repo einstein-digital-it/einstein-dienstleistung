@@ -195,7 +195,7 @@ export default function RevenueReports() {
     doc.setFillColor(107, 70, 193);
     doc.rect(0, 0, W, 35, "F");
     doc.setFontSize(20); doc.setFont("helvetica", "bold"); doc.setTextColor(255, 255, 255);
-    doc.text("EinStein Institut", margin, 15);
+    doc.text("EinStein", margin, 15);
     doc.setFontSize(11); doc.setFont("helvetica", "normal");
     doc.text(`${t.title} ${selectedYear}`, margin, 25);
     doc.setFontSize(8); doc.setTextColor(200, 180, 255);

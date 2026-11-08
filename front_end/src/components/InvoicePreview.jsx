@@ -152,7 +152,7 @@ export default function InvoicePreview({ booking, netAmount, vatAmount, totalAmo
     doc.setDrawColor(107, 70, 193); doc.setLineWidth(0.8);
     doc.rect(rightX, y, boxW, 32, 'S'); doc.setLineWidth(0.2);
     txt('DIENSTLEISTER / PROVIDER', rightX + 3, y + 6, { size: 7.5, style: 'bold', color: [107, 70, 193] });
-    txt(booking?.provider_name || 'EinStein Institut', rightX + 3, y + 12, { size: 9, style: 'bold' });
+    txt(booking?.provider_name || 'EinStein', rightX + 3, y + 12, { size: 9, style: 'bold' });
     txt('info@einsteindienstleistung.de', rightX + 3, y + 18, { size: 8.5, color: [80, 80, 80] });
     txt(`Datum: ${booking?.date || '-'} ${booking?.time ? '| ' + booking.time : ''}`, rightX + 3, y + 24, { size: 8.5, color: [80, 80, 80] });
     y += 40;
@@ -214,7 +214,7 @@ export default function InvoicePreview({ booking, netAmount, vatAmount, totalAmo
               <EinsteinLogo size={50} />
               <div>
                 <div className="company-name text-2xl font-bold text-[#1e3a5f]">EinStein</div>
-                <div className="company-sub text-xs text-[#6B46C1]">Institut</div>
+                <div className="company-sub text-xs text-[#6B46C1]">Dienstleistung</div>
               </div>
             </div>
             <div className={`invoice-meta ${isRTL ? "text-left" : "text-right"}`}>
