@@ -590,6 +590,8 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
             ],
             const SizedBox(height: 16),
             if (doc.isProcessing) const _ProcessingBanner(),
+            if (doc.aiStatus == 'too_long')
+              Text('files_too_long'.tr, style: const TextStyle(color: AppColors.warning, fontWeight: FontWeight.w600)),
             if (doc.deadline != null) ...[
               Container(
                 padding: const EdgeInsets.all(14),

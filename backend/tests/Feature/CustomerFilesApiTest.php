@@ -66,6 +66,7 @@ class CustomerFilesApiTest extends TestCase
         Bus::fake([ProcessCustomerDocument::class]);
         $due = now()->addDays(60)->toDateString();
         Http::fake([
+            'api.anthropic.com/v1/messages/count_tokens' => Http::response(['input_tokens' => 1000]),
             'api.anthropic.com/*' => Http::response(['content' => [['type' => 'text', 'text' => json_encode([
                 'folder' => 'auslaenderbehoerde',
                 'title' => 'إقامة – تنتهي قريباً',

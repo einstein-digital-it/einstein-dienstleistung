@@ -7,6 +7,7 @@ use App\Models\CustomerReminder;
 use Illuminate\Support\Carbon;
 use App\Models\Notification;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -59,9 +60,18 @@ class ProcessCustomerDocument
         $lang = $doc->translation_language ?: 'ar';
         try {
             $result = $this->ask($doc, $mime, self::LANGUAGES[$lang] ?? 'Arabic');
+        } catch (\LengthException) {
+            $doc->update(['ai_status' => 'too_long']);
+
+            return;
         } catch (Throwable $e) {
             Log::warning('document processing failed', ['id' => $doc->id, 'error' => $e->getMessage()]);
-            $doc->update(['ai_status' => 'failed']);
+            // A cut-off answer is still billed, so keep its tokens for documents:ai-cost
+            $doc->update([
+                'ai_status' => 'failed',
+                'ai_input_tokens' => $this->usage['input_tokens'] ?? null,
+                'ai_output_tokens' => $this->usage['output_tokens'] ?? null,
+            ]);
 
             return;
         }
@@ -132,13 +142,13 @@ class ProcessCustomerDocument
         }
         TXT;
 
-        $response = Http::withHeaders([
-            'x-api-key' => (string) config('services.anthropic.key'),
-            'anthropic-version' => '2023-06-01',
-        ])->timeout(180)->post('https://api.anthropic.com/v1/messages', [
+        $messages = [['role' => 'user', 'content' => [$block, ['type' => 'text', 'text' => $prompt]]]];
+        $this->refuseIfTooLong($messages);
+
+        $response = $this->claude()->timeout(180)->post('https://api.anthropic.com/v1/messages', [
             'model' => (string) config('services.anthropic.model'),
             'max_tokens' => 8000,
-            'messages' => [['role' => 'user', 'content' => [$block, ['type' => 'text', 'text' => $prompt]]]],
+            'messages' => $messages,
         ]);
 
         if ($response->failed()) {
@@ -156,6 +166,31 @@ class ProcessCustomerDocument
         }
 
         return $json;
+    }
+
+    private function claude(): PendingRequest
+    {
+        return Http::withHeaders([
+            'x-api-key' => (string) config('services.anthropic.key'),
+            'anthropic-version' => '2023-06-01',
+        ]);
+    }
+
+    /** Counting tokens is free; a whole book must not be paid for and then fail. */
+    private function refuseIfTooLong(array $messages): void
+    {
+        try {
+            $response = $this->claude()->timeout(60)->post('https://api.anthropic.com/v1/messages/count_tokens', [
+                'model' => (string) config('services.anthropic.model'),
+                'messages' => $messages,
+            ]);
+        } catch (Throwable) {
+            return; // the count is only a safeguard; the real call reports real problems
+        }
+
+        if ($response->successful() && (int) $response->json('input_tokens') > (int) config('services.anthropic.max_input_tokens')) {
+            throw new \LengthException('Document too long');
+        }
     }
 
     /** @return array<int, string> sections already used in this document's file */

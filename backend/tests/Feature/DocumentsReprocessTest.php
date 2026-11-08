@@ -27,7 +27,7 @@ class DocumentsReprocessTest extends TestCase
     {
         Storage::fake('local');
         config(['services.anthropic.key' => 'test-key']);
-        Http::fake(['api.anthropic.com/*' => Http::response(['usage' => ['input_tokens' => 10, 'output_tokens' => 5], 'content' => [['type' => 'text', 'text' => json_encode([
+        Http::fake(['api.anthropic.com/v1/messages/count_tokens' => Http::response(['input_tokens' => 1000]), 'api.anthropic.com/*' => Http::response(['usage' => ['input_tokens' => 10, 'output_tokens' => 5], 'content' => [['type' => 'text', 'text' => json_encode([
             'folder' => 'jobcenter', 'title' => 'Bescheid', 'summary' => 'S', 'translation' => 'T', 'dates' => [],
         ])]]])]);
         $failed = $this->doc('a@example.com', 'failed');
@@ -49,7 +49,7 @@ class DocumentsReprocessTest extends TestCase
     {
         Storage::fake('local');
         config(['services.anthropic.key' => 'test-key']);
-        Http::fake(['api.anthropic.com/*' => Http::response(['error' => ['message' => 'credit balance is too low']], 400)]);
+        Http::fake(['api.anthropic.com/v1/messages/count_tokens' => Http::response(['input_tokens' => 1000]), 'api.anthropic.com/*' => Http::response(['error' => ['message' => 'credit balance is too low']], 400)]);
         $this->doc('a@example.com', 'failed');
         $this->doc('a@example.com', 'none');
 
@@ -57,6 +57,41 @@ class DocumentsReprocessTest extends TestCase
             ->expectsConfirmation('Process 2 papers? This uses API credit.', 'yes')
             ->assertFailed();
 
-        Http::assertSentCount(1);
+        // One free count and one real call: the second paper is never tried
+        Http::assertSentCount(2);
+    }
+
+    public function test_a_too_long_paper_is_refused_before_anything_is_billed(): void
+    {
+        Storage::fake('local');
+        config(['services.anthropic.key' => 'test-key', 'services.anthropic.max_input_tokens' => 30000]);
+        Http::fake(['api.anthropic.com/v1/messages/count_tokens' => Http::response(['input_tokens' => 140000])]);
+        $doc = $this->doc('a@example.com', 'failed');
+
+        $this->artisan('documents:reprocess', ['email' => 'a@example.com'])
+            ->expectsConfirmation('Process 1 papers? This uses API credit.', 'yes')
+            ->assertSuccessful();
+
+        $this->assertSame('too_long', $doc->fresh()->ai_status);
+        Http::assertSent(fn ($r) => str_ends_with($r->url(), 'count_tokens'));
+        Http::assertNotSent(fn ($r) => str_ends_with($r->url(), '/v1/messages'));
+    }
+
+    public function test_a_billed_but_cut_off_answer_still_records_its_cost(): void
+    {
+        Storage::fake('local');
+        config(['services.anthropic.key' => 'test-key']);
+        Http::fake([
+            'api.anthropic.com/v1/messages/count_tokens' => Http::response(['input_tokens' => 1000]),
+            'api.anthropic.com/*' => Http::response(['usage' => ['input_tokens' => 900, 'output_tokens' => 8000], 'content' => [['type' => 'text', 'text' => 'cut off']]]),
+        ]);
+        $doc = $this->doc('a@example.com', 'none');
+
+        $this->artisan('documents:reprocess', ['email' => 'a@example.com'])
+            ->expectsConfirmation('Process 1 papers? This uses API credit.', 'yes')
+            ->assertFailed();
+
+        $this->assertSame('failed', $doc->fresh()->ai_status);
+        $this->assertSame(8000, $doc->fresh()->ai_output_tokens);
     }
 }

@@ -18,6 +18,7 @@ const Map<String, String> ukTranslations = {
   "case_create_error": "Не вдалося створити справу.",
   "files_share": "Поділитися",
   "files_share_error": "Не вдалося підготувати файли для надсилання.",
+  "files_too_long": "Цей документ задовгий для автоматичного перекладу. Його лише збережено.",
   "nav_home": "Головна",
   "nav_services": "Послуги",
   "nav_offers": "Пропозиції",

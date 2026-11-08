@@ -61,6 +61,8 @@ return [
     'anthropic' => [
         'key' => env('ANTHROPIC_API_KEY', ''),
         'model' => env('ANTHROPIC_MODEL', 'claude-sonnet-5-5'),
+        // Longer papers are refused before anything is billed (roughly 10-15 pages)
+        'max_input_tokens' => (int) env('ANTHROPIC_MAX_INPUT_TOKENS', 30000),
     ],
 
 ];

@@ -38,7 +38,10 @@ class CustomerFilesFolderTest extends TestCase
                 'section' => $section, 'folder' => 'arbeit', 'title' => 'T', 'summary' => 'S', 'translation' => 'X', 'dates' => [],
             ])]]]);
         }
-        Http::fake(['api.anthropic.com/*' => $responses]);
+        Http::fake([
+            'api.anthropic.com/v1/messages/count_tokens' => Http::response(['input_tokens' => 1000]),
+            'api.anthropic.com/*' => $responses,
+        ]);
     }
 
     public function test_with_abo_papers_are_sorted_into_numbered_sections(): void

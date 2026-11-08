@@ -39,7 +39,7 @@ const T = {
     hint: "PDF, Foto, Word oder Excel – bis 20 MB.",
     autoTitle: "Hochladen – wir sortieren und übersetzen", autoDesc: "Laden Sie einen Brief hoch (PDF oder Foto). Er wird automatisch dem richtigen Ordner zugeordnet und in Ihre Sprache übersetzt.",
     reminders: "Erinnerungen", daysLeft: (n) => (n < 0 ? "überfällig" : n === 0 ? "heute" : `in ${n} Tagen`), done: "Erledigt", translateMine: "In meine Sprache übersetzen",
-    processing: "Wird sortiert und übersetzt…", failed: "Automatische Übersetzung fehlgeschlagen", summary: "Zusammenfassung", translation: "Übersetzung", showTranslation: "Übersetzung anzeigen", hideTranslation: "Übersetzung ausblenden", deadline: "Frist", from: "Von",
+    processing: "Wird sortiert und übersetzt…", failed: "Automatische Übersetzung fehlgeschlagen", tooLong: "Dieses Dokument ist zu lang für die automatische Übersetzung. Es wurde nur gespeichert.", summary: "Zusammenfassung", translation: "Übersetzung", showTranslation: "Übersetzung anzeigen", hideTranslation: "Übersetzung ausblenden", deadline: "Frist", from: "Von",
     aiNote: "Die Datei wird zur Sortierung und Übersetzung automatisch mit Claude (Anthropic) ausgewertet. Die Übersetzung ist eine Hilfe, keine beglaubigte Übersetzung.",
     aboTitle: "Sortieren & Übersetzen", aboPitch: "Wir sortieren jeden Brief in den richtigen Ordner, übersetzen ihn in Ihre Sprache und erinnern Sie an Fristen.",
     aboPrice: (p) => `${p} € / Monat inkl. MwSt. · monatlich kündbar`, aboSubscribe: "Jetzt abonnieren", aboActive: "Sortieren & Übersetzen ist aktiv",
@@ -57,7 +57,7 @@ const T = {
     hint: "PDF أو صورة أو Word أو Excel – حتى 20 ميغابايت.",
     autoTitle: "ارفع الملف – ونحن نرتّبه ونترجمه", autoDesc: "ارفع الرسالة (PDF أو صورة)، وتنحط تلقائياً بالمجلد الصحيح وتتترجم للغتك.",
     reminders: "تذكيرات", daysLeft: (n) => (n < 0 ? "متأخر" : n === 0 ? "اليوم" : `بعد ${n} يوم`), done: "تم", translateMine: "ترجمها للغتي",
-    processing: "جارٍ الترتيب والترجمة…", failed: "فشلت الترجمة التلقائية", summary: "الملخص", translation: "الترجمة", showTranslation: "عرض الترجمة", hideTranslation: "إخفاء الترجمة", deadline: "آخر موعد", from: "من",
+    processing: "جارٍ الترتيب والترجمة…", failed: "فشلت الترجمة التلقائية", tooLong: "هذا الملف طويل جداً على الترجمة التلقائية، لذلك تم حفظه فقط.", summary: "الملخص", translation: "الترجمة", showTranslation: "عرض الترجمة", hideTranslation: "إخفاء الترجمة", deadline: "آخر موعد", from: "من",
     aiNote: "يتم تحليل الملف تلقائياً بواسطة Claude (Anthropic) لترتيبه وترجمته. الترجمة للمساعدة فقط وليست ترجمة محلّفة.",
     aboTitle: "ترتيب وترجمة", aboPitch: "نرتّب كل رسالة في المجلد الصحيح، ونترجمها للغتك، ونذكّرك بالمواعيد.",
     aboPrice: (p) => `${p} € شهرياً شامل الضريبة · يمكن الإلغاء شهرياً`, aboSubscribe: "اشترك الآن", aboActive: "الترتيب والترجمة مفعّلان",
@@ -75,7 +75,7 @@ const T = {
     hint: "PDF, photo, Word or Excel – up to 20 MB.",
     autoTitle: "Upload – we sort and translate it", autoDesc: "Upload a letter (PDF or photo). It is put into the right folder automatically and translated into your language.",
     reminders: "Reminders", daysLeft: (n) => (n < 0 ? "overdue" : n === 0 ? "today" : `in ${n} days`), done: "Done", translateMine: "Translate into my language",
-    processing: "Sorting and translating…", failed: "Automatic translation failed", summary: "Summary", translation: "Translation", showTranslation: "Show translation", hideTranslation: "Hide translation", deadline: "Deadline", from: "From",
+    processing: "Sorting and translating…", failed: "Automatic translation failed", tooLong: "This document is too long for automatic translation. It was only stored.", summary: "Summary", translation: "Translation", showTranslation: "Show translation", hideTranslation: "Hide translation", deadline: "Deadline", from: "From",
     aiNote: "The file is analysed automatically by Claude (Anthropic) to sort and translate it. The translation is a help, not a certified translation.",
     aboTitle: "Sorting & translation", aboPitch: "We sort every letter into the right folder, translate it into your language and remind you of deadlines.",
     aboPrice: (p) => `${p} € / month incl. VAT · cancel monthly`, aboSubscribe: "Subscribe now", aboActive: "Sorting & translation is active",
@@ -96,7 +96,7 @@ T.uk = {
   hint: "PDF, фото, Word або Excel – до 20 МБ.",
   autoTitle: "Завантажте – ми впорядкуємо й перекладемо", autoDesc: "Завантажте лист (PDF або фото). Він автоматично потрапить у потрібну папку й буде перекладений вашою мовою.",
   reminders: "Нагадування", daysLeft: (n) => (n < 0 ? "прострочено" : n === 0 ? "сьогодні" : `через ${n} дн.`), done: "Виконано", translateMine: "Перекласти моєю мовою",
-  processing: "Впорядковуємо й перекладаємо…", failed: "Автоматичний переклад не вдався", summary: "Коротко", translation: "Переклад", showTranslation: "Показати переклад", hideTranslation: "Сховати переклад", deadline: "Строк", from: "Від",
+  processing: "Впорядковуємо й перекладаємо…", failed: "Автоматичний переклад не вдався", tooLong: "Цей документ задовгий для автоматичного перекладу. Його лише збережено.", summary: "Коротко", translation: "Переклад", showTranslation: "Показати переклад", hideTranslation: "Сховати переклад", deadline: "Строк", from: "Від",
   aiNote: "Файл автоматично аналізує Claude (Anthropic), щоб упорядкувати й перекласти його. Переклад – це допомога, а не завірений переклад.",
   aboTitle: "Впорядкування та переклад", aboPitch: "Ми розкладаємо кожен лист у потрібну папку, перекладаємо вашою мовою та нагадуємо про строки.",
   aboPrice: (p) => `${p} € / міс. з ПДВ · скасування щомісяця`, aboSubscribe: "Підписатися", aboActive: "Впорядкування та переклад активні",
@@ -423,6 +423,7 @@ export default function MyDocuments() {
                      <p className="mt-2 ms-8 flex items-center gap-2 text-xs text-[#6B46C1]"><Loader2 className="w-3.5 h-3.5 animate-spin" />{t.processing}</p>
                    )}
                    {doc.ai_status === "failed" && <p className="mt-2 ms-8 text-xs text-red-600">{t.failed}</p>}
+                   {doc.ai_status === "too_long" && <p className="mt-2 ms-8 text-xs text-amber-700">{t.tooLong}</p>}
                    {doc.ai_status === "done" && (
                      <div className="mt-2 ms-8 rounded-xl bg-gray-50 p-3 text-sm text-gray-700 space-y-2">
                        {(doc.sender || doc.deadline) && (
