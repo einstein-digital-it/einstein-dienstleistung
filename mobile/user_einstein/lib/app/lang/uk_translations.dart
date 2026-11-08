@@ -16,6 +16,8 @@ const Map<String, String> ukTranslations = {
   "case_delete_confirm": "Видалити цю справу та всі її документи назавжди?",
   "case_load_error": "Не вдалося завантажити справу.",
   "case_create_error": "Не вдалося створити справу.",
+  "files_share": "Поділитися",
+  "files_share_error": "Не вдалося підготувати файли для надсилання.",
   "nav_home": "Головна",
   "nav_services": "Послуги",
   "nav_offers": "Пропозиції",

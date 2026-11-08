@@ -10,6 +10,30 @@ import 'documents_view.dart';
 
 const _overviewLabel = '00_Uebersicht';
 
+/// Share icon: sends these papers to any app through the phone's share menu.
+class ShareDocumentsButton extends StatelessWidget {
+  const ShareDocumentsButton({super.key, required this.docs, required this.subject, this.prefix = ''});
+
+  final List<CustomerDocument> docs;
+  final String subject;
+  final String prefix;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Get.find<DocumentsController>();
+    if (docs.isEmpty) return const SizedBox.shrink();
+    return Obx(
+      () => IconButton(
+        tooltip: 'files_share'.tr,
+        icon: c.isSharing.value
+            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+            : const Icon(Icons.share_outlined),
+        onPressed: c.isSharing.value ? null : () => c.shareDocuments(docs, subject: subject, prefix: prefix),
+      ),
+    );
+  }
+}
+
 /// "My files" on the My file screen: the files the customer created.
 class CasesSection extends StatelessWidget {
   const CasesSection({super.key});
@@ -179,6 +203,7 @@ class _CaseViewState extends State<CaseView> {
         appBar: AppBar(
           title: Text(detail?.name ?? ''),
           actions: [
+            if (detail != null) ShareDocumentsButton(docs: detail.documents, subject: detail.name, prefix: 'case_unsorted'.tr),
             IconButton(tooltip: 'case_delete'.tr, icon: const Icon(Icons.delete_outline_rounded), onPressed: _delete),
           ],
         ),
@@ -236,12 +261,18 @@ class CaseSectionView extends StatelessWidget {
     final args = Map<String, dynamic>.from(Get.arguments as Map);
     final overview = args['overview'] == true;
     final c = Get.find<DocumentsController>();
+    List<CustomerDocument> currentDocs() {
+      final detail = c.openCase.value;
+      return detail == null ? const [] : (overview ? detail.documents : detail.inSection(args['section'] as String?));
+    }
+
     return Scaffold(
-      appBar: AppBar(title: Text(args['title'].toString())),
+      appBar: AppBar(
+        title: Text(args['title'].toString()),
+        actions: [Obx(() => ShareDocumentsButton(docs: currentDocs(), subject: args['title'].toString()))],
+      ),
       body: Obx(() {
-        final detail = c.openCase.value;
-        final List<CustomerDocument> docs =
-            detail == null ? const [] : (overview ? detail.documents : detail.inSection(args['section'] as String?));
+        final docs = currentDocs();
         if (docs.isEmpty) return EmptyState(icon: Icons.folder_open_rounded, text: 'files_folder_empty'.tr);
         return ListView.separated(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),

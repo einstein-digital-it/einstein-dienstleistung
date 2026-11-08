@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../api/api_exception.dart';
@@ -34,7 +35,7 @@ class DocumentsController extends GetxController {
   // Abo: automatic sorting + translation (monthly, VAT included)
   final aboActive = false.obs;
   final aboKnown = false.obs;
-  final aboPrice = 5.0.obs;
+  final aboPrice = 4.99.obs;
   final aboEndsAt = Rxn<DateTime>();
   final aboBusy = false.obs;
 
@@ -43,6 +44,7 @@ class DocumentsController extends GetxController {
   final openCase = Rxn<CaseDetail>();
   final caseError = false.obs;
   final caseUpload = ''.obs; // progress text while uploading
+  final isSharing = false.obs;
 
   Timer? _poll;
   Timer? _casePoll;
@@ -181,6 +183,40 @@ class DocumentsController extends GetxController {
       Get.snackbar('files_uploaded'.tr, 'files_processing_hint'.tr);
     }
   }
+
+  /// Opens the phone's share menu (WhatsApp, e-mail, Drive, ...) with these papers.
+  Future<void> shareDocuments(List<CustomerDocument> docs, {required String subject, String prefix = ''}) async {
+    if (docs.isEmpty || isSharing.value) return;
+    isSharing.value = true;
+    try {
+      final names = <String>{};
+      final files = <XFile>[];
+      for (final doc in docs) {
+        files.add(XFile.fromData(Uint8List.fromList(await api.downloadDocument(doc.id)), mimeType: _mimeOf(doc.originalName)));
+        final base = doc.originalName.split(RegExp(r'[/\\]')).last;
+        final sectionLabel = openCase.value?.sections.firstWhereOrNull((s) => s.name == doc.section)?.label;
+        // Sharing a whole file keeps the folder number in each name
+        final name = prefix.isEmpty ? base : '${sectionLabel ?? prefix}_$base';
+        names.add(names.contains(name) ? '${doc.id}_$name' : name);
+      }
+      await SharePlus.instance.share(ShareParams(files: files, fileNameOverrides: names.toList(), subject: subject, title: subject));
+    } catch (_) {
+      Get.snackbar(subject, 'files_share_error'.tr);
+    } finally {
+      isSharing.value = false;
+    }
+  }
+
+  String _mimeOf(String name) => switch (name.split('.').last.toLowerCase()) {
+    'pdf' => 'application/pdf',
+    'jpg' || 'jpeg' => 'image/jpeg',
+    'png' => 'image/png',
+    'webp' => 'image/webp',
+    'heic' => 'image/heic',
+    'doc' => 'application/msword',
+    'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    _ => 'application/octet-stream',
+  };
 
   /// A document from the authority folders or from the open file.
   CustomerDocument? findDocument(int? id) =>

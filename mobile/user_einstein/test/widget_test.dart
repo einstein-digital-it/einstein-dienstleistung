@@ -213,7 +213,7 @@ class _FakeBackend {
       return _json({'id': 30}, 201);
     }
     if (method == 'GET' && path == 'customer/subscription') {
-      return _json({'active': aboActive, 'status': aboActive ? 'active' : 'none', 'ends_at': null, 'price': 5, 'vat_included': true});
+      return _json({'active': aboActive, 'status': aboActive ? 'active' : 'none', 'ends_at': null, 'price': 4.99, 'vat_included': true});
     }
     if (method == 'GET' && path == 'customer/forms') {
       return _json(_forms);
@@ -623,9 +623,9 @@ void main() {
     await tester.tap(find.text('My file').last);
     await tester.pumpAndSettle();
     expect(find.text('All your letters, sorted by authority.'), findsOneWidget);
-    // Without the Abo, sorting & translation is offered for 5 € a month
+    // Without the Abo, sorting & translation is offered for 4.99 € a month
     expect(find.text('Sorting & translation'), findsOneWidget);
-    expect(find.text('5,00 € / month incl. VAT · cancel any time'), findsOneWidget);
+    expect(find.text('4,99 € / month incl. VAT · cancel any time'), findsOneWidget);
     expect(find.text('Subscribe'), findsOneWidget);
 
     // The letter sits in its authority's folder
@@ -672,6 +672,8 @@ void main() {
     // The picker itself is native, so upload the picked bytes directly
     final docs = Get.find<DocumentsController>();
     await tester.runAsync(() => docs.upload([1, 2, 3], 'scan.jpg'));
+    // Its snackbar got a real-time timer; left open, it fires during the next test
+    Get.closeAllSnackbars();
     await tester.pumpAndSettle();
     await waitForSnackbars(tester);
 
@@ -705,11 +707,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('00_Uebersicht'), findsOneWidget);
+    expect(find.byTooltip('Share'), findsOneWidget);
     expect(find.text('01_Arbeitsvertrag'), findsOneWidget);
     expect(find.text('Not sorted'), findsOneWidget);
 
     final docs = Get.find<DocumentsController>();
     await tester.runAsync(() => docs.uploadManyToCase(7, [([1], 'a.pdf'), ([2], 'b.pdf')]));
+    // Its snackbar got a real-time timer; left open, it fires during the next test
+    Get.closeAllSnackbars();
     await tester.pumpAndSettle();
     await waitForSnackbars(tester);
     expect(backend.caseUploads, 2);
@@ -723,6 +728,7 @@ void main() {
     await tester.tap(find.text('Vertrag 2026'));
     await tester.pumpAndSettle();
     expect(find.text('Open original'), findsOneWidget);
+    expect(find.byTooltip('Share'), findsOneWidget);
   });
 
   testWidgets('Applications: fills a form and shows the German letter', (

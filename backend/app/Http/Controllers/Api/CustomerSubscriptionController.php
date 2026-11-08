@@ -21,7 +21,7 @@ class CustomerSubscriptionController extends Controller
     /** Gross monthly price in cents (VAT included). */
     public static function priceCents(): int
     {
-        return (int) config('services.file_abo.price_cents', 500);
+        return (int) config('services.file_abo.price_cents', 499);
     }
 
     /** GET customer/subscription */

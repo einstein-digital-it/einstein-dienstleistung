@@ -38,7 +38,7 @@ return [
     // Online payment (Stripe Checkout). Keys: Stripe Dashboard > Developers.
     'file_abo' => [
         // "Meine Unterlagen" Abo: gross monthly price in cents (VAT included)
-        'price_cents' => (int) env('FILE_ABO_PRICE_CENTS', 500),
+        'price_cents' => (int) env('FILE_ABO_PRICE_CENTS', 499),
     ],
 
     'stripe' => [

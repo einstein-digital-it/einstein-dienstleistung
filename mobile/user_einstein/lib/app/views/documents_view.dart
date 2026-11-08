@@ -549,6 +549,7 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
         appBar: AppBar(
           title: Text(folderName(doc.folder)),
           actions: [
+            ShareDocumentsButton(docs: [doc], subject: doc.title),
             IconButton(
               tooltip: 'files_delete'.tr,
               icon: const Icon(Icons.delete_outline_rounded),

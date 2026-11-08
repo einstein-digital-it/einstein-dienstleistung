@@ -1,6 +1,8 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'files_share': 'Share',
+  'files_share_error': 'Could not prepare the files for sharing.',
   'cases_title': 'My own files',
   'cases_new': 'New file',
   'cases_create': 'Create',
@@ -126,6 +128,8 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'files_share': 'مشاركة',
+  'files_share_error': 'ما قدرنا نجهّز الملفات للمشاركة.',
   'cases_title': 'ملفاتي الخاصة',
   'cases_new': 'ملف جديد',
   'cases_create': 'إنشاء',
@@ -251,6 +255,8 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'files_share': 'Teilen',
+  'files_share_error': 'Die Dateien konnten nicht zum Teilen vorbereitet werden.',
   'cases_title': 'Meine eigenen Akten',
   'cases_new': 'Neue Akte',
   'cases_create': 'Erstellen',

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-/** "Meine Unterlagen" Abo: 5 € a month (incl. VAT) for automatic sorting and translation. */
+/** "Meine Unterlagen" Abo: 4.99 € a month (incl. VAT) for automatic sorting and translation. */
 class FileAboTest extends TestCase
 {
     use RefreshDatabase;
@@ -26,7 +26,7 @@ class FileAboTest extends TestCase
         $this->withApiUser('user', 'free@example.com');
         $this->getJson('/api/customer/subscription')->assertOk()
             ->assertJsonPath('data.active', false)
-            ->assertJsonPath('data.price', 5)
+            ->assertJsonPath('data.price', 4.99)
             ->assertJsonPath('data.vat_included', true);
 
         $id = $this->post('/api/customer/documents', [
@@ -43,7 +43,7 @@ class FileAboTest extends TestCase
         $this->assertSame('none', CustomerDocument::find($id)->ai_status);
     }
 
-    public function test_checkout_starts_a_5_euro_monthly_stripe_subscription(): void
+    public function test_checkout_starts_a_499_cent_monthly_stripe_subscription(): void
     {
         config(['services.stripe.secret' => 'sk_test_x', 'app.url' => 'https://app.example.test']);
         Http::fake(['api.stripe.com/*' => Http::response(['id' => 'cs_1', 'url' => 'https://checkout.stripe.test/cs_1'])]);
@@ -57,7 +57,7 @@ class FileAboTest extends TestCase
 
             return str_ends_with($request->url(), 'checkout/sessions')
                 && $body['mode'] === 'subscription'
-                && (int) $body['line_items'][0]['price_data']['unit_amount'] === 500
+                && (int) $body['line_items'][0]['price_data']['unit_amount'] === 499
                 && $body['line_items'][0]['price_data']['recurring']['interval'] === 'month'
                 && $body['metadata']['kind'] === 'file_abo'
                 && $body['metadata']['user_id'] === (string) $user->id;
