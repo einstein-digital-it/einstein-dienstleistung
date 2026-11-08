@@ -16,6 +16,8 @@ abstract class AppRoutes {
   static const documents = '/documents';
   static const documentFolder = '/documents/folder';
   static const documentDetail = '/documents/detail';
+  static const documentCase = '/documents/case';
+  static const documentCaseSection = '/documents/case/section';
   static const forms = '/forms';
   static const formFill = '/forms/fill';
 }

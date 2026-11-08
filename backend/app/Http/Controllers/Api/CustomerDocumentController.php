@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessCustomerDocument;
 use App\Models\CustomerDocument;
+use App\Models\CustomerFile;
 use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -37,6 +38,16 @@ class CustomerDocumentController extends Controller
         $user = $request->user();
         // Sorting and translation are part of the Unterlagen-Abo; without it the file is only stored.
         $doc = $this->save($request, $user->email, 'customer', $user->hasFileAbo());
+
+        return response()->json(['data' => $doc, 'needs_subscription' => ! $user->hasFileAbo()], 201);
+    }
+
+    /** POST customer/files/{customerFile}/documents — add a paper to a file the customer created. */
+    public function storeInFile(Request $request, CustomerFile $customerFile): JsonResponse
+    {
+        CustomerFileController::authorizeOwner($request, $customerFile);
+        $user = $request->user();
+        $doc = $this->save($request, $user->email, 'customer', $user->hasFileAbo(), $customerFile);
 
         return response()->json(['data' => $doc, 'needs_subscription' => ! $user->hasFileAbo()], 201);
     }
@@ -116,12 +127,13 @@ class CustomerDocumentController extends Controller
     {
         $docs = CustomerDocument::query()
             ->whereRaw('LOWER(user_email) = ?', [strtolower($email)])
+            ->whereNull('customer_file_id') // papers in a customer-created file are listed there
             ->latest()->get();
 
         return ['folders' => CustomerDocument::FOLDERS, 'documents' => $docs];
     }
 
-    private function save(Request $request, string $email, string $uploadedBy, bool $allowProcessing = true): CustomerDocument
+    private function save(Request $request, string $email, string $uploadedBy, bool $allowProcessing = true, ?CustomerFile $customerFile = null): CustomerDocument
     {
         $data = $request->validate([
             // "auto" = let Claude pick the folder
@@ -140,6 +152,7 @@ class CustomerDocumentController extends Controller
 
         $doc = CustomerDocument::create([
             'user_email' => strtolower($email),
+            'customer_file_id' => $customerFile?->id,
             'folder' => $data['folder'] === 'auto' ? 'sonstiges' : $data['folder'],
             'title' => ($data['title'] ?? null) ?:pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
             'file_path' => $path,

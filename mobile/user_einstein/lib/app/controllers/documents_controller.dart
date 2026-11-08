@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../api/api_exception.dart';
 import '../api/auth_session.dart';
 import '../api/customer_api_service.dart';
+import '../models/customer_case.dart';
 import '../models/customer_document.dart';
 import 'customer_store_controller.dart';
 
@@ -37,7 +38,14 @@ class DocumentsController extends GetxController {
   final aboEndsAt = Rxn<DateTime>();
   final aboBusy = false.obs;
 
+  // Files the customer created
+  final cases = <CustomerCase>[].obs;
+  final openCase = Rxn<CaseDetail>();
+  final caseError = false.obs;
+  final caseUpload = ''.obs; // progress text while uploading
+
   Timer? _poll;
+  Timer? _casePoll;
 
   String get aboPriceText => aboPrice.value.toStringAsFixed(2).replaceAll('.', ',');
 
@@ -66,8 +74,117 @@ class DocumentsController extends GetxController {
       isLoading.value = false;
       _schedulePoll();
     }
-    if (!silent) await loadSubscription();
+    if (!silent) await Future.wait([loadSubscription(), loadCases()]);
   }
+
+  Future<void> loadCases() async {
+    try {
+      cases.assignAll(await api.cases());
+    } catch (_) {
+      // Older server, or offline: the rest of the screen still works
+    }
+  }
+
+  /// Creates a file and returns its id.
+  Future<int?> createCase(String name) async {
+    try {
+      final created = await api.createCase(name);
+      cases.insert(0, created);
+      return created.id;
+    } catch (_) {
+      Get.snackbar('cases_title'.tr, 'case_create_error'.tr);
+      return null;
+    }
+  }
+
+  Future<void> openCaseById(int id) async {
+    caseError.value = false;
+    _casePoll?.cancel();
+    try {
+      final detail = await api.caseDetail(id);
+      openCase.value = detail;
+      // While the AI is still sorting, keep the folders up to date
+      if (detail.hasProcessing) {
+        _casePoll = Timer(const Duration(seconds: 6), () => openCaseById(id));
+      }
+    } catch (_) {
+      if (openCase.value == null) caseError.value = true;
+    }
+  }
+
+  void closeCase() {
+    _casePoll?.cancel();
+    openCase.value = null;
+    caseError.value = false;
+    loadCases();
+  }
+
+  Future<bool> deleteCase(int id) async {
+    try {
+      await api.deleteCase(id);
+      cases.removeWhere((c) => c.id == id);
+      return true;
+    } catch (_) {
+      Get.snackbar('cases_title'.tr, 'files_delete_error'.tr);
+      return false;
+    }
+  }
+
+  /// Several photos or files at once.
+  Future<void> pickAndUploadToCase(int id, UploadSource source) async {
+    final picked = <(List<int>, String)>[];
+    try {
+      if (source == UploadSource.file) {
+        final result = await FilePicker.platform.pickFiles(
+          allowMultiple: true,
+          withData: true,
+          type: FileType.custom,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'webp', 'heic', 'doc', 'docx'],
+        );
+        for (final file in result?.files ?? const <PlatformFile>[]) {
+          if (file.bytes != null) picked.add((file.bytes!, file.name));
+        }
+      } else {
+        final images = source == UploadSource.camera
+            ? [?await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 85, maxWidth: 2400)]
+            : await ImagePicker().pickMultiImage(imageQuality: 85, maxWidth: 2400);
+        for (final image in images) {
+          picked.add((await image.readAsBytes(), image.name.isEmpty ? 'scan.jpg' : image.name));
+        }
+      }
+    } catch (_) {
+      Get.snackbar('files_upload'.tr, 'files_pick_error'.tr);
+      return;
+    }
+    await uploadManyToCase(id, picked);
+  }
+
+  /// One after the other, so one bad file does not stop the rest.
+  Future<void> uploadManyToCase(int id, List<(List<int>, String)> files) async {
+    if (files.isEmpty) return;
+    var failed = 0;
+    for (var i = 0; i < files.length; i++) {
+      caseUpload.value = 'case_uploading'.trParams({'done': '${i + 1}', 'total': '${files.length}'});
+      try {
+        await api.uploadToCase(id, bytes: files[i].$1, filename: files[i].$2, lang: langCode);
+      } catch (_) {
+        failed++;
+      }
+    }
+    caseUpload.value = '';
+    await openCaseById(id);
+    if (failed > 0) {
+      Get.snackbar('case_upload'.tr, 'case_upload_failed'.trParams({'count': '$failed'}));
+    } else if (aboKnown.value && !aboActive.value) {
+      Get.snackbar('files_uploaded'.tr, 'abo_stored_only'.tr);
+    } else {
+      Get.snackbar('files_uploaded'.tr, 'files_processing_hint'.tr);
+    }
+  }
+
+  /// A document from the authority folders or from the open file.
+  CustomerDocument? findDocument(int? id) =>
+      documents.firstWhereOrNull((d) => d.id == id) ?? openCase.value?.documents.firstWhereOrNull((d) => d.id == id);
 
   Future<void> loadSubscription() async {
     try {
@@ -209,6 +326,7 @@ class DocumentsController extends GetxController {
     try {
       await api.deleteDocument(doc.id);
       documents.removeWhere((d) => d.id == doc.id);
+      if (openCase.value != null) await openCaseById(openCase.value!.id);
       reminders.removeWhere((r) => r.documentId == doc.id);
     } catch (_) {
       Get.snackbar(doc.title, 'files_delete_error'.tr);
@@ -223,6 +341,7 @@ class DocumentsController extends GetxController {
     try {
       await api.translateDocument(doc.id, langCode);
       await load(silent: true);
+      if (openCase.value != null) await openCaseById(openCase.value!.id);
       Get.snackbar(doc.title, 'files_processing_hint'.tr);
     } catch (_) {
       Get.snackbar(doc.title, 'files_translate_error'.tr);
@@ -243,6 +362,8 @@ class DocumentsController extends GetxController {
     documents.clear();
     reminders.clear();
     loadedOnce.value = false;
+    cases.clear();
+    openCase.value = null;
     aboActive.value = false;
     aboKnown.value = false;
     aboEndsAt.value = null;
@@ -251,6 +372,7 @@ class DocumentsController extends GetxController {
   @override
   void onClose() {
     _poll?.cancel();
+    _casePoll?.cancel();
     super.onClose();
   }
 }

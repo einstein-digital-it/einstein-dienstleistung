@@ -26,6 +26,12 @@ class ProcessCustomerDocument
     /** File types Claude can read directly. */
     private const SUPPORTED = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
+    /** Suggested sub-folders, so papers uploaded at the same time land in the same ones. */
+    private const STANDARD_SECTIONS = [
+        'Personalfragebogen', 'Arbeitsvertrag', 'Unterrichtungen', 'Befreiung_Rentenversicherung', 'Uebernahme',
+        'Lohnunterlagen', 'Betriebsleiter', 'Ausweise', 'Bescheide', 'Vertraege', 'Rechnungen', 'Korrespondenz', 'Sonstiges',
+    ];
+
     public function __construct(public int $documentId, public bool $autoFolder) {}
 
     public static function enabled(): bool
@@ -66,6 +72,7 @@ class ProcessCustomerDocument
             'summary' => $result['summary'] ?? null,
             'translation' => $result['translation'] ?? null,
             'deadline' => $this->validDate($result['deadline'] ?? null),
+            'section' => $doc->customer_file_id ? $this->sectionFrom($doc, $result['section'] ?? null) : null,
             'ai_status' => 'done',
         ]);
         $this->saveReminders($doc, $result['dates'] ?? []);
@@ -90,10 +97,19 @@ class ProcessCustomerDocument
             : ['type' => 'image', 'source' => ['type' => 'base64', 'media_type' => $mime, 'data' => $data]];
 
         $folders = implode(', ', CustomerDocument::FOLDERS);
+        $sectionField = '';
+        if ($doc->customer_file_id) {
+            $existing = implode(', ', $this->existingSections($doc)) ?: 'none yet';
+            $standard = implode(', ', self::STANDARD_SECTIONS);
+            $sectionField = <<<TXT
+
+              "section": the sub-folder of the customer's file this paper belongs in: a short German name of 1-3 words joined by underscores, using ae/oe/ue/ss instead of umlauts and no number. Use an existing one if it fits (existing: $existing). Otherwise prefer one of: $standard, or make a similar one,
+            TXT;
+        }
         $prompt = <<<TXT
         This is a letter or document a customer of a German administrative service uploaded.
         Reply with ONE JSON object only, no other text:
-        {
+        { $sectionField
           "folder": one of [$folders] — the authority or topic it belongs to (jobcenter = Jobcenter/Bürgergeld, auslaenderbehoerde = immigration office/residence permit, familienkasse = Kindergeld/child benefits, wohnen = landlord/rent/housing, arbeit = employer/payslips/contracts, sonstiges if unclear),
           "title": a short title in $language (max 8 words, e.g. sender + subject + date),
           "sender": who sent it (organisation name as written),
@@ -133,6 +149,32 @@ class ProcessCustomerDocument
         }
 
         return $json;
+    }
+
+    /** @return array<int, string> sections already used in this document's file */
+    private function existingSections(CustomerDocument $doc): array
+    {
+        return CustomerDocument::where('customer_file_id', $doc->customer_file_id)
+            ->whereNotNull('section')->distinct()->pluck('section')->all();
+    }
+
+    /** Clean the section name; reuse an existing spelling so one topic stays one folder. */
+    private function sectionFrom(CustomerDocument $doc, mixed $value): ?string
+    {
+        if (! is_string($value)) {
+            return null;
+        }
+        $name = trim(preg_replace('/_+/', '_', preg_replace('/[^\pL\pN]+/u', '_', preg_replace('/^\d+[_\s-]*/', '', trim($value)))), '_');
+        if ($name === '') {
+            return null;
+        }
+        foreach ($this->existingSections($doc) as $existing) {
+            if (mb_strtolower($existing) === mb_strtolower($name)) {
+                return $existing;
+            }
+        }
+
+        return mb_substr($name, 0, 100);
     }
 
     /** Turn the dates Claude found into reminders (replacing earlier ones for this document). */

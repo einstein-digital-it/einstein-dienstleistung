@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../views/customer_case_view.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/booking_controller.dart';
 import '../controllers/customer_dashboard_controller.dart';
@@ -166,6 +167,16 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.documentDetail,
       page: () => const DocumentDetailView(),
+      middlewares: _customerAuthMiddleware,
+    ),
+    GetPage(
+      name: AppRoutes.documentCase,
+      page: () => const CaseView(),
+      middlewares: _customerAuthMiddleware,
+    ),
+    GetPage(
+      name: AppRoutes.documentCaseSection,
+      page: () => const CaseSectionView(),
       middlewares: _customerAuthMiddleware,
     ),
     GetPage(

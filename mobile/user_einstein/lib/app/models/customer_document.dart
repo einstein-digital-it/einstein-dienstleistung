@@ -53,6 +53,7 @@ class CustomerDocument {
     this.translation,
     this.translationLanguage,
     this.deadline,
+    this.section,
   });
 
   final int id;
@@ -68,6 +69,7 @@ class CustomerDocument {
   final String? translation;
   final String? translationLanguage;
   final DateTime? deadline;
+  final String? section;
 
   bool get isProcessing => aiStatus == 'pending';
   bool get byEinstein => uploadedBy == 'einstein';
@@ -87,6 +89,7 @@ class CustomerDocument {
     translation: json['translation']?.toString(),
     translationLanguage: json['translation_language']?.toString(),
     deadline: DateTime.tryParse((json['deadline'] ?? '').toString()),
+    section: json['section']?.toString(),
   );
 }
 

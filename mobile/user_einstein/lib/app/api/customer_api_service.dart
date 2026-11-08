@@ -1,4 +1,5 @@
 import '../models/booking_item.dart';
+import '../models/customer_case.dart';
 import '../models/customer_document.dart';
 import '../models/customer_profile.dart';
 import '../models/managed_client.dart';
@@ -285,6 +286,38 @@ class CustomerApiService {
 
   Future<void> translateDocument(int id, String lang) async {
     await client.post('customer/documents/$id/translate', body: {'lang': lang});
+  }
+
+  // ------------------------------------------------ files the customer creates
+
+  Future<List<CustomerCase>> cases() async {
+    final data = await client.get('customer/files');
+    return data is List
+        ? data.whereType<Map<String, dynamic>>().map(CustomerCase.fromJson).toList()
+        : <CustomerCase>[];
+  }
+
+  Future<CustomerCase> createCase(String name) async {
+    final data = await client.post('customer/files', body: {'name': name});
+    return CustomerCase.fromJson(Map<String, dynamic>.from(data as Map));
+  }
+
+  Future<CaseDetail> caseDetail(int id) async {
+    final data = await client.get('customer/files/$id');
+    return CaseDetail.fromJson(Map<String, dynamic>.from(data as Map));
+  }
+
+  Future<void> deleteCase(int id) async {
+    await client.delete('customer/files/$id');
+  }
+
+  Future<void> uploadToCase(int id, {required List<int> bytes, required String filename, String? lang}) async {
+    await client.upload(
+      'customer/files/$id/documents',
+      bytes: bytes,
+      filename: filename,
+      fields: {'folder': 'auto', 'lang': ?lang},
+    );
   }
 
   /// "My file" Abo: automatic sorting + translation (monthly, VAT included).

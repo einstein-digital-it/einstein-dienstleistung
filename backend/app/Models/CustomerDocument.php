@@ -14,7 +14,7 @@ class CustomerDocument extends Model
 
     protected $fillable = [
         'user_email', 'folder', 'title', 'file_path', 'original_name',
-        'mime_type', 'size', 'uploaded_by', 'note',
+        'mime_type', 'size', 'uploaded_by', 'note', 'customer_file_id', 'section',
         'ai_status', 'translation_language', 'sender', 'sender_email', 'summary', 'translation', 'deadline',
     ];
 

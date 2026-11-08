@@ -7,6 +7,7 @@ import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/ui.dart';
+import 'customer_case_view.dart';
 
 String folderName(String folder) => 'folder_$folder'.tr;
 
@@ -71,6 +72,7 @@ class _DocumentsViewState extends State<DocumentsView> {
                   ],
                 ],
                 const SizedBox(height: 22),
+                const CasesSection(),
                 SectionTitle(title: 'files_folders'.tr),
                 if (loading)
                   const Padding(
@@ -538,7 +540,7 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
   Widget build(BuildContext context) {
     final id = Get.arguments as int?;
     return Obx(() {
-      final doc = controller.documents.firstWhereOrNull((d) => d.id == id);
+      final doc = controller.findDocument(id);
       if (doc == null) {
         return Scaffold(appBar: AppBar(), body: EmptyState(icon: Icons.description_outlined, text: 'files_not_found'.tr));
       }

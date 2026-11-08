@@ -62,6 +62,7 @@ class _FakeBackend {
   final uploads = <String>[];
   final savedFormData = <Map<String, dynamic>>[];
   bool aboActive = false;
+  int caseUploads = 0;
 
   static const _forms = {
     'email': 'customer@example.com',
@@ -189,6 +190,27 @@ class _FakeBackend {
     }
     if (method == 'GET' && path == 'customer/reminders') {
       return _json(const []);
+    }
+    if (method == 'GET' && path == 'customer/files') {
+      return _json([
+        {'id': 7, 'name': 'Max Mustermann', 'documents_count': 2},
+      ]);
+    }
+    if (method == 'GET' && path == 'customer/files/7') {
+      Map<String, dynamic> doc(int id, String title, String? section) => {
+        'id': id, 'folder': 'arbeit', 'title': title, 'original_name': '$title.pdf', 'size': 10,
+        'uploaded_by': 'customer', 'ai_status': 'done', 'section': section, 'summary': 'Summary of $title',
+      };
+      return _json({
+        'id': 7,
+        'name': 'Max Mustermann',
+        'sections': [{'name': 'Arbeitsvertrag', 'label': '01_Arbeitsvertrag'}],
+        'documents': [doc(21, 'Vertrag 2026', 'Arbeitsvertrag'), doc(22, 'Altes Foto', null)],
+      });
+    }
+    if (method == 'POST' && path == 'customer/files/7/documents') {
+      caseUploads++;
+      return _json({'id': 30}, 201);
     }
     if (method == 'GET' && path == 'customer/subscription') {
       return _json({'active': aboActive, 'status': aboActive ? 'active' : 'none', 'ends_at': null, 'price': 5, 'vat_included': true});
@@ -667,6 +689,40 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Sorting & translation is active'), findsOneWidget);
     expect(find.text('Subscribe'), findsNothing);
+  });
+
+  testWidgets('My file: a created file shows numbered folders and takes several papers', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signIn(tester);
+    await tester.tap(find.text('My file').last);
+    await tester.pumpAndSettle();
+
+    final item = find.text('Max Mustermann');
+    await tester.scrollUntilVisible(item, 200, scrollable: find.byType(Scrollable).first);
+    await tester.tap(item);
+    await tester.pumpAndSettle();
+
+    expect(find.text('00_Uebersicht'), findsOneWidget);
+    expect(find.text('01_Arbeitsvertrag'), findsOneWidget);
+    expect(find.text('Not sorted'), findsOneWidget);
+
+    final docs = Get.find<DocumentsController>();
+    await tester.runAsync(() => docs.uploadManyToCase(7, [([1], 'a.pdf'), ([2], 'b.pdf')]));
+    await tester.pumpAndSettle();
+    await waitForSnackbars(tester);
+    expect(backend.caseUploads, 2);
+
+    await tester.tap(find.text('01_Arbeitsvertrag'));
+    await tester.pumpAndSettle();
+    expect(find.text('Vertrag 2026'), findsOneWidget);
+    expect(find.text('Altes Foto'), findsNothing);
+
+    // Papers of a created file open like any other letter
+    await tester.tap(find.text('Vertrag 2026'));
+    await tester.pumpAndSettle();
+    expect(find.text('Open original'), findsOneWidget);
   });
 
   testWidgets('Applications: fills a form and shows the German letter', (
