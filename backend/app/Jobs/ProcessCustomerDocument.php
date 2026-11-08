@@ -32,6 +32,9 @@ class ProcessCustomerDocument
         'Lohnunterlagen', 'Betriebsleiter', 'Ausweise', 'Bescheide', 'Vertraege', 'Rechnungen', 'Korrespondenz', 'Sonstiges',
     ];
 
+    /** Tokens billed for the last call to Claude. */
+    private array $usage = [];
+
     public function __construct(public int $documentId, public bool $autoFolder) {}
 
     public static function enabled(): bool
@@ -73,6 +76,8 @@ class ProcessCustomerDocument
             'translation' => $result['translation'] ?? null,
             'deadline' => $this->validDate($result['deadline'] ?? null),
             'section' => $doc->customer_file_id ? $this->sectionFrom($doc, $result['section'] ?? null) : null,
+            'ai_input_tokens' => $this->usage['input_tokens'] ?? null,
+            'ai_output_tokens' => $this->usage['output_tokens'] ?? null,
             'ai_status' => 'done',
         ]);
         $this->saveReminders($doc, $result['dates'] ?? []);
@@ -139,6 +144,8 @@ class ProcessCustomerDocument
         if ($response->failed()) {
             throw new \RuntimeException('Claude API: '.($response->json('error.message') ?? $response->status()));
         }
+
+        $this->usage = (array) $response->json('usage', []);
 
         $text = collect($response->json('content', []))->where('type', 'text')->pluck('text')->implode('');
         $start = strpos($text, '{');

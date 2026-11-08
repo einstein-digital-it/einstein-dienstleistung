@@ -34,7 +34,7 @@ class CustomerFilesFolderTest extends TestCase
     {
         $responses = Http::sequence();
         foreach ($sections as $section) {
-            $responses->push(['content' => [['type' => 'text', 'text' => json_encode([
+            $responses->push(['usage' => ['input_tokens' => 4000, 'output_tokens' => 2000], 'content' => [['type' => 'text', 'text' => json_encode([
                 'section' => $section, 'folder' => 'arbeit', 'title' => 'T', 'summary' => 'S', 'translation' => 'X', 'dates' => [],
             ])]]]);
         }
@@ -65,6 +65,10 @@ class CustomerFilesFolderTest extends TestCase
             ->assertJsonCount(3, 'data.documents')
             ->assertJsonMissingPath('data.documents.0.file_path');
         $this->assertSame('Arbeitsvertrag', CustomerDocument::find($ids[2])->section);
+
+        // 4000 input and 2000 output tokens at the Sonnet price
+        config(['services.anthropic.model' => 'claude-sonnet-5-5']);
+        $this->artisan('documents:ai-cost')->expectsOutputToContain('Average per paper: $0.0280')->assertSuccessful();
 
         // Papers of a created file stay out of the authority folders
         $this->getJson('/api/customer/documents')->assertOk()->assertJsonCount(0, 'data.documents');

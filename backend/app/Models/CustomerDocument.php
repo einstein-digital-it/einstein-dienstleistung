@@ -14,7 +14,7 @@ class CustomerDocument extends Model
 
     protected $fillable = [
         'user_email', 'folder', 'title', 'file_path', 'original_name',
-        'mime_type', 'size', 'uploaded_by', 'note', 'customer_file_id', 'section',
+        'mime_type', 'size', 'uploaded_by', 'note', 'customer_file_id', 'section', 'ai_input_tokens', 'ai_output_tokens',
         'ai_status', 'translation_language', 'sender', 'sender_email', 'summary', 'translation', 'deadline',
     ];
 
@@ -24,5 +24,5 @@ class CustomerDocument extends Model
     }
 
     /** The storage path is internal; files are only served through the download endpoint. */
-    protected $hidden = ['file_path'];
+    protected $hidden = ['file_path', 'ai_input_tokens', 'ai_output_tokens'];
 }
