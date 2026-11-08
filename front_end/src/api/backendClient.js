@@ -375,13 +375,17 @@ export const seoSettingsApi = {
 };
 
 // "Meine Unterlagen": a customer's documents sorted into folders (private files)
-async function downloadFile(path, fileName) {
+async function fetchBlob(path) {
   const token = getAuthToken();
   const response = await fetch(`${API_BASE_URL}${path}`, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
   if (!response.ok) throw new Error(`Download failed (${response.status})`);
-  const blob = await response.blob();
+  return response.blob();
+}
+
+async function downloadFile(path, fileName) {
+  const blob = await fetchBlob(path);
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -411,6 +415,19 @@ export const customerDocumentsApi = {
     return uploadRequest("/customer/documents", formData);
   },
   download: (doc) => downloadFile(`/customer/documents/${doc.id}/download`, doc.original_name),
+  blob: (doc) => fetchBlob(`/customer/documents/${doc.id}/download`),
+  // Files the customer creates; the AI sorts their papers into numbered folders
+  cases: () => request("/customer/files"),
+  createCase: (name) => request("/customer/files", { method: "POST", body: JSON.stringify({ name }) }),
+  caseDetail: (id) => request(`/customer/files/${id}`),
+  deleteCase: (id) => request(`/customer/files/${id}`, { method: "DELETE" }),
+  uploadToCase: (id, { file, lang }) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", "auto");
+    if (lang) formData.append("lang", lang);
+    return uploadRequest(`/customer/files/${id}/documents`, formData);
+  },
   remove: (id) => request(`/customer/documents/${id}`, { method: "DELETE" }),
   // admin
   adminCustomers: () => request("/admin/customer-documents"),

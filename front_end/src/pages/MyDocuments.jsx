@@ -1,13 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
-  BadgeCheck, Briefcase, Building2, ChevronLeft, ChevronRight, Download, FileText, Folder, GraduationCap,
+  BadgeCheck, Share2, Briefcase, Building2, ChevronLeft, ChevronRight, Download, FileText, Folder, GraduationCap,
   HeartPulse, Home as HomeIcon, Sparkles, CalendarClock, ChevronDown, Landmark, Loader2, Lock, PiggyBank, Shield, Trash2, Upload, Users, Globe2, Baby,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { customerDocumentsApi } from "@/api/backendClient";
 import { getStoredAuthUser } from "@/lib/backendAuth";
+import { shareFiles } from "@/lib/shareFiles";
+import CustomerCases from "@/components/CustomerCases";
 
 const FOLDER_META = {
   jobcenter: { icon: Briefcase, color: "bg-blue-600" },
@@ -130,6 +132,7 @@ export default function MyDocuments() {
   const [reminders, setReminders] = useState([]);
   const [abo, setAbo] = useState(null);
   const [aboBusy, setAboBusy] = useState(false);
+  const [caseOpen, setCaseOpen] = useState(false);
   const aboReturn = searchParams.get("abo");
 
   const loadAbo = () => customerDocumentsApi.subscription().then(setAbo).catch(() => {});
@@ -227,6 +230,15 @@ export default function MyDocuments() {
     }
   };
 
+  const onShare = async (doc) => {
+    try {
+      const blob = await customerDocumentsApi.blob(doc);
+      await shareFiles([{ blob, name: doc.original_name || "document" }], doc.title);
+    } catch {
+      setError(t.error);
+    }
+  };
+
   const onDelete = async (doc) => {
     if (!window.confirm(t.deleteConfirm)) return;
     try {
@@ -283,6 +295,7 @@ export default function MyDocuments() {
           </div>
         ) : !folder ? (
           <>
+          {!caseOpen && (
           <div className="mb-6 rounded-2xl bg-gradient-to-br from-[#6B46C1] to-[#4c2f9e] p-5 md:p-6 text-white flex flex-col md:flex-row md:items-center gap-4">
             <div className="flex-1">
               <p className="flex items-center gap-2 text-lg font-bold"><Sparkles className="w-5 h-5 text-[#e8c547]" />{t.autoTitle}</p>
@@ -295,6 +308,7 @@ export default function MyDocuments() {
               {uploading ? t.uploading : t.upload}
             </Button>
           </div>
+          )}
           {abo && (abo.active ? (
             <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-100 bg-white p-4">
               <BadgeCheck className="w-5 h-5 text-emerald-600" />
@@ -319,6 +333,9 @@ export default function MyDocuments() {
               </Button>
             </div>
           ))}
+          {!isAdmin && <CustomerCases lang={lang} abo={abo} onOpenChange={setCaseOpen} />}
+          {!caseOpen && (
+          <>
           {reminders.length > 0 && (
             <div className="mb-6 bg-white rounded-2xl border border-gray-100 p-5">
               <h2 className="font-bold text-[#1e3a5f] mb-3">{t.reminders}</h2>
@@ -364,6 +381,8 @@ export default function MyDocuments() {
             })}
           </div>
           </>
+          )}
+          </>
         ) : (
           <div className="bg-white rounded-2xl border border-gray-100 p-5 md:p-6">
             <button onClick={() => setFolder(null)} className="mb-4 inline-flex items-center gap-1 text-sm text-[#6B46C1] hover:underline"><BackIcon className="w-4 h-4" />{t.back}</button>
@@ -394,6 +413,7 @@ export default function MyDocuments() {
                         {doc.uploaded_by === "einstein" && <span className="ms-2 rounded bg-purple-50 px-1.5 py-0.5 text-[#6B46C1]">{t.byEinstein}</span>}
                       </p>
                     </div>
+                    <Button variant="outline" size="icon" onClick={() => onShare(doc)} aria-label="Share" title="Share"><Share2 className="w-4 h-4" /></Button>
                     <Button variant="outline" size="icon" onClick={() => customerDocumentsApi.download(doc).catch(() => setError(t.error))} aria-label="Download"><Download className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => onDelete(doc)} aria-label="Delete" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
                    </div>
