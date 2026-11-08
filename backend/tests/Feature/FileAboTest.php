@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-/** "Meine Unterlagen" Abo: 4.99 € a month (incl. VAT) for automatic sorting and translation. */
+/** "Meine Unterlagen" Abo: 6.99 € a month (incl. VAT), 50 papers for automatic sorting and translation. */
 class FileAboTest extends TestCase
 {
     use RefreshDatabase;
@@ -26,7 +26,7 @@ class FileAboTest extends TestCase
         $this->withApiUser('user', 'free@example.com');
         $this->getJson('/api/customer/subscription')->assertOk()
             ->assertJsonPath('data.active', false)
-            ->assertJsonPath('data.price', 4.99)
+            ->assertJsonPath('data.price', 6.99)
             ->assertJsonPath('data.vat_included', true);
 
         $id = $this->post('/api/customer/documents', [
@@ -43,7 +43,7 @@ class FileAboTest extends TestCase
         $this->assertSame('none', CustomerDocument::find($id)->ai_status);
     }
 
-    public function test_checkout_starts_a_499_cent_monthly_stripe_subscription(): void
+    public function test_checkout_starts_a_699_cent_monthly_stripe_subscription(): void
     {
         config(['services.stripe.secret' => 'sk_test_x', 'app.url' => 'https://app.example.test']);
         Http::fake(['api.stripe.com/*' => Http::response(['id' => 'cs_1', 'url' => 'https://checkout.stripe.test/cs_1'])]);
@@ -57,7 +57,7 @@ class FileAboTest extends TestCase
 
             return str_ends_with($request->url(), 'checkout/sessions')
                 && $body['mode'] === 'subscription'
-                && (int) $body['line_items'][0]['price_data']['unit_amount'] === 499
+                && (int) $body['line_items'][0]['price_data']['unit_amount'] === 699
                 && $body['line_items'][0]['price_data']['recurring']['interval'] === 'month'
                 && $body['metadata']['kind'] === 'file_abo'
                 && $body['metadata']['user_id'] === (string) $user->id;
@@ -103,6 +103,50 @@ class FileAboTest extends TestCase
         $user->refresh();
         $this->assertSame($end->timestamp, $user->file_abo_ends_at->timestamp);
         $this->assertTrue($user->hasFileAbo()); // still active until the paid month ends
+    }
+
+    public function test_the_monthly_allowance_stops_processing_and_resets_next_month(): void
+    {
+        Storage::fake('local');
+        Bus::fake([ProcessCustomerDocument::class]);
+        config(['services.anthropic.key' => 'test-key', 'services.file_abo.monthly_limit' => 2]);
+        $user = $this->withApiUser('user', 'limit@example.com');
+        $user->forceFill(['file_abo_status' => 'active'])->save();
+        $upload = fn () => $this->post('/api/customer/documents', [
+            'folder' => 'auto',
+            'file' => UploadedFile::fake()->create('brief.pdf', 40, 'application/pdf'),
+        ], ['Accept' => 'application/json'])->assertCreated();
+
+        $upload()->assertJsonPath('data.ai_status', 'pending');
+        $id = $upload()->assertJsonPath('data.ai_status', 'pending')->json('data.id');
+        $upload()->assertJsonPath('data.ai_status', 'none');
+        $this->getJson('/api/customer/subscription')->assertJsonPath('data.used', 2)->assertJsonPath('data.limit', 2);
+        $this->postJson("/api/customer/documents/$id/translate", ['lang' => 'de'])->assertStatus(429);
+
+        // Last month's count does not carry over
+        $user->forceFill(['file_abo_month' => now()->subMonth()->format('Y-m')])->save();
+        $this->getJson('/api/customer/subscription')->assertJsonPath('data.used', 0);
+        $upload()->assertJsonPath('data.ai_status', 'pending');
+    }
+
+    public function test_a_paper_that_could_not_be_sorted_gives_its_place_back(): void
+    {
+        Storage::fake('local');
+        Bus::fake([ProcessCustomerDocument::class]);
+        config(['services.anthropic.key' => 'test-key']);
+        Http::fake(['api.anthropic.com/v1/messages/count_tokens' => Http::response(['input_tokens' => 999999])]);
+        $this->withApiUser('user', 'long@example.com')->forceFill(['file_abo_status' => 'active'])->save();
+
+        $id = $this->post('/api/customer/documents', [
+            'folder' => 'auto',
+            'file' => UploadedFile::fake()->create('book.pdf', 40, 'application/pdf'),
+        ], ['Accept' => 'application/json'])->assertCreated()->json('data.id');
+        $this->getJson('/api/customer/subscription')->assertJsonPath('data.used', 1);
+
+        (new ProcessCustomerDocument($id, true))->handle();
+
+        $this->assertSame('too_long', CustomerDocument::find($id)->ai_status);
+        $this->getJson('/api/customer/subscription')->assertJsonPath('data.used', 0);
     }
 
     public function test_staff_always_have_processing(): void

@@ -213,7 +213,7 @@ class _FakeBackend {
       return _json({'id': 30}, 201);
     }
     if (method == 'GET' && path == 'customer/subscription') {
-      return _json({'active': aboActive, 'status': aboActive ? 'active' : 'none', 'ends_at': null, 'price': 4.99, 'vat_included': true});
+      return _json({'active': aboActive, 'status': aboActive ? 'active' : 'none', 'ends_at': null, 'price': 6.99, 'vat_included': true, 'used': 3, 'limit': 50});
     }
     if (method == 'GET' && path == 'customer/forms') {
       return _json(_forms);
@@ -623,9 +623,9 @@ void main() {
     await tester.tap(find.text('My file').last);
     await tester.pumpAndSettle();
     expect(find.text('All your letters, sorted by authority.'), findsOneWidget);
-    // Without the Abo, sorting & translation is offered for 4.99 € a month
+    // Without the Abo, sorting & translation is offered for 6.99 € a month
     expect(find.text('Sorting & translation'), findsOneWidget);
-    expect(find.text('4,99 € / month incl. VAT · cancel any time'), findsOneWidget);
+    expect(find.text('6,99 € / month incl. VAT · cancel any time'), findsOneWidget);
     expect(find.text('Subscribe'), findsOneWidget);
 
     // The letter sits in its authority's folder
@@ -690,6 +690,7 @@ void main() {
     await tester.runAsync(docs.loadSubscription);
     await tester.pumpAndSettle();
     expect(find.text('Sorting & translation is active'), findsOneWidget);
+    expect(find.text('3 of 50 letters this month'), findsOneWidget);
     expect(find.text('Subscribe'), findsNothing);
   });
 
@@ -703,6 +704,8 @@ void main() {
 
     final item = find.text('Max Mustermann');
     await tester.scrollUntilVisible(item, 200, scrollable: find.byType(Scrollable).first);
+    await tester.ensureVisible(item);
+    await tester.pumpAndSettle();
     await tester.tap(item);
     await tester.pumpAndSettle();
 

@@ -44,7 +44,7 @@ const T = {
     aboTitle: "Sortieren & Übersetzen", aboPitch: "Wir sortieren jeden Brief in den richtigen Ordner, übersetzen ihn in Ihre Sprache und erinnern Sie an Fristen.",
     aboPrice: (p) => `${p} € / Monat inkl. MwSt. · monatlich kündbar`, aboSubscribe: "Jetzt abonnieren", aboActive: "Sortieren & Übersetzen ist aktiv",
     aboUntil: (d) => `Gekündigt – aktiv bis ${d}`, aboCancel: "Abo kündigen", aboCancelConfirm: "Abo kündigen? Es bleibt bis zum Ende des bezahlten Monats aktiv.",
-    aboNeeded: "Ohne Abo wird der Brief nur gespeichert, nicht sortiert oder übersetzt.", aboThanks: "Danke! Ihr Abo wird aktiviert, sobald die Zahlung bestätigt ist.", aboTerms: "Es gelten die AGB (§ 8b).",
+    aboNeeded: "Ohne Abo wird der Brief nur gespeichert, nicht sortiert oder übersetzt.", aboThanks: "Danke! Ihr Abo wird aktiviert, sobald die Zahlung bestätigt ist.", aboTerms: "Es gelten die AGB (§ 8b).", aboLimit: (n) => `Bis zu ${n} Schreiben pro Monat`, aboUsage: (u, n) => `${u} von ${n} Schreiben diesen Monat`, aboReached: "Ihr Monatskontingent ist aufgebraucht. Neue Schreiben werden nur gespeichert.",
   },
   ar: {
     title: "ملفاتي", subtitle: "كل مستنداتك مرتبة حسب الجهة والموضوع.",
@@ -62,7 +62,7 @@ const T = {
     aboTitle: "ترتيب وترجمة", aboPitch: "نرتّب كل رسالة في المجلد الصحيح، ونترجمها للغتك، ونذكّرك بالمواعيد.",
     aboPrice: (p) => `${p} € شهرياً شامل الضريبة · يمكن الإلغاء شهرياً`, aboSubscribe: "اشترك الآن", aboActive: "الترتيب والترجمة مفعّلان",
     aboUntil: (d) => `تم الإلغاء – مفعّل حتى ${d}`, aboCancel: "إلغاء الاشتراك", aboCancelConfirm: "إلغاء الاشتراك؟ يبقى مفعّلاً حتى نهاية الشهر المدفوع.",
-    aboNeeded: "بدون اشتراك تُحفظ الرسالة فقط، بدون ترتيب أو ترجمة.", aboThanks: "شكراً! يتفعّل اشتراكك فور تأكيد الدفع.", aboTerms: "تسري الشروط العامة (§ 8b).",
+    aboNeeded: "بدون اشتراك تُحفظ الرسالة فقط، بدون ترتيب أو ترجمة.", aboThanks: "شكراً! يتفعّل اشتراكك فور تأكيد الدفع.", aboTerms: "تسري الشروط العامة (§ 8b).", aboLimit: (n) => `حتى ${n} ورقة في الشهر`, aboUsage: (u, n) => `${u} من ${n} ورقة هذا الشهر`, aboReached: "انتهى رصيدك لهذا الشهر. الأوراق الجديدة تُحفظ فقط دون ترتيب أو ترجمة.",
   },
   en: {
     title: "My documents", subtitle: "All your documents, sorted by authority and topic.",
@@ -80,7 +80,7 @@ const T = {
     aboTitle: "Sorting & translation", aboPitch: "We sort every letter into the right folder, translate it into your language and remind you of deadlines.",
     aboPrice: (p) => `${p} € / month incl. VAT · cancel monthly`, aboSubscribe: "Subscribe now", aboActive: "Sorting & translation is active",
     aboUntil: (d) => `Cancelled – active until ${d}`, aboCancel: "Cancel subscription", aboCancelConfirm: "Cancel the subscription? It stays active until the end of the paid month.",
-    aboNeeded: "Without a subscription the letter is only stored, not sorted or translated.", aboThanks: "Thank you! Your subscription starts as soon as the payment is confirmed.", aboTerms: "Our terms apply (AGB § 8b).",
+    aboNeeded: "Without a subscription the letter is only stored, not sorted or translated.", aboThanks: "Thank you! Your subscription starts as soon as the payment is confirmed.", aboTerms: "Our terms apply (AGB § 8b).", aboLimit: (n) => `Up to ${n} letters a month`, aboUsage: (u, n) => `${u} of ${n} letters this month`, aboReached: "Your monthly allowance is used up. New letters are only stored.",
   },
 };
 T.tr = { ...T.en, aboTitle: "Sıralama ve çeviri", aboSubscribe: "Şimdi abone ol", aboPrice: (p) => `${p} € / ay KDV dahil · aylık iptal`, title: "Belgelerim", subtitle: "Tüm belgeleriniz kurum ve konuya göre sıralı.", upload: "Dosya yükle", back: "Tüm klasörler", autoTitle: "Yükleyin – biz sıralayıp çeviririz", processing: "Sıralanıyor ve çevriliyor…", summary: "Özet", translation: "Çeviri", showTranslation: "Çeviriyi göster", hideTranslation: "Çeviriyi gizle", deadline: "Son tarih", from: "Gönderen" };
@@ -101,7 +101,7 @@ T.uk = {
   aboTitle: "Впорядкування та переклад", aboPitch: "Ми розкладаємо кожен лист у потрібну папку, перекладаємо вашою мовою та нагадуємо про строки.",
   aboPrice: (p) => `${p} € / міс. з ПДВ · скасування щомісяця`, aboSubscribe: "Підписатися", aboActive: "Впорядкування та переклад активні",
   aboUntil: (d) => `Скасовано – активно до ${d}`, aboCancel: "Скасувати підписку", aboCancelConfirm: "Скасувати підписку? Вона діє до кінця оплаченого місяця.",
-  aboNeeded: "Без підписки лист лише зберігається, без впорядкування й перекладу.", aboThanks: "Дякуємо! Підписка почне діяти, щойно оплату буде підтверджено.", aboTerms: "Діють наші умови (AGB § 8b).",
+  aboNeeded: "Без підписки лист лише зберігається, без впорядкування й перекладу.", aboThanks: "Дякуємо! Підписка почне діяти, щойно оплату буде підтверджено.", aboTerms: "Діють наші умови (AGB § 8b).", aboLimit: (n) => `До ${n} листів на місяць`, aboUsage: (u, n) => `${u} з ${n} листів цього місяця`, aboReached: "Ваш місячний ліміт вичерпано. Нові листи лише зберігаються.",
 };
 
 function formatSize(bytes) {
@@ -224,6 +224,7 @@ export default function MyDocuments() {
       else await customerDocumentsApi.upload({ file, folder: targetFolder, title, lang });
       setTitle("");
       await load();
+      if (!isAdmin) loadAbo();
     } catch (e) {
       setError(e?.message || t.error);
     } finally {
@@ -316,6 +317,11 @@ export default function MyDocuments() {
               <p className="flex-1 font-semibold text-[#1e3a5f]">
                 {abo.ends_at ? t.aboUntil(new Date(abo.ends_at).toLocaleDateString(lang === "ar" ? "ar" : lang)) : t.aboActive}
               </p>
+              {abo.limit > 0 && (
+                <p className={`order-last w-full text-sm ${abo.used >= abo.limit ? "font-semibold text-amber-700" : "text-gray-500"}`}>
+                  {abo.used >= abo.limit ? t.aboReached : t.aboUsage(abo.used, abo.limit)}
+                </p>
+              )}
               {!abo.ends_at && (
                 <Button variant="ghost" onClick={cancelAbo} disabled={aboBusy} className="text-gray-600">{t.aboCancel}</Button>
               )}
@@ -326,6 +332,7 @@ export default function MyDocuments() {
                 <p className="font-bold text-[#1e3a5f]">{t.aboTitle}</p>
                 <p className="text-sm text-[#1e3a5f]/80 mt-1">{aboReturn === "1" ? t.aboThanks : `${t.aboPitch} ${t.aboNeeded}`}</p>
                 <p className="mt-2 font-bold text-[#6B46C1]">{t.aboPrice(Number(abo.price).toFixed(2).replace(".", ","))}</p>
+                {abo.limit > 0 && <p className="text-sm text-[#1e3a5f]/80">{t.aboLimit(abo.limit)}</p>}
                 <p className="text-[11px] text-gray-500 mt-1">{t.aboTerms}</p>
               </div>
               <Button onClick={subscribe} disabled={aboBusy || aboReturn === "1"} className="bg-[#6B46C1] hover:bg-[#805AD5] font-bold">
@@ -334,7 +341,7 @@ export default function MyDocuments() {
               </Button>
             </div>
           ))}
-          {!isAdmin && <CustomerCases lang={lang} abo={abo} onOpenChange={setCaseOpen} />}
+          {!isAdmin && <CustomerCases lang={lang} abo={abo} onOpenChange={setCaseOpen} onUploaded={loadAbo} />}
           {!caseOpen && (
           <>
           {reminders.length > 0 && (

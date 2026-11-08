@@ -21,7 +21,7 @@ class CustomerSubscriptionController extends Controller
     /** Gross monthly price in cents (VAT included). */
     public static function priceCents(): int
     {
-        return (int) config('services.file_abo.price_cents', 499);
+        return (int) config('services.file_abo.price_cents', 699);
     }
 
     /** GET customer/subscription */
@@ -159,6 +159,8 @@ class CustomerSubscriptionController extends Controller
             'price' => round(self::priceCents() / 100, 2),
             'currency' => 'EUR',
             'vat_included' => true,
+            'used' => $user->fileAboUsed(),
+            'limit' => User::fileAboLimit(),
         ];
     }
 }

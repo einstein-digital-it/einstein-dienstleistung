@@ -6,6 +6,7 @@ use App\Models\CustomerDocument;
 use App\Models\CustomerReminder;
 use Illuminate\Support\Carbon;
 use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
@@ -36,7 +37,7 @@ class ProcessCustomerDocument
     /** Tokens billed for the last call to Claude. */
     private array $usage = [];
 
-    public function __construct(public int $documentId, public bool $autoFolder) {}
+    public function __construct(public int $documentId, public bool $autoFolder, public bool $countsAgainstAllowance = true) {}
 
     public static function enabled(): bool
     {
@@ -62,6 +63,7 @@ class ProcessCustomerDocument
             $result = $this->ask($doc, $mime, self::LANGUAGES[$lang] ?? 'Arabic');
         } catch (\LengthException) {
             $doc->update(['ai_status' => 'too_long']);
+            $this->giveBackAllowance($doc);
 
             return;
         } catch (Throwable $e) {
@@ -72,6 +74,7 @@ class ProcessCustomerDocument
                 'ai_input_tokens' => $this->usage['input_tokens'] ?? null,
                 'ai_output_tokens' => $this->usage['output_tokens'] ?? null,
             ]);
+            $this->giveBackAllowance($doc);
 
             return;
         }
@@ -145,9 +148,9 @@ class ProcessCustomerDocument
         $messages = [['role' => 'user', 'content' => [$block, ['type' => 'text', 'text' => $prompt]]]];
         $this->refuseIfTooLong($messages);
 
-        $response = $this->claude()->timeout(180)->post('https://api.anthropic.com/v1/messages', [
+        $response = $this->claude()->timeout(300)->post('https://api.anthropic.com/v1/messages', [
             'model' => (string) config('services.anthropic.model'),
-            'max_tokens' => 8000,
+            'max_tokens' => 16000, // a full translation is often longer than the original
             'messages' => $messages,
         ]);
 
@@ -166,6 +169,15 @@ class ProcessCustomerDocument
         }
 
         return $json;
+    }
+
+    /** A paper we could not sort does not use up the customer's allowance. */
+    private function giveBackAllowance(CustomerDocument $doc): void
+    {
+        if ($this->countsAgainstAllowance && $doc->uploaded_by === 'customer') {
+            User::whereRaw('LOWER(email) = ?', [strtolower($doc->user_email)])
+                ->where('file_abo_used', '>', 0)->decrement('file_abo_used');
+        }
     }
 
     private function claude(): PendingRequest

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // "Meine Unterlagen" Abo: automatic sorting + translation, 4.99 €/month incl. VAT
+            // "Meine Unterlagen" Abo: automatic sorting + translation, monthly, incl. VAT
             $table->string('file_abo_status')->default('none'); // none | pending | active | past_due | canceled
             $table->string('file_abo_subscription_id')->nullable()->index();
             $table->timestamp('file_abo_ends_at')->nullable(); // set when cancelled at period end

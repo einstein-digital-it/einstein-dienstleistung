@@ -38,7 +38,9 @@ return [
     // Online payment (Stripe Checkout). Keys: Stripe Dashboard > Developers.
     'file_abo' => [
         // "Meine Unterlagen" Abo: gross monthly price in cents (VAT included)
-        'price_cents' => (int) env('FILE_ABO_PRICE_CENTS', 499),
+        'price_cents' => (int) env('FILE_ABO_PRICE_CENTS', 699),
+        // Papers sorted and translated per calendar month
+        'monthly_limit' => (int) env('FILE_ABO_MONTHLY_LIMIT', 50),
     ],
 
     'stripe' => [
@@ -61,8 +63,8 @@ return [
     'anthropic' => [
         'key' => env('ANTHROPIC_API_KEY', ''),
         'model' => env('ANTHROPIC_MODEL', 'claude-sonnet-5-5'),
-        // Longer papers are refused before anything is billed (roughly 10-15 pages)
-        'max_input_tokens' => (int) env('ANTHROPIC_MAX_INPUT_TOKENS', 30000),
+        // Longer papers are refused before anything is billed (roughly 15-20 pages)
+        'max_input_tokens' => (int) env('ANTHROPIC_MAX_INPUT_TOKENS', 40000),
     ],
 
 ];

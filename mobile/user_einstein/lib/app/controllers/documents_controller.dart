@@ -35,7 +35,9 @@ class DocumentsController extends GetxController {
   // Abo: automatic sorting + translation (monthly, VAT included)
   final aboActive = false.obs;
   final aboKnown = false.obs;
-  final aboPrice = 4.99.obs;
+  final aboPrice = 6.99.obs;
+  final aboUsed = 0.obs;
+  final aboLimit = 0.obs;
   final aboEndsAt = Rxn<DateTime>();
   final aboBusy = false.obs;
 
@@ -48,6 +50,8 @@ class DocumentsController extends GetxController {
 
   Timer? _poll;
   Timer? _casePoll;
+
+  bool get aboLimitReached => aboActive.value && aboLimit.value > 0 && aboUsed.value >= aboLimit.value;
 
   String get aboPriceText => aboPrice.value.toStringAsFixed(2).replaceAll('.', ',');
 
@@ -175,10 +179,13 @@ class DocumentsController extends GetxController {
     }
     caseUpload.value = '';
     await openCaseById(id);
+    await loadSubscription();
     if (failed > 0) {
       Get.snackbar('case_upload'.tr, 'case_upload_failed'.trParams({'count': '$failed'}));
     } else if (aboKnown.value && !aboActive.value) {
       Get.snackbar('files_uploaded'.tr, 'abo_stored_only'.tr);
+    } else if (aboLimitReached) {
+      Get.snackbar('files_uploaded'.tr, 'abo_limit_reached'.tr);
     } else {
       Get.snackbar('files_uploaded'.tr, 'files_processing_hint'.tr);
     }
@@ -235,6 +242,8 @@ class DocumentsController extends GetxController {
     aboActive.value = data['active'] == true;
     aboPrice.value = double.tryParse('${data['price'] ?? ''}') ?? aboPrice.value;
     aboEndsAt.value = DateTime.tryParse('${data['ends_at'] ?? ''}')?.toLocal();
+    aboUsed.value = int.tryParse('${data['used'] ?? ''}') ?? 0;
+    aboLimit.value = int.tryParse('${data['limit'] ?? ''}') ?? 0;
     aboKnown.value = true;
   }
 
@@ -331,7 +340,8 @@ class DocumentsController extends GetxController {
       );
       documents.insert(0, doc);
       if (process) {
-        Get.snackbar('files_uploaded'.tr, doc.isProcessing ? 'files_processing_hint'.tr : 'abo_stored_only'.tr);
+        Get.snackbar('files_uploaded'.tr, doc.isProcessing ? 'files_processing_hint'.tr : (aboActive.value ? 'abo_limit_reached'.tr : 'abo_stored_only'.tr));
+        unawaited(loadSubscription());
       }
       _schedulePoll();
       return doc;

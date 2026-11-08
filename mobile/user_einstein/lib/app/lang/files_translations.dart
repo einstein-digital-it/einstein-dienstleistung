@@ -1,6 +1,9 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'abo_limit': 'Up to @limit letters a month',
+  'abo_usage': '@used of @limit letters this month',
+  'abo_limit_reached': 'Your monthly allowance is used up. New letters are only stored.',
   'files_too_long': 'This document is too long for automatic translation. It was only stored.',
   'files_share': 'Share',
   'files_share_error': 'Could not prepare the files for sharing.',
@@ -129,6 +132,9 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'abo_limit': 'لحد @limit ورقة بالشهر',
+  'abo_usage': '@used من @limit ورقة هالشهر',
+  'abo_limit_reached': 'خلص رصيدك لهالشهر. الأوراق الجديدة بتنحفظ بس.',
   'files_too_long': 'هالملف طويل كتير عالترجمة التلقائية، فانحفظ بس.',
   'files_share': 'مشاركة',
   'files_share_error': 'ما قدرنا نجهّز الملفات للمشاركة.',
@@ -257,6 +263,9 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'abo_limit': 'Bis zu @limit Schreiben pro Monat',
+  'abo_usage': '@used von @limit Schreiben diesen Monat',
+  'abo_limit_reached': 'Ihr Monatskontingent ist aufgebraucht. Neue Schreiben werden nur gespeichert.',
   'files_too_long': 'Dieses Dokument ist zu lang für die automatische Übersetzung. Es wurde nur gespeichert.',
   'files_share': 'Teilen',
   'files_share_error': 'Die Dateien konnten nicht zum Teilen vorbereitet werden.',

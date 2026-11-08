@@ -37,7 +37,7 @@ class CustomerDocumentController extends Controller
     {
         $user = $request->user();
         // Sorting and translation are part of the Unterlagen-Abo; without it the file is only stored.
-        $doc = $this->save($request, $user->email, 'customer', $user->hasFileAbo());
+        $doc = $this->save($request, $user->email, 'customer', $user->hasFileAbo(), null, $user);
 
         return response()->json(['data' => $doc, 'needs_subscription' => ! $user->hasFileAbo()], 201);
     }
@@ -47,7 +47,7 @@ class CustomerDocumentController extends Controller
     {
         CustomerFileController::authorizeOwner($request, $customerFile);
         $user = $request->user();
-        $doc = $this->save($request, $user->email, 'customer', $user->hasFileAbo(), $customerFile);
+        $doc = $this->save($request, $user->email, 'customer', $user->hasFileAbo(), $customerFile, $user);
 
         return response()->json(['data' => $doc, 'needs_subscription' => ! $user->hasFileAbo()], 201);
     }
@@ -78,6 +78,9 @@ class CustomerDocumentController extends Controller
         }
         if (! ProcessCustomerDocument::enabled()) {
             return response()->json(['message' => 'Automatic translation is not set up.'], 503);
+        }
+        if (! $request->user()->consumeFileAboQuota()) {
+            return response()->json(['message' => 'The monthly allowance is used up.', 'limit_reached' => true], 429);
         }
         $document->update(['translation_language' => $data['lang'], 'ai_status' => 'pending']);
         ProcessCustomerDocument::dispatchAfterResponse($document->id, false);
@@ -133,7 +136,7 @@ class CustomerDocumentController extends Controller
         return ['folders' => CustomerDocument::FOLDERS, 'documents' => $docs];
     }
 
-    private function save(Request $request, string $email, string $uploadedBy, bool $allowProcessing = true, ?CustomerFile $customerFile = null): CustomerDocument
+    private function save(Request $request, string $email, string $uploadedBy, bool $allowProcessing = true, ?CustomerFile $customerFile = null, ?User $quotaUser = null): CustomerDocument
     {
         $data = $request->validate([
             // "auto" = let Claude pick the folder
@@ -147,6 +150,10 @@ class CustomerDocumentController extends Controller
         ]);
 
         $process = $allowProcessing && ProcessCustomerDocument::enabled() && $request->boolean('process', true);
+        // Over the monthly allowance the paper is still stored, just not sorted
+        if ($process && $quotaUser && ! $quotaUser->consumeFileAboQuota()) {
+            $process = false;
+        }
         $file = $request->file('file');
         $path = $file->store('customer-documents/'.sha1(strtolower($email)), self::DISK);
 

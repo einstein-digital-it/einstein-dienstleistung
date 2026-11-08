@@ -37,7 +37,7 @@ class DocumentsReprocess extends Command
 
         foreach ($docs as $doc) {
             // Papers still in "sonstiges" were never really sorted, so the AI may choose their folder
-            (new ProcessCustomerDocument($doc->id, $doc->folder === 'sonstiges'))->handle();
+            (new ProcessCustomerDocument($doc->id, $doc->folder === 'sonstiges', false))->handle();
             $status = $doc->fresh()->ai_status;
             $this->line("#{$doc->id}: $status");
             if ($status === 'failed') {

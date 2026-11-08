@@ -176,9 +176,23 @@ class AboCard extends StatelessWidget {
               const Icon(Icons.verified_rounded, color: AppColors.success),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  ends == null ? 'abo_active'.tr : 'abo_active_until'.trParams({'date': formatDate(ends)}),
-                  style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      ends == null ? 'abo_active'.tr : 'abo_active_until'.trParams({'date': formatDate(ends)}),
+                      style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
+                    ),
+                    if (c.aboLimit.value > 0) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        c.aboLimitReached
+                            ? 'abo_limit_reached'.tr
+                            : 'abo_usage'.trParams({'used': '${c.aboUsed.value}', 'limit': '${c.aboLimit.value}'}),
+                        style: TextStyle(color: c.aboLimitReached ? AppColors.warning : AppColors.muted, fontSize: 12.5),
+                      ),
+                    ],
+                  ],
                 ),
               ),
               if (ends == null)
@@ -209,6 +223,9 @@ class AboCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text('abo_price'.trParams({'price': c.aboPriceText}),
                 style: const TextStyle(color: AppColors.purple, fontWeight: FontWeight.w700)),
+            if (c.aboLimit.value > 0)
+              Text('abo_limit'.trParams({'limit': '${c.aboLimit.value}'}),
+                  style: const TextStyle(color: AppColors.navy, fontSize: 13)),
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
