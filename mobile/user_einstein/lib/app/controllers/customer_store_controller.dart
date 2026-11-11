@@ -90,9 +90,11 @@ class CustomerStoreController extends GetxController {
 
     final profileData = data['profile'];
     if (profileData is Map) {
-      setProfile(
-        CustomerProfile.fromJson(Map<String, dynamic>.from(profileData)),
-      );
+      // Keep the language the customer chose in the app; an older app
+      // version may have saved German on the account without asking.
+      profile.value = CustomerProfile.fromJson(
+        Map<String, dynamic>.from(profileData),
+      ).copyWith(language: selectedLanguage.value);
     }
 
     final upcoming = data['upcoming_bookings'];

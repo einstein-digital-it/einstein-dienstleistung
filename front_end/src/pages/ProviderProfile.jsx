@@ -156,7 +156,7 @@ const categoryColors = {
 export default function ProviderProfile() {
   const [searchParams] = useSearchParams();
   const providerId = searchParams.get("id");
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
 
   useEffect(() => {
     const savedLang = localStorage.getItem("einstein_lang");

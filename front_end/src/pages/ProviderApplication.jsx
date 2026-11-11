@@ -169,7 +169,7 @@ const categoryOptions = [
 const languageOptions = ["Deutsch", "العربية", "English", "Türkçe", "Français", "Español", "Русский", "فارسی"];
 
 export default function ProviderApplication() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   
   useEffect(() => {
     const savedLang = localStorage.getItem("einstein_lang");

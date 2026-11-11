@@ -3,7 +3,7 @@ import { AlertTriangle } from "lucide-react";
 import { LEGAL_NOTICE } from "@/content/legal";
 
 function useLang() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   useEffect(() => {
     try {
       const saved = localStorage.getItem("einstein_lang");

@@ -422,7 +422,7 @@ const offerIconMap = {
 };
 
 export default function Offers() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
 
   const { data: backendOffers = [] } = useQuery({
     queryKey: ["public-offers"],

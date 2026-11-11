@@ -92,7 +92,7 @@ const categoryFilters = [
 
 export default function ProvidersList() {
   const [searchParams] = useSearchParams();
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   const [search, setSearch] = useState("");
   const [serviceAreaSearch, setServiceAreaSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "all");

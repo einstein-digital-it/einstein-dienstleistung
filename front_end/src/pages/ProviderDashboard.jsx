@@ -228,7 +228,7 @@ const categoryLabels = {
 const weekDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
 export default function ProviderDashboard() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);

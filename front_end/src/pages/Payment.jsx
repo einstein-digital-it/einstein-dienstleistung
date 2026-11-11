@@ -180,7 +180,7 @@ const translations = {
 export default function Payment() {
   const [searchParams] = useSearchParams();
   const bookingId = searchParams.get("id") || searchParams.get("booking");
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState("ar");
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
 

@@ -114,7 +114,8 @@ export default function Login() {
     localStorage.setItem("einstein_auth_user", JSON.stringify(user));
     if (token) localStorage.setItem("einstein_auth_token", token);
     localStorage.setItem("einstein_customer_email", user.email);
-    localStorage.setItem("einstein_lang", user.preferred_language || lang);
+    // Keep the language chosen on this page (an account may still carry an old default)
+    localStorage.setItem("einstein_lang", lang);
     localStorage.setItem("einstein_is_provider", user.role === "provider" ? "true" : "false");
 
     if (user.role === "admin") navigate("/Dashboard", { replace: true });

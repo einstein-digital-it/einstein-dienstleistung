@@ -952,7 +952,7 @@ function LetterDemo({ x }) {
 }
 
 export default function Home() {
-  const savedLang = (() => { try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; } })();
+  const savedLang = (() => { try { return localStorage.getItem("einstein_lang") || "ar"; } catch { return "ar"; } })();
   const [lang, setLang] = useState(savedLang);
 
   // Prices and names managed in the admin area
