@@ -40,7 +40,7 @@ class LoginView extends GetView<AuthController> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const EinsteinLogo(size: 72),
+                    const EinsteinLogo(size: 76, withWordmark: true),
                     const SizedBox(height: 18),
                     Text(
                       'login_welcome'.tr,

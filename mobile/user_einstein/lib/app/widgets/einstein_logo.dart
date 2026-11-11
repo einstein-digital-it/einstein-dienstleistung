@@ -1,38 +1,34 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-
+/// The EinStein hexagon mark; [withWordmark] adds "EIN STEIN" and the tagline below it.
 class EinsteinLogo extends StatelessWidget {
-  const EinsteinLogo({super.key, this.size = 64});
+  const EinsteinLogo({super.key, this.size = 64, this.withWordmark = false});
 
   final double size;
+  final bool withWordmark;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final mark = Image.asset(
+      'assets/brand/einstein-mark.png',
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        border: Border.all(color: AppColors.gold.withValues(alpha: 0.55), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        'ES',
-        style: TextStyle(
-          color: AppColors.navy,
-          fontSize: size * 0.35,
-          fontWeight: FontWeight.w900,
+      fit: BoxFit.contain,
+      semanticLabel: 'EinStein',
+    );
+    if (!withWordmark) return mark;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        mark,
+        const SizedBox(height: 10),
+        Image.asset(
+          'assets/brand/einstein-wordmark.png',
+          width: size * 2.6,
+          fit: BoxFit.contain,
+          excludeFromSemantics: true,
         ),
-      ),
+      ],
     );
   }
 }

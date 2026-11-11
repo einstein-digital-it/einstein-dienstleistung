@@ -71,6 +71,7 @@ flutter:
   assets:
     - assets/fonts/IBMPlexSansArabic_400Regular.ttf
     - assets/fonts/IBMPlexSansArabic_700Bold.ttf
+    - assets/brand/
 
   fonts:
     - family: IBMPlexSansArabic
