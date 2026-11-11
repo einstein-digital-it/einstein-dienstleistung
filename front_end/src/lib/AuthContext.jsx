@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
         return null;
       }
 
-      const currentUser = await authApi.getCurrentUser(storedUser.email);
+      const currentUser = await authApi.getCurrentUser();
       localStorage.setItem("einstein_auth_user", JSON.stringify(currentUser));
       localStorage.setItem("einstein_customer_email", currentUser.email);
       setUser(currentUser);

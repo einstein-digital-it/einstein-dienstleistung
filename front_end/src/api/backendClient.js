@@ -162,7 +162,8 @@ export const authApi = {
     method: "POST",
     body: JSON.stringify({ email }),
   }),
-  getCurrentUser: (email) => request(`/auth/me${toQuery({ email })}`),
+  // Uses the stored login token; the server never looks a user up by email
+  getCurrentUser: () => request("/auth/me"),
   logout: () => request("/auth/logout", {
     method: "POST",
   }),

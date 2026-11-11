@@ -44,9 +44,13 @@ class PublicAuthSupportOfferReviewApiTest extends TestCase
             ->assertCreated()
             ->assertJsonPath('data.user.role', 'user');
 
+        // Nobody can read a customer's details just by knowing the email
         $this->getJson('/api/auth/me?email=customer@example.com')
-            ->assertOk()
-            ->assertJsonPath('data.email', 'customer@example.com');
+            ->assertUnauthorized()
+            ->assertJsonMissingPath('data');
+        $this->withHeader('Authorization', 'Bearer not-a-real-token')
+            ->getJson('/api/auth/me?email=customer@example.com')
+            ->assertUnauthorized();
 
         $login = $this->postJson('/api/auth/login', [
             'email' => 'customer@example.com',

@@ -247,13 +247,10 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
+        // Only the signed-in user's own data; never look anyone up by email
         $user = $this->userFromBearerToken($request);
-        if (! $user) {
-            $data = $request->validate([
-                'email' => ['required', 'email', 'max:255'],
-            ]);
-
-            $user = User::query()->where('email', $data['email'])->firstOrFail();
+        if (! $user || $user->is_active === false) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
         return response()->json(['data' => $this->serializeUser($user)]);
