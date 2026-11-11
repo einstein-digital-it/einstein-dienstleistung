@@ -3,37 +3,34 @@ import EinsteinLogo from "@/components/EinsteinLogo";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { publicApi } from "@/api/backendClient";
-import { getStoredAuthUser } from "@/lib/backendAuth";
 import { displayPrice, priceNote } from "@/lib/priceUtils";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import useEmblaCarousel from "embla-carousel-react";
 import SearchBar from "../components/SearchBar";
 import {
+  ArrowLeft,
+  ArrowRight,
+  Award,
+  BadgeCheck,
+  BellRing,
+  Briefcase,
+  CheckCircle,
   ClipboardList,
   FileText,
-  Settings,
+  FolderCheck,
   Globe,
-  Printer,
-  Briefcase,
-  ArrowRight,
-  CheckCircle,
-  Users,
-  Shield,
-  Award,
   Heart,
-  Zap,
-  Target,
   Languages,
-  BadgeCheck,
-  Quote,
+  Mail,
+  Printer,
+  Settings,
+  Shield,
   Ship,
-  Mail
+  Target,
+  Upload,
+  Users,
+  Zap
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-
 
 const translations = {
   de: {
@@ -734,6 +731,86 @@ const services = [
   { key: "bueromanagement", icon: Briefcase, color: "bg-sky-700" }
 ];
 
+// Texts of the redesigned home page (the older keys above still feed services, why and quality)
+const X = {
+  de: {
+    badge: "Ihr Partner für den Alltag in Deutschland",
+    heroTitle: "Behördenpost, Termine, Büro – wir kümmern uns.",
+    heroSub: "EinStein erledigt Formulare, Briefe und Organisation für Sie – mehrsprachig, persönlich und zu fairen Preisen.",
+    ctaBook: "Jetzt buchen", ctaFile: "Brief hochladen",
+    trust: ["Arabisch, Deutsch, Englisch, Türkisch …", "Feste Ansprechperson", "Transparente Preise"],
+    demoFrom: "Jobcenter Frankfurt", demoTitle: "Weiterbewilligungsantrag", demoSorted: "Sortiert: Jobcenter", demoSummary: "Ihr Bürgergeld endet am 30.11. Stellen Sie bis dahin den Weiterbewilligungsantrag.", demoReminder: "Erinnerung in 5 Tagen",
+    authorities: "Wir helfen bei Post von",
+    servicesKicker: "Leistungen", servicesMore: "Alle Leistungen ansehen", book: "Buchen",
+    fileKicker: "Meine Unterlagen", fileTitle: "Jeder Brief sortiert, übersetzt und mit Frist im Blick.", fileSub: "Fotografieren Sie Ihre Post. Unsere KI ordnet sie dem richtigen Ordner zu, übersetzt sie in Ihre Sprache und erinnert Sie an Fristen.",
+    fileSteps: [["Hochladen", "Foto oder PDF, auch mehrere auf einmal"], ["Sortiert & übersetzt", "Im richtigen Ordner, in Ihrer Sprache"], ["Erinnert", "Bevor eine Frist abläuft"]],
+    fileCta: "Meine Unterlagen öffnen", fileNote: "Monatsabo, jederzeit kündbar",
+    howKicker: "So einfach geht’s", howTitle: "In drei Schritten erledigt",
+    how: [["Leistung wählen", "Online oder per Telefon – in Ihrer Sprache."], ["Termin bekommen", "Wir bestätigen und nennen den Preis vorab."], ["Erledigt", "Wir kümmern uns – Sie behalten den Überblick."]],
+    whyKicker: "Warum EinStein",
+    forKicker: "Für wen",
+    ctaTitle: "Bereit, den Papierkram abzugeben?", ctaSub: "Buchen Sie in wenigen Minuten – wir melden uns schnell zurück.",
+  },
+  ar: {
+    badge: "شريكك للحياة اليومية بألمانيا",
+    heroTitle: "رسائل الدوائر والمواعيد والمكتب – علينا.",
+    heroSub: "آينشتاين بيخلّصلك الاستمارات والرسائل والتنظيم – بلغتك، بشكل شخصي، وبأسعار عادلة.",
+    ctaBook: "احجز الآن", ctaFile: "ارفع رسالة",
+    trust: ["عربي، ألماني، إنجليزي، تركي …", "شخص تواصل ثابت", "أسعار واضحة"],
+    demoFrom: "Jobcenter Frankfurt", demoTitle: "طلب استمرار البورغرغيلد", demoSorted: "انحطت بمجلد: الجوب سنتر", demoSummary: "البورغرغيلد تبعك بيخلص بـ 30.11. قدّم طلب الاستمرار قبل هالتاريخ.", demoReminder: "تذكير بعد 5 أيام",
+    authorities: "منساعدك برسائل من",
+    servicesKicker: "خدماتنا", servicesMore: "كل الخدمات", book: "احجز",
+    fileKicker: "ملفاتي", fileTitle: "كل رسالة مرتبة ومترجمة وموعدها قدامك.", fileSub: "صوّر رسائلك، والذكاء الاصطناعي بيحطها بالمجلد الصح، وبيترجمها للغتك، وبيذكّرك قبل المواعيد.",
+    fileSteps: [["ارفع", "صورة أو PDF، وحتى كذا ملف مرة وحدة"], ["مرتبة ومترجمة", "بالمجلد الصح وبلغتك"], ["تذكير", "قبل ما يخلص الموعد"]],
+    fileCta: "افتح ملفاتي", fileNote: "اشتراك شهري، بتقدر تلغيه أي وقت",
+    howKicker: "بكل سهولة", howTitle: "بتلات خطوات وبتخلص",
+    how: [["اختار الخدمة", "أونلاين أو بالتلفون – وبلغتك."], ["خد موعد", "منأكدلك ومنقلك السعر من الأول."], ["خلصت", "نحنا منهتم بكل شي – وإنت بتضل بالصورة."]],
+    whyKicker: "ليش آينشتاين",
+    forKicker: "لمين",
+    ctaTitle: "جاهز تسلّمنا الأوراق؟", ctaSub: "احجز بدقايق – ومنرجعلك بسرعة.",
+  },
+  en: {
+    badge: "Your partner for daily life in Germany",
+    heroTitle: "Official letters, appointments, office work – handled.",
+    heroSub: "EinStein takes care of forms, letters and organisation for you – multilingual, personal and at fair prices.",
+    ctaBook: "Book now", ctaFile: "Upload a letter",
+    trust: ["Arabic, German, English, Turkish …", "One fixed contact person", "Transparent prices"],
+    demoFrom: "Jobcenter Frankfurt", demoTitle: "Continuation application", demoSorted: "Sorted: Jobcenter", demoSummary: "Your Bürgergeld ends on 30.11. Submit the continuation application before then.", demoReminder: "Reminder in 5 days",
+    authorities: "We help with letters from",
+    servicesKicker: "Services", servicesMore: "See all services", book: "Book",
+    fileKicker: "My documents", fileTitle: "Every letter sorted, translated, deadline in sight.", fileSub: "Photograph your mail. Our AI files it in the right folder, translates it into your language and reminds you of deadlines.",
+    fileSteps: [["Upload", "Photo or PDF, several at once"], ["Sorted & translated", "In the right folder, in your language"], ["Reminded", "Before a deadline passes"]],
+    fileCta: "Open my documents", fileNote: "Monthly subscription, cancel any time",
+    howKicker: "How it works", howTitle: "Done in three steps",
+    how: [["Choose a service", "Online or by phone – in your language."], ["Get an appointment", "We confirm and tell you the price up front."], ["Done", "We take care of it – you stay informed."]],
+    whyKicker: "Why EinStein",
+    forKicker: "Who it’s for",
+    ctaTitle: "Ready to hand over the paperwork?", ctaSub: "Book in minutes – we get back to you quickly.",
+  },
+  uk: {
+    badge: "Ваш партнер у повсякденному житті в Німеччині",
+    heroTitle: "Листи з установ, зустрічі, офіс – ми все владнаємо.",
+    heroSub: "EinStein бере на себе формуляри, листи й організацію – кількома мовами, особисто й за чесними цінами.",
+    ctaBook: "Забронювати", ctaFile: "Завантажити лист",
+    trust: ["Арабська, німецька, англійська, турецька …", "Постійна контактна особа", "Прозорі ціни"],
+    demoFrom: "Jobcenter Frankfurt", demoTitle: "Заява на продовження", demoSorted: "Папка: Jobcenter", demoSummary: "Ваш Bürgergeld закінчується 30.11. Подайте заяву на продовження до цієї дати.", demoReminder: "Нагадування через 5 днів",
+    authorities: "Допомагаємо з листами від",
+    servicesKicker: "Послуги", servicesMore: "Усі послуги", book: "Забронювати",
+    fileKicker: "Мої документи", fileTitle: "Кожен лист упорядкований, перекладений, строк перед очима.", fileSub: "Сфотографуйте пошту. Наш ШІ розкладе її по папках, перекладе вашою мовою й нагадає про строки.",
+    fileSteps: [["Завантажте", "Фото або PDF, кілька одразу"], ["Упорядковано й перекладено", "У потрібній папці, вашою мовою"], ["Нагадування", "До того, як мине строк"]],
+    fileCta: "Відкрити мої документи", fileNote: "Місячна підписка, скасування будь-коли",
+    howKicker: "Як це працює", howTitle: "Готово за три кроки",
+    how: [["Оберіть послугу", "Онлайн або телефоном – вашою мовою."], ["Отримайте зустріч", "Ми підтверджуємо й називаємо ціну заздалегідь."], ["Готово", "Ми все владнаємо – ви в курсі."]],
+    whyKicker: "Чому EinStein",
+    forKicker: "Для кого",
+    ctaTitle: "Готові передати нам папери?", ctaSub: "Бронюйте за кілька хвилин – ми швидко відповімо.",
+  },
+};
+X.tr = { ...X.en, badge: "Almanya’da günlük yaşam ortağınız", heroTitle: "Resmi yazılar, randevular, büro – biz hallediyoruz.", heroSub: "EinStein formları, yazıları ve organizasyonu sizin için halleder – çok dilli, kişisel ve uygun fiyatlarla.", ctaBook: "Şimdi rezervasyon", ctaFile: "Mektup yükle", servicesKicker: "Hizmetler", servicesMore: "Tüm hizmetler", book: "Rezervasyon", ctaTitle: "Evrak işlerini bize bırakmaya hazır mısınız?" };
+X.es = { ...X.en, badge: "Su aliado para la vida diaria en Alemania", heroTitle: "Cartas oficiales, citas, oficina – nos encargamos.", heroSub: "EinStein se ocupa de formularios, cartas y organización por usted – en varios idiomas, en persona y a precios justos.", ctaBook: "Reservar ahora", ctaFile: "Subir una carta", servicesKicker: "Servicios", servicesMore: "Ver todos los servicios", book: "Reservar", ctaTitle: "¿Listo para delegar el papeleo?" };
+
+const AUTHORITIES = ["Jobcenter", "Ausländerbehörde", "Finanzamt", "Familienkasse", "Krankenkasse", "Rentenversicherung", "Vermieter"];
+
 const whyFeatures = [
   { key: "quality", icon: BadgeCheck },
   { key: "multilingual", icon: Languages },
@@ -743,742 +820,309 @@ const whyFeatures = [
   { key: "responsible", icon: Shield }
 ];
 
-// Why Vertical Carousel Component
-function WhyCarousel({ features, t }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.5 },
+};
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % features.length);
-    }, 3500);
-    return () => clearInterval(interval);
-  }, [features.length]);
-
+function Kicker({ children, light = false }) {
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="relative h-[320px] overflow-hidden">
-        {features.map((feature, index) => {
-          const Icon = feature.icon;
-          const isActive = index === currentIndex;
-          const isPrev = index === (currentIndex - 1 + features.length) % features.length;
-          const isNext = index === (currentIndex + 1) % features.length;
-          
-          let translateY = "100%";
-          let opacity = 0;
-          let scale = 0.9;
-          
-          if (isActive) {
-            translateY = "0%";
-            opacity = 1;
-            scale = 1;
-          } else if (isPrev) {
-            translateY = "-100%";
-            opacity = 0.3;
-            scale = 0.9;
-          } else if (isNext) {
-            translateY = "100%";
-            opacity = 0.3;
-            scale = 0.9;
-          }
-          
-          return (
-            <div
-              key={feature.key}
-              className="absolute inset-0 transition-all duration-500 ease-out px-4"
-              style={{
-                transform: `translateY(${translateY}) scale(${scale})`,
-                opacity,
-              }}
-            >
-              <Card className="bg-white/20 backdrop-blur-sm border-0 h-full">
-                <CardContent className="p-8 flex flex-col items-center justify-center h-full text-center">
-                  <div className="w-16 h-16 bg-white/30 rounded-2xl flex items-center justify-center mb-6">
-                    <Icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3 text-white">
-                    {t[`why_${feature.key}`]}
-                  </h3>
-                  <p className="text-white/90 text-lg">
-                    {t[`why_${feature.key}_desc`]}
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          );
-        })}
-      </div>
-      
-      {/* Vertical Dots */}
-      <div className="flex justify-center gap-2 mt-6">
-        {features.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              index === currentIndex 
-                ? "bg-white w-8" 
-                : "bg-white/40 hover:bg-white/60"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
+    <span className={`inline-block rounded-full px-3 py-1 text-xs font-bold tracking-wide ${light ? "bg-white/10 text-purple-100 ring-1 ring-white/20" : "bg-purple-100 text-[#5b21b6]"}`}>
+      {children}
+    </span>
   );
 }
 
-// Promises Carousel Component
-function PromisesCarousel({ promises, isRTL }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align: "start",
-    direction: isRTL ? "rtl" : "ltr",
-  });
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState([]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    
-    setScrollSnaps(emblaApi.scrollSnapList());
-    
-    const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
-    };
-    
-    emblaApi.on("select", onSelect);
-    onSelect();
-    
-    // Auto-scroll every 4 seconds
-    const autoplay = setInterval(() => {
-      if (emblaApi.canScrollNext()) {
-        emblaApi.scrollNext();
-      } else {
-        emblaApi.scrollTo(0);
-      }
-    }, 4000);
-    
-    return () => {
-      clearInterval(autoplay);
-      emblaApi.off("select", onSelect);
-    };
-  }, [emblaApi]);
-
-  const scrollTo = (index) => emblaApi && emblaApi.scrollTo(index);
-
+/** A small, real-looking "My documents" card for the hero. */
+function LetterDemo({ x }) {
   return (
-    <div className="relative">
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex">
-          {promises.map((promise, i) => (
-            <div
-              key={i}
-              className="flex-[0_0_100%] min-w-0 px-2"
-            >
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-[#2e1065] to-[#4c1d95] mx-auto max-w-2xl">
-                <CardContent className="p-8 flex items-center gap-6">
-                  <div className="w-14 h-14 bg-[#6B46C1] rounded-full flex items-center justify-center flex-shrink-0">
-                    <CheckCircle className="w-7 h-7 text-white" />
-                  </div>
-                  <p className="text-white text-lg md:text-xl">{promise}</p>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Dots Navigation */}
-      <div className="flex justify-center gap-2 mt-6">
-        {scrollSnaps.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => scrollTo(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              index === selectedIndex 
-                ? "bg-[#6B46C1] w-8" 
-                : "bg-gray-300 hover:bg-gray-400"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Services Carousel Component
-function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
-  
-  // Function to get label by language
-  const getLabelByLang = (p) => {
-    if (lang === "ar") return p.label_ar || p.label_de || p.label;
-    if (lang === "en") return p.label_en || p.label_de || p.label;
-    if (lang === "tr") return p.label_tr || p.label_de || p.label;
-    if (lang === "es") return p.label_es || p.label_de || p.label;
-    if (lang === "uk") return p.label_en || p.label_de || p.label;
-    return p.label_de || p.label;
-  };
-  
-  const getUnitByLang = (p) => {
-    if (lang === "ar") return p.unit_ar || p.unit_de || p.unit;
-    if (lang === "en") return p.unit_en || p.unit_de || p.unit;
-    if (lang === "tr") return p.unit_tr || p.unit_de || p.unit;
-    if (lang === "es") return p.unit_es || p.unit_de || p.unit;
-    if (lang === "uk") return p.unit_en || p.unit_de || p.unit;
-    return p.unit_de || p.unit;
-  };
-
-  // Function to get custom name from prices
-  const getServiceName = (serviceKey) => {
-    if (customPrices && customPrices[serviceKey] && customPrices[serviceKey][0]) {
-      const customName = getLabelByLang(customPrices[serviceKey][0]);
-      if (customName) return customName;
-    }
-    return t[serviceKey];
-  };
-  
-  // Function to get custom price from backend-managed settings.
-  const getServicePrice = (serviceKey) => {
-    if (customPrices && customPrices[serviceKey] && customPrices[serviceKey][0]) {
-      const p = customPrices[serviceKey][0];
-      const unit = getUnitByLang(p);
-      return `${displayPrice(p.price, lang, serviceKey)}${unit ? " " + unit : ""}`;
-    }
-    return displayPrice(t[`${serviceKey}_price`] || "", lang, serviceKey);
-  };
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align: "start",
-    direction: isRTL ? "rtl" : "ltr",
-    slidesToScroll: 1,
-  });
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState([]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    
-    setScrollSnaps(emblaApi.scrollSnapList());
-    
-    const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
-    };
-    
-    emblaApi.on("select", onSelect);
-    onSelect();
-    
-    // Auto-scroll every 3 seconds
-    const autoplay = setInterval(() => {
-      if (emblaApi.canScrollNext()) {
-        emblaApi.scrollNext();
-      } else {
-        emblaApi.scrollTo(0);
-      }
-    }, 3000);
-    
-    return () => {
-      clearInterval(autoplay);
-      emblaApi.off("select", onSelect);
-    };
-  }, [emblaApi]);
-
-  const scrollTo = (index) => emblaApi && emblaApi.scrollTo(index);
-
-  return (
-    <div className="relative">
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-4">
-          {services.map((service, index) => {
-            const Icon = service.icon;
-            return (
-              <div
-                key={service.key}
-                className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] xl:flex-[0_0_25%] px-2"
-              >
-                <Link to={createPageUrl(`Booking?category=${service.key}`)}>
-                  <Card className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-0 shadow-lg overflow-hidden h-full bg-gradient-to-br from-[#2e1065] to-[#4c1d95]">
-                    <CardContent className="p-6">
-                      <div className={`w-14 h-14 ${service.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                        <Icon className="w-7 h-7 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold text-white mb-2">
-                        {getServiceName(service.key)}
-                      </h3>
-                      <p className="text-gray-300 text-sm mb-3 line-clamp-2">
-                        {t[`${service.key}_desc`]}
-                      </p>
-                      <Badge className="bg-[#c9a227] text-white font-semibold">
-                        {getServicePrice(service.key)}
-                      </Badge>
-                      <span className="block text-[11px] text-gray-300 mt-1">{priceNote(lang, service.key)}</span>
-                      <div className="mt-4 flex items-center text-white/80 font-medium text-sm group-hover:gap-2 transition-all">
-                        {t.book_now}
-                        <ArrowRight className="w-4 h-4 ms-1" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      
-      {/* Dots Navigation */}
-      <div className="flex justify-center gap-2 mt-6">
-        {scrollSnaps.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => scrollTo(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              index === selectedIndex 
-                ? "bg-[#6B46C1] w-8" 
-                : "bg-gray-300 hover:bg-gray-400"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function AuthenticatedArabicHero() {
-  const serviceHighlights = [
-    {
-      title: "مساعدة الدوائر والنماذج",
-      description: "من تقديم الطلبات إلى التتبع والاستلام."
-    },
-    {
-      title: "خدمة المكتب والسكرتارية للعيادات والمستقلين والشركات",
-      description: "دعم إداري مرن - مع حلول بديلة عند الحاجة."
-    },
-    {
-      title: "خدمات التنظيم والتنسيق",
-      description: "متعدد اللغات، احترافي وآمن قانونياً."
-    }
-  ];
-  const reasons = [
-    "نقطة اتصال ثابتة",
-    "تواصل متعدد اللغات",
-    "إجراءات شفافة",
-    "تنفيذ سريع",
-    "هيكل آمن قانونياً"
-  ];
-
-  return (
-    <section className="relative min-h-[calc(100dvh-4rem)] overflow-hidden bg-[#1f0b52] text-white">
-      <div className="mx-auto flex w-full max-w-[920px] flex-col items-center px-4 pb-8 pt-3 text-center sm:pt-4 md:pt-4">
-        <h1 className="text-[34px] font-black leading-[1.25] text-purple-200 sm:text-[44px] md:text-[50px]">
-          آينشتاين – التنظيم والإدارة
-        </h1>
-
-        <p className="mt-8 max-w-[780px] text-[16px] font-medium leading-[1.9] text-white/80 sm:text-[18px]">
-          التنظيم، الإدارة، التنفيذ. ألمانيا متنوعة - لكن الحياة اليومية بيروقراطية ومستهلكة للوقت.
-          آينشتاين يوفر الهيكل والوضوح والتخفيف.
-        </p>
-
-        <div className="mt-9 w-full max-w-[756px] rounded-[16px] border border-white/10 bg-white/[0.06] px-5 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.18)] sm:px-10">
-          <p className="mb-7 text-[18px] font-medium text-white">خدماتنا في لمحة:</p>
-
-          <div className="space-y-7">
-            {serviceHighlights.map((service) => (
-              <div key={service.title}>
-                <div className="flex items-center justify-center gap-3 text-[17px] font-extrabold text-white sm:text-[18px]">
-                  <span className="text-purple-200">✓</span>
-                  <span>{service.title}</span>
-                </div>
-                <p className="mt-2 text-[14px] leading-7 text-white/72 sm:text-[15px]">
-                  {service.description}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-10">
-            <p className="mb-4 text-[18px] font-extrabold text-white">لماذا آينشتاين؟</p>
-            <ul className="space-y-2 text-[15px] leading-7 text-white/88">
-              {reasons.map((reason) => (
-                <li key={reason}>• {reason}</li>
-              ))}
-            </ul>
+    <div className="relative mx-auto w-full max-w-md">
+      <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-[#7c3aed]/25 to-[#c084fc]/10 blur-2xl" aria-hidden="true" />
+      <div className="relative rounded-3xl border border-purple-100 bg-white p-5 shadow-2xl shadow-purple-900/10">
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-purple-50"><EinsteinLogo size={30} /></span>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-slate-400" dir="ltr">{x.demoFrom}</p>
+            <p className="truncate font-bold text-[#2e1065]">{x.demoTitle}</p>
           </div>
         </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"><FolderCheck className="h-3.5 w-3.5" />{x.demoSorted}</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700"><BellRing className="h-3.5 w-3.5" />{x.demoReminder}</span>
+        </div>
+        <p className="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-relaxed text-slate-700">{x.demoSummary}</p>
+        <div className="mt-4 space-y-2" aria-hidden="true">
+          <div className="h-2 w-11/12 rounded-full bg-slate-100" />
+          <div className="h-2 w-9/12 rounded-full bg-slate-100" />
+          <div className="h-2 w-10/12 rounded-full bg-slate-100" />
+        </div>
       </div>
-    </section>
+      <div className="absolute -bottom-5 -start-5 hidden rounded-2xl bg-[#2e1065] px-4 py-3 text-white shadow-xl sm:flex sm:items-center sm:gap-2">
+        <Languages className="h-5 w-5 text-purple-200" /><span className="text-sm font-bold">DE → AR · UK · TR</span>
+      </div>
+    </div>
   );
 }
 
 export default function Home() {
   const savedLang = (() => { try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; } })();
   const [lang, setLang] = useState(savedLang);
-  const [isAdmin, setIsAdmin] = useState(() => getStoredAuthUser()?.role === "admin");
-  
-  // Load custom prices from database
+
+  // Prices and names managed in the admin area
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings"],
     queryFn: publicApi.listPricing,
     staleTime: 5 * 60 * 1000,
   });
-  
-  // Convert array to object
   const customPrices = React.useMemo(() => {
     if (!priceSettingsData || priceSettingsData.length === 0) return null;
     const pricesObj = {};
-    priceSettingsData.forEach(item => {
-      pricesObj[item.category] = item.items || item.prices || [];
-    });
+    priceSettingsData.forEach((item) => { pricesObj[item.category] = item.items || item.prices || []; });
     return pricesObj;
   }, [priceSettingsData]);
-  
+
   useEffect(() => {
     const handleStorage = () => {
       const newLang = localStorage.getItem("einstein_lang");
       if (newLang) setLang(newLang);
-      setIsAdmin(getStoredAuthUser()?.role === "admin");
     };
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
-  
+
   const t = translations[lang] || translations.de;
+  const x = X[lang] || X.de;
   const isRTL = lang === "ar";
-  const showAuthenticatedArabicHero = isRTL && isAdmin;
+  const Arrow = isRTL ? ArrowLeft : ArrowRight;
+
+  const fromDb = (p, field) => {
+    const byLang = { ar: `${field}_ar`, en: `${field}_en`, tr: `${field}_tr`, es: `${field}_es`, uk: `${field}_en` }[lang];
+    return (byLang && p[byLang]) || p[`${field}_de`] || p[field];
+  };
+  const serviceName = (key) => (customPrices?.[key]?.[0] && fromDb(customPrices[key][0], "label")) || t[key];
+  const servicePrice = (key) => {
+    const p = customPrices?.[key]?.[0];
+    if (p) {
+      const unit = fromDb(p, "unit");
+      return `${displayPrice(p.price, lang, key)}${unit ? " " + unit : ""}`;
+    }
+    return displayPrice(t[`${key}_price`] || "", lang, key);
+  };
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      {showAuthenticatedArabicHero ? (
-        <AuthenticatedArabicHero />
-      ) : (
-      <section className="relative bg-gradient-to-br from-[#1f0b52] via-[#3b1478] to-[#5b21b6] text-white py-20 md:py-32 overflow-hidden">
-        {/* Simplified decorative elements */}
-           <div className="absolute inset-0 overflow-hidden">
-             <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#6B46C1]/20 rounded-full blur-[100px]" />
-             <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#c084fc]/20 rounded-full blur-[100px]" />
-           </div>
-
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
-          >
-            {/* Logo */}
-            <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-3xl bg-white shadow-2xl shadow-black/30 ring-1 ring-white/40">
-              <EinsteinLogo size={72} />
+    <div className="overflow-x-hidden bg-white">
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#f7f3ff] via-white to-white">
+        <svg aria-hidden="true" className="pointer-events-none absolute -top-40 end-[-10rem] h-[36rem] w-[36rem] text-purple-200/60" viewBox="0 0 100 100">
+          <polygon points="50,2 92,26 92,74 50,98 8,74 8,26" fill="none" stroke="currentColor" strokeWidth="0.6" />
+          <polygon points="50,14 82,32 82,68 50,86 18,68 18,32" fill="none" stroke="currentColor" strokeWidth="0.6" />
+          <polygon points="50,26 72,38 72,62 50,74 28,62 28,38" fill="none" stroke="currentColor" strokeWidth="0.6" />
+        </svg>
+        <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-4 pb-20 pt-14 md:pt-20 lg:grid-cols-[1.1fr_1fr] lg:pb-28">
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <span className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-white px-4 py-1.5 text-sm font-semibold text-[#5b21b6] shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />{x.badge}
+            </span>
+            <h1 className="mt-6 text-4xl font-black leading-[1.15] text-[#1f0b52] sm:text-5xl lg:text-6xl">{x.heroTitle}</h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">{x.heroSub}</p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link to={createPageUrl("Booking")} className="inline-flex h-14 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] px-8 text-base font-bold text-white shadow-lg shadow-purple-500/30 transition hover:brightness-110">
+                {x.ctaBook}<Arrow className="h-5 w-5" />
+              </Link>
+              <Link to={createPageUrl("MyDocuments")} className="inline-flex h-14 items-center justify-center gap-2 rounded-2xl border border-purple-200 bg-white px-8 text-base font-bold text-[#4c1d95] transition hover:border-[#7c3aed] hover:bg-purple-50">
+                <Upload className="h-5 w-5" />{x.ctaFile}
+              </Link>
             </div>
-
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md border border-white/20 rounded-full px-5 py-2.5 mb-8 shadow-lg"
-            >
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </span>
-              <span className="text-sm font-medium text-white/90 tracking-wide">
-                {({ de: "Ihr Partner für den Alltag", ar: "شريكك للحياة اليومية", tr: "Günlük yaşamda ortağınız", es: "Su aliado en el día a día", uk: "Ваш партнер у повсякденних справах" })[lang] || "Your partner for daily life"}
-              </span>
-            </motion.div>
-
-            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight px-2 w-full">
-              <span className="bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent drop-shadow-2xl text-center block break-words pb-2">
-                EinStein – {t.hero_title}
-              </span>
-            </h1>
-
-            <p className="text-sm sm:text-base md:text-lg text-white/60 mb-8 max-w-2xl mx-auto leading-relaxed px-2">
-              {t.hero_desc}
-            </p>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/15 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-10 max-w-2xl mx-auto shadow-2xl"
-            >
-              <p className="text-sm sm:text-base md:text-lg text-white/90 font-light leading-relaxed mb-4 whitespace-pre-line">
-                {t.hero_solution}
-              </p>
-              <div className="flex items-center gap-3 pt-4 border-t border-white/10">
-                <Quote className="w-6 h-6 text-purple-300" />
-                <p className="text-lg md:text-xl font-semibold text-purple-100">
-                  {t.motto}
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Search Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="mb-8"
-            >
-              <SearchBar lang={lang} variant="hero" />
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
-              <Link to={createPageUrl("Booking")}>
-                <Button size="lg" className="group relative bg-gradient-to-r from-[#6B46C1] via-[#805AD5] to-[#6B46C1] bg-size-200 bg-pos-0 hover:bg-pos-100 text-white font-bold text-lg px-10 py-7 w-full sm:w-auto shadow-xl shadow-purple-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/50 hover:scale-105 rounded-2xl">
-                  {t.book_now}
-                  <ArrowRight className="ms-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <Link to={createPageUrl("Services")}>
-                <Button size="lg" variant="outline" className="border-2 border-white/30 bg-white/5 backdrop-blur-md text-white hover:bg-white hover:text-slate-900 text-lg px-10 py-7 w-full sm:w-auto font-bold transition-all duration-300 hover:scale-105 rounded-2xl hover:shadow-xl">
-                  {t.view_services}
-                </Button>
-              </Link>
-            </motion.div>
-
-
+            <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-3">
+              {x.trust.map((item) => (
+                <li key={item} className="flex items-center gap-2 text-sm font-medium text-slate-600"><CheckCircle className="h-4 w-4 text-emerald-500" />{item}</li>
+              ))}
+            </ul>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.15 }}>
+            <LetterDemo x={x} />
           </motion.div>
         </div>
-      </section>
-      )}
 
-      {/* Promises Section - Carousel */}
-      <section className="py-20 bg-gradient-to-b from-slate-50 to-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <span className="inline-block px-4 py-1.5 bg-[#6B46C1]/10 text-[#6B46C1] rounded-full text-sm font-semibold mb-4">
-              {lang === "de" ? "UNSER VERSPRECHEN" : lang === "ar" ? "وعدنا" : "OUR PROMISE"}
-            </span>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-800">
-              {t.promises_title}
-            </h2>
-          </motion.div>
-
-          <PromisesCarousel promises={[t.promise1, t.promise2, t.promise3, t.promise4]} isRTL={isRTL} />
-        </div>
-      </section>
-
-      {/* About Section */}
-       <section className="py-20 bg-white relative overflow-hidden">
-        
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <span className="inline-block px-4 py-1.5 bg-[#6B46C1]/10 text-[#6B46C1] rounded-full text-sm font-semibold mb-4">
-                {lang === "de" ? "ÜBER UNS" : lang === "ar" ? "من نحن" : "ABOUT US"}
-              </span>
-              <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-6">
-                {t.about_title}
-              </h2>
-              <p className="text-slate-600 text-lg mb-4 leading-relaxed">
-                {t.about_desc}
-              </p>
-              <p className="text-slate-700 text-lg font-medium mb-8 leading-relaxed">
-                {t.about_role}
-              </p>
-              
-              <Card className="border-0 bg-gradient-to-br from-[#6B46C1] to-[#553C9A] shadow-xl shadow-purple-500/20">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
-                      <Shield className="w-7 h-7 text-white" />
-                    </div>
-                    <h3 className="text-xl font-bold text-white">{t.hauptunternehmer}</h3>
-                  </div>
-                  <p className="text-white/90 leading-relaxed">{t.hauptunternehmer_desc}</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative"
-            >
-              <div className="bg-gradient-to-br from-[#1f0b52] to-[#3b1478] rounded-3xl p-8 md:p-10 text-white shadow-2xl">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#7c3aed] to-[#c084fc] rounded-2xl flex items-center justify-center shadow-lg">
-                    <Award className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-bold">{t.quality_title}</h3>
-                </div>
-                <p className="text-white/70 mb-8 text-lg">{t.quality_desc}</p>
-                <div className="space-y-4">
-                  {t.quality_steps.map((step, i) => (
-                    <motion.div 
-                      key={i} 
-                      className="flex items-center gap-4 p-3 bg-white/5 rounded-xl border border-white/10"
-                      initial={{ opacity: 0, x: 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                    >
-                      <div className="w-10 h-10 bg-gradient-to-br from-[#6B46C1] to-[#805AD5] rounded-xl flex items-center justify-center font-bold text-white shadow-lg">
-                        {i + 1}
-                      </div>
-                      <span className="font-medium">{step}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
+        {/* Authorities */}
+        <div className="relative border-y border-purple-100/70 bg-white/70">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-8 gap-y-3 px-4 py-6">
+            <span className="text-sm font-semibold text-slate-400">{x.authorities}</span>
+            {AUTHORITIES.map((name) => <span key={name} dir="ltr" className="text-sm font-bold text-slate-500">{name}</span>)}
           </div>
         </div>
       </section>
 
-      {/* Services Section - Carousel */}
-      <section className="py-24 bg-gradient-to-b from-slate-50 to-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <span className="inline-block px-4 py-1.5 bg-[#6B46C1]/10 text-[#6B46C1] rounded-full text-sm font-semibold mb-4">
-              {lang === "de" ? "DIENSTLEISTUNGEN" : lang === "ar" ? "خدماتنا" : "SERVICES"}
-            </span>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
-              {t.our_services}
-            </h2>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto">{t.services_subtitle}</p>
+      {/* Services */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-4">
+          <motion.div {...fadeUp} className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+            <div className="max-w-2xl">
+              <Kicker>{x.servicesKicker}</Kicker>
+              <h2 className="mt-4 text-3xl font-black text-[#1f0b52] md:text-4xl">{t.our_services}</h2>
+              <p className="mt-3 text-lg text-slate-600">{t.services_subtitle}</p>
+            </div>
+            <Link to={createPageUrl("Services")} className="inline-flex items-center gap-2 font-bold text-[#6d28d9] hover:underline">{x.servicesMore}<Arrow className="h-4 w-4" /></Link>
           </motion.div>
-
-          <ServicesCarousel services={services} t={t} isRTL={isRTL} customPrices={customPrices} lang={lang} />
-
-          <div className="text-center mt-12">
-            <Link to={createPageUrl("Services")}>
-              <Button size="lg" className="group border-2 border-[#6B46C1] bg-transparent text-[#6B46C1] hover:bg-[#6B46C1] hover:text-white px-8 py-6 text-lg font-bold rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20">
-                {t.view_services}
-                <ArrowRight className="ms-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Target Groups */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <span className="inline-block px-4 py-1.5 bg-[#6B46C1]/10 text-[#6B46C1] rounded-full text-sm font-semibold mb-4">
-              {lang === "de" ? "ZIELGRUPPEN" : lang === "ar" ? "الفئات المستهدفة" : "TARGET GROUPS"}
-            </span>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
-              {t.target_title}
-            </h2>
-            {t.target_subtitle && (
-              <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-                {t.target_subtitle}
-              </p>
-            )}
-          </motion.div>
-          
-          <div className="flex flex-wrap justify-center gap-4">
-            {t.targets.map((target, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                whileHover={{ scale: 1.05, y: -2 }}
-              >
-                <Badge className="bg-gradient-to-br from-slate-50 to-white shadow-lg text-slate-700 px-5 py-3 text-sm font-semibold border border-slate-200 rounded-xl hover:border-[#6B46C1]/30 hover:shadow-purple-500/10 transition-all cursor-default">
-                  {target}
-                </Badge>
+          <div className="mt-8"><SearchBar lang={lang} variant="inline" /></div>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map(({ key, icon: Icon }, i) => (
+              <motion.div key={key} {...fadeUp} transition={{ duration: 0.45, delay: (i % 3) * 0.06 }}>
+                <Link to={`${createPageUrl("Booking")}?category=${key}`} className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-6 transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl hover:shadow-purple-900/5">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-[#6d28d9] transition group-hover:bg-[#6d28d9] group-hover:text-white">
+                    <Icon className="h-6 w-6" />
+                  </span>
+                  <h3 className="mt-5 text-lg font-bold text-[#1f0b52]">{serviceName(key)}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{t[`${key}_desc`]}</p>
+                  <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                    <span className="text-sm font-bold text-[#4c1d95]">
+                      {servicePrice(key)}
+                      <span className="block text-[11px] font-medium text-slate-400">{priceNote(lang, key)}</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-sm font-bold text-[#6d28d9]">{x.book}<Arrow className="h-4 w-4 transition group-hover:translate-x-0.5" /></span>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Become Provider CTA */}
-      <section className="py-24 bg-gradient-to-br from-[#059669] via-[#10b981] to-[#34d399] relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#6ee7b7]/30 rounded-full blur-[100px]" />
+      {/* My documents (AI) */}
+      <section className="px-4">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#1f0b52] via-[#3b1478] to-[#6d28d9] px-6 py-16 text-white md:px-14 md:py-20">
+          <svg aria-hidden="true" className="pointer-events-none absolute -bottom-24 -end-24 h-96 w-96 text-white/10" viewBox="0 0 100 100">
+            <polygon points="50,2 92,26 92,74 50,98 8,74 8,26" fill="currentColor" />
+          </svg>
+          <div className="relative grid gap-12 lg:grid-cols-2 lg:items-center">
+            <motion.div {...fadeUp}>
+              <Kicker light>{x.fileKicker}</Kicker>
+              <h2 className="mt-4 text-3xl font-black leading-tight md:text-4xl">{x.fileTitle}</h2>
+              <p className="mt-4 text-lg leading-relaxed text-purple-100">{x.fileSub}</p>
+              <Link to={createPageUrl("MyDocuments")} className="mt-8 inline-flex h-12 items-center gap-2 rounded-2xl bg-white px-6 font-bold text-[#4c1d95] transition hover:bg-purple-50">
+                {x.fileCta}<Arrow className="h-5 w-5" />
+              </Link>
+              <p className="mt-3 text-sm text-purple-200">{x.fileNote}</p>
+            </motion.div>
+            <ol className="grid gap-4">
+              {x.fileSteps.map(([title, text], i) => (
+                <motion.li key={title} {...fadeUp} transition={{ duration: 0.45, delay: i * 0.08 }} className="flex items-center gap-4 rounded-2xl bg-white/10 p-5 ring-1 ring-white/15 backdrop-blur">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-[#4c1d95]">
+                    {[<Upload key="u" className="h-6 w-6" />, <Languages key="l" className="h-6 w-6" />, <BellRing key="b" className="h-6 w-6" />][i]}
+                  </span>
+                  <span>
+                    <span className="block font-bold">{title}</span>
+                    <span className="block text-sm text-purple-100">{text}</span>
+                  </span>
+                </motion.li>
+              ))}
+            </ol>
+          </div>
         </div>
-        
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
-              <Users className="w-10 h-10 text-white" />
+      </section>
+
+      {/* How it works */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-4">
+          <motion.div {...fadeUp} className="mx-auto max-w-2xl text-center">
+            <Kicker>{x.howKicker}</Kicker>
+            <h2 className="mt-4 text-3xl font-black text-[#1f0b52] md:text-4xl">{x.howTitle}</h2>
+          </motion.div>
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {x.how.map(([title, text], i) => (
+              <motion.div key={title} {...fadeUp} transition={{ duration: 0.45, delay: i * 0.08 }} className="relative rounded-3xl bg-slate-50 p-8">
+                <span className="text-5xl font-black text-purple-200">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="mt-4 text-xl font-bold text-[#1f0b52]">{title}</h3>
+                <p className="mt-2 leading-relaxed text-slate-600">{text}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why + quality */}
+      <section className="bg-slate-50 py-24">
+        <div className="mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[1.3fr_1fr]">
+          <div>
+            <motion.div {...fadeUp}>
+              <Kicker>{x.whyKicker}</Kicker>
+              <h2 className="mt-4 text-3xl font-black text-[#1f0b52] md:text-4xl">{t.why_einstein}</h2>
+            </motion.div>
+            <div className="mt-10 grid gap-5 sm:grid-cols-2">
+              {whyFeatures.map(({ key, icon: Icon }) => (
+                <motion.div key={key} {...fadeUp} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70">
+                  <Icon className="h-6 w-6 text-[#6d28d9]" />
+                  <h3 className="mt-4 font-bold text-[#1f0b52]">{t[`why_${key}`]}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{t[`why_${key}_desc`]}</p>
+                </motion.div>
+              ))}
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-              {t.become_provider}
-            </h2>
-            <p className="text-white/80 text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
-              {t.become_provider_desc}
-            </p>
-            <Link to={createPageUrl("ProviderApplication")}>
-              <Button size="lg" className="group bg-white text-[#6B46C1] hover:bg-[#c9a227] hover:text-white font-bold text-lg px-10 py-7 rounded-2xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                {t.apply_now}
-                <ArrowRight className="ms-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
+          </div>
+          <motion.div {...fadeUp} className="self-start rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200/70">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50"><Award className="h-6 w-6 text-[#6d28d9]" /></span>
+            <h3 className="mt-5 text-2xl font-black text-[#1f0b52]">{t.quality_title}</h3>
+            <p className="mt-2 text-slate-600">{t.quality_desc}</p>
+            <ol className="mt-6 space-y-3">
+              {t.quality_steps.map((step, i) => (
+                <li key={step} className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2e1065] text-sm font-bold text-white">{i + 1}</span>
+                  <span className="font-medium text-slate-700">{step}</span>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-8 rounded-2xl bg-purple-50 p-5">
+              <p className="font-bold text-[#2e1065]">{t.hauptunternehmer}</p>
+              <p className="mt-1 text-sm leading-relaxed text-slate-600">{t.hauptunternehmer_desc}</p>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Why EinStein Section - Vertical Carousel */}
-      <section className="py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
-        {/* Minimal decorative elements */}
-         <div className="absolute inset-0">
-           <div className="absolute top-1/4 left-0 w-72 h-72 bg-[#6B46C1]/15 rounded-full blur-[100px]" />
-           <div className="absolute bottom-1/4 right-0 w-72 h-72 bg-[#c084fc]/20 rounded-full blur-[100px]" />
-         </div>
-        
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <span className="inline-block px-4 py-1.5 bg-white/10 text-white/80 rounded-full text-sm font-semibold mb-4 backdrop-blur-sm">
-              {lang === "de" ? "WARUM WIR?" : lang === "ar" ? "لماذا نحن؟" : "WHY US?"}
-            </span>
-            <h2 className="text-4xl md:text-5xl font-black">
-              {t.why_einstein}
-            </h2>
+      {/* Who it is for */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-4">
+          <motion.div {...fadeUp} className="mx-auto max-w-2xl text-center">
+            <Kicker>{x.forKicker}</Kicker>
+            <h2 className="mt-4 text-3xl font-black text-[#1f0b52] md:text-4xl">{t.target_title}</h2>
+            <p className="mt-3 text-lg text-slate-600">{t.target_subtitle}</p>
           </motion.div>
-
-          <WhyCarousel features={whyFeatures} t={t} />
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {t.targets.map((target, i) => (
+              <motion.div key={target} {...fadeUp} className="flex items-center gap-4 rounded-2xl border border-slate-200 p-5">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-[#6d28d9]">
+                  {[<Users key="0" className="h-5 w-5" />, <Languages key="1" className="h-5 w-5" />, <Briefcase key="2" className="h-5 w-5" />, <FileText key="3" className="h-5 w-5" />][i % 4]}
+                </span>
+                <span className="font-semibold text-[#1f0b52]">{target}</span>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Bottom Info */}
-      <section className="py-8 bg-gradient-to-r from-slate-100 via-purple-50 to-slate-100">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-center text-sm text-slate-500">
-            {t.note}
-          </p>
+      {/* Final CTA + provider */}
+      <section className="px-4 pb-8">
+        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[1.6fr_1fr]">
+          <motion.div {...fadeUp} className="flex flex-col justify-between gap-8 rounded-[2rem] bg-[#1f0b52] p-10 text-white md:p-12">
+            <div>
+              <h2 className="text-3xl font-black md:text-4xl">{x.ctaTitle}</h2>
+              <p className="mt-3 text-lg text-purple-100">{x.ctaSub}</p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link to={createPageUrl("Booking")} className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-white px-6 font-bold text-[#4c1d95] transition hover:bg-purple-50">{x.ctaBook}<Arrow className="h-5 w-5" /></Link>
+              <a href="tel:+496927246275" className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/30 px-6 font-bold text-white transition hover:bg-white/10" dir="ltr">069 27246275</a>
+            </div>
+          </motion.div>
+          <motion.div {...fadeUp} className="flex flex-col justify-between gap-6 rounded-[2rem] bg-purple-50 p-10">
+            <div>
+              <h3 className="text-2xl font-black text-[#1f0b52]">{t.become_provider}</h3>
+              <p className="mt-2 leading-relaxed text-slate-600">{t.become_provider_desc}</p>
+            </div>
+            <Link to={createPageUrl("ProviderApplication")} className="inline-flex items-center gap-2 font-bold text-[#6d28d9] hover:underline">{t.apply_now}<Arrow className="h-4 w-4" /></Link>
+          </motion.div>
         </div>
+        <p className="mx-auto mt-8 max-w-7xl text-center text-xs text-slate-400">{t.note}</p>
       </section>
     </div>
   );
