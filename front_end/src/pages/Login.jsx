@@ -1,35 +1,101 @@
 import React, { useState } from "react";
-import { Lock, Mail } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowLeft, ArrowRight, CalendarCheck, Eye, EyeOff, FolderSync, Globe, Languages, Lock, Mail, User } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "@/api/backendClient";
 import EinsteinLogo from "@/components/EinsteinLogo";
 
+const LANGS = [
+  ["ar", "العربية"], ["de", "Deutsch"], ["en", "English"], ["tr", "Türkçe"], ["es", "Español"], ["uk", "Українська"],
+];
+
+const T = {
+  de: {
+    welcome: "Willkommen zurück", welcomeNew: "Konto erstellen", sub: "Melden Sie sich an, um Ihre Unterlagen und Buchungen zu sehen.", subNew: "In einer Minute startklar – kostenlos.",
+    login: "Anmelden", register: "Registrieren", name: "Vollständiger Name", email: "E-Mail", password: "Passwort", show: "Passwort anzeigen", hide: "Passwort verbergen",
+    forgot: "Passwort vergessen?", submit: "Anmelden", submitNew: "Konto erstellen", wait: "Bitte warten…", home: "Zur Startseite",
+    errEmpty: "Bitte E-Mail und Passwort eingeben.", errName: "Bitte Ihren Namen eingeben.", errGeneric: "Anmeldung fehlgeschlagen. Bitte Angaben prüfen.",
+    lead: "Behördenpost, Termine und Büro – an einem Ort, in Ihrer Sprache.",
+    b1: "Briefe hochladen – automatisch sortiert und übersetzt", b2: "Dienstleistungen online buchen und bezahlen", b3: "Erinnerung vor jeder Frist",
+  },
+  ar: {
+    welcome: "أهلاً بعودتك", welcomeNew: "إنشاء حساب", sub: "سجّل الدخول لترى أوراقك وحجوزاتك.", subNew: "جاهز خلال دقيقة – مجاناً.",
+    login: "تسجيل الدخول", register: "حساب جديد", name: "الاسم الكامل", email: "البريد الإلكتروني", password: "كلمة المرور", show: "إظهار كلمة المرور", hide: "إخفاء كلمة المرور",
+    forgot: "نسيت كلمة المرور؟", submit: "تسجيل الدخول", submitNew: "إنشاء الحساب", wait: "لحظة من فضلك…", home: "الصفحة الرئيسية",
+    errEmpty: "أدخل البريد الإلكتروني وكلمة المرور.", errName: "أدخل اسمك لإنشاء الحساب.", errGeneric: "تعذر تسجيل الدخول. تحقق من بياناتك.",
+    lead: "رسائل الدوائر والمواعيد والمكتب – بمكان واحد وبلغتك.",
+    b1: "ارفع رسائلك – تترتب وتُترجم تلقائياً", b2: "احجز الخدمات وادفع أونلاين", b3: "تذكير قبل كل موعد نهائي",
+  },
+  en: {
+    welcome: "Welcome back", welcomeNew: "Create your account", sub: "Sign in to see your documents and bookings.", subNew: "Ready in a minute – free.",
+    login: "Sign in", register: "Sign up", name: "Full name", email: "Email", password: "Password", show: "Show password", hide: "Hide password",
+    forgot: "Forgot password?", submit: "Sign in", submitNew: "Create account", wait: "Please wait…", home: "Back to home",
+    errEmpty: "Enter your email and password to continue.", errName: "Enter your name to create an account.", errGeneric: "Unable to sign in. Please check your details.",
+    lead: "Official letters, appointments and office work – in one place, in your language.",
+    b1: "Upload letters – sorted and translated automatically", b2: "Book and pay for services online", b3: "Reminders before every deadline",
+  },
+  tr: {
+    welcome: "Tekrar hoş geldiniz", welcomeNew: "Hesap oluşturun", sub: "Belgelerinizi ve rezervasyonlarınızı görmek için giriş yapın.", subNew: "Bir dakikada hazır – ücretsiz.",
+    login: "Giriş", register: "Kayıt ol", name: "Ad soyad", email: "E-posta", password: "Şifre", show: "Şifreyi göster", hide: "Şifreyi gizle",
+    forgot: "Şifrenizi mi unuttunuz?", submit: "Giriş yap", submitNew: "Hesap oluştur", wait: "Lütfen bekleyin…", home: "Ana sayfa",
+    errEmpty: "E-posta ve şifrenizi girin.", errName: "Hesap için adınızı girin.", errGeneric: "Giriş yapılamadı. Bilgilerinizi kontrol edin.",
+    lead: "Resmi yazılar, randevular ve büro işleri – tek yerde, kendi dilinizde.",
+    b1: "Mektupları yükleyin – otomatik sıralanır ve çevrilir", b2: "Hizmetleri online rezerve edin ve ödeyin", b3: "Her son tarihten önce hatırlatma",
+  },
+  es: {
+    welcome: "Bienvenido de nuevo", welcomeNew: "Cree su cuenta", sub: "Inicie sesión para ver sus documentos y reservas.", subNew: "Listo en un minuto – gratis.",
+    login: "Entrar", register: "Registrarse", name: "Nombre completo", email: "Correo electrónico", password: "Contraseña", show: "Mostrar contraseña", hide: "Ocultar contraseña",
+    forgot: "¿Olvidó su contraseña?", submit: "Iniciar sesión", submitNew: "Crear cuenta", wait: "Un momento…", home: "Volver al inicio",
+    errEmpty: "Introduzca su correo y contraseña.", errName: "Introduzca su nombre para crear la cuenta.", errGeneric: "No se pudo iniciar sesión. Revise sus datos.",
+    lead: "Cartas oficiales, citas y oficina – en un solo lugar, en su idioma.",
+    b1: "Suba cartas – se ordenan y traducen automáticamente", b2: "Reserve y pague servicios online", b3: "Recordatorios antes de cada plazo",
+  },
+  uk: {
+    welcome: "З поверненням", welcomeNew: "Створіть акаунт", sub: "Увійдіть, щоб бачити свої документи й бронювання.", subNew: "Готово за хвилину – безкоштовно.",
+    login: "Вхід", register: "Реєстрація", name: "Повне ім’я", email: "E-mail", password: "Пароль", show: "Показати пароль", hide: "Сховати пароль",
+    forgot: "Забули пароль?", submit: "Увійти", submitNew: "Створити акаунт", wait: "Зачекайте…", home: "На головну",
+    errEmpty: "Введіть e-mail і пароль.", errName: "Введіть ім’я, щоб створити акаунт.", errGeneric: "Не вдалося увійти. Перевірте дані.",
+    lead: "Офіційні листи, зустрічі та офіс – в одному місці, вашою мовою.",
+    b1: "Завантажуйте листи – вони впорядковуються й перекладаються", b2: "Бронюйте й оплачуйте послуги онлайн", b3: "Нагадування перед кожним строком",
+  },
+};
+
+function readLang() {
+  try { return localStorage.getItem("einstein_lang") || "ar"; } catch { return "ar"; }
+}
+
 export default function Login() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState("login");
+  const location = useLocation();
+  const [lang, setLang] = useState(readLang);
+  const [mode, setMode] = useState(/register/i.test(location.pathname) ? "register" : "login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const t = T[lang] || T.de;
+  const rtl = lang === "ar";
+  const Back = rtl ? ArrowRight : ArrowLeft;
+
+  const changeLang = (value) => {
+    setLang(value);
+    try { localStorage.setItem("einstein_lang", value); } catch { /* storage blocked */ }
+  };
+
+  const switchMode = (next) => {
+    setMode(next);
+    setError("");
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const trimmedEmail = email.trim();
-
-    if (!trimmedEmail || !password.trim()) {
-      setError("Enter your email and password to continue.");
-      return;
-    }
-
-    if (mode === "register" && !name.trim()) {
-      setError("Enter your name to create an account.");
-      return;
-    }
+    if (!trimmedEmail || !password.trim()) return setError(t.errEmpty);
+    if (mode === "register" && !name.trim()) return setError(t.errName);
 
     setLoading(true);
     setError("");
-
     try {
       const result = mode === "register"
         ? await authApi.register({ name: name.trim(), email: trimmedEmail, password })
@@ -40,138 +106,177 @@ export default function Login() {
       localStorage.setItem("einstein_auth_user", JSON.stringify(user));
       if (token) localStorage.setItem("einstein_auth_token", token);
       localStorage.setItem("einstein_customer_email", user.email);
-      localStorage.setItem("einstein_lang", user.preferred_language || localStorage.getItem("einstein_lang") || "ar");
+      localStorage.setItem("einstein_lang", user.preferred_language || lang);
       localStorage.setItem("einstein_is_provider", user.role === "provider" ? "true" : "false");
 
-      if (user.role === "admin") {
-        navigate("/Dashboard", { replace: true });
-      } else if (user.role === "provider") {
-        navigate("/ProviderDashboard", { replace: true });
-      } else {
-        navigate("/CustomerDashboard", { replace: true });
-      }
+      if (user.role === "admin") navigate("/Dashboard", { replace: true });
+      else if (user.role === "provider") navigate("/ProviderDashboard", { replace: true });
+      else navigate("/CustomerDashboard", { replace: true });
     } catch (err) {
-      setError(err.message || "Unable to sign in. Please check your details.");
+      setError(err.message || t.errGeneric);
     } finally {
       setLoading(false);
     }
   };
 
+  const clearError = () => { if (error) setError(""); };
+  const inputClass = "h-12 w-full rounded-xl border border-slate-200 bg-slate-50 ps-11 pe-4 text-[15px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#7c3aed] focus:bg-white focus:ring-4 focus:ring-[#7c3aed]/15";
+  const iconClass = "pointer-events-none absolute start-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-slate-400";
+
   return (
-    <main className="min-h-dvh bg-[#f4f7fb] px-4 py-5 text-[#111827] [letter-spacing:0]">
-      <section className="mx-auto min-h-[calc(100dvh-2.5rem)] w-full max-w-[560px] overflow-hidden rounded-[18px] border-t-[5px] border-[#dbe7f5] bg-white shadow-[0_22px_70px_rgba(15,23,42,0.12)]">
-        <div className="mx-auto flex w-full max-w-[460px] flex-col items-center px-4 pb-10 pt-[54px] sm:px-0">
-          <div className="mb-10 flex h-[122px] w-[122px] items-center justify-center rounded-full bg-white shadow-[0_18px_42px_rgba(15,23,42,0.16)]">
-            <EinsteinLogo size={118} />
+    <main dir={rtl ? "rtl" : "ltr"} className="min-h-dvh bg-white text-slate-900 lg:grid lg:grid-cols-[1.05fr_1fr]">
+      {/* Brand side (large screens) */}
+      <aside className="relative hidden overflow-hidden bg-gradient-to-br from-[#1f0b52] via-[#3b1478] to-[#7c2bd0] p-12 text-white lg:flex lg:flex-col">
+        {/* Soft hexagon shapes echoing the logo */}
+        <svg aria-hidden="true" className="pointer-events-none absolute -end-24 -top-24 h-[420px] w-[420px] opacity-[0.12]" viewBox="0 0 100 100">
+          <polygon points="50,2 92,26 92,74 50,98 8,74 8,26" fill="none" stroke="white" strokeWidth="1.2" />
+          <polygon points="50,16 80,33 80,67 50,84 20,67 20,33" fill="none" stroke="white" strokeWidth="1.2" />
+        </svg>
+        <svg aria-hidden="true" className="pointer-events-none absolute -bottom-32 -start-20 h-[380px] w-[380px] opacity-[0.08]" viewBox="0 0 100 100">
+          <polygon points="50,2 92,26 92,74 50,98 8,74 8,26" fill="white" />
+        </svg>
+
+        <Link to="/" className="relative z-10 flex items-center gap-3">
+          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-lg shadow-black/20">
+            <EinsteinLogo size={42} />
+          </span>
+          <span className="text-2xl font-black tracking-wide">EinStein</span>
+        </Link>
+
+        <div className="relative z-10 my-auto max-w-md py-12">
+          <p className="mb-4 text-sm font-semibold tracking-wide text-purple-200" dir="ltr">
+            Vielfalt bildet – EinStein verbindet
+          </p>
+          <h2 className="text-4xl font-black leading-tight">{t.lead}</h2>
+          <ul className="mt-10 space-y-4">
+            {[[FolderSync, t.b1], [CalendarCheck, t.b2], [Languages, t.b3]].map(([Icon, text]) => (
+              <li key={text} className="flex items-center gap-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20">
+                  <Icon className="h-5 w-5 text-purple-100" />
+                </span>
+                <span className="text-[15px] font-medium text-purple-50">{text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <p className="relative z-10 text-xs text-purple-200/80">© {new Date().getFullYear()} EinStein · Frankfurt am Main</p>
+      </aside>
+
+      {/* Form side */}
+      <section className="flex min-h-dvh flex-col px-5 py-6 sm:px-10">
+        <div className="flex items-center justify-between gap-3">
+          <Link to="/" className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 transition hover:text-[#5b21b6]">
+            <Back className="h-4 w-4" />{t.home}
+          </Link>
+          <label className="relative inline-flex items-center">
+            <Globe className="pointer-events-none absolute start-3 h-4 w-4 text-slate-400" />
+            <select
+              value={lang}
+              onChange={(e) => changeLang(e.target.value)}
+              aria-label="Language"
+              className="h-9 appearance-none rounded-full border border-slate-200 bg-white ps-9 pe-4 text-sm font-medium text-slate-700 outline-none focus:border-[#7c3aed] focus:ring-4 focus:ring-[#7c3aed]/15"
+            >
+              {LANGS.map(([code, label]) => <option key={code} value={code}>{label}</option>)}
+            </select>
+          </label>
+        </div>
+
+        <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col justify-center py-10">
+          {/* Logo for phones and tablets */}
+          <div className="mb-8 flex flex-col items-center lg:hidden">
+            <EinsteinLogo size={84} />
+            <img src="/brand/einstein-wordmark.png" alt="EinStein – Vielfalt bildet, EinStein verbindet" className="mt-3 w-[220px]" />
           </div>
 
-          <h1 className="mb-[14px] max-w-[430px] text-center text-[38px] font-extrabold leading-[1.16] text-[#111827] [letter-spacing:0]">
-            Welcome to EinStein
-          </h1>
-          <p className="mb-[42px] text-center text-[19px] font-semibold text-[#66758c]">
-            Sign in to continue
-          </p>
+          <h1 className="text-center text-3xl font-black text-slate-900 lg:text-start">{mode === "register" ? t.welcomeNew : t.welcome}</h1>
+          <p className="mt-2 text-center text-[15px] text-slate-500 lg:text-start">{mode === "register" ? t.subNew : t.sub}</p>
 
-          <form className="w-full" onSubmit={handleSubmit} noValidate>
+          <div role="tablist" className="mt-8 grid grid-cols-2 rounded-xl bg-slate-100 p-1">
+            {[["login", t.login], ["register", t.register]].map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={mode === key}
+                onClick={() => switchMode(key)}
+                className={`h-10 rounded-lg text-sm font-bold transition ${mode === key ? "bg-white text-[#4c1d95] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit} noValidate>
             {mode === "register" && (
-              <div className="mb-[27px]">
-                <label htmlFor="auth-name" className="mb-[13px] block text-center text-[16px] font-bold text-[#334155]">
-                  Name
-                </label>
-                <input
-                  id="auth-name"
-                  type="text"
-                  value={name}
-                  onChange={(event) => {
-                    setName(event.target.value);
-                    if (error) setError("");
-                  }}
-                  className="h-[60px] w-full rounded-[13px] border border-[#dae5f4] bg-[#e8f0fd] px-4 text-[16px] text-black outline-none transition placeholder:text-[#7b8ca4] focus:border-[#b5c7e5] focus:ring-2 focus:ring-[#d5e2f5]"
-                  autoComplete="name"
-                  aria-invalid={Boolean(error)}
-                />
+              <div>
+                <label htmlFor="auth-name" className="mb-1.5 block text-sm font-semibold text-slate-700">{t.name}</label>
+                <div className="relative">
+                  <User className={iconClass} />
+                  <input id="auth-name" type="text" value={name} onChange={(e) => { setName(e.target.value); clearError(); }} className={inputClass} autoComplete="name" />
+                </div>
               </div>
             )}
 
-            <div className="mb-[27px]">
-              <label htmlFor="auth-email" className="mb-[13px] block text-center text-[16px] font-bold text-[#334155]">
-                Email
-              </label>
+            <div>
+              <label htmlFor="auth-email" className="mb-1.5 block text-sm font-semibold text-slate-700">{t.email}</label>
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-[15px] top-1/2 h-5 w-5 -translate-y-1/2 text-[#8ea0b7]" />
-                <input
-                  id="auth-email"
-                  type="email"
-                  value={email}
-                  onChange={(event) => {
-                    setEmail(event.target.value);
-                    if (error) setError("");
-                  }}
-                  className="h-[60px] w-full rounded-[13px] border border-[#dae5f4] bg-[#e8f0fd] pl-[49px] pr-4 text-[16px] text-black outline-none transition placeholder:text-[#7b8ca4] focus:border-[#b5c7e5] focus:ring-2 focus:ring-[#d5e2f5]"
-                  autoComplete="email"
-                  aria-invalid={Boolean(error)}
-                />
+                <Mail className={iconClass} />
+                <input id="auth-email" type="email" dir="ltr" value={email} onChange={(e) => { setEmail(e.target.value); clearError(); }} className={`${inputClass} ${rtl ? "text-right" : ""}`} autoComplete="email" aria-invalid={Boolean(error)} />
               </div>
             </div>
 
-            <div className="mb-6">
-              <label htmlFor="auth-password" className="mb-[13px] block text-center text-[16px] font-bold text-[#334155]">
-                Password
-              </label>
+            <div>
+              <div className="mb-1.5 flex items-center justify-between">
+                <label htmlFor="auth-password" className="text-sm font-semibold text-slate-700">{t.password}</label>
+                {mode === "login" && (
+                  <a href="mailto:info@einsteindienstleistung.de?subject=Passwort%20zur%C3%BCcksetzen" className="text-sm font-semibold text-[#6d28d9] hover:underline">
+                    {t.forgot}
+                  </a>
+                )}
+              </div>
               <div className="relative">
-                <Lock className="pointer-events-none absolute left-[15px] top-1/2 h-5 w-5 -translate-y-1/2 text-[#8ea0b7]" />
+                <Lock className={iconClass} />
                 <input
                   id="auth-password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(event) => {
-                    setPassword(event.target.value);
-                    if (error) setError("");
-                  }}
-                  className="h-[60px] w-full rounded-[13px] border border-[#dae5f4] bg-[#e8f0fd] pl-[49px] pr-4 text-[16px] text-black outline-none transition placeholder:text-[#7b8ca4] focus:border-[#b5c7e5] focus:ring-2 focus:ring-[#d5e2f5]"
-                  autoComplete="current-password"
+                  onChange={(e) => { setPassword(e.target.value); clearError(); }}
+                  className={`${inputClass} pe-12`}
+                  autoComplete={mode === "register" ? "new-password" : "current-password"}
                   aria-invalid={Boolean(error)}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? t.hide : t.show}
+                  title={showPassword ? t.hide : t.show}
+                  className="absolute end-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+                >
+                  {showPassword ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
+                </button>
               </div>
             </div>
 
             {error && (
-              <p className="mb-4 rounded-[10px] bg-red-50 px-4 py-3 text-center text-[14px] font-semibold text-red-700" role="alert">
-                {error}
-              </p>
+              <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700" role="alert">{error}</p>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="h-[62px] w-full rounded-[13px] bg-[#111827] text-[18px] font-bold text-white transition hover:bg-[#1f2937] focus:outline-none focus:ring-2 focus:ring-[#111827] focus:ring-offset-2"
+              className="h-12 w-full rounded-xl bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] text-[15px] font-bold text-white shadow-lg shadow-purple-500/25 transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-[#7c3aed]/30 disabled:opacity-60"
             >
-              {loading ? "Please wait..." : mode === "register" ? "Create account" : "Sign in"}
+              {loading ? t.wait : mode === "register" ? t.submitNew : t.submit}
             </button>
-
-            <div className="mt-[17px] flex w-full items-center justify-between gap-4 text-[15px] leading-5">
-              <a
-                href="mailto:info@einsteindienstleistung.de?subject=Passwort%20zur%C3%BCcksetzen"
-                className="font-semibold text-[#60718d] transition hover:text-[#334155] focus:outline-none focus:ring-2 focus:ring-[#94a3b8] focus:ring-offset-2"
-              >
-                Forgot password?
-              </a>
-              <p className="text-[#60718d]">
-                Need an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode((current) => current === "login" ? "register" : "login");
-                    setError("");
-                  }}
-                  className="font-bold text-[#334155] transition hover:text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#94a3b8] focus:ring-offset-2"
-                >
-                  {mode === "login" ? "Sign up" : "Sign in"}
-                </button>
-              </p>
-            </div>
           </form>
         </div>
+
+        <nav className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-slate-400">
+          <Link to="/Impressum" className="hover:text-slate-600">Impressum</Link>
+          <Link to="/Datenschutz" className="hover:text-slate-600">Datenschutz</Link>
+          <Link to="/AGB" className="hover:text-slate-600">AGB</Link>
+        </nav>
       </section>
     </main>
   );

@@ -254,15 +254,15 @@ export default function Layout({ children, currentPageName }) {
       `}</style>
 
       {/* Header */}
-      <header className="bg-white text-[#1e3a5f] shadow-lg sticky top-0 z-50">
+      <header className="sticky top-0 z-50 border-b border-purple-100/80 bg-white/90 text-[#1e3a5f] backdrop-blur-md supports-[backdrop-filter]:bg-white/75">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to={createPageUrl("Home")} className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-              <EinsteinLogo size={36} />
-              <div className="hidden sm:block">
-                <span className="font-bold text-xl">EinStein</span>
-                <span className="text-purple-200 text-xs block -mt-1">Dienstleistung</span>
+              <EinsteinLogo size={40} />
+              <div className="hidden sm:block leading-tight">
+                <span className="block text-lg font-black tracking-wide text-[#3b1478]">EinStein</span>
+                <span className="block text-[11px] font-medium text-[#7c3aed]" dir="ltr">Vielfalt bildet – EinStein verbindet</span>
               </div>
             </Link>
 
@@ -672,11 +672,20 @@ export default function Layout({ children, currentPageName }) {
       <ChatBot lang={lang} />
 
       {/* Footer */}
-      <footer className="bg-[#6B46C1] text-white py-12 mt-12">
+      <footer className="mt-12 bg-gradient-to-br from-[#1f0b52] via-[#3b1478] to-[#6d28d9] py-12 text-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* About */}
                     <div>
+                      <div className="mb-4 flex items-center gap-3">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-md">
+                          <EinsteinLogo size={36} />
+                        </span>
+                        <span className="leading-tight">
+                          <span className="block text-xl font-black tracking-wide">EinStein</span>
+                          <span className="block text-xs text-purple-200" dir="ltr">Vielfalt bildet – EinStein verbindet</span>
+                        </span>
+                      </div>
                       <p className="text-gray-300 text-sm mb-4">
                 {{
                   de: "Behördengänge, Unterlagen und Büro – an einem Ort, in Ihrer Sprache.",
