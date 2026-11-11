@@ -102,6 +102,13 @@ export default function ChatBot({ lang = "de" }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Other pages (e.g. Customer Service) open the chat with: window.dispatchEvent(new Event("einstein:open-chat"))
+  useEffect(() => {
+    const open = () => setIsOpen(true);
+    window.addEventListener("einstein:open-chat", open);
+    return () => window.removeEventListener("einstein:open-chat", open);
+  }, []);
+
   const sendMessage = async (text) => {
     if (!text.trim() || isLoading) return;
 

@@ -27,7 +27,7 @@ class CustomerSupportController extends Controller
                     'city' => 'Frankfurt, Deutschland',
                     'phone_primary' => '069 27246275',
                     'phone_secondary' => '01573 1770487',
-                    'email' => 'info@e-in-s-tein.de',
+                    'email' => 'info@einsteindienstleistung.de',
                     'opening_hours' => 'Mo-Fr: 9:00 - 18:00 Uhr',
                     'chat_status' => 'online',
                 ],

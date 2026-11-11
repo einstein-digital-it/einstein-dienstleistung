@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
-import { createPageUrl } from "../utils";
 import { adminServicesApi, bookingsApi, priceAdminApi, providersApi, uploadApi } from "@/api/backendClient";
 import { getStoredAuthUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
@@ -24,8 +23,6 @@ import {
   ArrowRight,
   ArrowLeft,
   Loader2,
-  Star,
-  Users,
   AlertCircle,
   Ship
 } from "lucide-react";
@@ -33,9 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   AlertDialog,
@@ -46,9 +41,10 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
-import { format, isSameDay, addDays, startOfDay } from "date-fns";
+import { format } from "date-fns";
 import { getPriceNumber, toGrossPrice, vatNote, displayPrice, priceNote, plusVatNote, BUEROMANAGEMENT_TIERS } from "@/lib/priceUtils";
 import SecretariatPackages from "@/components/SecretariatPackages";
+import PageHero from "@/components/site/PageHero";
 
 const translations = {
   de: {
@@ -341,6 +337,16 @@ const translations = {
   }
     };
 
+// Texts of the redesigned booking page
+const B = {
+  de: { kicker: "Jetzt buchen", sub: "In drei kurzen Schritten zur passenden Dienstleistung.", steps: ["Leistung", "Ihre Daten", "Termin"], chooseHint: "Wählen Sie die gewünschte Dienstleistung.", optional: "Optional", orPackage: "Oder ein Monatspaket wählen", save: "Mit einem Monatspaket sparen Sie.", remove: "Entfernen", hours: "Anzahl der Stunden", packageHint: "Oder gehen Sie zurück und wählen Sie ein günstigeres Monatspaket.", monthly: "Monatspaket", change: "Ändern", pickFiles: "Dateien auswählen (PDF oder Fotos)", filesUploaded: "{n} Datei(en) hochgeladen", summary: "Ihre Buchung", service: "Leistung", when: "Termin", notChosen: "Noch nicht gewählt", price: "Preis", help: "Fragen zur Buchung?", helpText: "Wir helfen Ihnen gern am Telefon, Mo–Fr 9–18 Uhr.", loginText: "Bitte melden Sie sich an oder erstellen Sie ein Konto, um die Buchung fortzusetzen.", signIn: "Anmelden", later: "Später", bookingError: "Die Buchung konnte nicht gesendet werden.", agbPre: "Ich habe die ", agbAnd: " und die ", privacy: "Datenschutzerklärung", agbPost: " gelesen und akzeptiere sie. *", withdrawal: "Ich verlange ausdrücklich, dass EinStein vor Ablauf der Widerrufsfrist mit der Leistung beginnt. Mir ist bekannt, dass mein Widerrufsrecht bei vollständiger Vertragserfüllung erlischt." },
+  ar: { kicker: "احجز الآن", sub: "ثلاث خطوات قصيرة للوصول إلى الخدمة المناسبة.", steps: ["الخدمة", "بياناتك", "الموعد"], chooseHint: "اختر الخدمة التي تحتاجها.", optional: "اختياري", orPackage: "أو اختر باقة شهرية", save: "توفّر أكثر مع الباقات الشهرية.", remove: "إزالة", hours: "عدد الساعات المطلوبة", packageHint: "أو ارجع واختر باقة شهرية بسعر أقل.", monthly: "باقة شهرية", change: "تغيير", pickFiles: "اختر الملفات (PDF أو صور)", filesUploaded: "تم رفع {n} ملف", summary: "حجزك", service: "الخدمة", when: "الموعد", notChosen: "لم يُحدَّد بعد", price: "السعر", help: "هل لديك سؤال عن الحجز؟", helpText: "يسعدنا مساعدتك عبر الهاتف من الاثنين إلى الجمعة، من الساعة 9 إلى 18.", loginText: "يرجى تسجيل الدخول أو إنشاء حساب لمتابعة الحجز.", signIn: "تسجيل الدخول", later: "لاحقاً", bookingError: "تعذّر إرسال الحجز.", agbPre: "لقد قرأت ", agbAnd: " و", privacy: "سياسة الخصوصية", agbPost: " وأوافق عليها. *", withdrawal: "أطلب صراحةً أن يبدأ آينشتاين بتقديم الخدمة قبل انتهاء مهلة العدول، وأعلم أن حقي في العدول يسقط عند التنفيذ الكامل للعقد." },
+  en: { kicker: "Book now", sub: "Three short steps to the right service.", steps: ["Service", "Your details", "Date"], chooseHint: "Choose the service you need.", optional: "Optional", orPackage: "Or choose a monthly package", save: "Save with a monthly package.", remove: "Remove", hours: "Number of hours", packageHint: "Or go back and choose a cheaper monthly package.", monthly: "Monthly package", change: "Change", pickFiles: "Choose files (PDF or photos)", filesUploaded: "{n} file(s) uploaded", summary: "Your booking", service: "Service", when: "Date", notChosen: "Not chosen yet", price: "Price", help: "Questions about booking?", helpText: "We are happy to help by phone, Mon–Fri 9–18.", loginText: "Please sign in or create an account to continue your booking.", signIn: "Sign in", later: "Later", bookingError: "The booking could not be sent.", agbPre: "I have read the ", agbAnd: " and the ", privacy: "Privacy Policy", agbPost: " and accept them. *", withdrawal: "I expressly request that EinStein begins the service before the withdrawal period expires. I am aware that my right of withdrawal expires upon complete performance of the contract." },
+  tr: { kicker: "Hemen rezervasyon", sub: "Doğru hizmete üç kısa adımda ulaşın.", steps: ["Hizmet", "Bilgileriniz", "Randevu"], chooseHint: "İhtiyacınız olan hizmeti seçin.", optional: "İsteğe bağlı", orPackage: "Ya da aylık bir paket seçin", save: "Aylık paketle tasarruf edin.", remove: "Kaldır", hours: "Saat sayısı", packageHint: "Ya da geri dönüp daha uygun bir aylık paket seçin.", monthly: "Aylık paket", change: "Değiştir", pickFiles: "Dosya seçin (PDF veya fotoğraf)", filesUploaded: "{n} dosya yüklendi", summary: "Rezervasyonunuz", service: "Hizmet", when: "Randevu", notChosen: "Henüz seçilmedi", price: "Fiyat", help: "Rezervasyonla ilgili sorunuz mu var?", helpText: "Telefonla memnuniyetle yardımcı oluruz, Pzt–Cum 9–18.", loginText: "Rezervasyona devam etmek için lütfen giriş yapın veya hesap oluşturun.", signIn: "Giriş yap", later: "Sonra", bookingError: "Rezervasyon gönderilemedi.", agbPre: "", agbAnd: " ve ", privacy: "Gizlilik Politikası", agbPost: " metinlerini okudum ve kabul ediyorum. *", withdrawal: "EinStein'in hizmete cayma süresi dolmadan başlamasını açıkça talep ediyorum. Cayma hakkımın sözleşmenin tamamen ifasıyla sona ereceğini biliyorum." },
+  es: { kicker: "Reservar ahora", sub: "Tres pasos cortos hasta el servicio adecuado.", steps: ["Servicio", "Sus datos", "Cita"], chooseHint: "Elija el servicio que necesita.", optional: "Opcional", orPackage: "O elija un paquete mensual", save: "Ahorre con un paquete mensual.", remove: "Quitar", hours: "Número de horas", packageHint: "O vuelva atrás y elija un paquete mensual más económico.", monthly: "Paquete mensual", change: "Cambiar", pickFiles: "Elegir archivos (PDF o fotos)", filesUploaded: "{n} archivo(s) subido(s)", summary: "Su reserva", service: "Servicio", when: "Cita", notChosen: "Aún sin elegir", price: "Precio", help: "¿Preguntas sobre la reserva?", helpText: "Le ayudamos por teléfono, lun–vie 9–18.", loginText: "Inicie sesión o cree una cuenta para continuar con la reserva.", signIn: "Iniciar sesión", later: "Más tarde", bookingError: "No se pudo enviar la reserva.", agbPre: "He leído las ", agbAnd: " y la ", privacy: "Política de Privacidad", agbPost: " y las acepto. *", withdrawal: "Solicito expresamente que EinStein comience la prestación antes de que expire el plazo de desistimiento. Soy consciente de que mi derecho de desistimiento se extingue con la ejecución completa del contrato." },
+  uk: { kicker: "Забронювати", sub: "Три короткі кроки до потрібної послуги.", steps: ["Послуга", "Ваші дані", "Дата"], chooseHint: "Оберіть потрібну послугу.", optional: "Необов’язково", orPackage: "Або оберіть місячний пакет", save: "Із місячним пакетом вигідніше.", remove: "Видалити", hours: "Кількість годин", packageHint: "Або поверніться й оберіть вигідніший місячний пакет.", monthly: "Місячний пакет", change: "Змінити", pickFiles: "Оберіть файли (PDF або фото)", filesUploaded: "Завантажено файлів: {n}", summary: "Ваше бронювання", service: "Послуга", when: "Дата", notChosen: "Ще не обрано", price: "Ціна", help: "Питання щодо бронювання?", helpText: "Охоче допоможемо телефоном, пн–пт 9–18.", loginText: "Увійдіть або створіть акаунт, щоб продовжити бронювання.", signIn: "Увійти", later: "Пізніше", bookingError: "Не вдалося надіслати бронювання.", agbPre: "Я прочитав(-ла) ", agbAnd: " та ", privacy: "Політику конфіденційності", agbPost: " і погоджуюся з ними. *", withdrawal: "Я прямо прошу, щоб EinStein почав надавати послугу до закінчення строку відмови. Мені відомо, що моє право на відмову припиняється після повного виконання договору." },
+};
+
 const categories = [
   { key: "forms", icon: ClipboardList, color: "bg-teal-500" },
   { key: "admin", icon: FileText, color: "bg-green-500" },
@@ -438,8 +444,6 @@ export default function Booking() {
   // Steps: 1=category+service, 2=details, 3=datetime
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [bookingNumber, setBookingNumber] = useState("");
   const [user, setUser] = useState(null);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
@@ -694,18 +698,11 @@ export default function Booking() {
       const customerEmail = user?.email;
       
       if (!customerEmail) {
-        alert("يجب تسجيل الدخول أولاً");
+        setShowLoginAlert(true);
         setLoading(false);
         return;
       }
-
-      console.log("Creating booking with:", {
-        customer_email: customerEmail,
-        category: formData.category,
-        date: formData.date ? format(formData.date, "yyyy-MM-dd") : null,
-        time: formData.time,
-        full_form_data: formData
-      });
+      setSubmitError("");
 
       const bookingData = {
         booking_number: bookingNum,
@@ -730,15 +727,12 @@ export default function Booking() {
         withdrawal_consent: formData.withdrawal_consent
       };
 
-      console.log("Booking data to create:", bookingData);
-
       const createdBooking = await bookingsApi.createBooking(bookingData);
 
       setLoading(false);
       navigate(`/Payment?id=${createdBooking.id}`);
     } catch (error) {
-      console.error("Booking error:", error);
-      alert(`خطأ في الحجز: ${error.message}`);
+      setSubmitError(error.message || "");
       setLoading(false);
     }
   };
@@ -758,6 +752,7 @@ export default function Booking() {
   };
 
   const [showLoginAlert, setShowLoginAlert] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handleNextStep = () => {
     // Require login to proceed from step 1
@@ -768,545 +763,349 @@ export default function Booking() {
     setStep(step + 1);
   };
 
-  if (success) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white py-16">
-        <div className="max-w-2xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", duration: 0.6 }}
-          >
-            <Card className="text-center p-10 border-0 shadow-2xl shadow-slate-200/60 rounded-3xl overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#6B46C1] via-[#805AD5] to-[#c9a227]" />
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring" }}
-                className="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-200"
-              >
-                <CheckCircle className="w-12 h-12 text-white" />
-              </motion.div>
-              <h2 className="text-3xl font-black text-[#2e1065] mb-3 tracking-tight">{t.success_title}</h2>
-              <p className="text-gray-500 mb-8 text-lg leading-relaxed">{t.success_message}</p>
-              <div className="bg-gradient-to-br from-[#6B46C1]/5 to-[#805AD5]/10 rounded-2xl p-6 inline-block border border-[#6B46C1]/10">
-                <p className="text-sm text-gray-400 font-medium mb-1">{t.booking_number}</p>
-                <p className="text-3xl font-black text-[#2e1065] tracking-wide">{bookingNumber}</p>
-              </div>
-            </Card>
-          </motion.div>
-        </div>
-      </div>
-    );
-  }
+  const b = B[lang] || B.de;
+  const isRTL = lang === "ar";
+  const Forward = isRTL ? ArrowLeft : ArrowRight;
+  const Backward = isRTL ? ArrowRight : ArrowLeft;
+  const steps = b.steps;
+  const selectedCategory = categories.find((c) => c.key === formData.category);
+
+  // Price shown in the summary
+  const summaryPrice = (() => {
+    if (!formData.category) return null;
+    if (formData.category === "secretariat" && selectedPackage) return { value: toGrossPrice(selectedPackage.price, lang), note: vatNote(lang) };
+    if (formData.category === "secretariat") return { value: `${toGrossPrice((formData.hours || 1) * 45, lang)} €`, note: vatNote(lang) };
+    if (formData.category === "bueromanagement") {
+      return selectedPackage ? { value: `${displayPrice(selectedPackage.price, lang, "bueromanagement")} € ${(BM_TEXT[lang] || BM_TEXT.de).month}`, note: plusVatNote(lang) } : null;
+    }
+    const info = getCategoryPriceInfo(formData.category);
+    return info ? { value: `${displayPrice(info.price, lang, formData.category)} ${info.unit || ""}`.trim(), note: priceNote(lang, formData.category) } : null;
+  })();
+
+  const field = "h-12 rounded-xl border-slate-200 bg-slate-50 text-[15px] focus-visible:border-[#7c3aed] focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-[#7c3aed]/15 focus-visible:ring-offset-0";
+  const labelClass = "mb-1.5 flex items-center gap-2 text-sm font-semibold text-slate-700";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white py-12">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-10"
-        >
-          <span className="inline-block px-4 py-1.5 bg-[#6B46C1]/10 text-[#6B46C1] rounded-full text-sm font-semibold mb-4 tracking-wide">
-            {lang === "ar" ? "احجز خدمتك" : lang === "en" ? "BOOK YOUR SERVICE" : lang === "uk" ? "ЗАБРОНЮЙТЕ ПОСЛУГУ" : "JETZT BUCHEN"}
-          </span>
-          <h1 className="text-3xl md:text-4xl font-black text-[#2e1065] mb-3 tracking-tight">
-            {t.title}
-          </h1>
-          <p className="text-gray-500 text-base max-w-xl mx-auto">
-            {lang === "ar" ? "خطوات بسيطة لحجز الخدمة التي تحتاجها" : lang === "en" ? "A few simple steps to book the service you need" : lang === "uk" ? "Кілька простих кроків, щоб забронювати потрібну послугу" : "In wenigen Schritten zur gewünschten Dienstleistung"}
-          </p>
-        </motion.div>
+    <div className="overflow-x-hidden bg-white">
+      <PageHero kicker={b.kicker} title={t.title} subtitle={b.sub}>
+        {/* Progress */}
+        <ol className="mt-8 grid max-w-2xl grid-cols-3 gap-2">
+          {steps.map((label, i) => {
+            const num = i + 1;
+            const done = step > num;
+            const active = step === num;
+            return (
+              <li key={label} className="flex flex-col gap-2">
+                <span className={`h-1.5 rounded-full transition-all duration-500 ${step >= num ? "bg-gradient-to-r from-[#4c1d95] to-[#7c3aed]" : "bg-slate-200"}`} />
+                <span className={`flex items-center gap-1.5 text-xs font-bold sm:text-sm ${active ? "text-[#4c1d95]" : done ? "text-slate-600" : "text-slate-400"}`}>
+                  {done ? <CheckCircle className="h-4 w-4 shrink-0 text-emerald-500" /> : <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] ${active ? "bg-[#4c1d95] text-white" : "bg-slate-200 text-slate-500"}`}>{num}</span>}
+                  {label}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      </PageHero>
 
-        {/* Progress Steps */}
-        <div className="flex justify-center mb-10">
-          <div className="flex items-center gap-2">
-            {[
-              { num: 1, label: lang === "ar" ? "اختر الخدمة" : lang === "en" ? "Choose Service" : lang === "uk" ? "Оберіть послугу" : "Dienst wählen" },
-              { num: 2, label: lang === "ar" ? "بياناتك" : lang === "en" ? "Your Details" : lang === "uk" ? "Ваші дані" : "Ihre Daten" },
-              { num: 3, label: lang === "ar" ? "الموعد" : lang === "en" ? "Date & Time" : lang === "uk" ? "Дата і час" : "Termin" },
-            ].map((s, idx) => (
-              <React.Fragment key={s.num}>
-                <div className="flex flex-col items-center">
-                  <div 
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-sm transition-all duration-300 ${
-                      step >= s.num ? "bg-gradient-to-br from-[#6B46C1] to-[#805AD5] text-white shadow-purple-200 shadow-md" : "bg-white border-2 border-gray-200 text-gray-400"
-                    }`}
-                  >
-                    {step > s.num ? <CheckCircle className="w-5 h-5" /> : s.num}
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 pb-16 lg:grid-cols-[1fr_340px] lg:items-start">
+        {/* Step content */}
+        <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-8 md:p-10">
+          {step === 1 && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <h2 className="text-2xl font-black text-[#1f0b52]">{t.step1}</h2>
+              <p className="mt-1 text-sm text-slate-500">{b.chooseHint}</p>
+              <div className="mt-6 grid grid-cols-2 gap-3 xl:grid-cols-3">
+                {categories.map((cat) => {
+                  const Icon = cat.icon;
+                  const isSelected = formData.category === cat.key;
+                  const priceInfo = getCategoryPriceInfo(cat.key);
+                  return (
+                    <button
+                      key={cat.key}
+                      type="button"
+                      aria-pressed={isSelected}
+                      onClick={() => {
+                        setFormData((prev) => ({ ...prev, category: cat.key, service_id: `${cat.key}_main`, provider_id: "" }));
+                        setSelectedProvider(null);
+                        setSelectedPackage(null);
+                      }}
+                      className={`relative flex h-full flex-col rounded-2xl border-2 p-3 text-start transition sm:p-4 ${isSelected ? "border-[#7c3aed] bg-[#f7f3ff] shadow-md shadow-purple-500/10" : "border-slate-100 bg-white hover:border-purple-200 hover:bg-purple-50/40"}`}
+                    >
+                      {isSelected && <CheckCircle className="absolute end-3 top-3 h-5 w-5 text-[#7c3aed]" />}
+                      <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${isSelected ? "bg-[#4c1d95] text-white" : "bg-purple-50 text-[#6d28d9]"}`}><Icon className="h-5 w-5" /></span>
+                      <span className="mt-3 pe-6 text-sm font-bold leading-snug text-[#1f0b52]">{getCategoryName(cat.key)}</span>
+                      {priceInfo && (
+                        <span className="mt-auto pt-2 text-xs font-semibold text-[#6d28d9]">
+                          <bdi>{displayPrice(priceInfo.price, lang, cat.key)} {priceInfo.unit}</bdi>
+                          <span className="block font-medium text-slate-400">{priceNote(lang, cat.key)}</span>
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {formData.category === "secretariat" && (
+                <div className="mt-10 border-t border-slate-100 pt-8">
+                  <div className="text-center">
+                    <span className="inline-block rounded-full bg-purple-50 px-3 py-1 text-xs font-bold text-[#6d28d9]">{b.optional}</span>
+                    <h3 className="mt-3 text-xl font-bold text-[#1f0b52]">{b.orPackage}</h3>
+                    <p className="mt-1 text-sm text-slate-500">{b.save}</p>
                   </div>
-                  <span className={`text-xs mt-1.5 hidden sm:block font-medium ${step >= s.num ? "text-[#6B46C1]" : "text-gray-400"}`}>{s.label}</span>
-                </div>
-                {idx < 2 && (
-                  <div className={`w-12 md:w-24 h-0.5 mb-5 rounded-full transition-all duration-500 ${step > s.num ? "bg-gradient-to-r from-[#6B46C1] to-[#805AD5]" : "bg-gray-200"}`} />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-
-        {/* Step Content */}
-        <Card className="border-0 shadow-xl shadow-slate-200/60 rounded-2xl overflow-hidden">
-          <CardContent className="p-6 md:p-10">
-            {/* Step 1: Category + Service combined */}
-            {step === 1 && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <h2 className="text-2xl font-black text-[#2e1065] mb-1 tracking-tight">{t.step1}</h2>
-                <p className="text-gray-400 text-sm mb-6">
-                  {lang === "ar" ? "اختر نوع الخدمة التي تحتاجها" : lang === "en" ? "Choose the service you need" : lang === "uk" ? "Оберіть потрібну послугу" : "Wählen Sie die gewünschte Dienstleistung"}
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {categories.map((cat) => {
-                    const Icon = cat.icon;
-                    const isSelected = formData.category === cat.key;
-                    const priceInfo = getCategoryPriceInfo(cat.key);
-                    return (
-                      <button
-                        key={cat.key}
-                        onClick={() => {
-                          const newServiceId = `${cat.key}_main`;
-                          setFormData(prev => ({ ...prev, category: cat.key, service_id: newServiceId, provider_id: "" }));
-                          setSelectedProvider(null);
-                          setSelectedPackage(null);
-                        }}
-                        className={`p-5 rounded-2xl border-2 transition-all duration-200 text-start relative shadow-sm hover:shadow-md ${
-                          isSelected ? "border-[#6B46C1] bg-gradient-to-br from-[#6B46C1]/10 to-[#805AD5]/5 shadow-purple-100" : "border-gray-100 hover:border-[#6B46C1]/40 bg-white"
-                        }`}
-                      >
-                        {isSelected && <CheckCircle className="w-4 h-4 text-[#6B46C1] absolute top-2 end-2" />}
-                        <div className={`w-10 h-10 ${cat.color} rounded-xl flex items-center justify-center mb-2`}>
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        <p className="font-semibold text-[#2e1065] text-sm leading-tight">{getCategoryName(cat.key)}</p>
-                        <p className="text-xs text-[#c9a227] font-medium mt-1">
-                          {priceInfo
-                            ? `${displayPrice(priceInfo.price, lang, cat.key)} ${priceInfo.unit} · ${priceNote(lang, cat.key)}`
-                            : ""
-                          }
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Optional packages for secretariat */}
-                {formData.category === "secretariat" && (
-                  <div className="mt-10 pt-8 border-t border-gray-100">
-                    <div className="text-center mb-2">
-                      <span className="inline-block px-3 py-1 bg-purple-50 text-[#6B46C1] rounded-full text-xs font-semibold">
-                        {lang === "ar" ? "اختياري" : lang === "en" ? "OPTIONAL" : lang === "uk" ? "НЕОБОВ’ЯЗКОВО" : "OPTIONAL"}
+                  {selectedPackage && (
+                    <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700">
+                        <CheckCircle className="h-4 w-4" />{selectedPackage.name} – {toGrossPrice(selectedPackage.price, lang)}
                       </span>
+                      <button type="button" onClick={() => setSelectedPackage(null)} className="text-sm font-semibold text-slate-500 hover:text-slate-700">{b.remove}</button>
                     </div>
-                    <h3 className="text-xl font-bold text-center text-[#2e1065] mb-2">
-                      {lang === "ar" ? "أو اختر باكيج شهري جاهز" : lang === "en" ? "Or choose a monthly package" : lang === "uk" ? "Або оберіть місячний пакет" : "Oder wählen Sie ein Monatspaket"}
-                    </h3>
-                    <p className="text-center text-gray-400 text-sm mb-6">
-                      {lang === "ar" ? "وفّر مع باقاتنا الشهرية" : lang === "en" ? "Save with our monthly plans" : lang === "uk" ? "Заощаджуйте з місячними планами" : "Sparen Sie mit unseren Monatsplänen"}
-                    </p>
-                    {selectedPackage && (
-                      <div className="text-center mb-4">
-                        <Badge className="bg-green-100 text-green-800">
-                          <CheckCircle className="w-3 h-3 me-1" />
-                          {selectedPackage.name} – {toGrossPrice(selectedPackage.price, lang)}
-                        </Badge>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setSelectedPackage(null)}
-                          className="text-xs text-gray-500 ms-2"
-                        >
-                          {lang === "ar" ? "إزالة" : lang === "en" ? "Remove" : lang === "uk" ? "Видалити" : "Entfernen"}
-                        </Button>
-                      </div>
-                    )}
+                  )}
+                  <div className="mt-6">
                     <SecretariatPackages
                       lang={lang}
                       onSelectPackage={(pkg) => {
                         setSelectedPackage(pkg);
-                        setFormData(prev => ({
-                          ...prev,
-                          service_id: `secretariat_${pkg.name.replace(/\s+/g, "_").toLowerCase()}`,
-                        }));
+                        setFormData((prev) => ({ ...prev, service_id: `secretariat_${pkg.name.replace(/\s+/g, "_").toLowerCase()}` }));
                       }}
                     />
                   </div>
+                </div>
+              )}
+
+              {formData.category === "bueromanagement" && (() => {
+                const bm = BM_TEXT[lang] || BM_TEXT.de;
+                return (
+                  <div className="mt-10 border-t border-slate-100 pt-8">
+                    <h3 className="text-center text-xl font-bold text-[#1f0b52]">{bm.title}</h3>
+                    <p className="mt-1 text-center text-sm text-slate-500">{bm.hint}</p>
+                    <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                      {BUEROMANAGEMENT_TIERS.map((tier) => {
+                        const active = selectedPackage?.tier === tier.key;
+                        return (
+                          <button
+                            key={tier.key}
+                            type="button"
+                            aria-pressed={active}
+                            onClick={() => setSelectedPackage({ tier: tier.key, name: `${bm[tier.key]} (${tier.employees} ${bm.employees})`, price: tier.price })}
+                            className={`relative rounded-2xl border-2 p-5 text-start transition ${active ? "border-[#7c3aed] bg-[#f7f3ff]" : "border-slate-100 bg-white hover:border-purple-200"}`}
+                          >
+                            {active && <CheckCircle className="absolute end-3 top-3 h-5 w-5 text-[#7c3aed]" />}
+                            <p className="font-bold text-[#1f0b52]">{bm[tier.key]}</p>
+                            <p className="text-xs text-slate-500">{tier.employees} {bm.employees}</p>
+                            <p className="mt-3 text-2xl font-black text-[#4c1d95]">{displayPrice(tier.price, lang, "bueromanagement")} € <span className="text-sm font-medium text-slate-500">{bm.month}</span></p>
+                            <p className="text-[11px] text-slate-400">{plusVatNote(lang)}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+            </motion.div>
+          )}
+
+          {step === 2 && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <h2 className="text-2xl font-black text-[#1f0b52]">{t.step3}</h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <Label htmlFor="bk-name" className={labelClass}><User className="h-4 w-4 text-slate-400" />{t.name} *</Label>
+                  <Input id="bk-name" className={field} autoComplete="name" value={formData.customer_name} onChange={(e) => setFormData((prev) => ({ ...prev, customer_name: e.target.value }))} />
+                </div>
+                <div>
+                  <Label htmlFor="bk-email" className={labelClass}><Mail className="h-4 w-4 text-slate-400" />{t.email} *</Label>
+                  <Input id="bk-email" type="email" dir="ltr" className={field} autoComplete="email" value={formData.customer_email} onChange={(e) => setFormData((prev) => ({ ...prev, customer_email: e.target.value }))} />
+                </div>
+                <div>
+                  <Label htmlFor="bk-phone" className={labelClass}><Phone className="h-4 w-4 text-slate-400" />{t.phone} *</Label>
+                  <Input id="bk-phone" type="tel" dir="ltr" className={field} autoComplete="tel" value={formData.customer_phone} onChange={(e) => setFormData((prev) => ({ ...prev, customer_phone: e.target.value }))} />
+                </div>
+                <div>
+                  <Label htmlFor="bk-address" className={labelClass}><MapPin className="h-4 w-4 text-slate-400" />{t.address}</Label>
+                  <Input id="bk-address" className={field} autoComplete="street-address" value={formData.address} onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))} />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="bk-desc" className={labelClass}>{t.description} *</Label>
+                <Textarea id="bk-desc" rows={5} className="rounded-xl border-slate-200 bg-slate-50 text-[15px] focus-visible:border-[#7c3aed] focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-[#7c3aed]/15 focus-visible:ring-offset-0" placeholder={t.description_placeholder} value={formData.description} onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))} />
+              </div>
+
+              {formData.category === "secretariat" && !selectedPackage && (
+                <div className="rounded-2xl border-2 border-purple-100 bg-[#f7f3ff] p-5">
+                  <Label className="mb-3 flex items-center gap-2 font-bold text-[#1f0b52]"><Clock className="h-4 w-4 text-[#7c3aed]" />{b.hours}</Label>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Button type="button" variant="outline" size="icon" aria-label="−" onClick={() => setFormData((prev) => ({ ...prev, hours: Math.max(1, (prev.hours || 1) - 1) }))} className="rounded-full">−</Button>
+                    <Input type="number" min="1" max="100" value={formData.hours || 1} onChange={(e) => setFormData((prev) => ({ ...prev, hours: Math.max(1, parseInt(e.target.value) || 1) }))} className="w-24 text-center text-xl font-bold" />
+                    <Button type="button" variant="outline" size="icon" aria-label="+" onClick={() => setFormData((prev) => ({ ...prev, hours: (prev.hours || 1) + 1 }))} className="rounded-full">+</Button>
+                    <span className="text-sm text-slate-600">
+                      × {toGrossPrice(45, lang)} € = <span className="text-lg font-black text-[#4c1d95]">{toGrossPrice((formData.hours || 1) * 45, lang)} €</span> <span className="text-xs text-slate-400">{vatNote(lang)}</span>
+                    </span>
+                  </div>
+                  <p className="mt-2 text-xs text-slate-500">{b.packageHint}</p>
+                </div>
+              )}
+
+              {formData.category === "secretariat" && selectedPackage && (
+                <div className="flex items-center justify-between gap-4 rounded-2xl border-2 border-[#7c3aed] bg-[#f7f3ff] p-5">
+                  <div>
+                    <span className="rounded-full bg-[#4c1d95] px-2.5 py-0.5 text-xs font-bold text-white">{b.monthly}</span>
+                    <p className="mt-2 text-lg font-bold text-[#1f0b52]">{selectedPackage.name}</p>
+                    <p className="text-2xl font-black text-[#4c1d95]">{toGrossPrice(selectedPackage.price, lang)}</p>
+                  </div>
+                  <Button type="button" variant="outline" size="sm" onClick={() => { setSelectedPackage(null); setFormData((prev) => ({ ...prev, service_id: "secretariat_main" })); }}>{b.change}</Button>
+                </div>
+              )}
+
+              <div>
+                <Label htmlFor="bk-files" className={labelClass}><Upload className="h-4 w-4 text-slate-400" />{t.upload_docs}</Label>
+                <label htmlFor="bk-files" className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center transition hover:border-[#7c3aed] hover:bg-purple-50/40">
+                  {loading ? <Loader2 className="h-6 w-6 animate-spin text-[#7c3aed]" /> : <Upload className="h-6 w-6 text-[#7c3aed]" />}
+                  <span className="text-sm font-semibold text-slate-600">{b.pickFiles}</span>
+                </label>
+                <input id="bk-files" type="file" multiple className="sr-only" onChange={handleFileUpload} disabled={loading} />
+                {formData.documents_urls.length > 0 && (
+                  <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-emerald-700"><CheckCircle className="h-4 w-4" />{b.filesUploaded.replace("{n}", formData.documents_urls.length)}</p>
                 )}
-                {/* Büro-Management: package by number of employees */}
-                {formData.category === "bueromanagement" && (() => {
-                  const bm = BM_TEXT[lang] || BM_TEXT.de;
-                  return (
-                    <div className="mt-10 pt-8 border-t border-gray-100">
-                      <h3 className="text-xl font-bold text-center text-[#2e1065] mb-2">{bm.title}</h3>
-                      <p className="text-center text-gray-400 text-sm mb-6">{bm.hint}</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        {BUEROMANAGEMENT_TIERS.map((tier) => {
-                          const active = selectedPackage?.tier === tier.key;
+              </div>
+            </motion.div>
+          )}
+
+          {step === 3 && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <h2 className="text-2xl font-black text-[#1f0b52]">{t.step4}</h2>
+              <div className="mt-6 grid gap-8 md:grid-cols-2">
+                <div>
+                  <p className={labelClass}><Calendar className="h-4 w-4 text-slate-400" />{t.select_date}</p>
+                  <CalendarComponent
+                    mode="single"
+                    selected={formData.date}
+                    onSelect={(newDate) => { if (newDate) setFormData((prev) => ({ ...prev, date: newDate, time: "" })); }}
+                    fromDate={new Date()}
+                    className="w-fit rounded-2xl border border-slate-200"
+                  />
+                </div>
+                <div>
+                  <p className={labelClass}><Clock className="h-4 w-4 text-slate-400" />{t.select_time}</p>
+                  {loadingBookings ? (
+                    <div className="flex items-center justify-center py-8 text-slate-500"><Loader2 className="me-2 h-5 w-5 animate-spin" />{t.loading_slots}</div>
+                  ) : (
+                    <>
+                      <p className={`mb-3 inline-flex rounded-full px-3 py-1 text-xs font-bold ${availableSlots.some((s) => s.available) ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>
+                        {availableSlots.some((s) => s.available) ? `${availableSlots.filter((s) => s.available).length} ${t.slots_available}` : t.no_slots}
+                      </p>
+                      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-3">
+                        {availableSlots.map((slot) => {
+                          const chosen = formData.time === slot.time;
                           return (
                             <button
-                              key={tier.key}
+                              key={slot.time}
                               type="button"
-                              onClick={() => setSelectedPackage({ tier: tier.key, name: `${bm[tier.key]} (${tier.employees} ${bm.employees})`, price: tier.price })}
-                              className={`p-5 rounded-2xl border-2 text-start relative transition-all ${active ? "border-[#6B46C1] bg-[#6B46C1]/10" : "border-gray-100 hover:border-[#6B46C1]/40 bg-white"}`}
+                              disabled={!slot.available}
+                              aria-pressed={chosen}
+                              onClick={() => slot.available && setFormData((prev) => ({ ...prev, time: slot.time }))}
+                              className={`h-11 rounded-xl border-2 text-sm font-bold transition ${!slot.available ? "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300 line-through" : chosen ? "border-[#7c3aed] bg-[#4c1d95] text-white" : "border-slate-200 bg-white text-slate-700 hover:border-[#7c3aed]"}`}
+                              dir="ltr"
                             >
-                              {active && <CheckCircle className="w-4 h-4 text-[#6B46C1] absolute top-2 end-2" />}
-                              <p className="font-semibold text-[#2e1065]">{bm[tier.key]}</p>
-                              <p className="text-xs text-gray-500">{tier.employees} {bm.employees}</p>
-                              <p className="text-2xl font-black text-[#6B46C1] mt-2">
-                                {displayPrice(tier.price, lang, "bueromanagement")} € <span className="text-sm font-medium text-gray-500">{bm.month}</span>
-                              </p>
-                              <p className="text-[11px] text-gray-400">{plusVatNote(lang)}</p>
+                              {slot.time}
                             </button>
                           );
                         })}
                       </div>
-                    </div>
-                  );
-                })()}
-              </motion.div>
-            )}
-
-            {/* Step 2: Details */}
-            {step === 2 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="space-y-6"
-              >
-                <h2 className="text-2xl font-black text-[#2e1065] mb-6 tracking-tight">{t.step3}</h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="flex items-center gap-2 mb-2">
-                      <User className="w-4 h-4" /> {t.name}
-                    </Label>
-                    <Input
-                      value={formData.customer_name}
-                      onChange={(e) => setFormData(prev => ({ ...prev, customer_name: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label className="flex items-center gap-2 mb-2">
-                      <Mail className="w-4 h-4" /> {t.email}
-                    </Label>
-                    <Input
-                      type="email"
-                      value={formData.customer_email}
-                      onChange={(e) => setFormData(prev => ({ ...prev, customer_email: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label className="flex items-center gap-2 mb-2">
-                      <Phone className="w-4 h-4" /> {t.phone}
-                    </Label>
-                    <Input
-                      value={formData.customer_phone}
-                      onChange={(e) => setFormData(prev => ({ ...prev, customer_phone: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label className="flex items-center gap-2 mb-2">
-                      <MapPin className="w-4 h-4" /> {t.address}
-                    </Label>
-                    <Input
-                      value={formData.address}
-                      onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="mb-2 block">{t.description}</Label>
-                  <Textarea
-                    rows={4}
-                    placeholder={t.description_placeholder}
-                    value={formData.description}
-                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  />
-                </div>
-
-                {/* Hours selector for secretariat (only if no package selected) */}
-                {formData.category === "secretariat" && !selectedPackage && (
-                  <div className="bg-gradient-to-br from-purple-50 to-white border-2 border-purple-100 rounded-2xl p-5">
-                    <Label className="flex items-center gap-2 mb-3 font-semibold text-[#2e1065]">
-                      <Clock className="w-4 h-4 text-[#6B46C1]" />
-                      {lang === "ar" ? "عدد الساعات المطلوبة" : lang === "en" ? "Number of hours" : lang === "uk" ? "Кількість годин" : "Anzahl der Stunden"}
-                    </Label>
-                    <div className="flex items-center gap-3">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => setFormData(prev => ({ ...prev, hours: Math.max(1, (prev.hours || 1) - 1) }))}
-                        className="rounded-full"
-                      >
-                        −
-                      </Button>
-                      <Input
-                        type="number"
-                        min="1"
-                        max="100"
-                        value={formData.hours || 1}
-                        onChange={(e) => {
-                          const v = parseInt(e.target.value) || 1;
-                          setFormData(prev => ({ ...prev, hours: Math.max(1, v) }));
-                        }}
-                        className="text-center text-xl font-bold w-24"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => setFormData(prev => ({ ...prev, hours: (prev.hours || 1) + 1 }))}
-                        className="rounded-full"
-                      >
-                        +
-                      </Button>
-                      <span className="text-sm text-gray-500 ms-2">
-                        × {toGrossPrice(45, lang)} € = <span className="font-bold text-[#6B46C1] text-lg">{toGrossPrice((formData.hours || 1) * 45, lang)} €</span>{" "}<span className="text-xs text-gray-400">{vatNote(lang)}</span>
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-400 mt-2">
-                      {lang === "ar" ? "أو يمكنك العودة لاختيار باكيج شهري بسعر مخفّض" : lang === "en" ? "Or go back and choose a discounted monthly package" : lang === "uk" ? "Або поверніться й оберіть вигідний місячний пакет" : "Oder wählen Sie ein vergünstigtes Monatspaket"}
-                    </p>
-                  </div>
-                )}
-
-                {/* Show selected package summary */}
-                {formData.category === "secretariat" && selectedPackage && (
-                  <div className="bg-gradient-to-br from-purple-50 to-white border-2 border-[#6B46C1] rounded-2xl p-5">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Badge className="bg-[#6B46C1] text-white mb-2">
-                          {lang === "ar" ? "باكيج شهري" : lang === "en" ? "Monthly Package" : lang === "uk" ? "Місячний пакет" : "Monatspaket"}
-                        </Badge>
-                        <p className="font-bold text-[#2e1065] text-lg">{selectedPackage.name}</p>
-                        <p className="text-2xl font-black text-[#6B46C1]">{toGrossPrice(selectedPackage.price, lang)}</p>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedPackage(null);
-                          setFormData(prev => ({ ...prev, service_id: "secretariat_main" }));
-                        }}
-                      >
-                        {lang === "ar" ? "تغيير" : lang === "en" ? "Change" : lang === "uk" ? "Змінити" : "Ändern"}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <Label className="flex items-center gap-2 mb-2">
-                    <Upload className="w-4 h-4" /> {t.upload_docs}
-                  </Label>
-                  <Input
-                    type="file"
-                    multiple
-                    onChange={handleFileUpload}
-                    disabled={loading}
-                  />
-                  {formData.documents_urls.length > 0 && (
-                    <p className="text-sm text-green-600 mt-2">
-                      {formData.documents_urls.length} file(s) uploaded
-                    </p>
+                    </>
                   )}
                 </div>
-              </motion.div>
+              </div>
+
+              <div className="mt-8 space-y-4 rounded-2xl border border-slate-100 bg-slate-50 p-5">
+                <label className="flex cursor-pointer items-start gap-3">
+                  <Checkbox checked={formData.agb_accepted} onCheckedChange={(v) => setFormData((prev) => ({ ...prev, agb_accepted: v === true }))} className="mt-0.5" />
+                  <span className="text-sm text-slate-700">
+                    {b.agbPre}<Link to="/AGB" target="_blank" className="font-semibold text-[#6d28d9] underline">AGB</Link>{b.agbAnd}<Link to="/Datenschutz" target="_blank" className="font-semibold text-[#6d28d9] underline">{b.privacy}</Link>{b.agbPost}
+                  </span>
+                </label>
+                <label className="flex cursor-pointer items-start gap-3">
+                  <Checkbox checked={formData.withdrawal_consent} onCheckedChange={(v) => setFormData((prev) => ({ ...prev, withdrawal_consent: v === true }))} className="mt-0.5" />
+                  <span className="text-sm text-slate-700">{b.withdrawal}</span>
+                </label>
+              </div>
+            </motion.div>
+          )}
+
+          {submitError && <p className="mt-6 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700" role="alert">{b.bookingError} {submitError}</p>}
+
+          {/* Navigation */}
+          <div className="mt-10 flex items-center justify-between gap-3 border-t border-slate-100 pt-6">
+            {step > 1 ? (
+              <Button variant="outline" onClick={() => setStep(step - 1)} className="h-12 rounded-xl border-slate-200 px-5">
+                <Backward className="me-2 h-4 w-4" />{t.back}
+              </Button>
+            ) : <span />}
+            {step < 3 ? (
+              <Button type="button" onClick={handleNextStep} disabled={!canProceed()} className="h-12 rounded-xl bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] px-8 font-bold text-white shadow-lg shadow-purple-500/25 hover:brightness-110">
+                {t.next}<Forward className="ms-2 h-4 w-4" />
+              </Button>
+            ) : (
+              <Button type="button" onClick={handleSubmit} disabled={loading || !canProceed()} className="h-12 rounded-xl bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] px-8 font-bold text-white shadow-lg shadow-purple-500/25 hover:brightness-110">
+                {loading ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <CheckCircle className="me-2 h-4 w-4" />}{t.submit}
+              </Button>
             )}
+          </div>
+        </div>
 
-            {/* Step 3: Date & Time */}
-            {step === 3 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                <h2 className="text-xl font-bold text-[#2e1065] mb-6">{t.step4}</h2>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div>
-                    <Label className="flex items-center gap-2 mb-4">
-                      <Calendar className="w-4 h-4" /> {t.select_date}
-                    </Label>
-                    <CalendarComponent
-                      mode="single"
-                      selected={formData.date}
-                      onSelect={(newDate) => {
-                        console.log("Selected date:", newDate);
-                        if (newDate) {
-                          setFormData(prev => ({ ...prev, date: newDate, time: "" }));
-                        }
-                      }}
-                      fromDate={new Date()}
-                      className="rounded-md border"
-                    />
-                    
-                    {/* Legend */}
-                    <div className="flex gap-4 mt-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded bg-green-100 border border-green-300" />
-                        <span className="text-gray-600">{t.available}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded bg-red-100 border border-red-300" />
-                        <span className="text-gray-600">{t.booked}</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <Label className="flex items-center gap-2 mb-4">
-                      <Clock className="w-4 h-4" /> {t.select_time}
-                    </Label>
-                    
-                    {loadingBookings ? (
-                      <div className="flex items-center justify-center py-8 text-gray-500">
-                        <Loader2 className="w-5 h-5 animate-spin me-2" />
-                        {t.loading_slots}
-                      </div>
-                    ) : (
-                      <>
-                        {/* Available slots count */}
-                        <div className="mb-4">
-                          <Badge 
-                            className={`${
-                              availableSlots.filter(s => s.available).length > 0 
-                                ? "bg-green-100 text-green-800" 
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {availableSlots.filter(s => s.available).length > 0 
-                              ? `${availableSlots.filter(s => s.available).length} ${t.slots_available}`
-                              : t.no_slots
-                            }
-                          </Badge>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-2">
-                          {availableSlots.map((slot) => (
-                            <button
-                              key={slot.time}
-                              type="button"
-                              onClick={() => {
-                                if (slot.available) {
-                                  setFormData(prev => ({ ...prev, time: slot.time }));
-                                }
-                              }}
-                              disabled={!slot.available}
-                              className={`p-3 rounded-lg border-2 transition-all relative ${
-                                !slot.available 
-                                  ? "border-red-200 bg-red-50 text-red-400 cursor-not-allowed line-through"
-                                  : formData.time === slot.time 
-                                    ? "border-[#6B46C1] bg-[#6B46C1]/10 font-medium" 
-                                    : "border-gray-200 hover:border-[#6B46C1]/50 bg-green-50"
-                              }`}
-                            >
-                              <span>{slot.time}</span>
-                              {slot.available && (
-                                <span className="absolute top-1 end-1">
-                                  <CheckCircle className="w-3 h-3 text-green-500" />
-                                </span>
-                              )}
-                            </button>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </div>
+        {/* Summary */}
+        <aside className="space-y-4 lg:sticky lg:top-24">
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-lg font-black text-[#1f0b52]">{b.summary}</h2>
+            <dl className="mt-4 space-y-3 text-sm">
+              <div className="flex items-start gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-[#6d28d9]">
+                  {selectedCategory ? <selectedCategory.icon className="h-4 w-4" /> : <ClipboardList className="h-4 w-4" />}
+                </span>
+                <div className="min-w-0">
+                  <dt className="text-xs font-semibold text-slate-400">{b.service}</dt>
+                  <dd className="font-bold text-[#1f0b52]">{formData.category ? getCategoryName(formData.category) : b.notChosen}</dd>
+                  {selectedPackage && <dd className="text-slate-600">{selectedPackage.name}</dd>}
+                  {formData.category === "secretariat" && !selectedPackage && step > 1 && <dd className="text-slate-600">{formData.hours || 1} h</dd>}
                 </div>
-                {/* AGB + withdrawal consent */}
-                <div className="mt-8 space-y-4 rounded-2xl border border-gray-100 bg-gray-50 p-5">
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    <Checkbox
-                      checked={formData.agb_accepted}
-                      onCheckedChange={(v) => setFormData(prev => ({ ...prev, agb_accepted: v === true }))}
-                      className="mt-0.5"
-                    />
-                    <span className="text-sm text-gray-700">
-                      {lang === "ar" ? "لقد قرأت " : lang === "en" ? "I have read the " : lang === "uk" ? "Я прочитав(-ла) " : lang === "tr" ? "Okudum ve kabul ediyorum: " : lang === "es" ? "He leído y acepto las " : "Ich habe die "}
-                      <Link to="/AGB" target="_blank" className="font-semibold text-[#6B46C1] underline">AGB</Link>
-                      {lang === "ar" ? " و" : lang === "en" ? " and the " : lang === "uk" ? " та " : lang === "tr" ? " ve " : lang === "es" ? " y la " : " und die "}
-                      <Link to="/Datenschutz" target="_blank" className="font-semibold text-[#6B46C1] underline">
-                        {lang === "ar" ? "سياسة الخصوصية" : lang === "en" ? "Privacy Policy" : lang === "uk" ? "Політику конфіденційності" : lang === "tr" ? "Gizlilik Politikası" : lang === "es" ? "Política de Privacidad" : "Datenschutzerklärung"}
-                      </Link>
-                      {lang === "ar" ? " وأوافق عليها. *" : lang === "en" ? " and accept them. *" : lang === "uk" ? " і погоджуюся з ними. *" : lang === "tr" ? " ve kabul ediyorum. *" : lang === "es" ? " y las acepto. *" : " gelesen und akzeptiere sie. *"}
-                    </span>
-                  </label>
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    <Checkbox
-                      checked={formData.withdrawal_consent}
-                      onCheckedChange={(v) => setFormData(prev => ({ ...prev, withdrawal_consent: v === true }))}
-                      className="mt-0.5"
-                    />
-                    <span className="text-sm text-gray-700">
-                      {lang === "ar" ? "أطلب صراحةً أن يبدأ EinStein بتقديم الخدمة قبل انتهاء مهلة العدول. وأعلم أن حقي في العدول يسقط عند التنفيذ الكامل للعقد."
-                        : lang === "en" ? "I expressly request that EinStein begins the service before the withdrawal period expires. I am aware that my right of withdrawal expires upon complete performance of the contract."
-                        : lang === "tr" ? "EinStein'in hizmete cayma süresi dolmadan başlamasını açıkça talep ediyorum. Cayma hakkımın sözleşmenin tamamen ifasıyla sona ereceğini biliyorum."
-                        : lang === "es" ? "Solicito expresamente que EinStein comience la prestación antes de que expire el plazo de desistimiento. Soy consciente de que mi derecho de desistimiento se extingue con la ejecución completa del contrato."
-                        : "Ich verlange ausdrücklich, dass EinStein vor Ablauf der Widerrufsfrist mit der Leistung beginnt. Mir ist bekannt, dass mein Widerrufsrecht bei vollständiger Vertragserfüllung erlischt."}
-                    </span>
-                  </label>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-[#6d28d9]"><Calendar className="h-4 w-4" /></span>
+                <div>
+                  <dt className="text-xs font-semibold text-slate-400">{b.when}</dt>
+                  <dd className="font-bold text-[#1f0b52]" dir="ltr">{formData.date ? `${format(formData.date, "dd.MM.yyyy")}${formData.time ? ` · ${formData.time}` : ""}` : <span dir="auto">{b.notChosen}</span>}</dd>
                 </div>
-              </motion.div>
+              </div>
+            </dl>
+            {summaryPrice && (
+              <div className="mt-5 rounded-2xl bg-[#f7f3ff] p-4">
+                <p className="text-xs font-semibold text-slate-500">{b.price}</p>
+                <p className="text-2xl font-black text-[#4c1d95]"><bdi>{summaryPrice.value}</bdi></p>
+                <p className="text-xs text-slate-500">{summaryPrice.note}</p>
+              </div>
             )}
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-between mt-10 pt-6 border-t border-gray-100">
-              {step > 1 ? (
-                <Button variant="outline" onClick={() => setStep(step - 1)} className="rounded-xl border-gray-200 hover:border-[#6B46C1]/30 hover:text-[#6B46C1] px-6">
-                  <ArrowLeft className="w-4 h-4 me-2" />
-                  {t.back}
-                </Button>
-              ) : (
-                <div />
-              )}
-              
-              {step < 3 ? (
-                <Button 
-                  type="button"
-                  onClick={handleNextStep}
-                  disabled={!canProceed()}
-                  className="bg-gradient-to-r from-[#6B46C1] to-[#805AD5] hover:from-[#805AD5] hover:to-[#6B46C1] text-white px-8 rounded-xl shadow-lg shadow-purple-200 transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
-                >
-                  {t.next}
-                  <ArrowRight className="w-4 h-4 ms-2" />
-                </Button>
-              ) : (
-                <Button 
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={loading || !canProceed()}
-                  className="bg-gradient-to-r from-[#6B46C1] to-[#805AD5] hover:from-[#805AD5] hover:to-[#6B46C1] text-white px-8 rounded-xl shadow-lg shadow-purple-200 transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin me-2" /> : <CheckCircle className="w-4 h-4 me-2" />}
-                  {loading ? "..." : t.submit}
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Login Required Alert */}
-        <AlertDialog open={showLoginAlert} onOpenChange={setShowLoginAlert}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-[#c9a227]" />
-                {t.login_required}
-              </AlertDialogTitle>
-              <AlertDialogDescription className="text-base">
-                {t.login_required_message}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{lang === "ar" ? "حسناً" : lang === "en" ? "OK" : lang === "uk" ? "OK" : "OK"}</AlertDialogCancel>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+          </div>
+          <div className="rounded-[2rem] bg-[#1f0b52] p-6 text-white">
+            <p className="font-bold">{b.help}</p>
+            <p className="mt-1 text-sm text-purple-200">{b.helpText}</p>
+            <a href="tel:+496927246275" className="mt-4 inline-flex items-center gap-2 font-bold text-white hover:underline"><Phone className="h-4 w-4" /><span dir="ltr">069 27246275</span></a>
+          </div>
+        </aside>
       </div>
+
+      {/* Login required */}
+      <AlertDialog open={showLoginAlert} onOpenChange={setShowLoginAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2"><AlertCircle className="h-5 w-5 text-[#7c3aed]" />{t.login_required}</AlertDialogTitle>
+            <AlertDialogDescription className="text-base">{b.loginText}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{b.later}</AlertDialogCancel>
+            <Link to="/Login" className="inline-flex h-10 items-center justify-center rounded-md bg-[#4c1d95] px-5 text-sm font-bold text-white hover:bg-[#5b21b6]">{b.signIn}</Link>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -7,24 +7,25 @@ import StarRating from "@/components/StarRating";
 import { displayPrice, allPricesNote, isNetPriced, plusVatNote } from "@/lib/priceUtils";
 import { motion } from "framer-motion";
 import {
-  FileText,
+  ArrowLeft,
   ArrowRight,
-  CheckCircle,
-  Euro,
   Briefcase,
-  ClipboardList,
-  Settings,
-  Globe,
-  Printer,
+  Building2,
+  CheckCircle,
   ChevronDown,
   ChevronUp,
+  ClipboardList,
+  FileText,
+  Globe,
+  Info,
+  Mail,
+  Phone,
+  Printer,
+  Settings,
   Ship,
-  Mail
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import SecretariatPackages from "@/components/SecretariatPackages";
+import PageHero, { fadeUp } from "@/components/site/PageHero";
 
 const translations = {
   de: {
@@ -141,7 +142,7 @@ const translations = {
   },
   ar: {
     title: "خدماتنا",
-    subtitle: "المعاملات والأوراق والمكتب – بمكان واحد وبلغتك",
+    subtitle: "المعاملات والأوراق والأعمال المكتبية – في مكان واحد وبلغتك",
     book_now: "احجز الآن",
     from: "من",
     per_hour: "/ ساعة",
@@ -701,123 +702,66 @@ const translations = {
   }
 };
 
+// Page texts of the redesigned services page (the service texts are in `translations`)
+const P = {
+  de: { kicker: "Leistungen", jump: "Direkt zu", prices: "Preise", included: "Das ist enthalten", showPackages: "Monatspakete anzeigen", hidePackages: "Monatspakete ausblenden", trust: ["Keine versteckten Kosten", "Flexible Pakete", "Rabatte für langfristige Betreuung"], legal: "EinStein erbringt ausschließlich genehmigungsfreie Dienstleistungen und keine rechts-, steuer- oder heilberuflichen Leistungen.", ctaTitle: "Nicht sicher, was Sie brauchen?", ctaSub: "Rufen Sie uns an oder schreiben Sie uns – wir sagen Ihnen, welche Leistung passt.", contact: "Kundenservice" },
+  ar: { kicker: "الخدمات", jump: "انتقل إلى", prices: "الأسعار", included: "ما تشمله الخدمة", showPackages: "عرض الباقات الشهرية", hidePackages: "إخفاء الباقات الشهرية", trust: ["لا تكاليف خفية", "باقات مرنة", "خصومات للرعاية طويلة المدى"], legal: "يقدّم آينشتاين فقط خدمات لا تتطلب ترخيصاً، ولا يقدّم خدمات قانونية أو ضريبية أو طبية.", ctaTitle: "لست متأكداً من الخدمة التي تحتاجها؟", ctaSub: "اتصل بنا أو راسلنا، وسنخبرك بالخدمة المناسبة لك.", contact: "خدمة العملاء" },
+  en: { kicker: "Services", jump: "Jump to", prices: "Prices", included: "What is included", showPackages: "Show monthly packages", hidePackages: "Hide monthly packages", trust: ["No hidden costs", "Flexible packages", "Discounts for long-term support"], legal: "EinStein only provides services that need no licence – no legal, tax or medical services.", ctaTitle: "Not sure what you need?", ctaSub: "Call us or write to us – we will tell you which service fits.", contact: "Customer service" },
+  tr: { kicker: "Hizmetler", jump: "Doğrudan git", prices: "Fiyatlar", included: "Neler dahil", showPackages: "Aylık paketleri göster", hidePackages: "Aylık paketleri gizle", trust: ["Gizli maliyet yok", "Esnek paketler", "Uzun süreli destek için indirim"], legal: "EinStein yalnızca izin gerektirmeyen hizmetler sunar; hukuki, vergi veya sağlık hizmeti vermez.", ctaTitle: "Neye ihtiyacınız olduğundan emin değil misiniz?", ctaSub: "Bizi arayın ya da yazın – size uygun hizmeti söyleyelim.", contact: "Müşteri hizmetleri" },
+  es: { kicker: "Servicios", jump: "Ir a", prices: "Precios", included: "Qué incluye", showPackages: "Ver paquetes mensuales", hidePackages: "Ocultar paquetes mensuales", trust: ["Sin costes ocultos", "Paquetes flexibles", "Descuentos por atención a largo plazo"], legal: "EinStein solo presta servicios que no requieren licencia: ni servicios jurídicos, fiscales ni médicos.", ctaTitle: "¿No sabe qué necesita?", ctaSub: "Llámenos o escríbanos y le diremos qué servicio le conviene.", contact: "Atención al cliente" },
+  uk: { kicker: "Послуги", jump: "Перейти до", prices: "Ціни", included: "Що входить", showPackages: "Показати місячні пакети", hidePackages: "Сховати місячні пакети", trust: ["Без прихованих витрат", "Гнучкі пакети", "Знижки за тривалий супровід"], legal: "EinStein надає лише послуги, що не потребують ліцензії, – без юридичних, податкових чи медичних послуг.", ctaTitle: "Не знаєте, що саме потрібно?", ctaSub: "Зателефонуйте або напишіть нам – ми підкажемо, яка послуга підходить.", contact: "Служба підтримки" },
+};
+
+const img = (id) => `https://images.unsplash.com/photo-${id}?w=1000&auto=format&fit=crop`;
 const serviceData = [
-  { 
-    key: "secretariat", 
-    icon: Briefcase, 
-    color: "bg-violet-600", 
-    lightColor: "bg-violet-50",
-    image: "https://images.unsplash.com/photo-1497366412874-3415097a27e7?w=800&auto=format&fit=crop"
-  },
-  { 
-    key: "forms", 
-    icon: ClipboardList, 
-    color: "bg-teal-500", 
-    lightColor: "bg-teal-50",
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&auto=format&fit=crop"
-  },
-  { 
-    key: "admin", 
-    icon: FileText, 
-    color: "bg-green-500", 
-    lightColor: "bg-green-50",
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&auto=format&fit=crop"
-  },
-  { 
-    key: "coordination", 
-    icon: Settings, 
-    color: "bg-indigo-500", 
-    lightColor: "bg-indigo-50",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&auto=format&fit=crop"
-  },
-  { 
-    key: "mercosur", 
-    icon: Globe, 
-    color: "bg-amber-500", 
-    lightColor: "bg-amber-50",
-    image: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800&auto=format&fit=crop"
-  },
-  { 
-    key: "print", 
-    icon: Printer, 
-    color: "bg-pink-500", 
-    lightColor: "bg-pink-50",
-    image: "https://images.unsplash.com/photo-1562564055-71e051d33c19?w=800&auto=format&fit=crop"
-  },
-  {
-    key: "eur1",
-    icon: Ship,
-    color: "bg-rose-600",
-    lightColor: "bg-rose-50",
-    image: "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=800&auto=format&fit=crop"
-  },
-  {
-    key: "dokumentabo",
-    icon: Mail,
-    color: "bg-purple-600",
-    lightColor: "bg-purple-50",
-    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&auto=format&fit=crop"
-  },
-  {
-    key: "bueromanagement",
-    icon: Briefcase,
-    color: "bg-sky-700",
-    lightColor: "bg-sky-50",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop"
-  }
+  { key: "secretariat", icon: Briefcase, image: img("1497366412874-3415097a27e7") },
+  { key: "forms", icon: ClipboardList, image: img("1554224155-6726b3ff858f") },
+  { key: "admin", icon: FileText, image: img("1450101499163-c8848c66ca85") },
+  { key: "coordination", icon: Settings, image: img("1552664730-d307ca884978") },
+  { key: "mercosur", icon: Globe, image: img("1526778548025-fa2f459cd5c1") },
+  { key: "print", icon: Printer, image: img("1562564055-71e051d33c19") },
+  { key: "eur1", icon: Ship, image: img("1494412519320-aa613dfb7738") },
+  { key: "dokumentabo", icon: Mail, image: img("1454165804606-c3d57bc86b40") },
+  { key: "bueromanagement", icon: Building2, image: img("1497366216548-37526070297c") },
 ];
 
 export default function Services() {
-  const [lang, setLang] = useState("de");
+  const [lang, setLang] = useState(() => { try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; } });
   const [packagesOpen, setPackagesOpen] = useState(false);
-  
-  // Load reviews per category
+
+  // Average rating per service
   const { data: bookingsWithRatings = [] } = useQuery({
     queryKey: ["category-ratings"],
     queryFn: publicApi.getRatings,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
-
-  // Compute average ratings per category
   const categoryRatings = React.useMemo(() => {
     const map = {};
-    bookingsWithRatings.forEach(b => {
-      if (b.rating && b.category) {
-        if (!map[b.category]) map[b.category] = { sum: 0, count: 0 };
-        map[b.category].sum += b.rating;
-        map[b.category].count += 1;
-      }
+    bookingsWithRatings.forEach((b) => {
+      if (!b.rating || !b.category) return;
+      map[b.category] = map[b.category] || { sum: 0, count: 0 };
+      map[b.category].sum += b.rating;
+      map[b.category].count += 1;
     });
-    const result = {};
-    Object.keys(map).forEach(k => {
-      result[k] = { avg: map[k].sum / map[k].count, count: map[k].count };
-    });
-    return result;
+    return Object.fromEntries(Object.entries(map).map(([k, v]) => [k, { avg: v.sum / v.count, count: v.count }]));
   }, [bookingsWithRatings]);
 
-  // Load custom prices from database
+  // Prices and names managed in the admin area
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings"],
     queryFn: publicApi.listPricing,
     staleTime: 0,
     refetchOnMount: true,
   });
-  
-  // Convert array to object
   const customPrices = React.useMemo(() => {
     if (!priceSettingsData || priceSettingsData.length === 0) return null;
     const pricesObj = {};
-    priceSettingsData.forEach(item => {
-      pricesObj[item.category] = item.items || item.prices || [];
-    });
+    priceSettingsData.forEach((item) => { pricesObj[item.category] = item.items || item.prices || []; });
     return pricesObj;
   }, [priceSettingsData]);
-  
+
   useEffect(() => {
-    const savedLang = localStorage.getItem("einstein_lang");
-    if (savedLang) setLang(savedLang);
-    
     const handleStorage = () => {
       const newLang = localStorage.getItem("einstein_lang");
       if (newLang) setLang(newLang);
@@ -825,220 +769,145 @@ export default function Services() {
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
-  
-  const t = translations[lang] || translations.de;
-  
-  // Function to get label by language
-  const getLabelByLang = (p) => {
-    if (lang === "ar") return p.label_ar || p.label_de || p.label;
-    if (lang === "en") return p.label_en || p.label_de || p.label;
-    if (lang === "tr") return p.label_tr || p.label_de || p.label;
-    if (lang === "es") return p.label_es || p.label_de || p.label;
-    if (lang === "uk") return p.label_en || p.label_de || p.label;
-    return p.label_de || p.label;
-  };
-  
-  const getUnitByLang = (p) => {
-    if (lang === "ar") return p.unit_ar || p.unit_de || p.unit;
-    if (lang === "en") return p.unit_en || p.unit_de || p.unit;
-    if (lang === "tr") return p.unit_tr || p.unit_de || p.unit;
-    if (lang === "es") return p.unit_es || p.unit_de || p.unit;
-    if (lang === "uk") return p.unit_en || p.unit_de || p.unit;
-    return p.unit_de || p.unit;
-  };
 
-  // Function to get prices - use custom prices if available
-  const getPrices = (serviceKey) => {
-    if (customPrices && customPrices[serviceKey]) {
-      return customPrices[serviceKey].map(p => ({
-        label: getLabelByLang(p),
-        price: p.price,
-        unit: getUnitByLang(p)
-      }));
-    }
-    return t.services[serviceKey]?.prices || [];
+  const t = translations[lang] || translations.de;
+  const p = P[lang] || P.de;
+  const isRTL = lang === "ar";
+  const Arrow = isRTL ? ArrowLeft : ArrowRight;
+
+  const fromDb = (item, field) => {
+    const byLang = { ar: `${field}_ar`, en: `${field}_en`, tr: `${field}_tr`, es: `${field}_es`, uk: `${field}_en` }[lang];
+    return (byLang && item[byLang]) || item[`${field}_de`] || item[field];
   };
-  
-  // Function to get service name - use custom name if available (from first price entry)
-  const getServiceName = (serviceKey, defaultName) => {
-    if (customPrices && customPrices[serviceKey] && customPrices[serviceKey][0]) {
-      const customName = getLabelByLang(customPrices[serviceKey][0]);
-      if (customName) return customName;
-    }
-    return defaultName;
-  };
+  const getPrices = (key) => (customPrices?.[key]
+    ? customPrices[key].map((item) => ({ label: fromDb(item, "label"), price: item.price, unit: fromDb(item, "unit") }))
+    : t.services[key]?.prices || []);
+  const getServiceName = (key) => (customPrices?.[key]?.[0] && fromDb(customPrices[key][0], "label")) || t.services[key].name;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold text-[#6B46C1] mb-4">
-            {t.title}
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {t.subtitle}
-          </p>
-        </motion.div>
+    <div className="overflow-x-hidden bg-white">
+      <PageHero kicker={p.kicker} title={t.title} subtitle={t.subtitle}>
+        <nav aria-label={p.jump} className="mt-8 flex flex-wrap gap-2">
+          {serviceData.map(({ key, icon: Icon }) => (
+            <a key={key} href={`#service-${key}`} className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-white px-4 py-2 text-sm font-semibold text-[#4c1d95] shadow-sm transition hover:border-[#7c3aed] hover:bg-purple-50">
+              <Icon className="h-4 w-4 text-[#7c3aed]" />{getServiceName(key)}
+            </a>
+          ))}
+        </nav>
+      </PageHero>
 
-        {/* Services Grid */}
-        <div className="space-y-8">
-          {serviceData.map((service, index) => {
-            const Icon = service.icon;
-            const serviceInfo = t.services[service.key];
-            
-            return (
-              <motion.div
-                key={service.key}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
-                  {/* Service Image */}
-                  <div className="relative h-72 md:h-96 overflow-hidden">
-                    <img 
-                      src={service.image} 
-                      alt={serviceInfo.name}
-                      className="w-full h-full object-contain bg-gradient-to-b from-sky-100 to-green-50"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-4 start-4 flex items-center gap-3">
-                      <div className={`w-12 h-12 ${service.color} rounded-xl flex items-center justify-center`}>
-                        <Icon className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h2 className="text-xl md:text-2xl font-bold text-white">
-                          {getServiceName(service.key, serviceInfo.name)}
-                        </h2>
-                        {categoryRatings[service.key] && (
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            <StarRating value={Math.round(categoryRatings[service.key].avg)} size="sm" />
-                            <span className="text-white/80 text-xs">
-                              {categoryRatings[service.key].avg.toFixed(1)} ({categoryRatings[service.key].count})
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className={`${service.lightColor} p-6 md:p-8`}>
-                    <div className="flex flex-col gap-4">
-                      
-                      {/* Content */}
-                      <div className="flex-grow">
-                        <p className="text-gray-600 mb-4">
-                          {serviceInfo.desc}
-                        </p>
-                        
-                        {/* Features */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6">
-                          {serviceInfo.features.map((feature, i) => (
-                            <div key={i} className="flex items-center gap-2">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                              <span className="text-sm text-gray-700">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
+      <div className="mx-auto max-w-7xl space-y-10 px-4 py-12 md:space-y-16 md:py-16">
+        {serviceData.map(({ key, icon: Icon, image }, index) => {
+          const info = t.services[key];
+          const rating = categoryRatings[key];
+          const prices = getPrices(key);
+          return (
+            <motion.article
+              key={key}
+              id={`service-${key}`}
+              {...fadeUp}
+              className="scroll-mt-24 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm lg:grid lg:grid-cols-2"
+            >
+              <div className={`relative min-h-[240px] overflow-hidden bg-purple-50 sm:min-h-[300px] ${index % 2 ? "lg:order-2" : ""}`}>
+                <img src={image} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1f0b52]/70 via-[#1f0b52]/10 to-transparent" />
+                <div className="absolute bottom-5 start-5 end-5 flex items-end gap-3">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-[#6d28d9] shadow-lg"><Icon className="h-6 w-6" /></span>
+                  {rating && (
+                    <span className="flex items-center gap-1.5 rounded-full bg-black/35 px-3 py-1 backdrop-blur">
+                      <StarRating value={Math.round(rating.avg)} size="sm" />
+                      <span className="text-xs font-semibold text-white">{rating.avg.toFixed(1)} ({rating.count})</span>
+                    </span>
+                  )}
+                </div>
+              </div>
 
-                        {/* Subjects (for education) */}
-                        {serviceInfo.subjects && (
-                          <div className="mb-4 p-3 bg-white/60 rounded-lg">
-                            <p className="text-sm text-gray-700">
-                              <strong>{lang === "de" ? "Fächer:" : lang === "ar" ? "المواد:" : "Subjects:"}</strong> {serviceInfo.subjects}
-                            </p>
-                          </div>
-                        )}
+              <div className="flex flex-col p-6 md:p-10">
+                <h2 className="text-2xl font-black leading-snug text-[#1f0b52] md:text-3xl">{getServiceName(key)}</h2>
+                <p className="mt-3 leading-relaxed text-slate-600">{info.desc}</p>
 
-                        {/* Prices */}
-                        <div className="mb-6">
-                          <h3 className="text-lg font-semibold text-[#2e1065] mb-3 flex items-center gap-2">
-                            <Euro className="w-5 h-5 text-[#6B46C1]" />
-                            {lang === "de" ? "Preise" : lang === "ar" ? "الأسعار" : "Prices"}
-                          </h3>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                            {getPrices(service.key).map((priceItem, i) => (
-                              <div key={i} className="flex items-center justify-between bg-white/80 rounded-lg px-3 py-2">
-                                <span className="text-sm text-gray-700">{priceItem.label}</span>
-                                <Badge className="bg-[#c9a227] text-white font-semibold">
-                                  {displayPrice(priceItem.price, lang, service.key)} {priceItem.unit}
-                                </Badge>
-                              </div>
-                            ))}
-                          </div>
-                          <p className="text-xs text-gray-500 mt-2">{isNetPriced(service.key) ? plusVatNote(lang) : allPricesNote(lang)}</p>
-                        </div>
+                <h3 className="mt-6 text-sm font-bold uppercase tracking-wide text-slate-400">{p.included}</h3>
+                <ul className="mt-3 grid gap-2.5 sm:grid-cols-2">
+                  {info.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-700">
+                      <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />{feature}
+                    </li>
+                  ))}
+                </ul>
 
-                        {/* Note */}
-                        {serviceInfo.note && (
-                          <p className="text-xs text-gray-500 mb-4 italic">
-                            {serviceInfo.note}
-                          </p>
-                        )}
-                        
-                        {/* Book Button */}
-                        <Link to={createPageUrl(`Booking?category=${service.key}`)}>
-                          <Button className="bg-[#2e1065] hover:bg-[#4c1d95]">
-                            {t.book_now}
-                            <ArrowRight className="ms-2 w-4 h-4" />
-                          </Button>
-                        </Link>
+                <div className="mt-6 rounded-2xl bg-[#f7f3ff] p-4">
+                  <p className="text-sm font-bold text-[#4c1d95]">{p.prices}</p>
+                  <ul className="mt-2 divide-y divide-purple-100">
+                    {prices.map((item) => (
+                      <li key={`${item.label}-${item.price}`} className="flex items-center justify-between gap-4 py-2">
+                        <span className="text-sm text-slate-700">{item.label}</span>
+                        <span className="shrink-0 text-base font-black text-[#1f0b52]"><bdi>{displayPrice(item.price, lang, key)} {item.unit}</bdi></span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-1 text-xs text-slate-500">{isNetPriced(key) ? plusVatNote(lang) : allPricesNote(lang)}</p>
+                </div>
 
-                        {/* Secretariat Packages inside the card - collapsible */}
-                        {service.key === "secretariat" && (
-                          <div className="mt-6 pt-6 border-t border-violet-200">
-                            <button
-                              onClick={() => setPackagesOpen(!packagesOpen)}
-                              className="w-full flex items-center justify-between bg-violet-100 hover:bg-violet-200 text-[#6B46C1] font-semibold px-4 py-3 rounded-xl transition-colors"
-                            >
-                              <span>
-                                {lang === "ar" ? "عرض الباقات الشهرية" : lang === "en" ? "View Monthly Packages" : lang === "uk" ? "Переглянути місячні пакети" : "Monatspakete anzeigen"}
-                              </span>
-                              {packagesOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                            </button>
-                            {packagesOpen && (
-                              <div className="mt-4">
-                                <SecretariatPackages lang={lang} embedded={true} />
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            );
-          })}
-        </div>
+                {info.note && (
+                  <p className="mt-4 flex gap-2 rounded-2xl bg-slate-50 p-4 text-xs leading-relaxed text-slate-500">
+                    <Info className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />{info.note}
+                  </p>
+                )}
 
-        {/* Note Section */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-12 text-center"
-        >
-          <Card className="border-0 shadow-lg p-6 bg-[#2e1065]/5">
-            <p className="text-gray-600">
-              {lang === "de" && "Keine versteckten Kosten • Flexible Pakete möglich • Rabatte für langfristige Betreuung"}
-              {lang === "ar" && "لا تكاليف خفية • باقات مرنة متاحة • خصومات للرعاية طويلة المدى"}
-              {lang === "en" && "No hidden costs • Flexible packages available • Discounts for long-term care"}
-            </p>
-            <p className="text-xs text-gray-500 mt-2">
-              {lang === "de" && "Hinweis: EinStein erbringt ausschließlich genehmigungsfreie Dienstleistungen und keine rechts-, steuer- oder heilberuflichen Leistungen."}
-              {lang === "ar" && "ملاحظة: يقدم EinStein فقط خدمات لا تتطلب تصريحًا ولا يقدم خدمات قانونية أو ضريبية أو طبية."}
-              {lang === "en" && "Note: EinStein only provides services that do not require a permit and no legal, tax or medical services."}
-            </p>
-          </Card>
-        </motion.div>
+                <div className="mt-auto flex flex-col gap-3 pt-7 sm:flex-row sm:items-center">
+                  <Link to={createPageUrl(`Booking?category=${key}`)} className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] px-7 font-bold text-white shadow-lg shadow-purple-500/25 transition hover:brightness-110">
+                    {t.book_now}<Arrow className="h-4 w-4" />
+                  </Link>
+                  {key === "secretariat" && (
+                    <button type="button" onClick={() => setPackagesOpen((v) => !v)} aria-expanded={packagesOpen}
+                      className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-purple-200 px-6 font-bold text-[#4c1d95] transition hover:border-[#7c3aed] hover:bg-purple-50">
+                      {packagesOpen ? p.hidePackages : p.showPackages}
+                      {packagesOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {key === "secretariat" && packagesOpen && (
+                <div className="border-t border-slate-200 bg-slate-50 p-6 md:p-10 lg:col-span-2">
+                  <SecretariatPackages lang={lang} embedded={true} />
+                </div>
+              )}
+            </motion.article>
+          );
+        })}
       </div>
 
+      {/* Trust + help */}
+      <section className="px-4 pb-10">
+        <motion.div {...fadeUp} className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#1f0b52] via-[#3b1478] to-[#6d28d9] px-6 py-12 text-white md:px-14 md:py-16">
+          <svg aria-hidden="true" className="pointer-events-none absolute -bottom-24 -end-24 h-80 w-80 text-white/10" viewBox="0 0 100 100">
+            <polygon points="50,2 92,26 92,74 50,98 8,74 8,26" fill="currentColor" />
+          </svg>
+          <div className="relative grid gap-10 lg:grid-cols-2 lg:items-center">
+            <div>
+              <h2 className="text-3xl font-black md:text-4xl">{p.ctaTitle}</h2>
+              <p className="mt-3 text-lg text-purple-100">{p.ctaSub}</p>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <a href="tel:+496927246275" className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-white px-6 font-bold text-[#4c1d95] transition hover:bg-purple-50">
+                  <Phone className="h-5 w-5" /><span dir="ltr">069 27246275</span>
+                </a>
+                <Link to={createPageUrl("CustomerService")} className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/30 px-6 font-bold text-white transition hover:bg-white/10">
+                  {p.contact}<Arrow className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+            <ul className="grid gap-3">
+              {p.trust.map((item) => (
+                <li key={item} className="flex items-center gap-3 rounded-2xl bg-white/10 p-4 font-semibold ring-1 ring-white/15">
+                  <CheckCircle className="h-5 w-5 shrink-0 text-emerald-300" />{item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+        <p className="mx-auto mt-6 max-w-3xl text-center text-xs text-slate-400">{p.legal}</p>
+      </section>
     </div>
   );
 }

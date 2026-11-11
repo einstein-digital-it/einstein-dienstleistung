@@ -689,7 +689,7 @@ export default function Layout({ children, currentPageName }) {
                       <p className="text-gray-300 text-sm mb-4">
                 {{
                   de: "Behördengänge, Unterlagen und Büro – an einem Ort, in Ihrer Sprache.",
-                  ar: "المعاملات والأوراق والمكتب – بمكان واحد وبلغتك.",
+                  ar: "المعاملات والأوراق والأعمال المكتبية – في مكان واحد وبلغتك.",
                   en: "Paperwork, documents and office help – in one place, in your language.",
                   tr: "Resmi işler, belgeler ve büro – tek yerde, kendi dilinizde.",
                   es: "Trámites, documentos y oficina – en un solo lugar, en su idioma.",
