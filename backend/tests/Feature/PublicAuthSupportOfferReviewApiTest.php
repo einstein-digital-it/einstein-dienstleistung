@@ -82,7 +82,7 @@ class PublicAuthSupportOfferReviewApiTest extends TestCase
         $this->getJson('/api/customer-support')
             ->assertOk()
             ->assertJsonPath('data.faqs.0.question_de', 'Wie kann ich Sie erreichen?')
-            ->assertJsonPath('data.contact.email', 'info@e-in-s-tein.de');
+            ->assertJsonPath('data.contact.email', 'info@einsteindienstleistung.de');
 
         $this->postJson('/api/customer-support/requests', [
             'request_type' => 'callback',

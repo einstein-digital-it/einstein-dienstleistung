@@ -13,7 +13,7 @@ const EMAIL = "info@einsteindienstleistung.de";
 
 const T = {
   de: {
-    kicker: "Kundenservice", title: "Wie können wir helfen?", sub: "Antworten auf häufige Fragen – oder schreiben Sie uns direkt. Wir sprechen Deutsch, Arabisch, Englisch und Türkisch.",
+    kicker: "Kundenservice", title: "Wie können wir helfen?", sub: "Antworten auf häufige Fragen – oder schreiben Sie uns direkt. Wir sprechen Ihre Sprache.",
     search: "Frage suchen, z. B. Stornierung, Zahlung …",
     chat: "Chat", chatText: "Sofort eine Antwort vom Assistenten, rund um die Uhr.", chatCta: "Chat starten",
     phone: "Telefon", phoneText: "Mo–Fr 9–18 Uhr", phoneCta: "Jetzt anrufen",
@@ -27,7 +27,7 @@ const T = {
     cancelTitle: "Vertrag kündigen?", cancelText: "Abos und Verträge kündigen Sie jederzeit online – ohne Anmeldung.", cancelCta: "Verträge hier kündigen",
   },
   ar: {
-    kicker: "خدمة العملاء", title: "كيف يمكننا مساعدتك؟", sub: "إجابات عن الأسئلة الشائعة، أو راسلنا مباشرة. نتحدث العربية والألمانية والإنجليزية والتركية.",
+    kicker: "خدمة العملاء", title: "كيف يمكننا مساعدتك؟", sub: "إجابات عن الأسئلة الشائعة، أو راسلنا مباشرة. نتحدث لغتك.",
     search: "ابحث عن سؤال، مثل الإلغاء أو الدفع …",
     chat: "المحادثة", chatText: "إجابة فورية من المساعد، على مدار الساعة.", chatCta: "ابدأ المحادثة",
     phone: "الهاتف", phoneText: "من الاثنين إلى الجمعة، من الساعة 9 إلى 18", phoneCta: "اتصل الآن",
@@ -41,7 +41,7 @@ const T = {
     cancelTitle: "هل تريد إلغاء عقد؟", cancelText: "يمكنك إلغاء الاشتراكات والعقود عبر الإنترنت في أي وقت، دون تسجيل الدخول.", cancelCta: "إلغاء العقود من هنا",
   },
   en: {
-    kicker: "Customer service", title: "How can we help?", sub: "Answers to common questions – or write to us directly. We speak German, Arabic, English and Turkish.",
+    kicker: "Customer service", title: "How can we help?", sub: "Answers to common questions – or write to us directly. We speak your language.",
     search: "Search a question, e.g. cancellation, payment …",
     chat: "Chat", chatText: "An instant answer from the assistant, around the clock.", chatCta: "Start chat",
     phone: "Phone", phoneText: "Mon–Fri 9–18", phoneCta: "Call now",
@@ -55,7 +55,7 @@ const T = {
     cancelTitle: "Cancel a contract?", cancelText: "Cancel subscriptions and contracts online at any time – no login needed.", cancelCta: "Cancel contracts here",
   },
   tr: {
-    kicker: "Müşteri hizmetleri", title: "Size nasıl yardımcı olabiliriz?", sub: "Sık sorulan soruların yanıtları – ya da bize doğrudan yazın. Almanca, Arapça, İngilizce ve Türkçe konuşuyoruz.",
+    kicker: "Müşteri hizmetleri", title: "Size nasıl yardımcı olabiliriz?", sub: "Sık sorulan soruların yanıtları – ya da bize doğrudan yazın. Sizin dilinizi konuşuyoruz.",
     search: "Soru arayın, örn. iptal, ödeme …",
     chat: "Sohbet", chatText: "Asistandan anında yanıt, 7/24.", chatCta: "Sohbeti başlat",
     phone: "Telefon", phoneText: "Pzt–Cum 9–18", phoneCta: "Hemen arayın",
@@ -69,7 +69,7 @@ const T = {
     cancelTitle: "Sözleşme iptali mi?", cancelText: "Abonelikleri ve sözleşmeleri istediğiniz zaman online iptal edin – giriş gerekmez.", cancelCta: "Sözleşmeleri buradan iptal edin",
   },
   es: {
-    kicker: "Atención al cliente", title: "¿Cómo podemos ayudarle?", sub: "Respuestas a preguntas frecuentes, o escríbanos directamente. Hablamos alemán, árabe, inglés y turco.",
+    kicker: "Atención al cliente", title: "¿Cómo podemos ayudarle?", sub: "Respuestas a preguntas frecuentes, o escríbanos directamente. Hablamos su idioma.",
     search: "Buscar una pregunta, p. ej. cancelación, pago …",
     chat: "Chat", chatText: "Respuesta inmediata del asistente, a cualquier hora.", chatCta: "Iniciar chat",
     phone: "Teléfono", phoneText: "Lun–vie 9–18", phoneCta: "Llamar ahora",
@@ -83,7 +83,7 @@ const T = {
     cancelTitle: "¿Cancelar un contrato?", cancelText: "Cancele suscripciones y contratos en línea cuando quiera, sin iniciar sesión.", cancelCta: "Cancelar contratos aquí",
   },
   uk: {
-    kicker: "Служба підтримки", title: "Як ми можемо допомогти?", sub: "Відповіді на часті запитання – або напишіть нам напряму. Ми говоримо німецькою, арабською, англійською та турецькою.",
+    kicker: "Служба підтримки", title: "Як ми можемо допомогти?", sub: "Відповіді на часті запитання – або напишіть нам напряму. Ми говоримо вашою мовою.",
     search: "Шукати запитання, напр. скасування, оплата …",
     chat: "Чат", chatText: "Миттєва відповідь асистента, цілодобово.", chatCta: "Почати чат",
     phone: "Телефон", phoneText: "Пн–пт 9–18", phoneCta: "Зателефонувати",
