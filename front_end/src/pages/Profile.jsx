@@ -105,7 +105,7 @@ export default function Profile() {
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[380px_1fr]">
         <DesignCard className="h-fit p-6 text-center">
           <div className="relative mx-auto h-28 w-28">
-            <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#122238] text-4xl font-black text-white">
+            <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#1f0b52] text-4xl font-black text-white">
               {formData.avatar_url ? (
                 <img src={formData.avatar_url} alt={currentName} className="h-full w-full rounded-full object-cover" />
               ) : initials}
@@ -123,7 +123,7 @@ export default function Profile() {
               />
             </label>
           </div>
-          <h2 className="mt-5 text-2xl font-black text-[#13233a]">{currentName}</h2>
+          <h2 className="mt-5 text-2xl font-black text-[#1f0b52]">{currentName}</h2>
           <p className="mt-1 text-sm font-semibold text-[#65758b]">{profile?.email || email}</p>
           <div className="mt-4 flex justify-center">
             <StatusPill tone="purple">مدير النظام</StatusPill>
@@ -138,36 +138,36 @@ export default function Profile() {
         <div className="space-y-6">
           <DesignCard>
             <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2">
-              <label className="grid gap-2 text-sm font-bold text-[#13233a]">
+              <label className="grid gap-2 text-sm font-bold text-[#1f0b52]">
                 Full name
                 <input
                   value={formData.full_name}
                   onChange={(event) => setFormData((current) => ({ ...current, full_name: event.target.value }))}
-                  className="h-12 rounded-xl border border-[#d8e3f1] bg-white px-4 font-semibold outline-none focus:border-[#1e3a5f]"
+                  className="h-12 rounded-xl border border-[#d8e3f1] bg-white px-4 font-semibold outline-none focus:border-[#2e1065]"
                 />
               </label>
-              <label className="grid gap-2 text-sm font-bold text-[#13233a]">
+              <label className="grid gap-2 text-sm font-bold text-[#1f0b52]">
                 Phone
                 <input
                   value={formData.phone}
                   onChange={(event) => setFormData((current) => ({ ...current, phone: event.target.value }))}
-                  className="h-12 rounded-xl border border-[#d8e3f1] bg-white px-4 font-semibold outline-none focus:border-[#1e3a5f]"
+                  className="h-12 rounded-xl border border-[#d8e3f1] bg-white px-4 font-semibold outline-none focus:border-[#2e1065]"
                 />
               </label>
-              <label className="grid gap-2 text-sm font-bold text-[#13233a] md:col-span-2">
+              <label className="grid gap-2 text-sm font-bold text-[#1f0b52] md:col-span-2">
                 Address
                 <input
                   value={formData.address}
                   onChange={(event) => setFormData((current) => ({ ...current, address: event.target.value }))}
-                  className="h-12 rounded-xl border border-[#d8e3f1] bg-white px-4 font-semibold outline-none focus:border-[#1e3a5f]"
+                  className="h-12 rounded-xl border border-[#d8e3f1] bg-white px-4 font-semibold outline-none focus:border-[#2e1065]"
                 />
               </label>
-              <label className="grid gap-2 text-sm font-bold text-[#13233a]">
+              <label className="grid gap-2 text-sm font-bold text-[#1f0b52]">
                 Language
                 <select
                   value={formData.preferred_language}
                   onChange={(event) => setFormData((current) => ({ ...current, preferred_language: event.target.value }))}
-                  className="h-12 rounded-xl border border-[#d8e3f1] bg-white px-4 font-semibold outline-none focus:border-[#1e3a5f]"
+                  className="h-12 rounded-xl border border-[#d8e3f1] bg-white px-4 font-semibold outline-none focus:border-[#2e1065]"
                 >
                   <option value="ar">Arabic</option>
                   <option value="de">Deutsch</option>
@@ -199,7 +199,7 @@ export default function Profile() {
                   Reset
                 </SecondaryButton>
               </div>
-              {notice && <p className="text-sm font-bold text-[#1e3a5f] md:col-span-2">{notice}</p>}
+              {notice && <p className="text-sm font-bold text-[#2e1065] md:col-span-2">{notice}</p>}
             </div>
             <CardHeader title="المعلومات الشخصية" description="حقول تصميمية جاهزة لربطها لاحقاً بالمصادقة الحقيقية." />
             <div className="grid grid-cols-1 gap-5 p-5 md:grid-cols-2">
@@ -222,15 +222,15 @@ export default function Profile() {
               ].map(([Icon, title, desc, active]) => (
                 <div key={title} className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#e8f0fd] text-[#1e3a5f]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#e8f0fd] text-[#2e1065]">
                       <Icon className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="font-extrabold text-[#13233a]">{title}</p>
+                      <p className="font-extrabold text-[#1f0b52]">{title}</p>
                       <p className="mt-1 text-sm leading-6 text-[#65758b]">{desc}</p>
                     </div>
                   </div>
-                  <span className={`h-7 w-12 rounded-full p-1 ${active ? "bg-[#122238]" : "bg-[#d9e4f2]"}`}>
+                  <span className={`h-7 w-12 rounded-full p-1 ${active ? "bg-[#1f0b52]" : "bg-[#d9e4f2]"}`}>
                     <span className={`block h-5 w-5 rounded-full bg-white transition ${active ? "translate-x-0" : "-translate-x-5"}`} />
                   </span>
                 </div>

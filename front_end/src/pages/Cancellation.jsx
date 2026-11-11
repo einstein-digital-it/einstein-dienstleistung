@@ -56,14 +56,14 @@ export default function Cancellation() {
     <div className={`min-h-screen bg-gray-50 py-12 px-4 ${isRTL ? "rtl" : ""}`} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-xl">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[#1e3a5f] md:text-4xl">{t.title}</h1>
+          <h1 className="text-3xl font-bold text-[#2e1065] md:text-4xl">{t.title}</h1>
           <p className="mt-3 text-sm text-gray-500">{t.subtitle}</p>
         </div>
 
         {result ? (
           <div className="rounded-2xl border border-green-100 bg-white p-8 text-center shadow-sm">
             <CheckCircle className="mx-auto mb-4 h-12 w-12 text-green-600" />
-            <h2 className="mb-2 text-xl font-semibold text-[#1e3a5f]">{t.successTitle}</h2>
+            <h2 className="mb-2 text-xl font-semibold text-[#2e1065]">{t.successTitle}</h2>
             <p className="mb-6 text-sm text-gray-600">{t.successText}</p>
             <div className="mb-6 space-y-1 rounded-xl bg-gray-50 p-4 text-sm text-gray-700">
               <p><span className="font-medium">{t.receivedAt}: </span>{result.received_date}, {result.received_time}</p>

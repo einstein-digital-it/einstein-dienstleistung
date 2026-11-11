@@ -72,12 +72,12 @@ function NotificationRow({ item }) {
   return (
     <article className={`rounded-[15px] border p-4 ${item.unread ? "border-[#d4af25]/40 bg-[#fffaf0]" : "border-[#e2ebf6] bg-[#fbfdff]"}`}>
       <div className="flex gap-4">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[13px] bg-white text-[#1e3a5f] shadow-sm">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[13px] bg-white text-[#2e1065] shadow-sm">
           <Icon className="h-5 w-5" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="font-black text-[#13233a]">{item.title}</h2>
+            <h2 className="font-black text-[#1f0b52]">{item.title}</h2>
             <div className="flex items-center gap-2">
               {item.unread && <StatusPill tone="gold">جديد</StatusPill>}
               <span className="text-xs font-bold text-[#8ea0b7]">{item.time}</span>

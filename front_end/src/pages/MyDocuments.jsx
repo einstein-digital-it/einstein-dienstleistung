@@ -261,7 +261,7 @@ export default function MyDocuments() {
     <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-5xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-black text-[#1e3a5f]">{t.title}</h1>
+          <h1 className="text-3xl font-black text-[#2e1065]">{t.title}</h1>
           <p className="text-gray-500 mt-1">{t.subtitle}</p>
           <p className="mt-2 inline-flex items-center gap-2 text-xs text-gray-500"><Lock className="w-3.5 h-3.5" />{t.private}</p>
         </div>
@@ -272,7 +272,7 @@ export default function MyDocuments() {
             onSubmit={(e) => { e.preventDefault(); setFolder(null); setSearchParams(emailInput.trim() ? { email: emailInput.trim() } : {}); }}
           >
             <Input value={emailInput} onChange={(e) => setEmailInput(e.target.value)} placeholder={t.customer} type="email" className="sm:max-w-sm bg-white" />
-            <Button type="submit" className="bg-[#1e3a5f] hover:bg-[#2d5a8a]"><Users className="w-4 h-4 me-2" />{t.open}</Button>
+            <Button type="submit" className="bg-[#2e1065] hover:bg-[#4c1d95]"><Users className="w-4 h-4 me-2" />{t.open}</Button>
           </form>
         )}
 
@@ -282,7 +282,7 @@ export default function MyDocuments() {
           <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-[#6B46C1]" /></div>
         ) : isAdmin && !adminEmail ? (
           <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <h2 className="font-bold text-[#1e3a5f] mb-3">{t.customers}</h2>
+            <h2 className="font-bold text-[#2e1065] mb-3">{t.customers}</h2>
             {customers.length === 0 ? <p className="text-sm text-gray-500">—</p> : (
               <ul className="divide-y">
                 {customers.map((c) => (
@@ -314,7 +314,7 @@ export default function MyDocuments() {
           {abo && (abo.active ? (
             <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-100 bg-white p-4">
               <BadgeCheck className="w-5 h-5 text-emerald-600" />
-              <p className="flex-1 font-semibold text-[#1e3a5f]">
+              <p className="flex-1 font-semibold text-[#2e1065]">
                 {abo.ends_at ? t.aboUntil(new Date(abo.ends_at).toLocaleDateString(lang === "ar" ? "ar" : lang)) : t.aboActive}
               </p>
               {abo.limit > 0 && (
@@ -329,10 +329,10 @@ export default function MyDocuments() {
           ) : (
             <div className="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-5 flex flex-col md:flex-row md:items-center gap-4">
               <div className="flex-1">
-                <p className="font-bold text-[#1e3a5f]">{t.aboTitle}</p>
-                <p className="text-sm text-[#1e3a5f]/80 mt-1">{aboReturn === "1" ? t.aboThanks : `${t.aboPitch} ${t.aboNeeded}`}</p>
+                <p className="font-bold text-[#2e1065]">{t.aboTitle}</p>
+                <p className="text-sm text-[#2e1065]/80 mt-1">{aboReturn === "1" ? t.aboThanks : `${t.aboPitch} ${t.aboNeeded}`}</p>
                 <p className="mt-2 font-bold text-[#6B46C1]">{t.aboPrice(Number(abo.price).toFixed(2).replace(".", ","))}</p>
-                {abo.limit > 0 && <p className="text-sm text-[#1e3a5f]/80">{t.aboLimit(abo.limit)}</p>}
+                {abo.limit > 0 && <p className="text-sm text-[#2e1065]/80">{t.aboLimit(abo.limit)}</p>}
                 <p className="text-[11px] text-gray-500 mt-1">{t.aboTerms}</p>
               </div>
               <Button onClick={subscribe} disabled={aboBusy || aboReturn === "1"} className="bg-[#6B46C1] hover:bg-[#805AD5] font-bold">
@@ -346,7 +346,7 @@ export default function MyDocuments() {
           <>
           {reminders.length > 0 && (
             <div className="mb-6 bg-white rounded-2xl border border-gray-100 p-5">
-              <h2 className="font-bold text-[#1e3a5f] mb-3">{t.reminders}</h2>
+              <h2 className="font-bold text-[#2e1065] mb-3">{t.reminders}</h2>
               <ul className="space-y-2">
                 {reminders.map((r) => {
                   const days = Math.round((new Date(r.due_date) - new Date(new Date().toDateString())) / 86400000);
@@ -355,7 +355,7 @@ export default function MyDocuments() {
                     <li key={r.id} className="flex items-center gap-3 rounded-xl border border-gray-100 p-3">
                       <CalendarClock className="w-5 h-5 text-[#6B46C1] shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <p className="font-medium text-[#1e3a5f]">{r.title}</p>
+                        <p className="font-medium text-[#2e1065]">{r.title}</p>
                         <p className="text-xs text-gray-500">{t.folders[r.folder] || r.folder} · {new Date(r.due_date).toLocaleDateString(lang === "ar" ? "ar" : lang)}</p>
                         {r.details && <p className="text-xs text-gray-600 mt-1">{r.details}</p>}
                       </div>
@@ -382,7 +382,7 @@ export default function MyDocuments() {
               return (
                 <button key={key} onClick={() => setFolder(key)} className="group bg-white rounded-2xl border border-gray-100 p-5 text-start shadow-sm hover:shadow-md hover:border-[#6B46C1]/40 transition">
                   <div className={`w-11 h-11 ${meta.color} rounded-xl flex items-center justify-center mb-3`}><Icon className="w-5 h-5 text-white" /></div>
-                  <p className="font-semibold text-[#1e3a5f] leading-tight">{t.folders[key] || key}</p>
+                  <p className="font-semibold text-[#2e1065] leading-tight">{t.folders[key] || key}</p>
                   <p className="text-xs text-gray-500 mt-1">{t.files(count)}</p>
                 </button>
               );
@@ -394,7 +394,7 @@ export default function MyDocuments() {
         ) : (
           <div className="bg-white rounded-2xl border border-gray-100 p-5 md:p-6">
             <button onClick={() => setFolder(null)} className="mb-4 inline-flex items-center gap-1 text-sm text-[#6B46C1] hover:underline"><BackIcon className="w-4 h-4" />{t.back}</button>
-            <h2 className="text-xl font-bold text-[#1e3a5f] mb-4">{t.folders[folder] || folder}</h2>
+            <h2 className="text-xl font-bold text-[#2e1065] mb-4">{t.folders[folder] || folder}</h2>
 
             <div className="mb-6 flex flex-col sm:flex-row gap-2 sm:items-center">
               <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t.titleField} className="sm:max-w-xs" />
@@ -415,7 +415,7 @@ export default function MyDocuments() {
                    <div className="flex items-center gap-3">
                     <FileText className="w-5 h-5 text-[#6B46C1] shrink-0" />
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-[#1e3a5f] truncate">{doc.title}</p>
+                      <p className="font-medium text-[#2e1065] truncate">{doc.title}</p>
                       <p className="text-xs text-gray-500">
                         {new Date(doc.created_at).toLocaleDateString(lang === "ar" ? "ar" : lang)} · {formatSize(doc.size)}
                         {doc.uploaded_by === "einstein" && <span className="ms-2 rounded bg-purple-50 px-1.5 py-0.5 text-[#6B46C1]">{t.byEinstein}</span>}

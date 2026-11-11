@@ -522,7 +522,7 @@ export default function Offers() {
         >
           <Card className="border-0 shadow-lg">
             <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-[#1e3a5f] mb-4">
+              <h2 className="text-2xl font-bold text-[#2e1065] mb-4">
                 {t.intro_title}
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed">
@@ -541,7 +541,7 @@ export default function Offers() {
         >
           <Card className="border-0 shadow-lg bg-gradient-to-br from-[#6B46C1]/10 to-[#c9a227]/10">
             <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-[#1e3a5f] mb-4">
+              <h2 className="text-2xl font-bold text-[#2e1065] mb-4">
                 {t.concept_title}
               </h2>
               <p className="text-gray-600 mb-6">
@@ -591,7 +591,7 @@ export default function Offers() {
 
                       <div className="flex-grow">
                         <div className="flex items-center gap-3 mb-2">
-                          <h2 className="text-2xl font-bold text-[#1e3a5f]">
+                          <h2 className="text-2xl font-bold text-[#2e1065]">
                             {pkgInfo.title}
                           </h2>
                           {pkgInfo.subtitle && (
@@ -623,7 +623,7 @@ export default function Offers() {
                         {/* Prices Section */}
                         {prices.length > 0 && (
                           <div className="border-t pt-4">
-                            <h3 className="text-lg font-semibold text-[#1e3a5f] mb-3 flex items-center gap-2">
+                            <h3 className="text-lg font-semibold text-[#2e1065] mb-3 flex items-center gap-2">
                               <Euro className="w-5 h-5 text-[#6B46C1]" />
                               {t.prices_title}
                             </h3>
@@ -664,7 +664,7 @@ export default function Offers() {
                 <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
                   <FileText className="w-6 h-6 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-[#1e3a5f]">
+                <h2 className="text-2xl font-bold text-[#2e1065]">
                   {t.bureaucracy_title}
                 </h2>
               </div>
@@ -696,7 +696,7 @@ export default function Offers() {
                 <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center">
                   <Package className="w-6 h-6 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-[#1e3a5f]">
+                <h2 className="text-2xl font-bold text-[#2e1065]">
                   {t.flexible_title}
                 </h2>
               </div>
@@ -719,13 +719,13 @@ export default function Offers() {
           transition={{ delay: 1.1 }}
           className="mb-12"
         >
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-[#1e3a5f]/10 to-[#6B46C1]/10">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-[#2e1065]/10 to-[#6B46C1]/10">
             <CardContent className="p-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 bg-[#6B46C1] rounded-xl flex items-center justify-center">
                   <Heart className="w-6 h-6 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-[#1e3a5f]">
+                <h2 className="text-2xl font-bold text-[#2e1065]">
                   {t.promise_title}
                 </h2>
               </div>
@@ -748,7 +748,7 @@ export default function Offers() {
           transition={{ delay: 1.2 }}
           className="text-center"
         >
-          <Card className="border-0 shadow-lg bg-[#1e3a5f] text-white">
+          <Card className="border-0 shadow-lg bg-[#2e1065] text-white">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold mb-4">
                 EinStein – eine Lösung für alles

@@ -130,7 +130,7 @@ export default function CustomerDashboard() {
                       <StatusPill tone={booking.tone}>{booking.status}</StatusPill>
                       <span className="font-mono text-xs font-bold text-[#8ea0b7]">{booking.id}</span>
                     </div>
-                    <h2 className="text-xl font-black text-[#13233a]">{booking.title}</h2>
+                    <h2 className="text-xl font-black text-[#1f0b52]">{booking.title}</h2>
                     <div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold text-[#65758b]">
                       <span className="flex items-center gap-2"><Calendar className="h-4 w-4" />{booking.date}</span>
                       <span className="flex items-center gap-2"><Clock className="h-4 w-4" />{booking.time}</span>
@@ -138,7 +138,7 @@ export default function CustomerDashboard() {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-3">
-                    {booking.price && <div className="text-xl font-black text-[#1e3a5f]">{booking.price}</div>}
+                    {booking.price && <div className="text-xl font-black text-[#2e1065]">{booking.price}</div>}
                     <div className="flex gap-2">
                       {SUBSCRIPTION_CATEGORIES.includes(booking.category) && (
                         <Link to={cancelUrl(booking)} className="inline-flex h-11 items-center justify-center rounded-[10px] border border-red-200 bg-white px-4 text-sm font-extrabold text-red-600 hover:bg-red-50">
@@ -159,11 +159,11 @@ export default function CustomerDashboard() {
         <div className="space-y-6">
           <DesignCard className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#122238] text-white">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1f0b52] text-white">
                 <User className="h-7 w-7" />
               </div>
               <div>
-                <h2 className="text-xl font-black text-[#13233a]">{profile.full_name || profile.name || "-"}</h2>
+                <h2 className="text-xl font-black text-[#1f0b52]">{profile.full_name || profile.name || "-"}</h2>
               </div>
             </div>
             <div className="mt-5 grid gap-4">

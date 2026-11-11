@@ -254,7 +254,7 @@ export default function Layout({ children, currentPageName }) {
       `}</style>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-purple-100/80 bg-white/90 text-[#1e3a5f] backdrop-blur-md supports-[backdrop-filter]:bg-white/75">
+      <header className="sticky top-0 z-50 border-b border-purple-100/80 bg-white/90 text-[#2e1065] backdrop-blur-md supports-[backdrop-filter]:bg-white/75">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -302,7 +302,7 @@ export default function Layout({ children, currentPageName }) {
               {isAdmin && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-[#1e3a5f] hover:text-[#6B46C1] hover:bg-purple-50 font-medium px-2">
+                    <Button variant="ghost" size="sm" className="text-[#2e1065] hover:text-[#6B46C1] hover:bg-purple-50 font-medium px-2">
                       {lang === "ar" ? "الإدارة" : lang === "en" ? "Admin" : lang === "uk" ? "Адмін" : "Admin"}
                       <ChevronDown className="w-3 h-3 ms-1" />
                     </Button>
@@ -396,7 +396,7 @@ export default function Layout({ children, currentPageName }) {
                             {/* Language Selector */}
                             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-[#1e3a5f] hover:bg-gray-100 px-2 sm:px-3">
+                  <Button variant="ghost" size="sm" className="text-[#2e1065] hover:bg-gray-100 px-2 sm:px-3">
                     <Globe className="w-4 h-4 sm:me-1" />
                     <span className="hidden sm:inline">{lang.toUpperCase()}</span>
                   </Button>
@@ -427,7 +427,7 @@ export default function Layout({ children, currentPageName }) {
               {user !== null ? (
                                     <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="text-[#1e3a5f] hover:bg-gray-100 px-2 sm:px-3">
+                    <Button variant="ghost" className="text-[#2e1065] hover:bg-gray-100 px-2 sm:px-3">
                       <User className="w-4 h-4 sm:me-2" />
                       <span className="hidden sm:inline">{user?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "User"}</span>
                       <ChevronDown className="w-4 h-4 ms-1" />
@@ -514,7 +514,7 @@ export default function Layout({ children, currentPageName }) {
               <Button 
                                     variant="ghost" 
                                     size="icon"
-                                    className="md:hidden text-[#1e3a5f]"
+                                    className="md:hidden text-[#2e1065]"
                                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                                   >
                 {isMenuOpen ? <X /> : <Menu />}
@@ -528,21 +528,21 @@ export default function Layout({ children, currentPageName }) {
                                       <div className="flex flex-col gap-3">
                                         <Link 
                                           to={createPageUrl("Home")} 
-                                          className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                          className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                           onClick={() => setIsMenuOpen(false)}
                                         >
                                           {t.home}
                                         </Link>
                                         <Link 
                                            to={createPageUrl("Services")} 
-                                           className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                           className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                            onClick={() => setIsMenuOpen(false)}
                                          >
                                            {t.services}
                                          </Link>
                                          <Link 
                                            to={createPageUrl("Booking")} 
-                                           className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                           className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                            onClick={() => setIsMenuOpen(false)}
                                          >
                                            {t.booking}
@@ -550,7 +550,7 @@ export default function Layout({ children, currentPageName }) {
                                          {(isProvider || isAdmin) && (
                                            <Link 
                                              to={createPageUrl("CustomerRequests")} 
-                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                              onClick={() => setIsMenuOpen(false)}
                                            >
                                              {lang === "ar" ? "طلبات العملاء" : lang === "en" ? "Customer Requests" : lang === "uk" ? "Запити клієнтів" : "Kundenanfragen"}
@@ -558,7 +558,7 @@ export default function Layout({ children, currentPageName }) {
                                          )}
                                          <Link 
                                            to={createPageUrl("CustomerService")} 
-                                           className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                           className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                            onClick={() => setIsMenuOpen(false)}
                                          >
                                            {lang === "ar" ? "خدمة العملاء" : lang === "en" ? "Support" : lang === "uk" ? "Підтримка" : "Hilfe"}
@@ -566,7 +566,7 @@ export default function Layout({ children, currentPageName }) {
                                         {user && !isAdmin && (
                                           <Link 
                                             to={createPageUrl("CustomerDashboard")} 
-                                            className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                            className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                             onClick={() => setIsMenuOpen(false)}
                                           >
                                             {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : lang === "uk" ? "Мій кабінет" : "Mein Dashboard"}
@@ -575,7 +575,7 @@ export default function Layout({ children, currentPageName }) {
                                         {user && (
                                           <Link
                                             to={createPageUrl("MyDocuments")}
-                                            className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                            className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                             onClick={() => setIsMenuOpen(false)}
                                           >
                                             {isAdmin || isProvider
@@ -587,49 +587,49 @@ export default function Layout({ children, currentPageName }) {
                                           <>
                                             <Link 
                                               to={createPageUrl("AdminBookings")} 
-                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                               onClick={() => setIsMenuOpen(false)}
                                             >
                                               {t.myBookings}
                                             </Link>
                                             <Link 
                                               to={createPageUrl("Payments")} 
-                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                               onClick={() => setIsMenuOpen(false)}
                                             >
                                               {t.payments}
                                             </Link>
                                             <Link 
                                               to={createPageUrl("AdminServices")} 
-                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                               onClick={() => setIsMenuOpen(false)}
                                             >
                                               {t.adminServices}
                                             </Link>
                                             <Link 
                                               to={createPageUrl("Providers")} 
-                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                               onClick={() => setIsMenuOpen(false)}
                                             >
                                               {t.providers}
                                             </Link>
                                             <Link 
                                               to={createPageUrl("SEOAdmin")} 
-                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                               onClick={() => setIsMenuOpen(false)}
                                             >
                                               SEO
                                             </Link>
                                             <Link 
                                              to={createPageUrl("PriceAdmin")} 
-                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                              onClick={() => setIsMenuOpen(false)}
                                             >
                                              {lang === "ar" ? "الأسعار" : lang === "en" ? "Prices" : lang === "uk" ? "Ціни" : "Preise"}
                                             </Link>
                                             <Link 
                                              to={createPageUrl("AdminUsers")} 
-                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#1e3a5f]"
+                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                              onClick={() => setIsMenuOpen(false)}
                                             >
                                              {lang === "ar" ? "المستخدمون" : lang === "en" ? "Users" : lang === "uk" ? "Користувачі" : "Benutzer"}

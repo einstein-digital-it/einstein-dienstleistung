@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import EinsteinLogo from "@/components/EinsteinLogo";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { publicApi } from "@/api/backendClient";
@@ -873,7 +874,7 @@ function PromisesCarousel({ promises, isRTL }) {
               key={i}
               className="flex-[0_0_100%] min-w-0 px-2"
             >
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d4a6f] mx-auto max-w-2xl">
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-[#2e1065] to-[#4c1d95] mx-auto max-w-2xl">
                 <CardContent className="p-8 flex items-center gap-6">
                   <div className="w-14 h-14 bg-[#6B46C1] rounded-full flex items-center justify-center flex-shrink-0">
                     <CheckCircle className="w-7 h-7 text-white" />
@@ -994,7 +995,7 @@ function ServicesCarousel({ services, t, isRTL, customPrices, lang }) {
                 className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] xl:flex-[0_0_25%] px-2"
               >
                 <Link to={createPageUrl(`Booking?category=${service.key}`)}>
-                  <Card className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-0 shadow-lg overflow-hidden h-full bg-gradient-to-br from-[#1e3a5f] to-[#2d4a6f]">
+                  <Card className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-0 shadow-lg overflow-hidden h-full bg-gradient-to-br from-[#2e1065] to-[#4c1d95]">
                     <CardContent className="p-6">
                       <div className={`w-14 h-14 ${service.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                         <Icon className="w-7 h-7 text-white" />
@@ -1064,9 +1065,9 @@ function AuthenticatedArabicHero() {
   ];
 
   return (
-    <section className="relative min-h-[calc(100dvh-4rem)] overflow-hidden bg-[#122238] text-white">
+    <section className="relative min-h-[calc(100dvh-4rem)] overflow-hidden bg-[#1f0b52] text-white">
       <div className="mx-auto flex w-full max-w-[920px] flex-col items-center px-4 pb-8 pt-3 text-center sm:pt-4 md:pt-4">
-        <h1 className="text-[34px] font-black leading-[1.25] text-[#d4af25] sm:text-[44px] md:text-[50px]">
+        <h1 className="text-[34px] font-black leading-[1.25] text-purple-200 sm:text-[44px] md:text-[50px]">
           آينشتاين – التنظيم والإدارة
         </h1>
 
@@ -1082,7 +1083,7 @@ function AuthenticatedArabicHero() {
             {serviceHighlights.map((service) => (
               <div key={service.title}>
                 <div className="flex items-center justify-center gap-3 text-[17px] font-extrabold text-white sm:text-[18px]">
-                  <span className="text-[#d4af25]">✓</span>
+                  <span className="text-purple-200">✓</span>
                   <span>{service.title}</span>
                 </div>
                 <p className="mt-2 text-[14px] leading-7 text-white/72 sm:text-[15px]">
@@ -1148,11 +1149,11 @@ export default function Home() {
       {showAuthenticatedArabicHero ? (
         <AuthenticatedArabicHero />
       ) : (
-      <section className="relative bg-gradient-to-br from-slate-900 via-[#1e3a5f] to-slate-800 text-white py-20 md:py-32 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#1f0b52] via-[#3b1478] to-[#5b21b6] text-white py-20 md:py-32 overflow-hidden">
         {/* Simplified decorative elements */}
            <div className="absolute inset-0 overflow-hidden">
              <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#6B46C1]/20 rounded-full blur-[100px]" />
-             <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#c9a227]/10 rounded-full blur-[100px]" />
+             <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#c084fc]/20 rounded-full blur-[100px]" />
            </div>
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
@@ -1162,6 +1163,11 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto"
           >
+            {/* Logo */}
+            <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-3xl bg-white shadow-2xl shadow-black/30 ring-1 ring-white/40">
+              <EinsteinLogo size={72} />
+            </div>
+
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -1179,7 +1185,7 @@ export default function Home() {
             </motion.div>
 
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight px-2 w-full">
-              <span className="bg-gradient-to-r from-[#c9a227] via-[#e8c547] to-[#c9a227] bg-clip-text text-transparent drop-shadow-2xl text-center block break-words pb-2">
+              <span className="bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent drop-shadow-2xl text-center block break-words pb-2">
                 EinStein – {t.hero_title}
               </span>
             </h1>
@@ -1198,8 +1204,8 @@ export default function Home() {
                 {t.hero_solution}
               </p>
               <div className="flex items-center gap-3 pt-4 border-t border-white/10">
-                <Quote className="w-6 h-6 text-[#c9a227]" />
-                <p className="text-lg md:text-xl font-semibold bg-gradient-to-r from-[#c9a227] to-[#e8c547] bg-clip-text text-transparent">
+                <Quote className="w-6 h-6 text-purple-300" />
+                <p className="text-lg md:text-xl font-semibold text-purple-100">
                   {t.motto}
                 </p>
               </div>
@@ -1303,9 +1309,9 @@ export default function Home() {
               viewport={{ once: true }}
               className="relative"
             >
-              <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 md:p-10 text-white shadow-2xl">
+              <div className="bg-gradient-to-br from-[#1f0b52] to-[#3b1478] rounded-3xl p-8 md:p-10 text-white shadow-2xl">
                 <div className="flex items-center gap-4 mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#c9a227] to-[#e8c547] rounded-2xl flex items-center justify-center shadow-lg">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#7c3aed] to-[#c084fc] rounded-2xl flex items-center justify-center shadow-lg">
                     <Award className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl md:text-3xl font-bold">{t.quality_title}</h3>
@@ -1444,7 +1450,7 @@ export default function Home() {
         {/* Minimal decorative elements */}
          <div className="absolute inset-0">
            <div className="absolute top-1/4 left-0 w-72 h-72 bg-[#6B46C1]/15 rounded-full blur-[100px]" />
-           <div className="absolute bottom-1/4 right-0 w-72 h-72 bg-[#c9a227]/10 rounded-full blur-[100px]" />
+           <div className="absolute bottom-1/4 right-0 w-72 h-72 bg-[#c084fc]/20 rounded-full blur-[100px]" />
          </div>
         
         <div className="max-w-7xl mx-auto px-4 relative z-10">

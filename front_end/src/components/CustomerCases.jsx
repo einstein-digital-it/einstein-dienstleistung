@@ -157,7 +157,7 @@ export default function CustomerCases({ lang, abo, onOpenChange, onUploaded }) {
       <section className="mb-6 bg-white rounded-2xl border border-gray-100 p-5">
         <div className="flex flex-wrap items-center gap-3">
           <div className="min-w-[200px] flex-1">
-            <h2 className="font-bold text-[#1e3a5f]">{t.title}</h2>
+            <h2 className="font-bold text-[#2e1065]">{t.title}</h2>
             <p className="text-sm text-gray-500 mt-1">{t.intro}</p>
           </div>
           <Button onClick={() => setCreating((v) => !v)} className="bg-[#6B46C1] hover:bg-[#805AD5] font-bold"><FolderPlus className="w-4 h-4 me-2" />{t.add}</Button>
@@ -165,7 +165,7 @@ export default function CustomerCases({ lang, abo, onOpenChange, onUploaded }) {
         {creating && (
           <form onSubmit={create} className="mt-4 flex flex-col sm:flex-row gap-2">
             <Input autoFocus maxLength={120} value={name} onChange={(e) => setName(e.target.value)} placeholder={t.name} className="sm:max-w-sm" />
-            <Button type="submit" className="bg-[#1e3a5f] hover:bg-[#2d5a8a]">{t.create}</Button>
+            <Button type="submit" className="bg-[#2e1065] hover:bg-[#4c1d95]">{t.create}</Button>
             <Button type="button" variant="ghost" onClick={() => setCreating(false)}>{t.cancel}</Button>
           </form>
         )}
@@ -176,7 +176,7 @@ export default function CustomerCases({ lang, abo, onOpenChange, onUploaded }) {
               <button key={item.id} onClick={() => open(item.id)} className="flex items-center gap-3 rounded-xl border border-gray-100 p-4 text-start hover:border-[#6B46C1]/40 hover:shadow-sm transition">
                 <Folder className="w-6 h-6 text-[#6B46C1] shrink-0" />
                 <span className="min-w-0">
-                  <span className="block font-semibold text-[#1e3a5f] truncate">{item.name}</span>
+                  <span className="block font-semibold text-[#2e1065] truncate">{item.name}</span>
                   <span className="block text-xs text-gray-500">{t.files(Number(item.documents_count || 0))}</span>
                 </span>
               </button>
@@ -196,7 +196,7 @@ export default function CustomerCases({ lang, abo, onOpenChange, onUploaded }) {
         <button onClick={() => { setNotice(""); setView(null); }} className="mb-4 inline-flex items-center gap-1 text-sm text-[#6B46C1] hover:underline"><BackIcon className="w-4 h-4" />{detail.name}</button>
         {noticeBox}
         <div className="mb-4 flex items-center gap-3">
-          <h2 dir="ltr" className="flex-1 text-xl font-bold text-[#1e3a5f] text-start">{label}</h2>
+          <h2 dir="ltr" className="flex-1 text-xl font-bold text-[#2e1065] text-start">{label}</h2>
           <ShareButton docs={docs} title={label} />
         </div>
         <ul className="divide-y">
@@ -205,7 +205,7 @@ export default function CustomerCases({ lang, abo, onOpenChange, onUploaded }) {
               <div className="flex items-center gap-3">
                 <FileText className="w-5 h-5 text-[#6B46C1] shrink-0" />
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium text-[#1e3a5f] truncate">{doc.title}</p>
+                  <p className="font-medium text-[#2e1065] truncate">{doc.title}</p>
                   <p className="text-xs text-gray-500">{new Date(doc.created_at).toLocaleDateString(lang === "ar" ? "ar" : lang)}</p>
                 </div>
                 <OriginalViewer doc={doc} lang={lang} />
@@ -236,8 +236,8 @@ export default function CustomerCases({ lang, abo, onOpenChange, onUploaded }) {
   const unsorted = detail.documents.filter((d) => !d.section);
   const row = (label, count, Icon, key) => (
     <button key={key} onClick={() => { setNotice(""); setView(key); }} className="flex w-full items-center gap-3 rounded-xl border border-gray-100 p-4 hover:border-[#6B46C1]/40 hover:shadow-sm transition">
-      <Icon className="w-5 h-5 text-[#c9a227] shrink-0" />
-      <span dir="ltr" className="flex-1 truncate text-start font-semibold text-[#1e3a5f]">{label}</span>
+      <Icon className="w-5 h-5 text-[#7c3aed] shrink-0" />
+      <span dir="ltr" className="flex-1 truncate text-start font-semibold text-[#2e1065]">{label}</span>
       <span className="text-sm font-bold text-gray-400">{count}</span>
     </button>
   );
@@ -247,7 +247,7 @@ export default function CustomerCases({ lang, abo, onOpenChange, onUploaded }) {
       <button onClick={close} className="mb-4 inline-flex items-center gap-1 text-sm text-[#6B46C1] hover:underline"><BackIcon className="w-4 h-4" />{t.back}</button>
       {noticeBox}
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <h2 className="min-w-[180px] flex-1 text-xl font-bold text-[#1e3a5f]">{detail.name}</h2>
+        <h2 className="min-w-[180px] flex-1 text-xl font-bold text-[#2e1065]">{detail.name}</h2>
         <input ref={input} type="file" multiple className="hidden" accept=".pdf,.jpg,.jpeg,.png,.heic,.webp,.doc,.docx,.xls,.xlsx,.txt" onChange={upload} />
         <Button onClick={() => input.current?.click()} disabled={Boolean(progress)} className="bg-[#6B46C1] hover:bg-[#805AD5] font-bold">
           {progress ? <Loader2 className="w-4 h-4 me-2 animate-spin" /> : <Upload className="w-4 h-4 me-2" />}{progress || t.upload}

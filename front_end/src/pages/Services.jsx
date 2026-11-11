@@ -957,7 +957,7 @@ export default function Services() {
 
                         {/* Prices */}
                         <div className="mb-6">
-                          <h3 className="text-lg font-semibold text-[#1e3a5f] mb-3 flex items-center gap-2">
+                          <h3 className="text-lg font-semibold text-[#2e1065] mb-3 flex items-center gap-2">
                             <Euro className="w-5 h-5 text-[#6B46C1]" />
                             {lang === "de" ? "Preise" : lang === "ar" ? "الأسعار" : "Prices"}
                           </h3>
@@ -983,7 +983,7 @@ export default function Services() {
                         
                         {/* Book Button */}
                         <Link to={createPageUrl(`Booking?category=${service.key}`)}>
-                          <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8a]">
+                          <Button className="bg-[#2e1065] hover:bg-[#4c1d95]">
                             {t.book_now}
                             <ArrowRight className="ms-2 w-4 h-4" />
                           </Button>
@@ -1024,7 +1024,7 @@ export default function Services() {
           transition={{ delay: 0.8 }}
           className="mt-12 text-center"
         >
-          <Card className="border-0 shadow-lg p-6 bg-[#1e3a5f]/5">
+          <Card className="border-0 shadow-lg p-6 bg-[#2e1065]/5">
             <p className="text-gray-600">
               {lang === "de" && "Keine versteckten Kosten • Flexible Pakete möglich • Rabatte für langfristige Betreuung"}
               {lang === "ar" && "لا تكاليف خفية • باقات مرنة متاحة • خصومات للرعاية طويلة المدى"}

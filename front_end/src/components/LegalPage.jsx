@@ -33,7 +33,7 @@ export default function LegalPage({ title, sections }) {
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="mx-auto max-w-3xl">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[#1e3a5f] md:text-4xl">{title}</h1>
+          <h1 className="text-3xl font-bold text-[#2e1065] md:text-4xl">{title}</h1>
           <p className="mt-2 text-gray-500">Stand: Oktober 2026</p>
         </div>
         <LegalNotice />
@@ -44,7 +44,7 @@ export default function LegalPage({ title, sections }) {
               <div className="space-y-3">
                 {section.blocks.map((block, i) =>
                   block.startsWith("###") ? (
-                    <h3 key={i} className="pt-2 font-semibold text-[#1e3a5f]">{block.replace("###", "")}</h3>
+                    <h3 key={i} className="pt-2 font-semibold text-[#2e1065]">{block.replace("###", "")}</h3>
                   ) : (
                     <p key={i} className="text-sm leading-relaxed text-gray-700">{block}</p>
                   )

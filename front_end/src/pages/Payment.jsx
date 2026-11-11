@@ -215,7 +215,7 @@ export default function Payment() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#1e3a5f]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#2e1065]" />
       </div>
     );
   }
@@ -242,7 +242,7 @@ export default function Payment() {
               <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Clock className="w-10 h-10 text-blue-500" />
               </div>
-              <h2 className="text-2xl font-bold text-[#1e3a5f] mb-2">
+              <h2 className="text-2xl font-bold text-[#2e1065] mb-2">
                 {lang === 'ar' ? '✅ تم الدفع - بانتظار الموافقة' : lang === 'en' ? '✅ Payment Authorized – Awaiting Approval' : '✅ Zahlung autorisiert – Warte auf Bestätigung'}
               </h2>
               <p className="text-gray-600 mb-2">
@@ -254,7 +254,7 @@ export default function Payment() {
                 <p className="text-sm font-semibold text-blue-700">{booking.booking_number}</p>
               </div>
               <Link to="/CustomerDashboard">
-                <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8a]">{t.go_to_bookings}</Button>
+                <Button className="bg-[#2e1065] hover:bg-[#4c1d95]">{t.go_to_bookings}</Button>
               </Link>
             </Card>
           </motion.div>
@@ -275,14 +275,14 @@ export default function Payment() {
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle className="w-10 h-10 text-green-500" />
               </div>
-              <h2 className="text-2xl font-bold text-[#1e3a5f] mb-2">
+              <h2 className="text-2xl font-bold text-[#2e1065] mb-2">
                 {paymentSuccess ? t.payment_success : t.already_paid}
               </h2>
               {paymentSuccess && (
                 <p className="text-gray-600 mb-6">{t.payment_success_msg}</p>
               )}
               <Link to="/CustomerDashboard">
-                <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8a]">
+                <Button className="bg-[#2e1065] hover:bg-[#4c1d95]">
                   {t.go_to_bookings}
                 </Button>
               </Link>
@@ -312,12 +312,12 @@ export default function Payment() {
               <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Clock className="w-10 h-10 text-amber-500" />
               </div>
-              <h2 className="text-2xl font-bold text-[#1e3a5f] mb-2">
+              <h2 className="text-2xl font-bold text-[#2e1065] mb-2">
                 {t.no_price}
               </h2>
               <p className="text-gray-600 mb-6">{t.no_price_msg}</p>
               <Link to={createPageUrl("CustomerDashboard")}>
-                <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8a]">
+                <Button className="bg-[#2e1065] hover:bg-[#4c1d95]">
                   {t.go_to_bookings}
                 </Button>
               </Link>
@@ -339,7 +339,7 @@ export default function Payment() {
               {t.back}
             </Button>
           </Link>
-          <div className="bg-gradient-to-r from-[#1e3a5f] via-[#2d5a8a] to-[#6B46C1] rounded-3xl p-6 text-white mb-6 shadow-xl shadow-slate-300/40">
+          <div className="bg-gradient-to-r from-[#2e1065] via-[#4c1d95] to-[#6B46C1] rounded-3xl p-6 text-white mb-6 shadow-xl shadow-slate-300/40">
             <div className="flex items-center gap-3 mb-2">
               <CreditCard className="w-6 h-6" />
               <h1 className="text-2xl font-bold">{t.title}</h1>
@@ -377,22 +377,22 @@ export default function Payment() {
             <Card className="border-0 shadow-xl shadow-slate-200/60 rounded-2xl overflow-hidden">
               <div className="h-1 bg-gradient-to-r from-[#6B46C1] to-[#c9a227]" />
               <CardHeader className="pb-4">
-                <CardTitle className="text-[#1e3a5f] text-xl font-black tracking-tight">{t.booking_details}</CardTitle>
+                <CardTitle className="text-[#2e1065] text-xl font-black tracking-tight">{t.booking_details}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center pb-4 border-b">
                   <span className="text-gray-600">{t.booking_number}</span>
-                  <Badge className="bg-[#1e3a5f]">{booking.booking_number}</Badge>
+                  <Badge className="bg-[#2e1065]">{booking.booking_number}</Badge>
                 </div>
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center">
-                      <CreditCard className="w-5 h-5 text-[#1e3a5f]" />
+                    <div className="w-10 h-10 bg-[#2e1065]/10 rounded-lg flex items-center justify-center">
+                      <CreditCard className="w-5 h-5 text-[#2e1065]" />
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">{t.service}</p>
-                      <p className="font-medium text-[#1e3a5f]">
+                      <p className="font-medium text-[#2e1065]">
                         {booking.service_name || t.categories[booking.category]}
                       </p>
                     </div>
@@ -400,24 +400,24 @@ export default function Payment() {
 
                   {booking.provider_name && (
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center">
-                        <User className="w-5 h-5 text-[#1e3a5f]" />
+                      <div className="w-10 h-10 bg-[#2e1065]/10 rounded-lg flex items-center justify-center">
+                        <User className="w-5 h-5 text-[#2e1065]" />
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">{t.provider}</p>
-                        <p className="font-medium text-[#1e3a5f]">{booking.provider_name}</p>
+                        <p className="font-medium text-[#2e1065]">{booking.provider_name}</p>
                       </div>
                     </div>
                   )}
 
                   {booking.date && (
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center">
-                        <Calendar className="w-5 h-5 text-[#1e3a5f]" />
+                      <div className="w-10 h-10 bg-[#2e1065]/10 rounded-lg flex items-center justify-center">
+                        <Calendar className="w-5 h-5 text-[#2e1065]" />
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">{t.date}</p>
-                        <p className="font-medium text-[#1e3a5f]">
+                        <p className="font-medium text-[#2e1065]">
                           {format(new Date(booking.date), "dd.MM.yyyy")}
                         </p>
                       </div>
@@ -426,24 +426,24 @@ export default function Payment() {
 
                   {booking.time && (
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center">
-                        <Clock className="w-5 h-5 text-[#1e3a5f]" />
+                      <div className="w-10 h-10 bg-[#2e1065]/10 rounded-lg flex items-center justify-center">
+                        <Clock className="w-5 h-5 text-[#2e1065]" />
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">{t.time}</p>
-                        <p className="font-medium text-[#1e3a5f]">{booking.time}</p>
+                        <p className="font-medium text-[#2e1065]">{booking.time}</p>
                       </div>
                     </div>
                   )}
 
                   {booking.address && (
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center">
-                        <MapPin className="w-5 h-5 text-[#1e3a5f]" />
+                      <div className="w-10 h-10 bg-[#2e1065]/10 rounded-lg flex items-center justify-center">
+                        <MapPin className="w-5 h-5 text-[#2e1065]" />
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">{t.address}</p>
-                        <p className="font-medium text-[#1e3a5f]">{booking.address}</p>
+                        <p className="font-medium text-[#2e1065]">{booking.address}</p>
                       </div>
                     </div>
                   )}
@@ -451,7 +451,7 @@ export default function Payment() {
 
                 {/* Price Breakdown */}
                 <div className="mt-6 pt-4 border-t">
-                  <h3 className="font-semibold text-[#1e3a5f] mb-3">{t.price_breakdown}</h3>
+                  <h3 className="font-semibold text-[#2e1065] mb-3">{t.price_breakdown}</h3>
                   <div className="space-y-2">
                     <div className="flex justify-between text-gray-600">
                       <span>{t.net_amount}</span>
@@ -461,7 +461,7 @@ export default function Payment() {
                       <span>{t.vat}</span>
                       <span>{vatAmount.toFixed(2)} €</span>
                     </div>
-                    <div className="flex justify-between font-bold text-lg text-[#1e3a5f] pt-2 border-t">
+                    <div className="flex justify-between font-bold text-lg text-[#2e1065] pt-2 border-t">
                       <span>{t.total}</span>
                       <span>{totalAmount.toFixed(2)} €</span>
                     </div>

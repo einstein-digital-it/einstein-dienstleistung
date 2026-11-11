@@ -348,7 +348,7 @@ export default function SecretariatPackages({ lang = "de", onSelectPackage = nul
           <div className="inline-flex items-center gap-2 bg-purple-100 text-[#6B46C1] px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
             🟣 EinStein – Büro & Sekretariat
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1e3a5f] mb-3">{t.title}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#2e1065] mb-3">{t.title}</h2>
           <p className="text-gray-500 text-lg">{t.subtitle}</p>
         </div>}
 
@@ -373,7 +373,7 @@ export default function SecretariatPackages({ lang = "de", onSelectPackage = nul
 
               {/* Card header */}
               <div className={`px-6 pt-6 pb-4 ${pkg.highlight ? "bg-gradient-to-br from-[#6B46C1] to-[#805AD5] text-white" : "bg-white"}`}>
-                <h3 className={`text-xl font-bold mb-1 ${pkg.highlight ? "text-white" : "text-[#1e3a5f]"}`}>
+                <h3 className={`text-xl font-bold mb-1 ${pkg.highlight ? "text-white" : "text-[#2e1065]"}`}>
                   {pkg.name}
                 </h3>
                 <div className={`text-3xl font-extrabold mt-2 ${pkg.highlight ? "text-white" : "text-[#6B46C1]"}`}>

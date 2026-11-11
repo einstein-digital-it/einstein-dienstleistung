@@ -110,14 +110,14 @@ export default function MyBookings() {
                     <StatusPill tone={booking.isPaid ? "green" : "gold"}>{booking.isPaid ? "مدفوع" : "غير مدفوع"}</StatusPill>
                     <span className="font-mono text-xs font-bold text-[#8ea0b7]">{booking.number}</span>
                   </div>
-                  <h2 className="text-xl font-black text-[#13233a]">{booking.service}</h2>
+                  <h2 className="text-xl font-black text-[#1f0b52]">{booking.service}</h2>
                   <div className="mt-4 grid gap-2 text-sm font-semibold text-[#65758b] sm:grid-cols-3">
                     <span className="flex items-center gap-2"><Calendar className="h-4 w-4" />{booking.date}</span>
                     <span className="flex items-center gap-2"><Clock className="h-4 w-4" />{booking.time}</span>
                     <span className="flex items-center gap-2"><MapPin className="h-4 w-4" />{booking.address}</span>
                   </div>
                 </div>
-                <div className="text-2xl font-black text-[#1e3a5f]">{booking.price}</div>
+                <div className="text-2xl font-black text-[#2e1065]">{booking.price}</div>
               </div>
               {!booking.isPaid && booking.statusKey !== "cancelled" && (
                 <div className="mt-5">

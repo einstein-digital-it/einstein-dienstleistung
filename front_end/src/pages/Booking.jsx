@@ -787,11 +787,11 @@ export default function Booking() {
               >
                 <CheckCircle className="w-12 h-12 text-white" />
               </motion.div>
-              <h2 className="text-3xl font-black text-[#1e3a5f] mb-3 tracking-tight">{t.success_title}</h2>
+              <h2 className="text-3xl font-black text-[#2e1065] mb-3 tracking-tight">{t.success_title}</h2>
               <p className="text-gray-500 mb-8 text-lg leading-relaxed">{t.success_message}</p>
               <div className="bg-gradient-to-br from-[#6B46C1]/5 to-[#805AD5]/10 rounded-2xl p-6 inline-block border border-[#6B46C1]/10">
                 <p className="text-sm text-gray-400 font-medium mb-1">{t.booking_number}</p>
-                <p className="text-3xl font-black text-[#1e3a5f] tracking-wide">{bookingNumber}</p>
+                <p className="text-3xl font-black text-[#2e1065] tracking-wide">{bookingNumber}</p>
               </div>
             </Card>
           </motion.div>
@@ -812,7 +812,7 @@ export default function Booking() {
           <span className="inline-block px-4 py-1.5 bg-[#6B46C1]/10 text-[#6B46C1] rounded-full text-sm font-semibold mb-4 tracking-wide">
             {lang === "ar" ? "احجز خدمتك" : lang === "en" ? "BOOK YOUR SERVICE" : lang === "uk" ? "ЗАБРОНЮЙТЕ ПОСЛУГУ" : "JETZT BUCHEN"}
           </span>
-          <h1 className="text-3xl md:text-4xl font-black text-[#1e3a5f] mb-3 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-black text-[#2e1065] mb-3 tracking-tight">
             {t.title}
           </h1>
           <p className="text-gray-500 text-base max-w-xl mx-auto">
@@ -853,7 +853,7 @@ export default function Booking() {
             {/* Step 1: Category + Service combined */}
             {step === 1 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <h2 className="text-2xl font-black text-[#1e3a5f] mb-1 tracking-tight">{t.step1}</h2>
+                <h2 className="text-2xl font-black text-[#2e1065] mb-1 tracking-tight">{t.step1}</h2>
                 <p className="text-gray-400 text-sm mb-6">
                   {lang === "ar" ? "اختر نوع الخدمة التي تحتاجها" : lang === "en" ? "Choose the service you need" : lang === "uk" ? "Оберіть потрібну послугу" : "Wählen Sie die gewünschte Dienstleistung"}
                 </p>
@@ -879,7 +879,7 @@ export default function Booking() {
                         <div className={`w-10 h-10 ${cat.color} rounded-xl flex items-center justify-center mb-2`}>
                           <Icon className="w-5 h-5 text-white" />
                         </div>
-                        <p className="font-semibold text-[#1e3a5f] text-sm leading-tight">{getCategoryName(cat.key)}</p>
+                        <p className="font-semibold text-[#2e1065] text-sm leading-tight">{getCategoryName(cat.key)}</p>
                         <p className="text-xs text-[#c9a227] font-medium mt-1">
                           {priceInfo
                             ? `${displayPrice(priceInfo.price, lang, cat.key)} ${priceInfo.unit} · ${priceNote(lang, cat.key)}`
@@ -899,7 +899,7 @@ export default function Booking() {
                         {lang === "ar" ? "اختياري" : lang === "en" ? "OPTIONAL" : lang === "uk" ? "НЕОБОВ’ЯЗКОВО" : "OPTIONAL"}
                       </span>
                     </div>
-                    <h3 className="text-xl font-bold text-center text-[#1e3a5f] mb-2">
+                    <h3 className="text-xl font-bold text-center text-[#2e1065] mb-2">
                       {lang === "ar" ? "أو اختر باكيج شهري جاهز" : lang === "en" ? "Or choose a monthly package" : lang === "uk" ? "Або оберіть місячний пакет" : "Oder wählen Sie ein Monatspaket"}
                     </h3>
                     <p className="text-center text-gray-400 text-sm mb-6">
@@ -938,7 +938,7 @@ export default function Booking() {
                   const bm = BM_TEXT[lang] || BM_TEXT.de;
                   return (
                     <div className="mt-10 pt-8 border-t border-gray-100">
-                      <h3 className="text-xl font-bold text-center text-[#1e3a5f] mb-2">{bm.title}</h3>
+                      <h3 className="text-xl font-bold text-center text-[#2e1065] mb-2">{bm.title}</h3>
                       <p className="text-center text-gray-400 text-sm mb-6">{bm.hint}</p>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {BUEROMANAGEMENT_TIERS.map((tier) => {
@@ -951,7 +951,7 @@ export default function Booking() {
                               className={`p-5 rounded-2xl border-2 text-start relative transition-all ${active ? "border-[#6B46C1] bg-[#6B46C1]/10" : "border-gray-100 hover:border-[#6B46C1]/40 bg-white"}`}
                             >
                               {active && <CheckCircle className="w-4 h-4 text-[#6B46C1] absolute top-2 end-2" />}
-                              <p className="font-semibold text-[#1e3a5f]">{bm[tier.key]}</p>
+                              <p className="font-semibold text-[#2e1065]">{bm[tier.key]}</p>
                               <p className="text-xs text-gray-500">{tier.employees} {bm.employees}</p>
                               <p className="text-2xl font-black text-[#6B46C1] mt-2">
                                 {displayPrice(tier.price, lang, "bueromanagement")} € <span className="text-sm font-medium text-gray-500">{bm.month}</span>
@@ -974,7 +974,7 @@ export default function Booking() {
                 animate={{ opacity: 1 }}
                 className="space-y-6"
               >
-                <h2 className="text-2xl font-black text-[#1e3a5f] mb-6 tracking-tight">{t.step3}</h2>
+                <h2 className="text-2xl font-black text-[#2e1065] mb-6 tracking-tight">{t.step3}</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -1029,7 +1029,7 @@ export default function Booking() {
                 {/* Hours selector for secretariat (only if no package selected) */}
                 {formData.category === "secretariat" && !selectedPackage && (
                   <div className="bg-gradient-to-br from-purple-50 to-white border-2 border-purple-100 rounded-2xl p-5">
-                    <Label className="flex items-center gap-2 mb-3 font-semibold text-[#1e3a5f]">
+                    <Label className="flex items-center gap-2 mb-3 font-semibold text-[#2e1065]">
                       <Clock className="w-4 h-4 text-[#6B46C1]" />
                       {lang === "ar" ? "عدد الساعات المطلوبة" : lang === "en" ? "Number of hours" : lang === "uk" ? "Кількість годин" : "Anzahl der Stunden"}
                     </Label>
@@ -1081,7 +1081,7 @@ export default function Booking() {
                         <Badge className="bg-[#6B46C1] text-white mb-2">
                           {lang === "ar" ? "باكيج شهري" : lang === "en" ? "Monthly Package" : lang === "uk" ? "Місячний пакет" : "Monatspaket"}
                         </Badge>
-                        <p className="font-bold text-[#1e3a5f] text-lg">{selectedPackage.name}</p>
+                        <p className="font-bold text-[#2e1065] text-lg">{selectedPackage.name}</p>
                         <p className="text-2xl font-black text-[#6B46C1]">{toGrossPrice(selectedPackage.price, lang)}</p>
                       </div>
                       <Button
@@ -1124,7 +1124,7 @@ export default function Booking() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                <h2 className="text-xl font-bold text-[#1e3a5f] mb-6">{t.step4}</h2>
+                <h2 className="text-xl font-bold text-[#2e1065] mb-6">{t.step4}</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
