@@ -47,12 +47,6 @@ class NotificationSettingsController extends GetxController {
       providerUpdates.value = prefs['provider_documents_uploaded'] == true;
       emailEnabled.value = prefs['email_notifications'] != false;
       pushEnabled.value = prefs['in_app_notifications'] != false;
-      store.applyLanguage(
-        normalizeLanguageLabel(
-          (prefs['notification_language'] ?? store.selectedLanguage.value)
-              .toString(),
-        ),
-      );
     } catch (_) {
       errorText.value = 'Using local notification preferences.';
     } finally {

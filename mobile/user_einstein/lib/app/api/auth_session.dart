@@ -7,6 +7,9 @@ class AuthSession {
 
   String? _token;
   String? _email;
+  /// Languages the app has texts for. A first start always opens in Arabic.
+  static const supportedLocales = {'ar', 'en', 'de', 'uk'};
+
   String _localeCode = 'ar';
   bool _loaded = false;
 
@@ -20,7 +23,7 @@ class AuthSession {
     _token = prefs.getString(_tokenKey);
     _email = prefs.getString(_emailKey);
     final storedLocale = prefs.getString(_localeKey);
-    if (const {'ar', 'en', 'de'}.contains(storedLocale)) {
+    if (supportedLocales.contains(storedLocale)) {
       _localeCode = storedLocale!;
     }
     _loaded = true;
@@ -49,9 +52,7 @@ class AuthSession {
   }
 
   Future<void> saveLocale(String localeCode) async {
-    if (localeCode != 'ar' && localeCode != 'en' && localeCode != 'de') {
-      return;
-    }
+    if (!supportedLocales.contains(localeCode)) return;
     _localeCode = localeCode;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_localeKey, localeCode);

@@ -7,6 +7,7 @@ import 'app/api/customer_api_service.dart';
 import 'app/controllers/customer_store_controller.dart';
 import 'app/controllers/documents_controller.dart';
 import 'app/lang/app_translations.dart';
+import 'app/models/customer_profile.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/theme/app_theme.dart';
@@ -58,11 +59,7 @@ class EinsteinUserApp extends StatelessWidget {
     if (store.locale.value != preferredLocale) {
       store.locale.value = preferredLocale;
       Get.locale = preferredLocale;
-      final language = preferredLocale.languageCode == 'ar'
-          ? 'Arabic'
-          : preferredLocale.languageCode == 'de'
-          ? 'Deutsch'
-          : 'English';
+      final language = normalizeLanguageLabel(preferredLocale.languageCode);
       store.selectedLanguage.value = language;
       store.profile.value = store.profile.value.copyWith(language: language);
     }

@@ -56,19 +56,19 @@ class CustomerProfile {
 
 String normalizeLanguageLabel(String value) {
   return switch (value.toLowerCase()) {
-    'ar' || 'arabic' => 'Arabic',
-    'en' || 'english' => 'English',
+    'de' || 'deutsch' || 'german' => 'Deutsch',
+    'en' || 'english' || 'tr' || 'es' => 'English',
     'uk' || 'ukrainian' || 'українська' => 'Ukrainian',
-    _ => 'Deutsch',
+    _ => 'Arabic',
   };
 }
 
 String languageCodeFromLabel(String value) {
   return switch (value.toLowerCase()) {
-    'arabic' || 'ar' => 'ar',
-    'english' || 'en' => 'en',
+    'deutsch' || 'de' || 'german' => 'de',
+    'english' || 'en' || 'tr' || 'es' => 'en',
     'ukrainian' || 'uk' || 'українська' => 'uk',
-    _ => 'de',
+    _ => 'ar',
   };
 }
 
