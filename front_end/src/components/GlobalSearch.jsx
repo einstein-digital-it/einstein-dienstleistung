@@ -154,7 +154,7 @@ const searchData = {
       key: "contact", 
       icon: Phone, 
       keywords: ["kontakt", "telefon", "anrufen", "contact", "اتصال", "هاتف", "iletişim", "contacto"],
-      names: { de: "Kontakt: 069 27246275", ar: "اتصل: 069 27246275", en: "Contact: 069 27246275", tr: "İletişim: 069 27246275", es: "Contacto: 069 27246275" },
+      names: { de: "Kontakt: 069 27246275", ar: "اتصل: \u2066069 27246275\u2069", en: "Contact: 069 27246275", tr: "İletişim: 069 27246275", es: "Contacto: 069 27246275" },
       action: "tel:06927246275"
     },
     { 

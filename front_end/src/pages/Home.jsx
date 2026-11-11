@@ -6,6 +6,7 @@ import { publicApi } from "@/api/backendClient";
 import { displayPrice, priceNote } from "@/lib/priceUtils";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import useEmblaCarousel from "embla-carousel-react";
 import SearchBar from "../components/SearchBar";
 import {
   ArrowLeft,
@@ -15,6 +16,8 @@ import {
   BellRing,
   Briefcase,
   CheckCircle,
+  ChevronLeft,
+  ChevronRight,
   ClipboardList,
   FileText,
   FolderCheck,
@@ -23,6 +26,7 @@ import {
   Languages,
   Mail,
   Printer,
+  Quote,
   Settings,
   Shield,
   Ship,
@@ -811,6 +815,87 @@ X.es = { ...X.en, badge: "Su aliado para la vida diaria en Alemania", heroTitle:
 
 const AUTHORITIES = ["Jobcenter", "Ausländerbehörde", "Finanzamt", "Familienkasse", "Krankenkasse", "Rentenversicherung", "Vermieter"];
 
+// Photos for the service cards (Unsplash, free to use)
+const img = (id) => `https://images.unsplash.com/photo-${id}?w=800&auto=format&fit=crop`;
+const SERVICE_IMAGES = {
+  office: img("1499750310107-5fef28a66643"),
+  forms: img("1554224155-1696413565d3"),
+  admin: img("1544396821-4dd40b938ad3"),
+  coordination: img("1517048676732-d65bc937f952"),
+  mercosur: img("1581553673739-c4906b5d0de8"),
+  print: img("1612815154858-60aa4c59eaa6"),
+  eur1: img("1605732562742-3023a888e56e"),
+  dokumentabo: img("1559057287-ce0f595679a8"),
+  bueromanagement: img("1752650732081-8f61e81813ed"),
+};
+
+const prefersReducedMotion = () => {
+  try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch { return false; }
+};
+
+/** Slides that move on their own (paused while hovered), with arrows and dots. */
+function AutoCarousel({ children, isRTL, slideClass, interval = 4500, dark = false }) {
+  const [viewportRef, api] = useEmblaCarousel({ loop: true, align: "start", direction: isRTL ? "rtl" : "ltr" });
+  const [selected, setSelected] = useState(0);
+  const [snaps, setSnaps] = useState([]);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (!api) return undefined;
+    const onSelect = () => setSelected(api.selectedScrollSnap());
+    const onReInit = () => { setSnaps(api.scrollSnapList()); onSelect(); };
+    onReInit();
+    api.on("select", onSelect);
+    api.on("reInit", onReInit);
+    return () => { api.off("select", onSelect); api.off("reInit", onReInit); };
+  }, [api]);
+
+  useEffect(() => {
+    if (!api || paused || prefersReducedMotion()) return undefined;
+    const timer = setInterval(() => api.scrollNext(), interval);
+    return () => clearInterval(timer);
+  }, [api, paused, interval]);
+
+  const Prev = isRTL ? ChevronRight : ChevronLeft;
+  const Next = isRTL ? ChevronLeft : ChevronRight;
+  const btn = dark
+    ? "border-white/25 text-white hover:bg-white/10"
+    : "border-slate-200 bg-white text-[#4c1d95] hover:border-[#7c3aed]";
+
+  return (
+    <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={() => setPaused(false)}>
+      <div className="overflow-hidden" ref={viewportRef} dir={isRTL ? "rtl" : "ltr"}>
+        <div className="-ms-5 flex">
+          {React.Children.map(children, (child) => <div className={`min-w-0 shrink-0 grow-0 ps-5 ${slideClass}`}>{child}</div>)}
+        </div>
+      </div>
+      <div className="mt-8 flex items-center justify-center gap-4">
+        <button type="button" onClick={() => api?.scrollPrev()} aria-label="Previous" className={`flex h-10 w-10 items-center justify-center rounded-full border transition ${btn}`}><Prev className="h-5 w-5" /></button>
+        <div className="flex gap-2">
+          {snaps.map((_, i) => (
+            <button key={i} type="button" onClick={() => api?.scrollTo(i)} aria-label={`${i + 1}`}
+              className={`h-2 rounded-full transition-all ${i === selected ? `w-8 ${dark ? "bg-white" : "bg-[#6d28d9]"}` : `w-2 ${dark ? "bg-white/30" : "bg-slate-300"}`}`} />
+          ))}
+        </div>
+        <button type="button" onClick={() => api?.scrollNext()} aria-label="Next" className={`flex h-10 w-10 items-center justify-center rounded-full border transition ${btn}`}><Next className="h-5 w-5" /></button>
+      </div>
+    </div>
+  );
+}
+
+/** Endless moving strip of names. */
+function Marquee({ items }) {
+  const row = [...items, ...items];
+  return (
+    <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]" dir="ltr">
+      <style>{"@keyframes es-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}} .es-marquee{animation:es-marquee 30s linear infinite} .es-marquee:hover{animation-play-state:paused} @media (prefers-reduced-motion: reduce){.es-marquee{animation:none}}"}</style>
+      <div className="es-marquee flex w-max gap-12">
+        {row.map((name, i) => <span key={i} className="whitespace-nowrap text-sm font-bold text-slate-500">{name}</span>)}
+      </div>
+    </div>
+  );
+}
+
 const whyFeatures = [
   { key: "quality", icon: BadgeCheck },
   { key: "multilingual", icon: Languages },
@@ -948,9 +1033,9 @@ export default function Home() {
 
         {/* Authorities */}
         <div className="relative border-y border-purple-100/70 bg-white/70">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-8 gap-y-3 px-4 py-6">
-            <span className="text-sm font-semibold text-slate-400">{x.authorities}</span>
-            {AUTHORITIES.map((name) => <span key={name} dir="ltr" className="text-sm font-bold text-slate-500">{name}</span>)}
+          <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-6 md:flex-row md:gap-8">
+            <span className="shrink-0 text-sm font-semibold text-slate-400">{x.authorities}</span>
+            <div className="w-full min-w-0 flex-1"><Marquee items={AUTHORITIES} /></div>
           </div>
         </div>
       </section>
@@ -967,25 +1052,48 @@ export default function Home() {
             <Link to={createPageUrl("Services")} className="inline-flex items-center gap-2 font-bold text-[#6d28d9] hover:underline">{x.servicesMore}<Arrow className="h-4 w-4" /></Link>
           </motion.div>
           <div className="mt-8"><SearchBar lang={lang} variant="inline" /></div>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map(({ key, icon: Icon }, i) => (
-              <motion.div key={key} {...fadeUp} transition={{ duration: 0.45, delay: (i % 3) * 0.06 }}>
-                <Link to={`${createPageUrl("Booking")}?category=${key}`} className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-6 transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl hover:shadow-purple-900/5">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-[#6d28d9] transition group-hover:bg-[#6d28d9] group-hover:text-white">
-                    <Icon className="h-6 w-6" />
-                  </span>
-                  <h3 className="mt-5 text-lg font-bold text-[#1f0b52]">{serviceName(key)}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{t[`${key}_desc`]}</p>
-                  <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
-                    <span className="text-sm font-bold text-[#4c1d95]">
-                      {servicePrice(key)}
-                      <span className="block text-[11px] font-medium text-slate-400">{priceNote(lang, key)}</span>
+          <div className="mt-10">
+            <AutoCarousel isRTL={isRTL} slideClass="basis-[86%] sm:basis-1/2 lg:basis-1/3">
+              {services.map(({ key, icon: Icon }) => (
+                <Link key={key} to={`${createPageUrl("Booking")}?category=${key}`} className="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition hover:border-purple-200 hover:shadow-xl hover:shadow-purple-900/5">
+                  <div className="relative h-44 overflow-hidden bg-purple-50">
+                    <img src={SERVICE_IMAGES[key]} alt="" loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1f0b52]/60 to-transparent" />
+                    <span className="absolute bottom-4 start-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#6d28d9] shadow-lg">
+                      <Icon className="h-5 w-5" />
                     </span>
-                    <span className="inline-flex items-center gap-1 text-sm font-bold text-[#6d28d9]">{x.book}<Arrow className="h-4 w-4 transition group-hover:translate-x-0.5" /></span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="text-lg font-bold text-[#1f0b52]">{serviceName(key)}</h3>
+                    <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-600">{t[`${key}_desc`]}</p>
+                    <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                      <span className="text-sm font-bold text-[#4c1d95]">
+                        <bdi>{servicePrice(key)}</bdi>
+                        <span className="block text-[11px] font-medium text-slate-400">{priceNote(lang, key)}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-sm font-bold text-[#6d28d9]">{x.book}<Arrow className="h-4 w-4" /></span>
+                    </div>
                   </div>
                 </Link>
-              </motion.div>
-            ))}
+              ))}
+            </AutoCarousel>
+          </div>
+        </div>
+      </section>
+
+      {/* Promises */}
+      <section className="bg-[#f7f3ff] py-20">
+        <div className="mx-auto max-w-4xl px-4 text-center">
+          <Kicker>{t.promises_title}</Kicker>
+          <div className="mt-8">
+            <AutoCarousel isRTL={isRTL} slideClass="basis-full" interval={5000}>
+              {[t.promise1, t.promise2, t.promise3, t.promise4].map((promise) => (
+                <figure key={promise} className="px-2">
+                  <Quote className="mx-auto h-10 w-10 text-purple-300" />
+                  <blockquote className="mt-5 text-2xl font-bold leading-relaxed text-[#1f0b52] md:text-3xl">{promise}</blockquote>
+                </figure>
+              ))}
+            </AutoCarousel>
           </div>
         </div>
       </section>
@@ -1050,14 +1158,16 @@ export default function Home() {
               <Kicker>{x.whyKicker}</Kicker>
               <h2 className="mt-4 text-3xl font-black text-[#1f0b52] md:text-4xl">{t.why_einstein}</h2>
             </motion.div>
-            <div className="mt-10 grid gap-5 sm:grid-cols-2">
-              {whyFeatures.map(({ key, icon: Icon }) => (
-                <motion.div key={key} {...fadeUp} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70">
-                  <Icon className="h-6 w-6 text-[#6d28d9]" />
-                  <h3 className="mt-4 font-bold text-[#1f0b52]">{t[`why_${key}`]}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{t[`why_${key}_desc`]}</p>
-                </motion.div>
-              ))}
+            <div className="mt-10">
+              <AutoCarousel isRTL={isRTL} slideClass="basis-[80%] sm:basis-1/2" interval={3500}>
+                {whyFeatures.map(({ key, icon: Icon }) => (
+                  <div key={key} className="h-full rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50"><Icon className="h-6 w-6 text-[#6d28d9]" /></span>
+                    <h3 className="mt-4 text-lg font-bold text-[#1f0b52]">{t[`why_${key}`]}</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{t[`why_${key}_desc`]}</p>
+                  </div>
+                ))}
+              </AutoCarousel>
             </div>
           </div>
           <motion.div {...fadeUp} className="self-start rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200/70">

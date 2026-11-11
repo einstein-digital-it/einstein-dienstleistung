@@ -196,7 +196,7 @@ export default function ChatBot({ lang = "de" }) {
                           href="tel:015731770487" 
                           className="flex items-center gap-2 text-[#6B46C1] hover:underline text-sm"
                         >
-                          <Phone className="w-4 h-4" /> 01573 1770487
+                          <Phone className="w-4 h-4" /> <bdi dir="ltr">01573 1770487</bdi>
                         </a>
                         <a 
                           href="mailto:info@einsteindienstleistung.de" 

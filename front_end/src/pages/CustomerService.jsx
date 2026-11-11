@@ -199,11 +199,11 @@ export default function CustomerService() {
             </p>
             <p className="flex items-center gap-3">
               <Phone className="h-4 w-4 text-pink-300" />
-              {contact.phone_primary || "069 27246275"}
+              <bdi dir="ltr">{contact.phone_primary || "069 27246275"}</bdi>
             </p>
             <p className="flex items-center gap-3">
               <Phone className="h-4 w-4 text-pink-300" />
-              {contact.phone_secondary || "01573 1770487"}
+              <bdi dir="ltr">{contact.phone_secondary || "01573 1770487"}</bdi>
             </p>
             <p className="flex items-center gap-3">
               <Mail className="h-4 w-4 text-pink-200" />

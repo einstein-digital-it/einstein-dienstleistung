@@ -721,10 +721,10 @@ export default function Layout({ children, currentPageName }) {
               </h4>
               <div className="space-y-2 text-sm text-gray-300">
                 <p>Frankfurt, Deutschland</p>
-                <p>069 27246275</p>
-                <p>01573 1770487</p>
-                <p>www.einsteindienstleistung.com</p>
-                <p>info@einsteindienstleistung.de</p>
+                <p><a href="tel:+496927246275" dir="ltr" className="hover:text-white">069 27246275</a></p>
+                <p><a href="tel:+4915731770487" dir="ltr" className="hover:text-white">01573 1770487</a></p>
+                <p dir="ltr" className="rtl:text-right">www.einsteindienstleistung.com</p>
+                <p><a href="mailto:info@einsteindienstleistung.de" dir="ltr" className="hover:text-white">info@einsteindienstleistung.de</a></p>
               </div>
             </div>
             </div>
