@@ -42,6 +42,9 @@ class LoginView extends GetView<AuthController> {
                   children: [
                     const EinsteinLogo(size: 76, withWordmark: true),
                     const SizedBox(height: 18),
+                    if (controller.pendingEmail.value.isNotEmpty)
+                      _VerifyCodeStep(controller: controller)
+                    else ...[
                     Text(
                       'login_welcome'.tr,
                       textAlign: TextAlign.center,
@@ -146,6 +149,7 @@ class LoginView extends GetView<AuthController> {
                         ),
                       ],
                     ),
+                    ],
                   ],
                 ),
               ),
@@ -153,6 +157,137 @@ class LoginView extends GetView<AuthController> {
           ),
         ),
       ),
+      ),
+    );
+  }
+}
+
+/// Second step of signing up: the 6-digit code from the email.
+class _VerifyCodeStep extends StatelessWidget {
+  const _VerifyCodeStep({required this.controller});
+
+  final AuthController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF3E8FF),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Icon(Icons.mark_email_read_outlined, color: Color(0xFF6D28D9), size: 28),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            'verify_title'.tr,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: AppColors.text, fontSize: 24, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'verify_subtitle'.tr,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: AppColors.muted, fontSize: 15, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            controller.pendingEmail.value,
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.ltr,
+            style: TextStyle(color: AppColors.text, fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 22),
+          TextField(
+            key: const Key('verify_code_field'),
+            controller: controller.codeController,
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.ltr,
+            maxLength: 6,
+            autofocus: true,
+            autofillHints: const [AutofillHints.oneTimeCode],
+            onSubmitted: (_) => controller.verifyCode(),
+            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w800, letterSpacing: 10),
+            decoration: InputDecoration(
+              counterText: '',
+              hintText: 'verify_code'.tr,
+              hintStyle: const TextStyle(fontSize: 15, letterSpacing: 0, fontWeight: FontWeight.w500),
+              filled: true,
+              fillColor: AppColors.input,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(13),
+                borderSide: const BorderSide(color: Color(0xFFDAE5F4)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(13),
+                borderSide: const BorderSide(color: Color(0xFFB5C7E5), width: 1.5),
+              ),
+            ),
+          ),
+          if (controller.errorText.value.isNotEmpty)
+            _Note(text: controller.errorText.value, background: const Color(0xFFFFEFEF), color: const Color(0xFFB91C1C))
+          else if (controller.noticeText.value.isNotEmpty)
+            _Note(text: controller.noticeText.value, background: const Color(0xFFECFDF5), color: const Color(0xFF047857)),
+          const SizedBox(height: 20),
+          PrimaryButton(
+            label: 'verify_submit'.tr,
+            isLoading: controller.isLoading.value,
+            onPressed: controller.verifyCode,
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            spacing: 8,
+            children: [
+              TextButton(
+                onPressed: controller.resendSeconds.value > 0 ? null : controller.resendCode,
+                child: Text(
+                  controller.resendSeconds.value > 0
+                      ? 'verify_resend_in'.trParams({'s': '${controller.resendSeconds.value}'})
+                      : 'verify_resend'.tr,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextButton(
+                onPressed: controller.cancelVerification,
+                child: Text(
+                  'verify_other_email'.tr,
+                  style: TextStyle(color: AppColors.muted, fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Note extends StatelessWidget {
+  const _Note({required this.text, required this.background, required this.color});
+
+  final String text;
+  final Color background;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(10)),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: color, fontWeight: FontWeight.w700),
       ),
     );
   }

@@ -49,7 +49,9 @@ Route::match(['get', 'post', 'delete'], 'mcp/{secret}', [McpController::class, '
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/provider/login', [AuthController::class, 'providerLogin']);
 Route::post('auth/provider/register', [AuthController::class, 'providerRegister']);
-Route::post('auth/register', [AuthController::class, 'register']);
+Route::post('auth/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
+Route::post('auth/verify-email', [AuthController::class, 'verifyEmail'])->middleware('throttle:10,1');
+Route::post('auth/verify-email/resend', [AuthController::class, 'resendVerification'])->middleware('throttle:5,1');
 Route::get('auth/me', [AuthController::class, 'me']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
 Route::delete('auth/account', [AuthController::class, 'deleteAccount'])->middleware(['api.auth:user', 'throttle:10,1']);

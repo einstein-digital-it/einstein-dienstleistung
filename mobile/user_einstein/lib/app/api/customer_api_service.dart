@@ -29,12 +29,34 @@ class CustomerApiService {
     required String name,
     required String email,
     required String password,
+    String? language,
   }) async {
     final data = await client.post(
       'auth/register',
-      body: {'name': name, 'email': email, 'password': password},
+      body: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'preferred_language': ?language,
+      },
     );
     return Map<String, dynamic>.from(data as Map);
+  }
+
+  /// Confirms the email with the 6-digit code; returns user and session.
+  Future<Map<String, dynamic>> verifyEmail({
+    required String email,
+    required String code,
+  }) async {
+    final data = await client.post(
+      'auth/verify-email',
+      body: {'email': email, 'code': code},
+    );
+    return Map<String, dynamic>.from(data as Map);
+  }
+
+  Future<void> resendVerification(String email) async {
+    await client.post('auth/verify-email/resend', body: {'email': email});
   }
 
   Future<void> logout() async {

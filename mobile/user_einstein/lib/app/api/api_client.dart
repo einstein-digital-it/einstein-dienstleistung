@@ -107,6 +107,8 @@ class ApiClient {
         _messageFrom(decoded) ?? 'Request failed.',
         statusCode: response.statusCode,
         errors: decoded is Map<String, dynamic> ? decoded['errors'] : null,
+        code: decoded is Map<String, dynamic> ? decoded['code']?.toString() : null,
+        data: decoded is Map<String, dynamic> ? decoded['data'] : null,
       );
     }
 

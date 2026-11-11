@@ -11,6 +11,7 @@ use App\Models\NotificationPreference;
 use App\Models\ServiceProvider;
 use App\Models\User;
 use App\Models\UserNotification;
+use App\Support\EmailVerification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,12 +42,83 @@ class AuthController extends Controller
             ]);
         }
 
+        if (EmailVerification::required($user)) {
+            // A fresh code is sent (at most once a minute) so the customer can finish signing up
+            EmailVerification::send($user);
+
+            return $this->verificationNeeded($user, 403);
+        }
+
         return response()->json([
             'data' => [
                 'user' => $this->serializeUser($user),
                 'session' => $this->createSession($user),
             ],
         ]);
+    }
+
+    /** Confirms the email with the 6-digit code and signs the customer in. */
+    public function verifyEmail(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+            'code' => ['required', 'string', 'regex:/^\d{6}$/'],
+        ]);
+
+        $user = User::query()->where('email', $data['email'])->first();
+        if (! $user || $user->is_active === false) {
+            return response()->json(['message' => 'The code is not correct.', 'code' => 'invalid_code'], 422);
+        }
+
+        // A confirmed account signs in with its password, never with a code
+        if ($user->email_verified_at !== null) {
+            return response()->json(['message' => 'This email is already confirmed. Please sign in.', 'code' => 'already_verified'], 409);
+        }
+
+        $result = EmailVerification::check($user, $data['code']);
+        if ($result !== 'ok') {
+            [$status, $message] = match ($result) {
+                'too_many' => [429, 'Too many wrong codes. Please ask for a new code.'],
+                'expired' => [422, 'The code has expired. Please ask for a new code.'],
+                default => [422, 'The code is not correct.'],
+            };
+
+            return response()->json(['message' => $message, 'code' => $result === 'invalid' ? 'invalid_code' : $result], $status);
+        }
+
+        return response()->json([
+            'data' => [
+                'user' => $this->serializeUser($user->refresh()),
+                'session' => $this->createSession($user),
+            ],
+        ]);
+    }
+
+    /** Sends a new code. Always answers the same, so it does not reveal which emails have accounts. */
+    public function resendVerification(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        $user = User::query()->where('email', $data['email'])->first();
+        if ($user && $user->is_active !== false && EmailVerification::required($user)) {
+            EmailVerification::send($user);
+        }
+
+        return response()->json(['data' => ['sent' => true]]);
+    }
+
+    private function verificationNeeded(User $user, int $status): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Please confirm your email address. We have sent you a code.',
+            'code' => 'email_not_verified',
+            'data' => [
+                'verification_required' => true,
+                'email' => $user->email,
+            ],
+        ], $status);
     }
 
     public function register(Request $request): JsonResponse
@@ -71,6 +143,14 @@ class AuthController extends Controller
             'role' => 'user',
             'is_active' => true,
         ]);
+
+        if (EmailVerification::enabled()) {
+            EmailVerification::send($user);
+
+            return $this->verificationNeeded($user, 201);
+        }
+
+        $user->forceFill(['email_verified_at' => now()])->save();
 
         return response()->json([
             'data' => [

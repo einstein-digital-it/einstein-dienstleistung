@@ -59,6 +59,11 @@ return [
     ],
 
 
+    // New customers confirm their email with a 6-digit code (needs a working mailer, MAIL_* in .env)
+    'auth' => [
+        'verify_email' => (bool) env('AUTH_VERIFY_EMAIL', true),
+    ],
+
     // Automatic sorting and translation of customer documents (Claude API)
     'anthropic' => [
         'key' => env('ANTHROPIC_API_KEY', ''),

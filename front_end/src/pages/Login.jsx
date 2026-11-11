@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ArrowLeft, ArrowRight, CalendarCheck, Eye, EyeOff, FolderSync, Globe, Languages, Lock, Mail, User } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { ArrowLeft, ArrowRight, CalendarCheck, Eye, EyeOff, FolderSync, Globe, Languages, Lock, Mail, MailCheck, User } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "@/api/backendClient";
 import EinsteinLogo from "@/components/EinsteinLogo";
@@ -16,6 +16,7 @@ const T = {
     errEmpty: "Bitte E-Mail und Passwort eingeben.", errName: "Bitte Ihren Namen eingeben.", errGeneric: "Anmeldung fehlgeschlagen. Bitte Angaben prüfen.",
     lead: "Behördenpost, Termine und Büro – an einem Ort, in Ihrer Sprache.",
     b1: "Briefe hochladen – automatisch sortiert und übersetzt", b2: "Dienstleistungen online buchen und bezahlen", b3: "Erinnerung vor jeder Frist",
+    codeTitle: "E-Mail bestätigen", codeSub: "Wir haben einen 6-stelligen Code an diese Adresse geschickt:", code: "Bestätigungscode", verify: "Bestätigen", resend: "Code erneut senden", resendIn: "Neuer Code in {s} s", resent: "Ein neuer Code ist unterwegs. Schauen Sie auch im Spam-Ordner nach.", otherEmail: "Andere E-Mail verwenden", errCode: "Bitte den 6-stelligen Code eingeben.", errWrong: "Der Code ist nicht richtig.", errExpired: "Der Code ist abgelaufen. Bitte fordern Sie einen neuen an.", errTooMany: "Zu viele falsche Versuche. Bitte fordern Sie einen neuen Code an.",
   },
   ar: {
     welcome: "أهلاً بعودتك", welcomeNew: "إنشاء حساب", sub: "سجّل الدخول لترى أوراقك وحجوزاتك.", subNew: "جاهز خلال دقيقة – مجاناً.",
@@ -24,6 +25,7 @@ const T = {
     errEmpty: "أدخل البريد الإلكتروني وكلمة المرور.", errName: "أدخل اسمك لإنشاء الحساب.", errGeneric: "تعذر تسجيل الدخول. تحقق من بياناتك.",
     lead: "رسائل الدوائر والمواعيد والمكتب – بمكان واحد وبلغتك.",
     b1: "ارفع رسائلك – تترتب وتُترجم تلقائياً", b2: "احجز الخدمات وادفع أونلاين", b3: "تذكير قبل كل موعد نهائي",
+    codeTitle: "تأكيد البريد الإلكتروني", codeSub: "أرسلنا رمزاً مكوّناً من 6 أرقام إلى هذا العنوان:", code: "رمز التحقق", verify: "تأكيد", resend: "إرسال الرمز مرة أخرى", resendIn: "رمز جديد بعد {s} ثانية", resent: "أرسلنا رمزاً جديداً. تحقق أيضاً من مجلد الرسائل غير المرغوب فيها.", otherEmail: "استخدام بريد إلكتروني آخر", errCode: "أدخل الرمز المكوّن من 6 أرقام.", errWrong: "الرمز غير صحيح.", errExpired: "انتهت صلاحية الرمز. اطلب رمزاً جديداً.", errTooMany: "محاولات خاطئة كثيرة. اطلب رمزاً جديداً.",
   },
   en: {
     welcome: "Welcome back", welcomeNew: "Create your account", sub: "Sign in to see your documents and bookings.", subNew: "Ready in a minute – free.",
@@ -32,6 +34,7 @@ const T = {
     errEmpty: "Enter your email and password to continue.", errName: "Enter your name to create an account.", errGeneric: "Unable to sign in. Please check your details.",
     lead: "Official letters, appointments and office work – in one place, in your language.",
     b1: "Upload letters – sorted and translated automatically", b2: "Book and pay for services online", b3: "Reminders before every deadline",
+    codeTitle: "Confirm your email", codeSub: "We sent a 6-digit code to this address:", code: "Verification code", verify: "Confirm", resend: "Send the code again", resendIn: "New code in {s} s", resent: "A new code is on its way. Please also check your spam folder.", otherEmail: "Use a different email", errCode: "Enter the 6-digit code.", errWrong: "The code is not correct.", errExpired: "The code has expired. Please ask for a new one.", errTooMany: "Too many wrong tries. Please ask for a new code.",
   },
   tr: {
     welcome: "Tekrar hoş geldiniz", welcomeNew: "Hesap oluşturun", sub: "Belgelerinizi ve rezervasyonlarınızı görmek için giriş yapın.", subNew: "Bir dakikada hazır – ücretsiz.",
@@ -40,6 +43,7 @@ const T = {
     errEmpty: "E-posta ve şifrenizi girin.", errName: "Hesap için adınızı girin.", errGeneric: "Giriş yapılamadı. Bilgilerinizi kontrol edin.",
     lead: "Resmi yazılar, randevular ve büro işleri – tek yerde, kendi dilinizde.",
     b1: "Mektupları yükleyin – otomatik sıralanır ve çevrilir", b2: "Hizmetleri online rezerve edin ve ödeyin", b3: "Her son tarihten önce hatırlatma",
+    codeTitle: "E-postanızı onaylayın", codeSub: "Bu adrese 6 haneli bir kod gönderdik:", code: "Doğrulama kodu", verify: "Onayla", resend: "Kodu tekrar gönder", resendIn: "{s} sn sonra yeni kod", resent: "Yeni kod gönderildi. Spam klasörünü de kontrol edin.", otherEmail: "Başka bir e-posta kullan", errCode: "6 haneli kodu girin.", errWrong: "Kod doğru değil.", errExpired: "Kodun süresi doldu. Yeni bir kod isteyin.", errTooMany: "Çok fazla hatalı deneme. Yeni bir kod isteyin.",
   },
   es: {
     welcome: "Bienvenido de nuevo", welcomeNew: "Cree su cuenta", sub: "Inicie sesión para ver sus documentos y reservas.", subNew: "Listo en un minuto – gratis.",
@@ -48,6 +52,7 @@ const T = {
     errEmpty: "Introduzca su correo y contraseña.", errName: "Introduzca su nombre para crear la cuenta.", errGeneric: "No se pudo iniciar sesión. Revise sus datos.",
     lead: "Cartas oficiales, citas y oficina – en un solo lugar, en su idioma.",
     b1: "Suba cartas – se ordenan y traducen automáticamente", b2: "Reserve y pague servicios online", b3: "Recordatorios antes de cada plazo",
+    codeTitle: "Confirme su correo", codeSub: "Hemos enviado un código de 6 dígitos a esta dirección:", code: "Código de verificación", verify: "Confirmar", resend: "Enviar el código de nuevo", resendIn: "Nuevo código en {s} s", resent: "Le hemos enviado un nuevo código. Revise también la carpeta de spam.", otherEmail: "Usar otro correo", errCode: "Introduzca el código de 6 dígitos.", errWrong: "El código no es correcto.", errExpired: "El código ha caducado. Solicite uno nuevo.", errTooMany: "Demasiados intentos fallidos. Solicite un código nuevo.",
   },
   uk: {
     welcome: "З поверненням", welcomeNew: "Створіть акаунт", sub: "Увійдіть, щоб бачити свої документи й бронювання.", subNew: "Готово за хвилину – безкоштовно.",
@@ -56,6 +61,7 @@ const T = {
     errEmpty: "Введіть e-mail і пароль.", errName: "Введіть ім’я, щоб створити акаунт.", errGeneric: "Не вдалося увійти. Перевірте дані.",
     lead: "Офіційні листи, зустрічі та офіс – в одному місці, вашою мовою.",
     b1: "Завантажуйте листи – вони впорядковуються й перекладаються", b2: "Бронюйте й оплачуйте послуги онлайн", b3: "Нагадування перед кожним строком",
+    codeTitle: "Підтвердіть e-mail", codeSub: "Ми надіслали 6-значний код на цю адресу:", code: "Код підтвердження", verify: "Підтвердити", resend: "Надіслати код ще раз", resendIn: "Новий код через {s} с", resent: "Новий код уже надіслано. Перевірте також папку «Спам».", otherEmail: "Використати інший e-mail", errCode: "Введіть 6-значний код.", errWrong: "Код неправильний.", errExpired: "Термін дії коду минув. Запросіть новий.", errTooMany: "Забагато невдалих спроб. Запросіть новий код.",
   },
 };
 
@@ -74,6 +80,11 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  // Email waiting for its 6-digit code (after sign-up, or a login before confirming)
+  const [pendingEmail, setPendingEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [notice, setNotice] = useState("");
+  const [cooldown, setCooldown] = useState(0);
   const t = T[lang] || T.de;
   const rtl = lang === "ar";
   const Back = rtl ? ArrowRight : ArrowLeft;
@@ -81,6 +92,63 @@ export default function Login() {
   const changeLang = (value) => {
     setLang(value);
     try { localStorage.setItem("einstein_lang", value); } catch { /* storage blocked */ }
+  };
+
+  useEffect(() => {
+    if (cooldown <= 0) return undefined;
+    const timer = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [cooldown]);
+
+  const askForCode = (address) => {
+    setPendingEmail(address);
+    setCode("");
+    setError("");
+    setNotice("");
+    setCooldown(60);
+  };
+
+  const finishSignIn = (result) => {
+    const user = result.user || result;
+    const token = result.session?.token;
+    localStorage.setItem("einstein_auth_user", JSON.stringify(user));
+    if (token) localStorage.setItem("einstein_auth_token", token);
+    localStorage.setItem("einstein_customer_email", user.email);
+    localStorage.setItem("einstein_lang", user.preferred_language || lang);
+    localStorage.setItem("einstein_is_provider", user.role === "provider" ? "true" : "false");
+
+    if (user.role === "admin") navigate("/Dashboard", { replace: true });
+    else if (user.role === "provider") navigate("/ProviderDashboard", { replace: true });
+    else navigate("/CustomerDashboard", { replace: true });
+  };
+
+  const handleVerify = async (event) => {
+    event.preventDefault();
+    if (!/^\d{6}$/.test(code)) return setError(t.errCode);
+    setLoading(true);
+    setError("");
+    try {
+      finishSignIn(await authApi.verifyEmail({ email: pendingEmail, code }));
+    } catch (err) {
+      if (err.code === "expired") setError(t.errExpired);
+      else if (err.code === "too_many") setError(t.errTooMany);
+      else if (err.code === "already_verified") { setPendingEmail(""); setMode("login"); setError(err.message); }
+      else setError(err.code === "invalid_code" ? t.errWrong : err.message || t.errGeneric);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (cooldown > 0) return;
+    setError("");
+    try {
+      await authApi.resendVerification(pendingEmail);
+      setNotice(t.resent);
+      setCooldown(60);
+    } catch (err) {
+      setError(err.message || t.errGeneric);
+    }
   };
 
   const switchMode = (next) => {
@@ -98,22 +166,14 @@ export default function Login() {
     setError("");
     try {
       const result = mode === "register"
-        ? await authApi.register({ name: name.trim(), email: trimmedEmail, password })
+        ? await authApi.register({ name: name.trim(), email: trimmedEmail, password, preferred_language: lang })
         : await authApi.login({ email: trimmedEmail, password });
 
-      const user = result.user || result;
-      const token = result.session?.token;
-      localStorage.setItem("einstein_auth_user", JSON.stringify(user));
-      if (token) localStorage.setItem("einstein_auth_token", token);
-      localStorage.setItem("einstein_customer_email", user.email);
-      localStorage.setItem("einstein_lang", user.preferred_language || lang);
-      localStorage.setItem("einstein_is_provider", user.role === "provider" ? "true" : "false");
-
-      if (user.role === "admin") navigate("/Dashboard", { replace: true });
-      else if (user.role === "provider") navigate("/ProviderDashboard", { replace: true });
-      else navigate("/CustomerDashboard", { replace: true });
+      if (result?.verification_required) askForCode(result.email || trimmedEmail);
+      else finishSignIn(result);
     } catch (err) {
-      setError(err.message || t.errGeneric);
+      if (err.code === "email_not_verified") askForCode(err.data?.email || trimmedEmail);
+      else setError(err.message || t.errGeneric);
     } finally {
       setLoading(false);
     }
@@ -189,6 +249,55 @@ export default function Login() {
             <img src="/brand/einstein-wordmark.png" alt="EinStein – Vielfalt bildet, EinStein verbindet" className="mt-3 w-[220px]" />
           </div>
 
+          {pendingEmail ? (
+            <div>
+              <span className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-50 text-[#6d28d9] lg:mx-0">
+                <MailCheck className="h-7 w-7" />
+              </span>
+              <h1 className="text-center text-3xl font-black text-slate-900 lg:text-start">{t.codeTitle}</h1>
+              <p className="mt-2 text-center text-[15px] text-slate-500 lg:text-start">{t.codeSub}</p>
+              <p className="mt-1 break-all text-center font-bold text-slate-800 lg:text-start" dir="ltr">{pendingEmail}</p>
+
+              <form className="mt-8 space-y-4" onSubmit={handleVerify} noValidate>
+                <div>
+                  <label htmlFor="auth-code" className="mb-1.5 block text-sm font-semibold text-slate-700">{t.code}</label>
+                  <input
+                    id="auth-code"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    dir="ltr"
+                    autoFocus
+                    value={code}
+                    onChange={(e) => { setCode(e.target.value.replace(/\D/g, "").slice(0, 6)); clearError(); }}
+                    className="h-14 w-full rounded-xl border border-slate-200 bg-slate-50 text-center text-2xl font-bold tracking-[0.5em] text-slate-900 outline-none transition focus:border-[#7c3aed] focus:bg-white focus:ring-4 focus:ring-[#7c3aed]/15"
+                    aria-invalid={Boolean(error)}
+                  />
+                </div>
+
+                {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700" role="alert">{error}</p>}
+                {notice && !error && <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700" role="status">{notice}</p>}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="h-12 w-full rounded-xl bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] text-[15px] font-bold text-white shadow-lg shadow-purple-500/25 transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-[#7c3aed]/30 disabled:opacity-60"
+                >
+                  {loading ? t.wait : t.verify}
+                </button>
+              </form>
+
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-sm font-semibold">
+                <button type="button" onClick={handleResend} disabled={cooldown > 0} className="text-[#6d28d9] hover:underline disabled:cursor-default disabled:text-slate-400 disabled:no-underline">
+                  {cooldown > 0 ? t.resendIn.replace("{s}", cooldown) : t.resend}
+                </button>
+                <button type="button" onClick={() => { setPendingEmail(""); setError(""); setNotice(""); }} className="text-slate-500 hover:text-slate-700">
+                  {t.otherEmail}
+                </button>
+              </div>
+            </div>
+          ) : (<>
           <h1 className="text-center text-3xl font-black text-slate-900 lg:text-start">{mode === "register" ? t.welcomeNew : t.welcome}</h1>
           <p className="mt-2 text-center text-[15px] text-slate-500 lg:text-start">{mode === "register" ? t.subNew : t.sub}</p>
 
@@ -270,6 +379,7 @@ export default function Login() {
               {loading ? t.wait : mode === "register" ? t.submitNew : t.submit}
             </button>
           </form>
+          </>)}
         </div>
 
         <nav className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-slate-400">

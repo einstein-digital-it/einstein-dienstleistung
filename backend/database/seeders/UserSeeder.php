@@ -56,7 +56,7 @@ class UserSeeder extends Seeder
                     'password' => Hash::make('password'),
                     'updated_at' => $user['created_at'],
                 ]
-            );
+            )->forceFill(['email_verified_at' => $user['created_at']])->save();
         }
 
         UserNotification::updateOrCreate(

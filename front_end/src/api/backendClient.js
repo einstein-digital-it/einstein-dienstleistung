@@ -25,7 +25,12 @@ async function request(path, options = {}) {
   const payload = await response.json().catch(() => null);
 
   if (!response.ok) {
-    throw new Error(payload?.message || `Backend request failed (${response.status})`);
+    const error = new Error(payload?.message || `Backend request failed (${response.status})`);
+    // Lets pages react to a specific case, e.g. "email_not_verified"
+    error.status = response.status;
+    error.code = payload?.code;
+    error.data = payload?.data;
+    throw error;
   }
 
   return payload?.data ?? payload;
@@ -148,6 +153,14 @@ export const authApi = {
   register: (data) => request("/auth/register", {
     method: "POST",
     body: JSON.stringify(data),
+  }),
+  verifyEmail: (data) => request("/auth/verify-email", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
+  resendVerification: (email) => request("/auth/verify-email/resend", {
+    method: "POST",
+    body: JSON.stringify({ email }),
   }),
   getCurrentUser: (email) => request(`/auth/me${toQuery({ email })}`),
   logout: () => request("/auth/logout", {

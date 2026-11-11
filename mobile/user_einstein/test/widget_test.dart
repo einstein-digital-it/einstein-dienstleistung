@@ -62,6 +62,7 @@ class _FakeBackend {
   final uploads = <String>[];
   final savedFormData = <Map<String, dynamic>>[];
   bool aboActive = false;
+  String? registeredLanguage;
   int caseUploads = 0;
 
   static const _forms = {
@@ -116,7 +117,30 @@ class _FakeBackend {
     final path = request.url.path.replaceFirst(RegExp(r'^.*/api/'), '');
     final method = request.method;
 
-    if (path == 'auth/login' || path == 'auth/register') {
+    if (path == 'auth/register') {
+      // New customers first confirm their email with a code
+      final body = jsonDecode(request.body) as Map<String, dynamic>;
+      registeredLanguage = body['preferred_language']?.toString();
+      return http.Response(
+        jsonEncode({
+          'code': 'email_not_verified',
+          'data': {'verification_required': true, 'email': body['email']},
+        }),
+        201,
+        headers: {'content-type': 'application/json'},
+      );
+    }
+    if (path == 'auth/verify-email') {
+      final body = jsonDecode(request.body) as Map<String, dynamic>;
+      if (body['code'] != '123456') {
+        return http.Response(
+          jsonEncode({'message': 'The code is not correct.', 'code': 'invalid_code'}),
+          422,
+          headers: {'content-type': 'application/json'},
+        );
+      }
+    }
+    if (path == 'auth/login' || path == 'auth/verify-email') {
       final body = jsonDecode(request.body) as Map<String, dynamic>;
       final email = body['email']?.toString() ?? 'customer@example.com';
       final name = body['name']?.toString() ?? 'Customer User';
@@ -371,6 +395,26 @@ void main() {
     );
     await tester.ensureVisible(createAccountButton);
     await tester.tap(createAccountButton);
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
+
+    // No session yet: the email must be confirmed with the code first
+    expect(Get.find<AuthSession>().isAuthenticated, isFalse);
+    expect(find.text('Confirm your email'), findsOneWidget);
+    expect(find.text('new.customer@example.com'), findsOneWidget);
+    expect(backend.registeredLanguage, 'en');
+
+    final codeField = find.byKey(const Key('verify_code_field'));
+    final confirmButton = find.widgetWithText(FilledButton, 'Confirm');
+    await tester.enterText(codeField, '000000');
+    await tester.ensureVisible(confirmButton);
+    await tester.tap(confirmButton);
+    await tester.pumpAndSettle();
+    expect(find.text('The code is not correct.'), findsOneWidget);
+    expect(Get.find<AuthSession>().isAuthenticated, isFalse);
+
+    await tester.enterText(codeField, '123456');
+    await tester.tap(confirmButton);
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     await waitForSnackbars(tester);

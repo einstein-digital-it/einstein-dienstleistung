@@ -16,6 +16,9 @@ class PublicAuthSupportOfferReviewApiTest extends TestCase
 
     public function test_auth_login_register_and_me_work(): void
     {
+        // The email code is covered by EmailVerificationTest
+        config(['services.auth.verify_email' => false]);
+
         User::create([
             'name' => 'Admin User',
             'full_name' => 'Admin User',
