@@ -93,6 +93,14 @@ if [[ ! -f .env ]]; then
     -e "s|^APP_DEBUG=.*|APP_DEBUG=false|" \
     -e "s|^APP_URL=.*|APP_URL=https://$DOMAIN|" \
     -e "s|^LOG_LEVEL=.*|LOG_LEVEL=warning|" \
+    -e "s|^MAIL_MAILER=.*|MAIL_MAILER=smtp|" \
+    -e "s|^MAIL_SCHEME=.*|MAIL_SCHEME=smtps|" \
+    -e "s|^MAIL_HOST=.*|MAIL_HOST=smtp.strato.de|" \
+    -e "s|^MAIL_PORT=.*|MAIL_PORT=465|" \
+    -e "s|^MAIL_USERNAME=.*|MAIL_USERNAME=noreply@einsteindienstleistung.com|" \
+    -e "s|^MAIL_PASSWORD=.*|MAIL_PASSWORD=|" \
+    -e "s|^MAIL_FROM_ADDRESS=.*|MAIL_FROM_ADDRESS=\"noreply@einsteindienstleistung.com\"|" \
+    -e "s|^MAIL_FROM_NAME=.*|MAIL_FROM_NAME=\"EinStein Dienstleistung\"|" \
     .env
   php artisan key:generate --force
 fi
@@ -189,4 +197,7 @@ echo
 echo " Claude connector (MCP) — add in Claude: Settings > Connectors > Add custom connector"
 echo "   https://$DOMAIN/api/mcp/$MCP_SECRET"
 echo "   Keep this link private: anyone with it can manage the site."
+echo
+echo " Email (sign-up codes): put the mailbox password into $APP_DIR/backend/.env"
+echo "   MAIL_PASSWORD=...   then: php artisan config:cache && php artisan mail:test <your-email>"
 echo "=================================================================="
