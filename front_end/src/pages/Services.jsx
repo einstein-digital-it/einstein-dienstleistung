@@ -726,7 +726,7 @@ const serviceData = [
 ];
 
 export default function Services() {
-  const [lang, setLang] = useState(() => { try { return localStorage.getItem("einstein_lang") || "ar"; } catch { return "ar"; } });
+  const [lang, setLang] = useState(() => { try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; } });
   const [packagesOpen, setPackagesOpen] = useState(false);
 
   // Average rating per service

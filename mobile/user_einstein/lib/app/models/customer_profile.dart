@@ -22,7 +22,7 @@ class CustomerProfile {
       phone: (json['phone'] ?? '').toString(),
       address: (json['address'] ?? '').toString(),
       language: normalizeLanguageLabel(
-        (json['preferred_language'] ?? json['language'] ?? 'Arabic').toString(),
+        (json['preferred_language'] ?? json['language'] ?? 'Deutsch').toString(),
       ),
     );
   }
@@ -56,10 +56,10 @@ class CustomerProfile {
 
 String normalizeLanguageLabel(String value) {
   return switch (value.toLowerCase()) {
-    'de' || 'deutsch' || 'german' => 'Deutsch',
+    'ar' || 'arabic' || 'العربية' => 'Arabic',
     'en' || 'english' || 'tr' || 'es' => 'English',
     'uk' || 'ukrainian' || 'українська' => 'Ukrainian',
-    _ => 'Arabic',
+    _ => 'Deutsch',
   };
 }
 
@@ -68,7 +68,8 @@ String languageCodeFromLabel(String value) {
     'deutsch' || 'de' || 'german' => 'de',
     'english' || 'en' || 'tr' || 'es' => 'en',
     'ukrainian' || 'uk' || 'українська' => 'uk',
-    _ => 'ar',
+    'arabic' || 'ar' || 'العربية' => 'ar',
+    _ => 'de',
   };
 }
 

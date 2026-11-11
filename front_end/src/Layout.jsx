@@ -165,7 +165,7 @@ export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [lang, setLang] = useState(() => {
-    try { return localStorage.getItem("einstein_lang") || "ar"; } catch { return "ar"; }
+    try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; }
   });
   const [isProvider, setIsProvider] = useState(() => {
     try { return localStorage.getItem("einstein_is_provider") === "true"; } catch { return false; }

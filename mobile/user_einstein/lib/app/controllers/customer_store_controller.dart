@@ -16,7 +16,7 @@ class CustomerStoreController extends GetxController {
     email: '',
     phone: '',
     address: '',
-    language: 'Arabic',
+    language: 'Deutsch',
   ).obs;
   final bookings = <BookingItem>[].obs;
   final notifications = <NotificationItem>[].obs;
@@ -28,8 +28,8 @@ class CustomerStoreController extends GetxController {
   final providerUpdates = false.obs;
   final emailEnabled = true.obs;
   final pushEnabled = true.obs;
-  final selectedLanguage = 'Arabic'.obs;
-  final locale = const Locale('ar').obs;
+  final selectedLanguage = 'Deutsch'.obs;
+  final locale = const Locale('de').obs;
   final reminderTiming = '24h before'.obs;
   final dashboardOpenPayments = RxnInt();
 

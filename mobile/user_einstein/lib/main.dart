@@ -72,7 +72,7 @@ class EinsteinUserApp extends StatelessWidget {
         theme: AppTheme.light,
         translations: AppTranslations(),
         locale: locale,
-        fallbackLocale: const Locale('ar'),
+        fallbackLocale: const Locale('de'),
         builder: (context, child) {
           return Directionality(
             textDirection: locale.languageCode == 'ar'

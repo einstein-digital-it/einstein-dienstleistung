@@ -66,7 +66,7 @@ const T = {
 };
 
 function readLang() {
-  try { return localStorage.getItem("einstein_lang") || "ar"; } catch { return "ar"; }
+  try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; }
 }
 
 export default function Login() {

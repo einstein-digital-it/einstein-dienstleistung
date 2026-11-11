@@ -379,7 +379,7 @@ const MAX_BOOKINGS_PER_SLOT = 3;
 export default function Booking() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [lang, setLang] = useState("ar");
+  const [lang, setLang] = useState("de");
   
   useEffect(() => {
     const savedLang = localStorage.getItem("einstein_lang");

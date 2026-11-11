@@ -111,7 +111,7 @@ function formatSize(bytes) {
 
 export default function MyDocuments() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const lang = (() => { try { return localStorage.getItem("einstein_lang") || "ar"; } catch { return "ar"; } })();
+  const lang = (() => { try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; } })();
   const t = T[lang] || T.de;
   const isRTL = lang === "ar";
   const user = getStoredAuthUser();

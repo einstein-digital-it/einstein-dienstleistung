@@ -99,7 +99,7 @@ const translations = {
 
 export default function NotificationSettings() {
   const [user, setUser] = useState(null);
-  const [lang, setLang] = useState("ar");
+  const [lang, setLang] = useState("de");
   const [saved, setSaved] = useState(false);
   const queryClient = useQueryClient();
 
@@ -109,7 +109,7 @@ export default function NotificationSettings() {
   useEffect(() => {
     const init = async () => {
       try {
-        const savedLang = localStorage.getItem("einstein_lang") || "ar";
+        const savedLang = localStorage.getItem("einstein_lang") || "de";
         setLang(savedLang);
         const userData = getStoredAuthUser();
         const email = userData?.email || localStorage.getItem("einstein_customer_email") || "customer@example.com";

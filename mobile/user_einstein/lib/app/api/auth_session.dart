@@ -7,10 +7,10 @@ class AuthSession {
 
   String? _token;
   String? _email;
-  /// Languages the app has texts for. A first start always opens in Arabic.
+  /// Languages the app has texts for. A first start always opens in German.
   static const supportedLocales = {'ar', 'en', 'de', 'uk'};
 
-  String _localeCode = 'ar';
+  String _localeCode = 'de';
   bool _loaded = false;
 
   String? get token => _token;

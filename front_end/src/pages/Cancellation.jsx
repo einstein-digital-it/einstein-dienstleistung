@@ -15,7 +15,7 @@ import { CANCELLATION_TEXT } from "@/content/legal";
 export default function Cancellation() {
   const params = new URLSearchParams(window.location.search);
   const lang = (() => {
-    try { return localStorage.getItem("einstein_lang") || "ar"; } catch { return "ar"; }
+    try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; }
   })();
   const t = CANCELLATION_TEXT[lang] || CANCELLATION_TEXT.de;
   const isRTL = lang === "ar";
