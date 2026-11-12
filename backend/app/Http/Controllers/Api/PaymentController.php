@@ -11,9 +11,19 @@ use Illuminate\Validation\Rule;
 
 class PaymentController extends Controller
 {
-    public function show(Booking $booking): JsonResponse
+    public function show(Request $request, Booking $booking): JsonResponse
     {
-        return response()->json(['data' => $booking]);
+        // Customers only see their own bookings
+        $user = $request->user();
+        $isStaff = in_array($user?->role, ['admin', 'provider'], true);
+        if (! $isStaff && strcasecmp((string) $user?->email, (string) $booking->customer_email) !== 0) {
+            abort(403, 'This booking belongs to another customer.');
+        }
+
+        // The customer usually lands here right after paying: do not wait for the webhook
+        StripeController::syncBookingPayment($booking);
+
+        return response()->json(['data' => $booking->refresh()]);
     }
 
     public function updateStatus(Request $request, Booking $booking): JsonResponse

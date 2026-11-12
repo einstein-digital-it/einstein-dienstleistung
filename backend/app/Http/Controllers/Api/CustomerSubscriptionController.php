@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\StripeClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -27,7 +28,52 @@ class CustomerSubscriptionController extends Controller
     /** GET customer/subscription */
     public function show(Request $request): JsonResponse
     {
-        return response()->json(['data' => $this->state($request->user())]);
+        $user = $request->user();
+        self::syncWithStripe($user);
+
+        return response()->json(['data' => $this->state($user->refresh())]);
+    }
+
+    /**
+     * Safety net for a missed webhook: after a checkout was started, ask Stripe whether it
+     * was paid and activate the Abo. Runs at most every 15 seconds per customer.
+     */
+    public static function syncWithStripe(User $user): void
+    {
+        $sessionId = Cache::get(self::sessionKey($user));
+        if (! $sessionId || $user->hasFileAbo() || ! StripeClient::configured()) {
+            return;
+        }
+        if (! Cache::add('file_abo_sync:'.$user->id, 1, 15)) {
+            return;
+        }
+
+        try {
+            $session = (new StripeClient())->get('checkout/sessions/'.$sessionId);
+        } catch (Throwable $e) {
+            Log::warning('Stripe file abo sync failed', ['user' => $user->id, 'error' => $e->getMessage()]);
+
+            return;
+        }
+
+        // Only this customer's own Abo checkout counts
+        if (($session['metadata']['kind'] ?? null) !== self::KIND || (string) ($session['metadata']['user_id'] ?? '') !== (string) $user->id) {
+            return;
+        }
+        if (($session['status'] ?? '') === 'complete') {
+            self::handleWebhook('checkout.session.completed', $session);
+            // SEPA and similar are paid later: keep checking until the Abo is active
+            if ($user->refresh()->hasFileAbo()) {
+                Cache::forget(self::sessionKey($user));
+            }
+        } elseif (($session['status'] ?? '') === 'expired') {
+            Cache::forget(self::sessionKey($user));
+        }
+    }
+
+    private static function sessionKey(User $user): string
+    {
+        return 'file_abo_session:'.$user->id;
     }
 
     /** POST customer/subscription/checkout { lang? } — returns { url } of the Stripe payment page. */
@@ -74,6 +120,9 @@ class CustomerSubscriptionController extends Controller
 
             return response()->json(['message' => 'Payment could not be started. Please try again later.'], 502);
         }
+
+        // Remembered for a day so the Abo can be confirmed even if the webhook is missed
+        Cache::put(self::sessionKey($user), $session['id'], now()->addDay());
 
         return response()->json(['data' => ['url' => $session['url']] + $this->state($user)]);
     }

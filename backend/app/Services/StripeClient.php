@@ -33,6 +33,20 @@ class StripeClient
         return $response->json();
     }
 
+    public function get(string $path, array $query = []): array
+    {
+        $response = Http::withToken((string) config('services.stripe.secret'))
+            ->timeout(20)
+            ->get(self::API.ltrim($path, '/'), $query);
+
+        if ($response->failed()) {
+            $message = $response->json('error.message') ?? $response->body();
+            throw new RuntimeException('Stripe: '.$message);
+        }
+
+        return $response->json();
+    }
+
     /**
      * Verify a webhook "Stripe-Signature" header and return the decoded event.
      */

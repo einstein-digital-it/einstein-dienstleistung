@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\StripeClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -129,15 +130,8 @@ class StripeController extends Controller
 
         switch ($event['type'] ?? '') {
             case 'checkout.session.completed':
-                $booking = $this->bookingFromMetadata($object);
-                if ($booking) {
-                    if (! empty($object['subscription'])) {
-                        $booking->update(['stripe_subscription_id' => $object['subscription']]);
-                    }
-                    if (($object['payment_status'] ?? '') === 'paid') {
-                        $this->markPaid($booking);
-                    }
-                    // SEPA etc.: payment_status "unpaid" → wait for async_payment_succeeded
+                if ($booking = $this->bookingFromMetadata($object)) {
+                    $this->completeCheckout($booking, $object);
                 }
                 break;
 
@@ -194,6 +188,45 @@ class StripeController extends Controller
 
             return false;
         }
+    }
+
+    /**
+     * Safety net for a missed webhook: when the customer comes back from Stripe, ask Stripe
+     * whether the booking's checkout was paid. Runs at most every 15 seconds per booking.
+     */
+    public static function syncBookingPayment(Booking $booking): void
+    {
+        if ($booking->payment_status === 'paid' || ! $booking->stripe_session_id || ! StripeClient::configured()) {
+            return;
+        }
+        if (! Cache::add('stripe_booking_sync:'.$booking->id, 1, 15)) {
+            return;
+        }
+
+        try {
+            $session = (new StripeClient())->get('checkout/sessions/'.$booking->stripe_session_id);
+        } catch (Throwable $e) {
+            Log::warning('Stripe booking sync failed', ['booking' => $booking->id, 'error' => $e->getMessage()]);
+
+            return;
+        }
+
+        $sessionBooking = (string) ($session['metadata']['booking_id'] ?? $session['client_reference_id'] ?? '');
+        if ($sessionBooking === (string) $booking->id && ($session['status'] ?? '') === 'complete') {
+            (new self())->completeCheckout($booking, $session);
+        }
+    }
+
+    /** A finished Checkout session: remember the subscription and mark the booking paid. */
+    private function completeCheckout(Booking $booking, array $session): void
+    {
+        if (! empty($session['subscription'])) {
+            $booking->update(['stripe_subscription_id' => $session['subscription']]);
+        }
+        if (($session['payment_status'] ?? '') === 'paid') {
+            $this->markPaid($booking);
+        }
+        // SEPA etc.: payment_status "unpaid" → wait for async_payment_succeeded
     }
 
     // ---------------------------------------------------------------- helpers
