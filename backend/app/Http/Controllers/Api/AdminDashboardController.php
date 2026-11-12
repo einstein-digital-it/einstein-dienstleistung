@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\SeoSetting;
-use App\Models\ServiceProvider;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
@@ -24,8 +23,6 @@ class AdminDashboardController extends Controller
             'revenue' => round((float) $completedRevenue, 2),
             'users' => User::query()->count(),
             'admins' => User::query()->where('role', 'admin')->count(),
-            'providers' => ServiceProvider::query()->where('status', 'approved')->count(),
-            'pending_providers' => ServiceProvider::query()->where('status', 'pending')->count(),
             'seo_pages' => SeoSetting::query()->count(),
         ];
 

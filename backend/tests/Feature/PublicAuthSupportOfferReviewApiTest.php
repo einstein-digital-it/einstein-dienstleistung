@@ -143,7 +143,7 @@ class PublicAuthSupportOfferReviewApiTest extends TestCase
         ]);
     }
 
-    public function test_chat_service_extensions_and_provider_documents_work(): void
+    public function test_chat_and_service_extensions_work(): void
     {
         $this->withApiUser('admin');
         $this->postJson('/api/chat/respond', [
@@ -182,21 +182,21 @@ class PublicAuthSupportOfferReviewApiTest extends TestCase
         $this->postJson("/api/service-extensions/{$extensionId}/authorize-payment")
             ->assertOk()
             ->assertJsonPath('data.extension.payment_status', 'authorized');
+    }
 
-        $document = $this->postJson('/api/provider-documents', [
-            'title' => 'Certificate',
-            'document_type' => 'certificate',
-            'file_url' => '/storage/uploads/certificate.pdf',
-            'provider_email' => 'provider@example.com',
-        ])
-            ->assertCreated()
-            ->assertJsonPath('data.title', 'Certificate');
+    public function test_there_are_no_service_provider_accounts(): void
+    {
+        // Sign-up and the separate provider login are gone
+        $this->postJson('/api/auth/provider/register', ['full_name' => 'X', 'email' => 'p@example.com', 'password' => 'secret123'])->assertNotFound();
+        $this->postJson('/api/auth/provider/login', ['email' => 'p@example.com', 'password' => 'secret123'])->assertNotFound();
 
-        $this->getJson('/api/provider-documents?provider_email=provider@example.com')
-            ->assertOk()
-            ->assertJsonPath('data.0.file_url', '/storage/uploads/certificate.pdf');
-
-        $this->deleteJson('/api/provider-documents/'.$document->json('data.id'))
-            ->assertNoContent();
+        // An account that still has the old role cannot sign in
+        User::create([
+            'name' => 'Old Provider', 'full_name' => 'Old Provider', 'email' => 'old@example.com',
+            'role' => 'provider', 'is_active' => true, 'password' => Hash::make('secret123'),
+        ]);
+        $this->postJson('/api/auth/login', ['email' => 'old@example.com', 'password' => 'secret123'])
+            ->assertStatus(422)
+            ->assertJsonMissingPath('data.session');
     }
 }

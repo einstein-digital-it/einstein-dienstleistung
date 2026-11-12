@@ -39,7 +39,11 @@ class CustomerFilesApiTest extends TestCase
         $this->get("/api/customer/documents/$id/download")->assertNotFound();
         $this->getJson('/api/admin/customer-documents?email=owner@example.com')->assertForbidden();
 
+        // An old service-provider account has no access any more
         $this->withApiUser('provider', 'helper@example.com');
+        $this->get("/api/customer/documents/$id/download")->assertForbidden();
+
+        $this->withApiUser('admin', 'boss@example.com');
         $this->get("/api/customer/documents/$id/download")->assertOk();
         $this->getJson('/api/admin/customer-documents?email=owner@example.com')->assertOk()
             ->assertJsonPath('data.documents.0.id', $id);

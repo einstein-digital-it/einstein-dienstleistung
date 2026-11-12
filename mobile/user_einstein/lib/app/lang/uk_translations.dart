@@ -1,5 +1,6 @@
 // Ukrainian (uk). Keys missing here fall back to English.
 const Map<String, String> ukTranslations = {
+  "notifications_unread_hint": "@count нових сповіщень про бронювання, платежі та документи.",
   "cases_title": "Мої власні справи",
   "cases_new": "Нова справа",
   "cases_create": "Створити",

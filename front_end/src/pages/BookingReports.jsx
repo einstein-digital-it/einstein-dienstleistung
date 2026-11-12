@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { providersApi, reportsApi } from "@/api/backendClient";
+import { reportsApi } from "@/api/backendClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -14,16 +14,14 @@ import {
   Loader2,
   FileText,
   Euro,
-  AlertCircle,
   Check,
   Upload,
   Lock,
   Info
 } from "lucide-react";
-import ProviderDocumentUpload from "@/components/ProviderDocumentUpload";
 import { requireStoredUser } from "@/lib/backendAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
@@ -199,7 +197,6 @@ const bookingReportText = {
 export default function BookingReports() {
   const [lang, setLang] = useState("ar");
   const [user, setUser] = useState(null);
-  const [provider, setProvider] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState({ open: false, booking: null });
   const [filter, setFilter] = useState("all");
   const queryClient = useQueryClient();
@@ -213,15 +210,8 @@ export default function BookingReports() {
       if (!userData) return;
       setUser(userData);
 
-      if (userData.role !== "admin") {
-        const providers = await providersApi.listProviders("approved");
-        const approvedProvider = providers.find((item) => item.email?.toLowerCase() === userData.email?.toLowerCase());
-        if (approvedProvider) {
-          setProvider(approvedProvider);
-        } else {
-          window.location.href = "/";
-        }
-      }
+      // Reports are for the admin only
+      if (userData.role !== "admin") window.location.href = "/";
     };
     checkAuth();
   }, []);
@@ -244,9 +234,9 @@ export default function BookingReports() {
   const confirmMutation = useMutation({
     mutationFn: async (booking) => {
       await reportsApi.confirmBooking(booking.id, {
-        confirmed_by_provider_id: provider?.id || "admin",
-        confirmed_by_provider_name: provider?.full_name || user?.full_name || "Admin",
-        confirmed_by_provider_email: provider?.email || user?.email,
+        confirmed_by_provider_id: "admin",
+        confirmed_by_provider_name: user?.full_name || "Admin",
+        confirmed_by_provider_email: user?.email,
       });
     },
     onSuccess: () => {
@@ -269,7 +259,7 @@ export default function BookingReports() {
     return b.status === filter;
   });
 
-  if (!user || (!isAdmin && !provider)) {
+  if (!user || !isAdmin) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-[#6B46C1]" />
@@ -425,11 +415,6 @@ export default function BookingReports() {
                           </div>
                         )}
 
-                        {/* Provider can upload completed docs — only if they confirmed this booking */}
-                        {!isAdmin && provider && String(booking.confirmed_by_provider_id) === String(provider.id) && (
-                          <ProviderDocumentUpload booking={booking} lang={lang} />
-                        )}
-
                         {/* Admin sees provider docs */}
                         {isAdmin && booking.provider_documents_urls?.length > 0 && (
                           <div>
@@ -472,7 +457,7 @@ export default function BookingReports() {
                           </Button>
                         )}
                         
-                        {booking.confirmed_by_provider_email === (provider?.email || user?.email) && (
+                        {booking.confirmed_by_provider_email === user?.email && (
                           <Badge className="bg-purple-100 text-purple-800 justify-center">
                             {t.you_confirmed}
                           </Badge>

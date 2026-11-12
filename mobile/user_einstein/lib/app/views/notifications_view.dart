@@ -49,7 +49,7 @@ class NotificationsView extends GetView<NotificationsController> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        '${controller.unreadCount} neue Hinweise zu Buchungen, Zahlungen und Providern.',
+                        'notifications_unread_hint'.trParams({'count': '${controller.unreadCount}'}),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const SizedBox(height: 18),

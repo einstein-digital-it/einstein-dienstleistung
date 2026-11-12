@@ -7,7 +7,6 @@ use App\Models\Booking;
 use App\Models\PriceGroup;
 use App\Models\Review;
 use App\Models\Service;
-use App\Models\ServiceProvider;
 use Illuminate\Http\JsonResponse;
 
 class PublicContentController extends Controller
@@ -59,7 +58,6 @@ class PublicContentController extends Controller
             'data' => [
                 'summary' => [
                     'active_services' => Service::query()->where('status', 'active')->count(),
-                    'approved_providers' => ServiceProvider::query()->where('status', 'approved')->count(),
                     'completed_bookings' => Booking::query()->where('status', 'completed')->count(),
                 ],
                 'services' => Service::query()->where('status', 'active')->orderBy('sort_order')->limit(8)->get(),

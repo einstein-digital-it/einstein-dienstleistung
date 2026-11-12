@@ -4,7 +4,7 @@ import { requireStoredUser } from "@/lib/backendAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Users, Search, Loader2, Mail, Calendar, Shield, User, Bell, CheckCheck, Phone, Power, Trash2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -255,7 +255,6 @@ export default function AdminUsers() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="admin">Admin</SelectItem>
-                              <SelectItem value="provider">{adminT.common.provider}</SelectItem>
                               <SelectItem value="user">{adminT.common.user}</SelectItem>
                             </SelectContent>
                           </Select>

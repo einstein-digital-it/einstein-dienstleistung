@@ -116,12 +116,15 @@ class AdminUserApiTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.email', 'managed@example.com');
 
+        // There is no service-provider role any more
+        $this->patchJson("/api/admin/users/{$user->id}", ['role' => 'provider'])->assertStatus(422);
+
         $this->patchJson("/api/admin/users/{$user->id}", [
-            'role' => 'provider',
+            'role' => 'admin',
             'is_active' => false,
         ])
             ->assertOk()
-            ->assertJsonPath('data.role', 'provider')
+            ->assertJsonPath('data.role', 'admin')
             ->assertJsonPath('data.is_active', false);
 
         $this->deleteJson("/api/admin/users/{$user->id}")

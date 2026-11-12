@@ -1,6 +1,7 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'notifications_unread_hint': '@count new notes about bookings, payments and documents.',
   'abo_limit': 'Up to @limit letters a month',
   'abo_usage': '@used of @limit letters this month',
   'abo_limit_reached': 'Your monthly allowance is used up. New letters are only stored.',
@@ -145,6 +146,7 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'notifications_unread_hint': '@count إشعارات جديدة عن الحجوزات والمدفوعات والمستندات.',
   'abo_limit': 'حتى @limit ورقة شهرياً',
   'abo_usage': '@used من @limit ورقة هذا الشهر',
   'abo_limit_reached': 'انتهى رصيدك لهذا الشهر. تُحفظ الأوراق الجديدة فقط دون ترتيب أو ترجمة.',
@@ -289,6 +291,7 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'notifications_unread_hint': '@count neue Hinweise zu Buchungen, Zahlungen und Unterlagen.',
   'abo_limit': 'Bis zu @limit Schreiben pro Monat',
   'abo_usage': '@used von @limit Schreiben diesen Monat',
   'abo_limit_reached': 'Ihr Monatskontingent ist aufgebraucht. Neue Schreiben werden nur gespeichert.',

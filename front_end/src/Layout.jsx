@@ -41,9 +41,7 @@ const translations = {
     dashboard: "Dashboard",
     payments: "Zahlungen",
     adminServices: "Dienste verwalten",
-    providers: "Fachkräfte",
     ourExperts: "Unsere Experten",
-    providerDashboard: "Fachkraft-Dashboard",
     login: "Anmelden",
     logout: "Abmelden",
     education: "Bildung",
@@ -62,9 +60,7 @@ const translations = {
     dashboard: "لوحة التحكم",
     payments: "المدفوعات",
     adminServices: "إدارة الخدمات",
-    providers: "مزودي الخدمات",
     ourExperts: "خبراؤنا",
-    providerDashboard: "لوحة مزود الخدمة",
     login: "تسجيل الدخول",
     logout: "تسجيل الخروج",
     education: "التعليم",
@@ -83,9 +79,7 @@ const translations = {
     dashboard: "Dashboard",
     payments: "Payments",
     adminServices: "Manage Services",
-    providers: "Service Providers",
     ourExperts: "Our Experts",
-    providerDashboard: "Provider Dashboard",
     login: "Login",
     logout: "Logout",
     education: "Education",
@@ -104,8 +98,6 @@ const translations = {
     dashboard: "Kontrol Paneli",
     payments: "Odemeler",
     adminServices: "Hizmetleri Yonet",
-    providers: "Hizmet Saglayicilar",
-    providerDashboard: "Saglayici Paneli",
     login: "Giris Yap",
     logout: "Cikis Yap",
     education: "Egitim",
@@ -124,8 +116,6 @@ const translations = {
     dashboard: "Panel",
     payments: "Pagos",
     adminServices: "Gestionar Servicios",
-    providers: "Proveedores",
-    providerDashboard: "Panel Proveedor",
     login: "Iniciar Sesión",
     logout: "Cerrar Sesión",
     education: "Educación",
@@ -144,9 +134,7 @@ const translations = {
     dashboard: "Кабінет",
     payments: "Оплати",
     adminServices: "Керування послугами",
-    providers: "Виконавці",
     ourExperts: "Наші фахівці",
-    providerDashboard: "Кабінет виконавця",
     login: "Увійти",
     logout: "Вийти",
     education: "Освіта",
@@ -165,11 +153,9 @@ const MENU = {
   myDashboard: { de: "Mein Dashboard", ar: "لوحتي", en: "My dashboard", tr: "Hesabım", es: "Mi área", uk: "Мій кабінет" },
   customerDocs: { de: "Kundenunterlagen", ar: "ملفات الزبائن", en: "Customer documents", tr: "Müşteri belgeleri", es: "Documentos de clientes", uk: "Документи клієнтів" },
   myDocs: { de: "Meine Unterlagen", ar: "ملفاتي", en: "My documents", tr: "Belgelerim", es: "Mis documentos", uk: "Мої документи" },
-  providerDashboard: { de: "Anbieter-Dashboard", ar: "لوحة المزود", en: "Provider dashboard", tr: "Sağlayıcı paneli", es: "Panel del profesional", uk: "Кабінет виконавця" },
   admin: { de: "Admin", ar: "الإدارة", en: "Admin", tr: "Yönetim", es: "Administración", uk: "Адмін" },
   bookings: { de: "Buchungen", ar: "الحجوزات", en: "Bookings", tr: "Rezervasyonlar", es: "Reservas", uk: "Бронювання" },
   reports: { de: "Berichte", ar: "التقارير", en: "Reports", tr: "Raporlar", es: "Informes", uk: "Звіти" },
-  providerApplications: { de: "Fachkraft-Anträge", ar: "طلبات المزودين", en: "Provider applications", tr: "Sağlayıcı başvuruları", es: "Solicitudes de profesionales", uk: "Заявки виконавців" },
   users: { de: "Benutzer", ar: "المستخدمون", en: "Users", tr: "Kullanıcılar", es: "Usuarios", uk: "Користувачі" },
   prices: { de: "Preise", ar: "الأسعار", en: "Prices", tr: "Fiyatlar", es: "Precios", uk: "Ціни" },
   clientWorkspace: { de: "Kundenbereich", ar: "مساحة عمل العملاء", en: "Client workspace", tr: "Müşteri alanı", es: "Área de clientes", uk: "Простір клієнтів" },
@@ -186,9 +172,6 @@ export default function Layout({ children, currentPageName }) {
   const [lang, setLang] = useState(() => {
     try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; }
   });
-  const [isProvider, setIsProvider] = useState(() => {
-    try { return localStorage.getItem("einstein_is_provider") === "true"; } catch { return false; }
-  });
   const t = translations[lang] || translations.de;
   const m = (key) => MENU[key][lang] || MENU[key].de;
 
@@ -196,9 +179,6 @@ export default function Layout({ children, currentPageName }) {
     const init = () => {
       const userData = getStoredAuthUser();
       setUser(userData);
-      const isProviderVal = userData?.role === "provider";
-      setIsProvider(isProviderVal);
-      try { localStorage.setItem("einstein_is_provider", isProviderVal ? "true" : "false"); } catch {}
     };
     init();
   }, []);
@@ -235,7 +215,6 @@ export default function Layout({ children, currentPageName }) {
     }
     clearStoredAuth();
     setUser(null);
-    setIsProvider(false);
     window.location.href = "/Login";
   };
 
@@ -297,7 +276,7 @@ export default function Layout({ children, currentPageName }) {
               <Link to={createPageUrl("Booking")} className="hover:text-[#6B46C1] transition-colors">
                 {t.booking}
               </Link>
-              {(isProvider || isAdmin) && (
+              {isAdmin && (
                 <Link to={createPageUrl("CustomerRequests")} className="hover:text-[#6B46C1] transition-colors">
                   {m("customerRequests")}
                 </Link>
@@ -308,15 +287,8 @@ export default function Layout({ children, currentPageName }) {
                     {m("myDashboard")}
                   </Link>
                   <Link to={createPageUrl("MyDocuments")} className="hover:text-[#6B46C1] transition-colors font-medium">
-                    {isProvider
-                      ? (m("customerDocs"))
-                      : (m("myDocs"))}
+                    {m("myDocs")}
                   </Link>
-                  {isProvider && (
-                    <Link to={createPageUrl("ProviderDashboard")} className="hover:text-[#6B46C1] transition-colors">
-                      {m("providerDashboard")}
-                    </Link>
-                  )}
                 </>
               )}
               {isAdmin && (
@@ -338,18 +310,6 @@ export default function Layout({ children, currentPageName }) {
                       <Link to={createPageUrl("BookingReports")} className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-gray-400" />
                         {m("reports")}
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to={createPageUrl("ProviderApprovals")} className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-gray-400" />
-                        {m("providerApplications")}
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to={createPageUrl("Providers")} className="flex items-center gap-2">
-                        <Briefcase className="w-4 h-4 text-gray-400" />
-                        {t.providers}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -472,22 +432,8 @@ export default function Layout({ children, currentPageName }) {
                                                   {m("myDashboard")}
                                                 </Link>
                                               </DropdownMenuItem>
-                                              {isProvider && (
-                                              <DropdownMenuItem asChild>
-                                                <Link to={createPageUrl("ProviderDashboard")}>
-                                                  <Briefcase className="w-4 h-4 me-2" />
-                                                  {m("providerDashboard")}
-                                                </Link>
-                                              </DropdownMenuItem>
-                                              )}
                       {isAdmin && (
                                                   <>
-                                                    <DropdownMenuItem asChild>
-                                                      <Link to={createPageUrl("ProviderApprovals")}>
-                                                        <User className="w-4 h-4 me-2" />
-                                                        {m("providerApplications")}
-                                                      </Link>
-                                                    </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
                                                       <Link to={createPageUrl("AdminBookings")}>
                                                         <Calendar className="w-4 h-4 me-2" />
@@ -504,12 +450,6 @@ export default function Layout({ children, currentPageName }) {
                                                       <Link to={createPageUrl("AdminServices")}>
                                                         <Wrench className="w-4 h-4 me-2" />
                                                         {t.adminServices}
-                                                      </Link>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem asChild>
-                                                      <Link to={createPageUrl("Providers")}>
-                                                        <User className="w-4 h-4 me-2" />
-                                                        {t.providers}
                                                       </Link>
                                                     </DropdownMenuItem>
                                                   </>
@@ -567,7 +507,7 @@ export default function Layout({ children, currentPageName }) {
                                          >
                                            {t.booking}
                                          </Link>
-                                         {(isProvider || isAdmin) && (
+                                         {isAdmin && (
                                            <Link 
                                              to={createPageUrl("CustomerRequests")} 
                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
@@ -598,9 +538,7 @@ export default function Layout({ children, currentPageName }) {
                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                             onClick={() => setIsMenuOpen(false)}
                                           >
-                                            {isAdmin || isProvider
-                                              ? (m("customerDocs"))
-                                              : (m("myDocs"))}
+                                            {isAdmin ? m("customerDocs") : m("myDocs")}
                                           </Link>
                                         )}
                                         {isAdmin && (
@@ -625,13 +563,6 @@ export default function Layout({ children, currentPageName }) {
                                               onClick={() => setIsMenuOpen(false)}
                                             >
                                               {t.adminServices}
-                                            </Link>
-                                            <Link 
-                                              to={createPageUrl("Providers")} 
-                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
-                                              onClick={() => setIsMenuOpen(false)}
-                                            >
-                                              {t.providers}
                                             </Link>
                                             <Link 
                                               to={createPageUrl("SEOAdmin")} 

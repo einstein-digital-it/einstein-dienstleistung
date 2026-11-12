@@ -557,6 +557,9 @@ void main() {
       'Email notifications',
     );
     expect(tester.widget<SwitchListTile>(emailSwitch).value, isTrue);
+    // Bring the switch fully into view so the tap does not land on the bottom bar
+    await tester.ensureVisible(emailSwitch);
+    await tester.pumpAndSettle();
     await tester.tap(emailSwitch);
     await tester.pumpAndSettle();
     expect(tester.widget<SwitchListTile>(emailSwitch).value, isFalse);

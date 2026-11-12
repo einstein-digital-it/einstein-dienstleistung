@@ -8,8 +8,7 @@ import {
   FileSearch,
   Search,
   ShieldCheck,
-  Users,
-  UserCheck
+  Users
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const translations = {
   ar: {
-    area: "منطقة الإدارة", title: "لوحة التحكم", subtitle: "نظرة عامة على الحجوزات والمستخدمين والمزودين وتحسين محركات البحث والإيرادات.",
+    area: "منطقة الإدارة", title: "لوحة التحكم", subtitle: "نظرة عامة على الحجوزات والمستخدمين وتحسين محركات البحث والإيرادات.",
     bookings: "الحجوزات", revenueReport: "تقرير الإيرادات", totalBookings: "إجمالي الحجوزات", pending: "قيد الانتظار أو المراجعة",
     revenue: "الإيرادات", liveApi: "بيانات مباشرة من Laravel API", users: "المستخدمون", adminAccounts: "حسابات المديرين",
     seoPages: "صفحات SEO", indexable: "صفحات قابلة للفهرسة", interfaces: "واجهات الإدارة", activityTitle: "النشاط",
@@ -28,7 +27,6 @@ const translations = {
       { label: "التقارير", href: "/BookingReports", icon: BarChart3, note: "تقارير الحجوزات والحالات" },
       { label: "تقرير الإيرادات", href: "/RevenueReports", icon: Euro, note: "الإيرادات والمقارنة الشهرية" },
       { label: "المستخدمون", href: "/Users", icon: Users, note: "حسابات العملاء والمديرين" },
-      { label: "طلبات المزودين", href: "/SupplierRequests", icon: UserCheck, note: "مراجعة طلبات المزودين الجدد" },
       { label: "SEO", href: "/SEO", icon: Search, note: "بيانات الميتا وخريطة الموقع" }
     ],
     activityItems: [
@@ -39,10 +37,10 @@ const translations = {
     ]
   },
   en: {
-    area: "Admin area", title: "Administration", subtitle: "Overview of bookings, users, providers, SEO and revenue.", bookings: "Bookings", revenueReport: "Revenue report", totalBookings: "Total bookings", pending: "pending or under review", revenue: "Revenue", liveApi: "Live Laravel API", users: "Users", adminAccounts: "Admin accounts", seoPages: "SEO pages", indexable: "Indexable pages", interfaces: "Admin interfaces", activityTitle: "Activity", links: [], activityItems: []
+    area: "Admin area", title: "Administration", subtitle: "Overview of bookings, users, SEO and revenue.", bookings: "Bookings", revenueReport: "Revenue report", totalBookings: "Total bookings", pending: "pending or under review", revenue: "Revenue", liveApi: "Live Laravel API", users: "Users", adminAccounts: "Admin accounts", seoPages: "SEO pages", indexable: "Indexable pages", interfaces: "Admin interfaces", activityTitle: "Activity", links: [], activityItems: []
   },
   de: {
-    area: "Adminbereich", title: "Administration", subtitle: "Uebersicht fuer Buchungen, Benutzer, Fachkraefte, SEO und Umsatzberichte.", bookings: "Buchungen", revenueReport: "Umsatzbericht", totalBookings: "Buchungen gesamt", pending: "offen oder in Pruefung", revenue: "Umsatz", liveApi: "Live Laravel API", users: "Benutzer", adminAccounts: "Admin-Konten", seoPages: "SEO Seiten", indexable: "Indexierbare Seiten", interfaces: "Admin-Interfaces", activityTitle: "Aktivitaet", links: [], activityItems: []
+    area: "Adminbereich", title: "Administration", subtitle: "Uebersicht fuer Buchungen, Benutzer, SEO und Umsatzberichte.", bookings: "Buchungen", revenueReport: "Umsatzbericht", totalBookings: "Buchungen gesamt", pending: "offen oder in Pruefung", revenue: "Umsatz", liveApi: "Live Laravel API", users: "Benutzer", adminAccounts: "Admin-Konten", seoPages: "SEO Seiten", indexable: "Indexierbare Seiten", interfaces: "Admin-Interfaces", activityTitle: "Aktivitaet", links: [], activityItems: []
   }
 };
 
@@ -53,7 +51,6 @@ const quickLinksByLanguage = {
     { label: "Reports", href: "/BookingReports", icon: BarChart3, note: "Booking and status reports" },
     { label: "Revenue Report", href: "/RevenueReports", icon: Euro, note: "Revenue and monthly comparison" },
     { label: "Users", href: "/Users", icon: Users, note: "Customer and administrator accounts" },
-    { label: "Provider Applications", href: "/SupplierRequests", icon: UserCheck, note: "Review new provider applications" },
     { label: "SEO", href: "/SEO", icon: Search, note: "Meta data and sitemap" },
   ],
   de: [
@@ -61,7 +58,6 @@ const quickLinksByLanguage = {
     { label: "Berichte", href: "/BookingReports", icon: BarChart3, note: "Buchungs- und Statusberichte" },
     { label: "Umsatzbericht", href: "/RevenueReports", icon: Euro, note: "Umsatz und monatlicher Vergleich" },
     { label: "Benutzer", href: "/Users", icon: Users, note: "Kunden- und Administratorkonten" },
-    { label: "Anbieterantraege", href: "/SupplierRequests", icon: UserCheck, note: "Neue Anbieterantraege pruefen" },
     { label: "SEO", href: "/SEO", icon: Search, note: "Meta-Daten und Sitemap" },
   ],
 };

@@ -215,22 +215,6 @@ export const paymentApi = {
   }),
 };
 
-export const providerDashboardApi = {
-  getDashboard: (email) => request(`/provider/dashboard${toQuery({ email })}`),
-  handleBookingAction: (bookingId, providerId, action) => request(`/provider/bookings/${bookingId}/action`, {
-    method: "PATCH",
-    body: JSON.stringify({ provider_id: providerId, action }),
-  }),
-  updateProfile: (providerId, data) => request(`/provider/profile/${providerId}`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  }),
-  updateDocuments: (bookingId, providerId, documentUrls) => request(`/provider/bookings/${bookingId}/documents`, {
-    method: "PATCH",
-    body: JSON.stringify({ provider_id: providerId, document_urls: documentUrls }),
-  }),
-};
-
 export const publicApi = {
   listServices: () => request("/public/services"),
   listPricing: () => request("/public/pricing"),
@@ -254,17 +238,6 @@ export const customerSupportApi = {
   createRequest: (data) => request("/customer-support/requests", {
     method: "POST",
     body: JSON.stringify(data),
-  }),
-};
-
-export const providerDocumentsApi = {
-  listDocuments: (filters = {}) => request(`/provider-documents${toQuery(filters)}`),
-  createDocument: (data) => request("/provider-documents", {
-    method: "POST",
-    body: JSON.stringify(data),
-  }),
-  deleteDocument: (id) => request(`/provider-documents/${id}`, {
-    method: "DELETE",
   }),
 };
 
@@ -320,35 +293,6 @@ export const paymentsApi = {
 
 export const revenueReportsApi = {
   getRevenueReport: (year) => request(`/admin/revenue-reports?year=${encodeURIComponent(year)}`),
-};
-
-export const providerApprovalsApi = {
-  listApplications: (status = "pending") => request(`/admin/provider-applications?status=${encodeURIComponent(status)}`),
-  approveProvider: (id) => request(`/admin/provider-applications/${id}/approve`, {
-    method: "PATCH",
-  }),
-  rejectProvider: (id) => request(`/admin/provider-applications/${id}/reject`, {
-    method: "PATCH",
-  }),
-  requestWelcomeEmail: (id) => request(`/admin/provider-applications/${id}/welcome-email-request`, {
-    method: "POST",
-  }),
-};
-
-export const providersApi = {
-  listProviders: (status = "all") => request(`/admin/providers?status=${encodeURIComponent(status)}`),
-  getProvider: (id) => request(`/admin/providers/${id}`),
-  createProvider: (data) => request("/admin/providers", {
-    method: "POST",
-    body: JSON.stringify(data),
-  }),
-  updateProvider: (id, data) => request(`/admin/providers/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  }),
-  deleteProvider: (id) => request(`/admin/providers/${id}`, {
-    method: "DELETE",
-  }),
 };
 
 export const customerRequestsApi = {

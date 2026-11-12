@@ -54,13 +54,6 @@ class NotificationSettingsView extends GetView<NotificationSettingsController> {
                     onChanged: (value) =>
                         controller.reminderUpdates.value = value,
                   ),
-                  _SwitchRow(
-                    title: 'provider_updates'.tr,
-                    subtitle: 'provider_updates_subtitle'.tr,
-                    value: controller.providerUpdates.value,
-                    onChanged: (value) =>
-                        controller.providerUpdates.value = value,
-                  ),
                 ],
               ),
               const SizedBox(height: 16),

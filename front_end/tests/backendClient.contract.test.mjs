@@ -11,13 +11,9 @@ import {
   customerRequestsApi,
   paymentsApi,
   paymentApi,
-  providerDashboardApi,
-  providerDocumentsApi,
   priceAdminApi,
   publicApi,
   profileApi,
-  providerApprovalsApi,
-  providersApi,
   revenueReportsApi,
   seoSettingsApi,
   uploadApi,
@@ -49,13 +45,6 @@ test("admin backend client exposes the required page APIs", () => {
   assert.equal(typeof customerSupportApi.createRequest, "function");
   assert.equal(typeof paymentApi.getBooking, "function");
   assert.equal(typeof paymentApi.updatePaymentStatus, "function");
-  assert.equal(typeof providerDashboardApi.getDashboard, "function");
-  assert.equal(typeof providerDashboardApi.handleBookingAction, "function");
-  assert.equal(typeof providerDashboardApi.updateProfile, "function");
-  assert.equal(typeof providerDashboardApi.updateDocuments, "function");
-  assert.equal(typeof providerDocumentsApi.listDocuments, "function");
-  assert.equal(typeof providerDocumentsApi.createDocument, "function");
-  assert.equal(typeof providerDocumentsApi.deleteDocument, "function");
   assert.equal(typeof chatApi.respond, "function");
   assert.equal(typeof publicApi.listServices, "function");
   assert.equal(typeof publicApi.listPricing, "function");
@@ -70,13 +59,6 @@ test("admin backend client exposes the required page APIs", () => {
   assert.equal(typeof paymentsApi.refundPayment, "function");
   assert.equal(typeof paymentsApi.deleteUnpaidBooking, "function");
   assert.equal(typeof revenueReportsApi.getRevenueReport, "function");
-  assert.equal(typeof providerApprovalsApi.listApplications, "function");
-  assert.equal(typeof providerApprovalsApi.approveProvider, "function");
-  assert.equal(typeof providerApprovalsApi.rejectProvider, "function");
-  assert.equal(typeof providerApprovalsApi.requestWelcomeEmail, "function");
-  assert.equal(typeof providersApi.listProviders, "function");
-  assert.equal(typeof providersApi.getProvider, "function");
-  assert.equal(typeof providersApi.createProvider, "function");
   assert.equal(typeof usersApi.updateUser, "function");
   assert.equal(typeof usersApi.deleteUser, "function");
   assert.equal(typeof customerRequestsApi.listRequests, "function");

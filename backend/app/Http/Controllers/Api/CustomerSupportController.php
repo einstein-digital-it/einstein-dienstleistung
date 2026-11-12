@@ -109,14 +109,6 @@ class CustomerSupportController extends Controller
                 'answer_de' => 'Die verfuegbaren Zahlungsmethoden werden im Zahlungsbereich der Buchung angezeigt.',
                 'icon' => 'credit-card',
             ],
-            [
-                'id' => 'provider',
-                'question_de' => 'Wie werde ich Dienstleister?',
-                'question_en' => 'How do I become a provider?',
-                'question_ar' => 'كيف أصبح مزود خدمة؟',
-                'answer_de' => 'Nutzen Sie das Bewerbungsformular fuer Fachkraefte und laden Sie Ihre Unterlagen hoch.',
-                'icon' => 'users',
-            ],
         ];
     }
 }

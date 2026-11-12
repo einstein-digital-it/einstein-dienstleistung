@@ -50,8 +50,6 @@ const availablePages = [
   "Services",
   "Booking",
   "MyBookings",
-  "ProviderApplication",
-  "ProvidersList",
   "Profile"
 ];
 

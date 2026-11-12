@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { customerApi } from "@/api/backendClient";
@@ -12,8 +12,7 @@ import {
   Clock,
   Star,
   CreditCard,
-  Info,
-  UserCheck
+  Info
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,8 +29,6 @@ const typeIcons = {
   booking_cancelled: XCircle,
   booking_reminder: Clock,
   new_booking_request: Calendar,
-  provider_approved: UserCheck,
-  provider_rejected: XCircle,
   payment_received: CreditCard,
   review_received: Star,
   general: Info
@@ -42,8 +39,6 @@ const typeColors = {
   booking_cancelled: "text-red-500",
   booking_reminder: "text-orange-500",
   new_booking_request: "text-blue-500",
-  provider_approved: "text-green-500",
-  provider_rejected: "text-red-500",
   payment_received: "text-green-500",
   review_received: "text-yellow-500",
   general: "text-gray-500"
@@ -171,7 +166,7 @@ export default function NotificationBell({ user, lang = "de" }) {
                 // Build a safe in-app URL from the notification link with robust fallbacks
                 const buildHref = (link) => {
                   const PAGE_WHITELIST = new Set([
-                    'Home','Services','Booking','Bookings','MyBookings','CustomerDashboard','Providers','ProviderDashboard','ProviderApplication','Profile','Payment','Payments','Notifications','NotificationSettings','CustomerRequests','AdminBookings','AdminServices','ProvidersList','ProviderApprovals','ProviderProfile','BookingReports','PriceAdmin','SEOAdmin','Offers','CustomerService'
+                    'Home','Services','Booking','Bookings','MyBookings','CustomerDashboard','Profile','Payment','Payments','Notifications','NotificationSettings','CustomerRequests','AdminBookings','AdminServices','ProvidersList','ProviderApprovals','ProviderProfile','BookingReports','PriceAdmin','SEOAdmin','Offers','CustomerService'
                   ]);
                   // Handle direct "Payment?id=xxx" style links from notifications
                   if (link && link.startsWith('Payment')) {
@@ -188,9 +183,6 @@ export default function NotificationBell({ user, lang = "de" }) {
                     'mybookings':'MyBookings',
                     'customer-dashboard':'CustomerDashboard',
                     'customerdashboard':'CustomerDashboard',
-                    'providers':'Providers',
-                    'provider-dashboard':'ProviderDashboard',
-                    'providerdashboard':'ProviderDashboard',
                     'profile':'Profile',
                     'payments':'Payments',
                     'notifications':'Notifications',
@@ -204,8 +196,6 @@ export default function NotificationBell({ user, lang = "de" }) {
                     booking_cancelled: 'CustomerDashboard',
                     booking_reminder: 'CustomerDashboard',
                     new_booking_request: 'CustomerDashboard',
-                    provider_approved: 'ProviderDashboard',
-                    provider_rejected: 'ProviderDashboard',
                     payment_received: 'Payments',
                     review_received: 'CustomerDashboard',
                     general: 'Notifications'

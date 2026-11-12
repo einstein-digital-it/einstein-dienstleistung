@@ -28,16 +28,11 @@ use App\Http\Controllers\Api\PaymentAdminController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PriceAdminController;
 use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\ProviderDashboardController;
-use App\Http\Controllers\Api\ProviderDocumentController;
-use App\Http\Controllers\Api\ProviderEarningsController;
-use App\Http\Controllers\Api\ProviderNotificationController;
 use App\Http\Controllers\Api\PublicContentController;
 use App\Http\Controllers\Api\RevenueReportController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SeoSettingController;
 use App\Http\Controllers\Api\ServiceExtensionController;
-use App\Http\Controllers\Api\ServiceProviderController;
 use App\Http\Controllers\Api\UserNotificationController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,8 +42,6 @@ Route::get('/health', fn () => response()->json(['status' => 'ok']));
 Route::match(['get', 'post', 'delete'], 'mcp/{secret}', [McpController::class, 'handle'])->middleware('throttle:120,1');
 
 Route::post('auth/login', [AuthController::class, 'login']);
-Route::post('auth/provider/login', [AuthController::class, 'providerLogin']);
-Route::post('auth/provider/register', [AuthController::class, 'providerRegister']);
 Route::post('auth/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
 Route::post('auth/verify-email', [AuthController::class, 'verifyEmail'])->middleware('throttle:10,1');
 Route::post('auth/verify-email/resend', [AuthController::class, 'resendVerification'])->middleware('throttle:5,1');
@@ -69,7 +62,7 @@ Route::post('stripe/webhook', [StripeController::class, 'webhook']);
 Route::post('public/cancellations', [ContractCancellationController::class, 'store'])->middleware('throttle:10,1');
 Route::get('seo-settings/page/{pageName}', [SeoSettingController::class, 'byPage']);
 
-Route::middleware('api.auth:admin,provider,user')->group(function () {
+Route::middleware('api.auth:admin,user')->group(function () {
     Route::post('uploads', [FileUploadController::class, 'store']);
     Route::get('profile', [ProfileController::class, 'show'])->middleware('own.email');
     Route::patch('profile', [ProfileController::class, 'update'])->middleware('own.email');
@@ -120,25 +113,14 @@ Route::middleware('api.auth:admin,provider,user')->group(function () {
     Route::post('service-extensions/{serviceExtension}/authorize-payment', [ServiceExtensionController::class, 'authorizePayment']);
 });
 
-Route::middleware('api.auth:admin,provider')->group(function () {
+Route::middleware('api.auth:admin')->group(function () {
     // Only staff may mark bookings as paid (customers pay through the payment provider)
     Route::patch('payments/bookings/{booking}/status', [PaymentController::class, 'updateStatus']);
-    Route::get('provider/dashboard', [ProviderDashboardController::class, 'show']);
-    Route::patch('provider/bookings/{booking}/action', [ProviderDashboardController::class, 'action']);
-    Route::patch('provider/bookings/{booking}/documents', [ProviderDashboardController::class, 'updateDocuments']);
-    Route::patch('provider/profile/{serviceProvider}', [ProviderDashboardController::class, 'updateProfile']);
-    Route::apiResource('provider-documents', ProviderDocumentController::class)->only(['index', 'store', 'destroy']);
-    // Customer files: admins and providers
+    // Customer files: admin
     Route::get('admin/customer-documents', [CustomerDocumentController::class, 'adminIndex']);
     Route::post('admin/customer-documents', [CustomerDocumentController::class, 'adminStore']);
 });
 
-Route::middleware('api.auth:provider')->group(function () {
-    Route::get('provider/earnings', [ProviderEarningsController::class, 'index']);
-    Route::get('provider/notifications', [ProviderNotificationController::class, 'index']);
-    Route::patch('provider/notifications/read-all', [ProviderNotificationController::class, 'markAllRead']);
-    Route::patch('provider/notifications/{notification}/read', [ProviderNotificationController::class, 'markRead']);
-});
 
 Route::middleware('api.auth:admin')->group(function () {
     Route::get('admin/dashboard', [AdminDashboardController::class, 'index']);
@@ -161,11 +143,6 @@ Route::middleware('api.auth:admin')->group(function () {
     Route::patch('admin/payments/{booking}/refund', [PaymentAdminController::class, 'refund']);
     Route::delete('admin/payments/{booking}/delete-unpaid', [PaymentAdminController::class, 'deleteUnpaid']);
     Route::get('admin/revenue-reports', [RevenueReportController::class, 'index']);
-    Route::get('admin/provider-applications', [ServiceProviderController::class, 'index']);
-    Route::patch('admin/provider-applications/{serviceProvider}/approve', [ServiceProviderController::class, 'approve']);
-    Route::patch('admin/provider-applications/{serviceProvider}/reject', [ServiceProviderController::class, 'reject']);
-    Route::post('admin/provider-applications/{serviceProvider}/welcome-email-request', [ServiceProviderController::class, 'requestWelcomeEmail']);
-    Route::apiResource('admin/providers', ServiceProviderController::class)->parameters(['providers' => 'serviceProvider']);
     Route::apiResource('admin/seo-settings', SeoSettingController::class)->parameters(['seo-settings' => 'seoSetting']);
     Route::patch('customer-requests/{customerRequest}/accept', [CustomerRequestController::class, 'accept']);
     Route::patch('customer-requests/{customerRequest}/reject', [CustomerRequestController::class, 'reject']);

@@ -15,7 +15,6 @@ use App\Models\Review;
 use App\Models\SeoSetting;
 use App\Models\Service;
 use App\Models\ServiceExtension;
-use App\Models\ServiceProvider;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
@@ -97,12 +96,6 @@ class McpController extends Controller
             'about' => 'Extra work requested on an existing booking.',
             'writable' => ['status', 'payment_status'], 'create' => false, 'delete' => false,
             'search' => [],
-        ],
-        'providers' => [
-            'model' => ServiceProvider::class,
-            'about' => 'Service providers (applications and approved providers).',
-            'writable' => ['status', 'notes', 'categories', 'hourly_rate', 'login_enabled', 'city', 'service_area', 'languages'], 'create' => false, 'delete' => false,
-            'search' => ['full_name', 'email', 'city'],
         ],
         'cancellations' => [
             'model' => ContractCancellation::class,
@@ -360,7 +353,6 @@ class McpController extends Controller
             'support_requests_open' => CustomerSupportRequest::whereNotIn('status', ['closed', 'resolved', 'done'])->count(),
             'customer_requests_new' => CustomerRequest::where('status', 'new')->count(),
             'reviews_pending' => Review::where('status', 'pending')->count(),
-            'provider_applications_pending' => ServiceProvider::where('status', 'pending')->count(),
             'users_total' => User::count(),
             'latest_bookings' => Booking::latest('id')->limit(5)->get(['id', 'booking_number', 'customer_name', 'service_name', 'category', 'date', 'status', 'payment_status', 'price']),
         ];

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
-import { adminServicesApi, bookingsApi, priceAdminApi, providersApi, uploadApi } from "@/api/backendClient";
+import { adminServicesApi, bookingsApi, priceAdminApi, uploadApi } from "@/api/backendClient";
 import { getStoredAuthUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -53,12 +53,6 @@ const translations = {
     step2: "Dienstleistung wählen",
     step3: "Details eingeben",
     step4: "Termin wählen",
-    select_provider: "Fachkraft auswählen",
-    any_provider: "Beliebige Fachkraft",
-    any_provider_desc: "Wir weisen Ihnen die beste verfügbare Fachkraft zu",
-    selected_provider: "Ausgewählte Fachkraft",
-    change_provider: "Ändern",
-    no_providers: "Keine Fachkräfte für diese Kategorie verfügbar",
     reviews: "Bewertungen",
     categories: {
       office: "Büro- & Organisationsservice",
@@ -101,12 +95,6 @@ const translations = {
     step2: "اختر الخدمة",
     step3: "أدخل التفاصيل",
     step4: "اختر الموعد",
-    select_provider: "اختيار مزود الخدمة",
-    any_provider: "أي مزود خدمة",
-    any_provider_desc: "سنخصص لك أفضل مزود خدمة متاح",
-    selected_provider: "مزود الخدمة المختار",
-    change_provider: "تغيير",
-    no_providers: "لا يوجد مزودي خدمة لهذه الفئة",
     reviews: "تقييمات",
     categories: {
       office: "خدمة المكتب والتنظيم",
@@ -149,12 +137,6 @@ const translations = {
     step2: "Select Service",
     step3: "Enter Details",
     step4: "Choose Date & Time",
-    select_provider: "Select Provider",
-    any_provider: "Any Available Provider",
-    any_provider_desc: "We'll assign you the best available professional",
-    selected_provider: "Selected Provider",
-    change_provider: "Change",
-    no_providers: "No providers available for this category",
     reviews: "reviews",
     categories: {
       office: "Office & Organization Service",
@@ -197,12 +179,6 @@ const translations = {
     step2: "Seleccionar Servicio",
     step3: "Ingresar Detalles",
     step4: "Elegir Fecha y Hora",
-    select_provider: "Seleccionar Proveedor",
-    any_provider: "Cualquier Proveedor Disponible",
-    any_provider_desc: "Te asignaremos el mejor profesional disponible",
-    selected_provider: "Proveedor Seleccionado",
-    change_provider: "Cambiar",
-    no_providers: "No hay proveedores disponibles para esta categoría",
     reviews: "reseñas",
     categories: {
       office: "Servicio de Oficina y Organización",
@@ -245,12 +221,6 @@ const translations = {
     step2: "Hizmet Seçin",
     step3: "Detayları Girin",
     step4: "Tarih ve Saat Seçin",
-    select_provider: "Sağlayıcı Seçin",
-    any_provider: "Herhangi Bir Sağlayıcı",
-    any_provider_desc: "Size en iyi müsait profesyoneli atayacağız",
-    selected_provider: "Seçilen Sağlayıcı",
-    change_provider: "Değiştir",
-    no_providers: "Bu kategori için sağlayıcı yok",
     reviews: "değerlendirmeler",
     categories: {
       office: "Ofis ve Organizasyon Hizmeti",
@@ -293,12 +263,6 @@ const translations = {
     step2: "Оберіть послугу",
     step3: "Введіть дані",
     step4: "Оберіть дату й час",
-    select_provider: "Оберіть виконавця",
-    any_provider: "Будь-який вільний виконавець",
-    any_provider_desc: "Ми призначимо вам найкращого вільного фахівця",
-    selected_provider: "Обраний виконавець",
-    change_provider: "Змінити",
-    no_providers: "Для цієї категорії немає виконавців",
     reviews: "відгуків",
     categories: {
       office: "Офісні та організаційні послуги",
@@ -445,13 +409,11 @@ export default function Booking() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const [selectedProvider, setSelectedProvider] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
   
   const [formData, setFormData] = useState({
     category: searchParams.get("category") || "",
     service_id: searchParams.get("service") || "",
-    provider_id: searchParams.get("provider") || "",
     customer_name: "",
     customer_email: "",
     customer_phone: "",
@@ -464,38 +426,6 @@ export default function Booking() {
     agb_accepted: false,
     withdrawal_consent: false
   });
-
-  // Fetch providers for selected category
-  const { data: categoryProviders = [], isLoading: loadingProviders } = useQuery({
-    queryKey: ["category-providers", formData.category],
-    queryFn: () => providersApi.listProviders("approved"),
-    enabled: !!formData.category,
-    select: (providers) => providers.filter(p => p.categories?.includes(formData.category))
-  });
-
-  // Fetch selected provider details
-  const { data: providerDetails } = useQuery({
-    queryKey: ["provider-details", formData.provider_id],
-    queryFn: () => providersApi.getProvider(formData.provider_id),
-    enabled: !!formData.provider_id,
-    onSuccess: (data) => {
-      if (data) {
-        setSelectedProvider(data);
-        if (data.categories?.length === 1 && !formData.category) {
-          setFormData(prev => ({ ...prev, category: data.categories[0] }));
-        }
-      }
-    }
-  });
-
-  useEffect(() => {
-    if (providerDetails) {
-      setSelectedProvider(providerDetails);
-      if (providerDetails.categories?.length >= 1 && !formData.category) {
-        setFormData(prev => ({ ...prev, category: providerDetails.categories[0] }));
-      }
-    }
-  }, [providerDetails]);
 
   // Fetch existing bookings to check availability
   const { data: existingBookings = [], isLoading: loadingBookings } = useQuery({
@@ -601,7 +531,6 @@ export default function Booking() {
     
     const cat = searchParams.get("category");
     const serviceId = searchParams.get("service");
-    const providerId = searchParams.get("provider");
     const pkgName = searchParams.get("pkg");
     const pkgPrice = searchParams.get("pkg_price");
     const pkgHours = searchParams.get("pkg_hours");
@@ -622,11 +551,9 @@ export default function Booking() {
     } else if (serviceId) {
       setFormData(prev => ({ ...prev, service_id: serviceId }));
       if (cat) setFormData(prev => ({ ...prev, category: cat }));
-      if (providerId) setFormData(prev => ({ ...prev, provider_id: providerId }));
       setStep(2);
     } else if (cat && categories.find(c => c.key === cat)) {
       setFormData(prev => ({ ...prev, category: cat }));
-      if (providerId) setFormData(prev => ({ ...prev, provider_id: providerId }));
       setStep(2);
     }
   }, [searchParams]);
@@ -712,8 +639,6 @@ export default function Booking() {
         category: formData.category,
         service_id: formData.service_id,
         service_name: serviceName,
-        provider_id: selectedProvider?.id ? String(selectedProvider.id) : null,
-        provider_name: selectedProvider?.full_name || null,
         address: formData.address,
         description: formData.description,
         date: formData.date ? format(formData.date, "yyyy-MM-dd") : null,
@@ -735,11 +660,6 @@ export default function Booking() {
       setSubmitError(error.message || "");
       setLoading(false);
     }
-  };
-
-  const handleSelectProvider = (provider) => {
-    setSelectedProvider(provider);
-    setFormData(prev => ({ ...prev, provider_id: provider?.id || "" }));
   };
 
   const canProceed = () => {
@@ -825,8 +745,7 @@ export default function Booking() {
                       type="button"
                       aria-pressed={isSelected}
                       onClick={() => {
-                        setFormData((prev) => ({ ...prev, category: cat.key, service_id: `${cat.key}_main`, provider_id: "" }));
-                        setSelectedProvider(null);
+                        setFormData((prev) => ({ ...prev, category: cat.key, service_id: `${cat.key}_main` }));
                         setSelectedPackage(null);
                       }}
                       className={`relative flex h-full flex-col rounded-2xl border-2 p-3 text-start transition sm:p-4 ${isSelected ? "border-[#7c3aed] bg-[#f7f3ff] shadow-md shadow-purple-500/10" : "border-slate-100 bg-white hover:border-purple-200 hover:bg-purple-50/40"}`}

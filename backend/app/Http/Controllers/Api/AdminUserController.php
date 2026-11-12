@@ -41,7 +41,7 @@ class AdminUserController extends Controller
             'full_name' => ['sometimes', 'nullable', 'string', 'max:255'],
             'name' => ['sometimes', 'nullable', 'string', 'max:255'],
             'phone' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'role' => ['sometimes', Rule::in(['admin', 'provider', 'user'])],
+            'role' => ['sometimes', Rule::in(['admin', 'user'])],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 

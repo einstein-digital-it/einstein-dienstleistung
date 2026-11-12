@@ -116,10 +116,8 @@ export default function Login() {
     localStorage.setItem("einstein_customer_email", user.email);
     // Keep the language chosen on this page (an account may still carry an old default)
     localStorage.setItem("einstein_lang", lang);
-    localStorage.setItem("einstein_is_provider", user.role === "provider" ? "true" : "false");
 
     if (user.role === "admin") navigate("/Dashboard", { replace: true });
-    else if (user.role === "provider") navigate("/ProviderDashboard", { replace: true });
     else navigate("/CustomerDashboard", { replace: true });
   };
 

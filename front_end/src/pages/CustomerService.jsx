@@ -106,7 +106,6 @@ const FAQ = {
     ["Wie kündige ich ein Abo?", "Jederzeit zum Monatsende: über „Verträge hier kündigen“ unten auf der Seite (ohne Anmeldung), im Kundenkonto oder per E-Mail."],
     ["Was ist das Unterlagen-Abo?", "Für 6,99 € im Monat werden bis zu 50 Briefe automatisch in den richtigen Ordner sortiert, zusammengefasst und in Ihre Sprache übersetzt – mit Erinnerung vor Fristen."],
     ["Geben Sie Rechtsberatung?", "Nein. Wir helfen beim Ausfüllen, Ordnen und Verstehen von Unterlagen. Bei rechtlichen Fragen verweisen wir Sie an Anwält:innen oder Beratungsstellen."],
-    ["Wie werde ich Fachkraft bei EinStein?", "Über das Bewerbungsformular für Fachkräfte. Wir prüfen Ihre Angaben und melden uns bei Ihnen."],
   ],
   ar: [
     ["كيف يمكنني إلغاء موعد أو تأجيله؟", "يمكنك ذلك مجاناً حتى 24 ساعة قبل الموعد. راسلنا مع رقم الحجز أو اتصل بنا. عند الإلغاء بعد ذلك قد نحتسب ما يصل إلى ساعة واحدة (الشروط العامة، المادة 7)."],
@@ -114,7 +113,6 @@ const FAQ = {
     ["كيف ألغي اشتراكاً؟", "في أي وقت حتى نهاية الشهر: عبر رابط «إلغاء العقود من هنا» أسفل الصفحة (دون تسجيل الدخول)، أو من حسابك، أو بالبريد الإلكتروني."],
     ["ما هو اشتراك ترتيب الأوراق؟", "مقابل 6.99 يورو شهرياً، تُرتَّب حتى 50 رسالة تلقائياً في المجلد الصحيح، وتُلخَّص وتُترجَم إلى لغتك، مع تذكير قبل المواعيد النهائية."],
     ["هل تقدّمون استشارات قانونية؟", "لا. نساعدك في تعبئة الأوراق وترتيبها وفهمها. أما المسائل القانونية فنوجّهك فيها إلى محامٍ أو جهة استشارية."],
-    ["كيف أعمل مقدّمَ خدمة لدى آينشتاين؟", "من خلال نموذج التقديم الخاص بمقدّمي الخدمات. سنراجع بياناتك ونتواصل معك."],
   ],
   en: [
     ["How can I cancel or move an appointment?", "Free of charge up to 24 hours before. Write to us with your booking number or call us. For later cancellations we may charge up to one hour (terms § 7)."],
@@ -122,7 +120,6 @@ const FAQ = {
     ["How do I cancel a subscription?", "At any time to the end of the month: via “Cancel contracts here” at the bottom of the page (no login), in your account or by email."],
     ["What is the document subscription?", "For €6.99 a month up to 50 letters are sorted into the right folder, summarised and translated into your language – with reminders before deadlines."],
     ["Do you give legal advice?", "No. We help you fill in, organise and understand documents. For legal questions we refer you to lawyers or advice centres."],
-    ["How do I become a provider at EinStein?", "Through the application form for providers. We check your details and get back to you."],
   ],
   tr: [
     ["Randevumu nasıl iptal eder veya ertelerim?", "24 saat öncesine kadar ücretsizdir. Rezervasyon numaranızla bize yazın veya arayın. Daha geç iptallerde bir saate kadar ücret alabiliriz (Şartlar § 7)."],
@@ -130,7 +127,6 @@ const FAQ = {
     ["Aboneliği nasıl iptal ederim?", "Her zaman ay sonuna kadar: sayfanın altındaki “Sözleşmeleri buradan iptal edin” bağlantısıyla (giriş gerekmez), hesabınızdan veya e-posta ile."],
     ["Belge aboneliği nedir?", "Ayda 6,99 € karşılığında 50 mektuba kadar otomatik olarak doğru klasöre yerleştirilir, özetlenir ve dilinize çevrilir – son tarihlerden önce hatırlatma ile."],
     ["Hukuki danışmanlık veriyor musunuz?", "Hayır. Belgeleri doldurmanıza, düzenlemenize ve anlamanıza yardımcı oluruz. Hukuki sorularda sizi avukatlara veya danışma merkezlerine yönlendiririz."],
-    ["EinStein'da nasıl hizmet sağlayıcı olurum?", "Hizmet sağlayıcı başvuru formu ile. Bilgilerinizi inceleyip size dönüş yaparız."],
   ],
   es: [
     ["¿Cómo cancelo o cambio una cita?", "Gratis hasta 24 horas antes. Escríbanos con su número de reserva o llámenos. Si cancela más tarde, podemos cobrar hasta una hora (condiciones § 7)."],
@@ -138,7 +134,6 @@ const FAQ = {
     ["¿Cómo cancelo una suscripción?", "En cualquier momento a final de mes: con «Cancelar contratos aquí» al pie de la página (sin iniciar sesión), en su cuenta o por correo."],
     ["¿Qué es la suscripción de documentos?", "Por 6,99 € al mes, hasta 50 cartas se ordenan en la carpeta correcta, se resumen y se traducen a su idioma, con recordatorios antes de los plazos."],
     ["¿Dan asesoramiento jurídico?", "No. Le ayudamos a rellenar, ordenar y entender documentos. Para cuestiones jurídicas le remitimos a abogados o centros de asesoramiento."],
-    ["¿Cómo puedo trabajar como profesional en EinStein?", "Con el formulario de solicitud para profesionales. Revisamos sus datos y nos pondremos en contacto."],
   ],
   uk: [
     ["Як скасувати або перенести зустріч?", "Безкоштовно – до 24 годин до початку. Напишіть нам із номером бронювання або зателефонуйте. За пізніше скасування можемо стягнути до однієї години (умови, § 7)."],
@@ -146,7 +141,6 @@ const FAQ = {
     ["Як скасувати підписку?", "Будь-коли до кінця місяця: через «Скасувати договори тут» унизу сторінки (без входу), в акаунті або e-mail."],
     ["Що таке підписка на документи?", "За 6,99 € на місяць до 50 листів автоматично розкладаються в потрібні папки, коротко пояснюються й перекладаються вашою мовою – з нагадуваннями про строки."],
     ["Чи надаєте ви юридичні консультації?", "Ні. Ми допомагаємо заповнювати, впорядковувати й розуміти документи. З юридичних питань скеровуємо до адвокатів або консультаційних центрів."],
-    ["Як стати виконавцем в EinStein?", "Через форму заявки для виконавців. Ми перевіримо ваші дані й зв’яжемося з вами."],
   ],
 };
 

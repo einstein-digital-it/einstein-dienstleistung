@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertCircle, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const translations = {
@@ -18,7 +18,6 @@ const translations = {
     bookingChanged: "Buchungsänderung",
     bookingCancelled: "Buchungsstornierung",
     appointmentReminder: "Terminberinnerung",
-    providerDocuments: "Anbieter-Dokumentupload",
     paymentDue: "Zahlungsfälligkeitserinnerung",
     paymentReceived: "Zahlungsbestätigung",
     reviewRequest: "Bewertungsanfrage",
@@ -39,7 +38,6 @@ const translations = {
     bookingChanged: "تغيير الحجز",
     bookingCancelled: "إلغاء الحجز",
     appointmentReminder: "تذكير الموعد",
-    providerDocuments: "تحميل وثائق المزود",
     paymentDue: "تذكير استحقاق الدفع",
     paymentReceived: "تأكيد الدفع",
     reviewRequest: "طلب التقييم",
@@ -60,7 +58,6 @@ const translations = {
     bookingChanged: "Booking Changed",
     bookingCancelled: "Booking Cancelled",
     appointmentReminder: "Appointment Reminder",
-    providerDocuments: "Provider Documents Upload",
     paymentDue: "Payment Due Reminder",
     paymentReceived: "Payment Confirmation",
     reviewRequest: "Review Request",
@@ -81,7 +78,6 @@ const translations = {
     bookingChanged: "Rezervasyon değişikliği",
     bookingCancelled: "Rezervasyon iptali",
     appointmentReminder: "Randevu hatırlatması",
-    providerDocuments: "Uzman belge yüklemesi",
     paymentDue: "Ödeme hatırlatması",
     paymentReceived: "Ödeme onayı",
     reviewRequest: "Değerlendirme isteği",
@@ -102,7 +98,6 @@ const translations = {
     bookingChanged: "Reserva modificada",
     bookingCancelled: "Reserva cancelada",
     appointmentReminder: "Recordatorio de cita",
-    providerDocuments: "Documentos subidos por el profesional",
     paymentDue: "Recordatorio de pago",
     paymentReceived: "Confirmación de pago",
     reviewRequest: "Solicitud de valoración",
@@ -123,7 +118,6 @@ const translations = {
     bookingChanged: "Зміна бронювання",
     bookingCancelled: "Скасування бронювання",
     appointmentReminder: "Нагадування про зустріч",
-    providerDocuments: "Завантаження документів виконавцем",
     paymentDue: "Нагадування про оплату",
     paymentReceived: "Підтвердження оплати",
     reviewRequest: "Запит на відгук",
@@ -292,29 +286,6 @@ export default function NotificationSettings() {
             </CardContent>
           </Card>
 
-          {/* Provider & Documents */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">المزود والوثائق / Provider</CardTitle>
-              <CardDescription>إشعارات تحديثات المزود والوثائق</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <Label className="cursor-pointer">{t.providerDocuments}</Label>
-                <Switch
-                  checked={formData?.provider_documents_uploaded !== false}
-                  onCheckedChange={() => handleToggle("provider_documents_uploaded")}
-                />
-              </div>
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <Label className="cursor-pointer">{t.reviewRequest}</Label>
-                <Switch
-                  checked={formData?.review_request !== false}
-                  onCheckedChange={() => handleToggle("review_request")}
-                />
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Notification Channels */}
           <Card>

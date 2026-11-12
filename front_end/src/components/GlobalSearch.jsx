@@ -156,7 +156,6 @@ const searchData = {
     { key: "Booking", icon: Calendar, names: { de: "Jetzt buchen", ar: "احجز الآن", en: "Book Now", tr: "Şimdi Rezervasyon", es: "Reservar Ahora" } },
     { key: "MyBookings", icon: Calendar, names: { de: "Meine Buchungen", ar: "حجوزاتي", en: "My Bookings", tr: "Rezervasyonlarım", es: "Mis Reservas" } },
     { key: "CustomerService", icon: HelpCircle, names: { de: "Kundenservice", ar: "خدمة العملاء", en: "Customer Service", tr: "Müşteri Hizmetleri", es: "Servicio al Cliente" } },
-    { key: "ProviderApplication", icon: User, names: { de: "Als Fachkraft bewerben", ar: "التقدم كمزود خدمة", en: "Apply as Provider", tr: "Sağlayıcı Olarak Başvur", es: "Aplicar como Proveedor" } }
   ],
   info: [
     { 

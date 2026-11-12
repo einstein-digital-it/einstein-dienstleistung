@@ -57,8 +57,6 @@ const translations = {
     about_title: "Über EinStein",
     about_desc: "EinStein ist ein Dienstleistungszentrum für den Alltag. Es bündelt Behördenhilfe, Unterlagen und administrative Dienstleistungen unter einem Dach.",
     about_role: "EinStein versteht sich als persönlicher Alltagsassistent: organisierend, erklärend, ausführend – in mehreren Sprachen und zu fairen Preisen.",
-    hauptunternehmer: "Hauptunternehmer – kein Vermittler",
-    hauptunternehmer_desc: "EinStein ist der alleinige Vertragspartner der Kund:innen und trägt die vollständige unternehmerische Verantwortung für Planung, Organisation, Qualitätssicherung und Abrechnung aller angebotenen Dienstleistungen.",
     
     // Services
     our_services: "Unsere Dienstleistungen",
@@ -92,20 +90,10 @@ const translations = {
     bueromanagement_price: "ab 200 € / Monat",
     
     // Quality
-    quality_title: "EinStein-geprüft – Qualität garantiert",
-    quality_desc: "Alle Fachkräfte werden vor Einsatz geprüft und zertifiziert",
-    quality_steps: [
-      "Identitäts- & Gewerbenachweis",
-      "Qualifikations- & Erfahrungsprüfung",
-      "Persönliches Gespräch",
-      "Probeauftrag",
-      "Aufnahme in das EinStein-System"
-    ],
     
     // Why Einstein
     why_einstein: "Warum EinStein?",
     why_quality: "Geprüfte Qualität",
-    why_quality_desc: "Alle Fachkräfte werden vor Einsatz geprüft und zertifiziert",
     why_multilingual: "Mehrsprachig",
     why_multilingual_desc: "Deutsch, Arabisch, Kurdisch, Englisch, Russisch, Türkisch und mehr",
     why_one_stop: "Alles aus einer Hand",
@@ -141,9 +129,6 @@ const translations = {
     package3_save: "75 € statt 120 €",
     
     // CTA
-    become_provider: "Werden Sie Fachkraft",
-    become_provider_desc: "Arbeiten Sie flexibel als selbstständige Fachkraft im EinStein-Netzwerk. Planbare Aufträge, faire Konditionen.",
-    apply_now: "Jetzt bewerben",
     
     // Footer info
     no_hidden: "Keine versteckten Kosten",
@@ -171,8 +156,6 @@ const translations = {
     about_title: "عن آينشتاين",
     about_desc: "آينشتاين هو مركز خدمات شامل للحياة اليومية. يجمع المساعدة في المعاملات والأوراق والخدمات الإدارية تحت سقف واحد.",
     about_role: "يعتبر آينشتاين نفسه مساعداً شخصياً للحياة اليومية: منظم، شارح، منفذ - بعدة لغات وبأسعار عادلة.",
-    hauptunternehmer: "مقاول رئيسي - وليس وسيط",
-    hauptunternehmer_desc: "آينشتاين هي الشريك التعاقدي الوحيد للعملاء وتتحمل المسؤولية الكاملة عن التخطيط والتنظيم وضمان الجودة والفوترة لجميع الخدمات المقدمة.",
     
     // Services
     our_services: "خدماتنا",
@@ -206,20 +189,10 @@ const translations = {
     bueromanagement_price: "من 200 € شهرياً",
     
     // Quality
-    quality_title: "معتمد من آينشتاين - جودة مضمونة",
-    quality_desc: "جميع المتخصصين يتم فحصهم واعتمادهم قبل العمل",
-    quality_steps: [
-      "إثبات الهوية والنشاط التجاري",
-      "فحص المؤهلات والخبرة",
-      "مقابلة شخصية",
-      "مهمة تجريبية",
-      "القبول في نظام آينشتاين"
-    ],
     
     // Why Einstein
     why_einstein: "لماذا آينشتاين؟",
     why_quality: "جودة معتمدة",
-    why_quality_desc: "جميع المتخصصين يتم فحصهم واعتمادهم قبل العمل",
     why_multilingual: "متعدد اللغات",
     why_multilingual_desc: "ألماني، عربي، كردي، إنجليزي، روسي، تركي والمزيد",
     why_one_stop: "كل شيء من مكان واحد",
@@ -255,9 +228,6 @@ const translations = {
     package3_save: "75 € بدلاً من 120 €",
     
     // CTA
-    become_provider: "انضم كمزود خدمة",
-    become_provider_desc: "اعمل بمرونة كمتخصص مستقل في شبكة آينشتاين. مهام مخططة، شروط عادلة.",
-    apply_now: "قدم الآن",
     
     // Footer info
     no_hidden: "لا تكاليف مخفية",
@@ -285,8 +255,6 @@ const translations = {
     about_title: "About EinStein",
     about_desc: "EinStein is a comprehensive service center for daily life. It combines help with authorities, documents and administrative services under one roof.",
     about_role: "EinStein sees itself as a personal daily assistant: organizing, explaining, executing – in multiple languages and at fair prices.",
-    hauptunternehmer: "Main Contractor – Not a Broker",
-    hauptunternehmer_desc: "EinStein is the sole contractual partner of customers and bears full entrepreneurial responsibility for planning, organization, quality assurance, and billing of all services offered.",
     
     // Services
     our_services: "Our Services",
@@ -320,20 +288,10 @@ const translations = {
     bueromanagement_price: "from €200 / month",
     
     // Quality
-    quality_title: "EinStein-Certified – Quality Guaranteed",
-    quality_desc: "All professionals are tested and certified before work",
-    quality_steps: [
-      "Identity & business verification",
-      "Qualification & experience check",
-      "Personal interview",
-      "Trial assignment",
-      "Admission to EinStein system"
-    ],
     
     // Why Einstein
     why_einstein: "Why EinStein?",
     why_quality: "Verified Quality",
-    why_quality_desc: "All professionals are tested and certified before work",
     why_multilingual: "Multilingual",
     why_multilingual_desc: "German, Arabic, Kurdish, English, Russian, Turkish and more",
     why_one_stop: "One-Stop Solution",
@@ -369,9 +327,6 @@ const translations = {
     package3_save: "€75 instead of €120",
     
     // CTA
-    become_provider: "Become a Provider",
-    become_provider_desc: "Work flexibly as an independent professional in the EinStein network. Plannable assignments, fair conditions.",
-    apply_now: "Apply Now",
     
     // Footer info
     no_hidden: "No hidden costs",
@@ -399,8 +354,6 @@ const translations = {
     about_title: "Про EinStein",
     about_desc: "EinStein – сервісний центр для повсякденного життя. Ми поєднуємо допомогу з установами, документами та адміністративні послуги під одним дахом.",
     about_role: "EinStein – ваш особистий помічник у повсякденних справах: організовує, пояснює, виконує – кількома мовами та за чесними цінами.",
-    hauptunternehmer: "Генеральний підрядник – не посередник",
-    hauptunternehmer_desc: "EinStein є єдиним договірним партнером клієнтів і несе повну відповідальність за планування, організацію, контроль якості та розрахунки за всі послуги.",
 
     // Services
     our_services: "Наші послуги",
@@ -434,20 +387,10 @@ const translations = {
     bueromanagement_price: "від 200 € / міс.",
 
     // Quality
-    quality_title: "Сертифіковано EinStein – якість гарантована",
-    quality_desc: "Усі фахівці проходять перевірку та сертифікацію перед роботою",
-    quality_steps: [
-      "Перевірка особи та діяльності",
-      "Перевірка кваліфікації та досвіду",
-      "Особиста співбесіда",
-      "Пробне завдання",
-      "Допуск до системи EinStein"
-    ],
 
     // Why Einstein
     why_einstein: "Чому EinStein?",
     why_quality: "Перевірена якість",
-    why_quality_desc: "Усі фахівці проходять перевірку та сертифікацію перед роботою",
     why_multilingual: "Багатомовність",
     why_multilingual_desc: "Німецька, арабська, курдська, англійська, російська, турецька та інші",
     why_one_stop: "Усе в одному місці",
@@ -483,9 +426,6 @@ const translations = {
     package3_save: "75 € замість 120 €",
 
     // CTA
-    become_provider: "Стати виконавцем",
-    become_provider_desc: "Працюйте гнучко як незалежний фахівець у мережі EinStein. Передбачувані замовлення, чесні умови.",
-    apply_now: "Подати заявку",
 
     // Footer info
     no_hidden: "Без прихованих витрат",
@@ -513,8 +453,6 @@ const translations = {
     about_title: "EinStein Hakkında",
     about_desc: "EinStein, gunluk yasam icin kapsamli bir hizmet merkezidir. Resmi işlerde yardımı, belgeleri ve idari hizmetleri tek çatı altında birleştirir.",
     about_role: "EinStein kendini kisisel gunluk asistan olarak gorur: organize eden, aciklayan, uygulayan - birden fazla dilde ve adil fiyatlarla.",
-    hauptunternehmer: "Ana Yuklenici - Araci Degil",
-    hauptunternehmer_desc: "EinStein, musterilerin tek sozlesmeli ortagi olup sunulan tum hizmetlerin planlamasi, organizasyonu, kalite guvencesi ve faturalanmasi icin tam girisimci sorumlulugu tasir.",
     
     // Services
     our_services: "Hizmetlerimiz",
@@ -548,20 +486,10 @@ const translations = {
     bueromanagement_price: "200 €'dan / ay",
     
     // Quality
-    quality_title: "EinStein Sertifikali - Kalite Garantili",
-    quality_desc: "Tum profesyoneller calismadan once test edilir ve sertifikalandirilir",
-    quality_steps: [
-      "Kimlik ve isletme dogrulamasi",
-      "Yeterlilik ve deneyim kontrolu",
-      "Kisisel gorusme",
-      "Deneme gorevi",
-      "EinStein sistemine kabul"
-    ],
     
     // Why Einstein
     why_einstein: "Neden EinStein?",
     why_quality: "Dogrulanmis Kalite",
-    why_quality_desc: "Tum profesyoneller calismadan once test edilir ve sertifikalandirilir",
     why_multilingual: "Cok Dilli",
     why_multilingual_desc: "Almanca, Arapca, Kurtce, Ingilizce, Rusca, Turkce ve daha fazlasi",
     why_one_stop: "Tek Durak Cozum",
@@ -597,9 +525,6 @@ const translations = {
     package3_save: "120 Euro yerine 75 Euro",
     
     // CTA
-    become_provider: "Saglayici Ol",
-    become_provider_desc: "EinStein aginda bagimsiz profesyonel olarak esnek calis. Planlanabilir gorevler, adil kosullar.",
-    apply_now: "Simdi Basvur",
     
     // Footer info
     no_hidden: "Gizli maliyet yok",
@@ -627,8 +552,6 @@ const translations = {
     about_title: "Sobre EinStein",
     about_desc: "EinStein es un centro de servicios integral para la vida diaria. Combina ayuda con trámites, documentos y servicios administrativos bajo un mismo techo.",
     about_role: "EinStein se ve a sí mismo como un asistente personal diario: organiza, explica, ejecuta, en varios idiomas y a precios justos.",
-    hauptunternehmer: "Contratista Principal - No Intermediario",
-    hauptunternehmer_desc: "EinStein es el único socio contractual de los clientes y asume la responsabilidad empresarial completa de planificación, organización, garantía de calidad y facturación de todos los servicios ofrecidos.",
     
     // Services
     our_services: "Nuestros Servicios",
@@ -662,20 +585,10 @@ const translations = {
     bueromanagement_price: "desde 200 € / mes",
     
     // Quality
-    quality_title: "Certificado por EinStein - Calidad Garantizada",
-    quality_desc: "Todos los profesionales son probados y certificados antes del trabajo",
-    quality_steps: [
-      "Verificación de identidad y negocio",
-      "Control de calificación y experiencia",
-      "Entrevista personal",
-      "Asignación de prueba",
-      "Admisión al sistema EinStein"
-    ],
     
     // Why Einstein
     why_einstein: "¿Por qué EinStein?",
     why_quality: "Calidad Verificada",
-    why_quality_desc: "Todos los profesionales son probados y certificados antes del trabajo",
     why_multilingual: "Multilingüe",
     why_multilingual_desc: "Alemán, árabe, kurdo, inglés, ruso, turco y más",
     why_one_stop: "Solución Integral",
@@ -711,9 +624,6 @@ const translations = {
     package3_save: "75 € en lugar de 120 €",
     
     // CTA
-    become_provider: "Conviértete en Proveedor",
-    become_provider_desc: "Trabaja de forma flexible como profesional independiente en la red EinStein. Asignaciones planificables, condiciones justas.",
-    apply_now: "Aplicar Ahora",
     
     // Footer info
     no_hidden: "Sin costos ocultos",
@@ -845,6 +755,94 @@ X.es = {
   whyKicker: "Por qué EinStein",
   forKicker: "Para quién",
   ctaTitle: "¿Listo para delegar el papeleo?", ctaSub: "Reserve en minutos – le respondemos rápido.",
+};
+
+// How EinStein works (every request is handled by EinStein itself)
+const WORK = {
+  "de": {
+    "workTitle": "So arbeiten wir",
+    "workDesc": "Jeder Auftrag wird persönlich bearbeitet – sorgfältig und nachvollziehbar.",
+    "workSteps": [
+      "Anliegen aufnehmen",
+      "Unterlagen prüfen",
+      "Sorgfältig bearbeiten",
+      "Kontrolle vor der Abgabe",
+      "Rückmeldung an Sie"
+    ],
+    "partnerTitle": "Ein Ansprechpartner – direkt bei EinStein",
+    "partnerDesc": "EinStein ist Ihr direkter Vertragspartner und bearbeitet Ihre Anliegen selbst. Ihre Unterlagen werden vertraulich behandelt.",
+    "qualityDesc": "Jeder Auftrag wird sorgfältig und persönlich bearbeitet"
+  },
+  "ar": {
+    "workTitle": "كيف نعمل",
+    "workDesc": "نعالج كل طلب بأنفسنا، بعناية وبخطوات واضحة.",
+    "workSteps": [
+      "استلام طلبك",
+      "مراجعة الأوراق",
+      "المعالجة بعناية",
+      "التدقيق قبل التسليم",
+      "إبلاغك بالنتيجة"
+    ],
+    "partnerTitle": "جهة تواصل واحدة – مباشرة مع آينشتاين",
+    "partnerDesc": "آينشتاين هو الطرف المتعاقد معك مباشرة، ويعالج طلباتك بنفسه. تُعامَل أوراقك بسرية.",
+    "qualityDesc": "نعالج كل طلب بعناية وبأنفسنا"
+  },
+  "en": {
+    "workTitle": "How we work",
+    "workDesc": "Every request is handled personally – carefully and in clear steps.",
+    "workSteps": [
+      "We take your request",
+      "We check your documents",
+      "We work on it carefully",
+      "We check it before handing over",
+      "We report back to you"
+    ],
+    "partnerTitle": "One contact – directly at EinStein",
+    "partnerDesc": "EinStein is your direct contractual partner and handles your requests itself. Your documents are treated confidentially.",
+    "qualityDesc": "Every request is handled carefully and personally"
+  },
+  "tr": {
+    "workTitle": "Nasıl çalışıyoruz",
+    "workDesc": "Her talep bizzat, özenle ve açık adımlarla işlenir.",
+    "workSteps": [
+      "Talebinizi alırız",
+      "Belgelerinizi inceleriz",
+      "Özenle işleriz",
+      "Teslimden önce kontrol ederiz",
+      "Size bilgi veririz"
+    ],
+    "partnerTitle": "Tek muhatap – doğrudan EinStein",
+    "partnerDesc": "EinStein doğrudan sözleşme ortağınızdır ve taleplerinizi kendisi işler. Belgeleriniz gizli tutulur.",
+    "qualityDesc": "Her talep özenle ve bizzat işlenir"
+  },
+  "es": {
+    "workTitle": "Cómo trabajamos",
+    "workDesc": "Cada encargo se atiende personalmente, con cuidado y en pasos claros.",
+    "workSteps": [
+      "Recibimos su solicitud",
+      "Revisamos sus documentos",
+      "Lo tramitamos con cuidado",
+      "Lo comprobamos antes de entregarlo",
+      "Le informamos del resultado"
+    ],
+    "partnerTitle": "Un solo contacto – directamente en EinStein",
+    "partnerDesc": "EinStein es su parte contratante directa y tramita sus encargos personalmente. Sus documentos se tratan de forma confidencial.",
+    "qualityDesc": "Cada encargo se atiende con cuidado y personalmente"
+  },
+  "uk": {
+    "workTitle": "Як ми працюємо",
+    "workDesc": "Кожне замовлення ми виконуємо особисто – ретельно й зрозумілими кроками.",
+    "workSteps": [
+      "Приймаємо ваш запит",
+      "Перевіряємо документи",
+      "Ретельно опрацьовуємо",
+      "Перевіряємо перед передачею",
+      "Повідомляємо вам результат"
+    ],
+    "partnerTitle": "Одна контактна особа – безпосередньо в EinStein",
+    "partnerDesc": "EinStein – ваш прямий договірний партнер і сам виконує ваші замовлення. Ваші документи зберігаються конфіденційно.",
+    "qualityDesc": "Кожне замовлення виконується ретельно й особисто"
+  }
 };
 
 const AUTHORITIES = ["Jobcenter", "Ausländerbehörde", "Finanzamt", "Familienkasse", "Krankenkasse", "Rentenversicherung", "Vermieter"];
@@ -1013,6 +1011,7 @@ export default function Home() {
 
   const t = translations[lang] || translations.de;
   const x = X[lang] || X.de;
+  const w = WORK[lang] || WORK.de;
   const isRTL = lang === "ar";
   const Arrow = isRTL ? ArrowLeft : ArrowRight;
 
@@ -1198,7 +1197,7 @@ export default function Home() {
                   <div key={key} className="h-full rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70">
                     <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50"><Icon className="h-6 w-6 text-[#6d28d9]" /></span>
                     <h3 className="mt-4 text-lg font-bold text-[#1f0b52]">{t[`why_${key}`]}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{t[`why_${key}_desc`]}</p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{key === "quality" ? w.qualityDesc : t[`why_${key}_desc`]}</p>
                   </div>
                 ))}
               </AutoCarousel>
@@ -1206,10 +1205,10 @@ export default function Home() {
           </div>
           <motion.div {...fadeUp} className="self-start rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200/70">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50"><Award className="h-6 w-6 text-[#6d28d9]" /></span>
-            <h3 className="mt-5 text-2xl font-black text-[#1f0b52]">{t.quality_title}</h3>
-            <p className="mt-2 text-slate-600">{t.quality_desc}</p>
+            <h3 className="mt-5 text-2xl font-black text-[#1f0b52]">{w.workTitle}</h3>
+            <p className="mt-2 text-slate-600">{w.workDesc}</p>
             <ol className="mt-6 space-y-3">
-              {t.quality_steps.map((step, i) => (
+              {w.workSteps.map((step, i) => (
                 <li key={step} className="flex items-center gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2e1065] text-sm font-bold text-white">{i + 1}</span>
                   <span className="font-medium text-slate-700">{step}</span>
@@ -1217,8 +1216,8 @@ export default function Home() {
               ))}
             </ol>
             <div className="mt-8 rounded-2xl bg-purple-50 p-5">
-              <p className="font-bold text-[#2e1065]">{t.hauptunternehmer}</p>
-              <p className="mt-1 text-sm leading-relaxed text-slate-600">{t.hauptunternehmer_desc}</p>
+              <p className="font-bold text-[#2e1065]">{w.partnerTitle}</p>
+              <p className="mt-1 text-sm leading-relaxed text-slate-600">{w.partnerDesc}</p>
             </div>
           </motion.div>
         </div>
@@ -1245,27 +1244,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA + provider */}
+      {/* Final call to action */}
       <section className="px-4 pb-8">
-        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[1.6fr_1fr]">
-          <motion.div {...fadeUp} className="flex flex-col justify-between gap-8 rounded-[2rem] bg-[#1f0b52] p-10 text-white md:p-12">
-            <div>
-              <h2 className="text-3xl font-black md:text-4xl">{x.ctaTitle}</h2>
-              <p className="mt-3 text-lg text-purple-100">{x.ctaSub}</p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link to={createPageUrl("Booking")} className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-white px-6 font-bold text-[#4c1d95] transition hover:bg-purple-50">{x.ctaBook}<Arrow className="h-5 w-5" /></Link>
-              <a href="tel:+496927246275" className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/30 px-6 font-bold text-white transition hover:bg-white/10" dir="ltr">069 27246275</a>
-            </div>
-          </motion.div>
-          <motion.div {...fadeUp} className="flex flex-col justify-between gap-6 rounded-[2rem] bg-purple-50 p-10">
-            <div>
-              <h3 className="text-2xl font-black text-[#1f0b52]">{t.become_provider}</h3>
-              <p className="mt-2 leading-relaxed text-slate-600">{t.become_provider_desc}</p>
-            </div>
-            <Link to={createPageUrl("ProviderApplication")} className="inline-flex items-center gap-2 font-bold text-[#6d28d9] hover:underline">{t.apply_now}<Arrow className="h-4 w-4" /></Link>
-          </motion.div>
-        </div>
+        <motion.div {...fadeUp} className="relative mx-auto flex max-w-7xl flex-col gap-8 overflow-hidden rounded-[2rem] bg-[#1f0b52] p-10 text-white md:flex-row md:items-center md:justify-between md:p-12">
+          <svg aria-hidden="true" className="pointer-events-none absolute -bottom-24 -end-20 h-80 w-80 text-white/10" viewBox="0 0 100 100">
+            <polygon points="50,2 92,26 92,74 50,98 8,74 8,26" fill="currentColor" />
+          </svg>
+          <div className="relative">
+            <h2 className="text-3xl font-black md:text-4xl">{x.ctaTitle}</h2>
+            <p className="mt-3 text-lg text-purple-100">{x.ctaSub}</p>
+          </div>
+          <div className="relative flex flex-col gap-3 sm:flex-row">
+            <Link to={createPageUrl("Booking")} className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-white px-6 font-bold text-[#4c1d95] transition hover:bg-purple-50">{x.ctaBook}<Arrow className="h-5 w-5" /></Link>
+            <a href="tel:+496927246275" className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/30 px-6 font-bold text-white transition hover:bg-white/10" dir="ltr">069 27246275</a>
+          </div>
+        </motion.div>
         <p className="mx-auto mt-8 max-w-7xl text-center text-xs text-slate-400">{t.note}</p>
       </section>
     </div>

@@ -8,7 +8,6 @@ use App\Models\Booking;
 use App\Models\ManagedClient;
 use App\Models\Notification;
 use App\Models\NotificationPreference;
-use App\Models\ServiceProvider;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Support\EmailVerification;
@@ -36,7 +35,8 @@ class AuthController extends Controller
             ]);
         }
 
-        if ($user->is_active === false) {
+        // There are no service-provider accounts any more: EinStein handles every order itself
+        if ($user->is_active === false || $user->role === 'provider') {
             throw ValidationException::withMessages([
                 'email' => ['This account is disabled.'],
             ]);
@@ -156,91 +156,6 @@ class AuthController extends Controller
             'data' => [
                 'user' => $this->serializeUser($user),
                 'session' => $this->createSession($user),
-            ],
-        ], 201);
-    }
-
-    public function providerLogin(Request $request): JsonResponse
-    {
-        $data = $request->validate([
-            'email' => ['required', 'email', 'max:255'],
-            'password' => ['required', 'string'],
-        ]);
-
-        $user = User::query()->where('email', $data['email'])->first();
-
-        if (! $user || ! Hash::check($data['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Invalid email or password.'],
-            ]);
-        }
-
-        $provider = ServiceProvider::query()
-            ->where(function ($query) use ($user) {
-                $query->where('user_id', $user->id)->orWhere('email', $user->email);
-            })
-            ->first();
-
-        if ($user->is_active === false ||
-            $user->role !== 'provider' ||
-            ! $provider ||
-            $provider->status !== 'approved' ||
-            ! $provider->login_enabled) {
-            throw ValidationException::withMessages([
-                'email' => ['This provider account is not enabled.'],
-            ]);
-        }
-
-        return response()->json([
-            'data' => [
-                'user' => $this->serializeUser($user),
-                'provider' => [
-                    'id' => $provider->id,
-                    'status' => $provider->status,
-                    'login_enabled' => $provider->login_enabled,
-                ],
-                'session' => $this->createSession($user),
-            ],
-        ]);
-    }
-
-    public function providerRegister(Request $request): JsonResponse
-    {
-        $data = $request->validate([
-            'full_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email', 'unique:service_providers,email'],
-            'password' => ['required', 'string', 'min:6'],
-            'phone' => ['sometimes', 'nullable', 'string', 'max:255'],
-        ]);
-
-        $provider = DB::transaction(function () use ($data): ServiceProvider {
-            $user = User::create([
-                'name' => $data['full_name'],
-                'full_name' => $data['full_name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'phone' => $data['phone'] ?? null,
-                'role' => 'provider',
-                'is_active' => false,
-            ]);
-
-            return ServiceProvider::create([
-                'user_id' => $user->id,
-                'full_name' => $data['full_name'],
-                'email' => $data['email'],
-                'phone' => $data['phone'] ?? null,
-                'status' => 'pending',
-                'login_enabled' => false,
-            ]);
-        });
-
-        return response()->json([
-            'data' => [
-                'provider' => [
-                    'id' => $provider->id,
-                    'status' => $provider->status,
-                    'login_enabled' => $provider->login_enabled,
-                ],
             ],
         ], 201);
     }

@@ -148,8 +148,8 @@ export default function MyDocuments() {
   const t = T[lang] || T.de;
   const isRTL = lang === "ar";
   const user = getStoredAuthUser();
-  // Admins and providers can open every customer's file
-  const isAdmin = user?.role === "admin" || user?.role === "provider";
+  // The admin can open every customer's file
+  const isAdmin = user?.role === "admin";
   const adminEmail = isAdmin ? (searchParams.get("email") || "") : "";
 
   const [data, setData] = useState({ folders: Object.keys(FOLDER_META), documents: [] });
