@@ -121,12 +121,61 @@ class FileAboTest extends TestCase
         $id = $upload()->assertJsonPath('data.ai_status', 'pending')->json('data.id');
         $upload()->assertJsonPath('data.ai_status', 'none');
         $this->getJson('/api/customer/subscription')->assertJsonPath('data.used', 2)->assertJsonPath('data.limit', 2);
+        // Translating a paper again (it already has a translation) would need another paper of the allowance
+        CustomerDocument::find($id)->update(['ai_status' => 'done', 'translation' => 'Alt']);
         $this->postJson("/api/customer/documents/$id/translate", ['lang' => 'de'])->assertStatus(429);
 
         // Last month's count does not carry over
         $user->forceFill(['file_abo_month' => now()->subMonth()->format('Y-m')])->save();
         $this->getJson('/api/customer/subscription')->assertJsonPath('data.used', 0);
         $upload()->assertJsonPath('data.ai_status', 'pending');
+    }
+
+    public function test_sorting_is_automatic_but_the_translation_only_comes_on_request(): void
+    {
+        Storage::fake('local');
+        Bus::fake([ProcessCustomerDocument::class]);
+        config(['services.anthropic.key' => 'test-key']);
+        Http::fake([
+            'api.anthropic.com/v1/messages/count_tokens' => Http::response(['input_tokens' => 1000]),
+            'api.anthropic.com/v1/messages' => Http::sequence()
+                ->push(['usage' => ['input_tokens' => 1500, 'output_tokens' => 200], 'content' => [['type' => 'text', 'text' => json_encode([
+                    'folder' => 'jobcenter', 'title' => 'Bescheid', 'sender' => 'Jobcenter', 'summary' => 'Kurz.', 'translation' => 'must be ignored', 'dates' => [],
+                ])]]])
+                ->push(['usage' => ['input_tokens' => 1500, 'output_tokens' => 900], 'content' => [['type' => 'text', 'text' => json_encode([
+                    'summary' => 'ملخص', 'translation' => 'النص المترجم كاملاً',
+                ])]]]),
+        ]);
+        $this->withApiUser('user', 'saver@example.com')->forceFill(['file_abo_status' => 'active'])->save();
+
+        $id = $this->post('/api/customer/documents', [
+            'folder' => 'auto', 'lang' => 'ar',
+            'file' => UploadedFile::fake()->create('brief.pdf', 40, 'application/pdf'),
+        ], ['Accept' => 'application/json'])->assertCreated()->json('data.id');
+
+        // 1) After the upload: sorted, with a short summary, but no (expensive) translation
+        (new ProcessCustomerDocument($id, true))->handle();
+        $doc = CustomerDocument::find($id);
+        $this->assertSame(['jobcenter', 'done', 'Kurz.', null], [$doc->folder, $doc->ai_status, $doc->summary, $doc->translation]);
+        Http::assertSent(fn ($request) => str_ends_with($request->url(), '/v1/messages')
+            && $request['max_tokens'] === 3000
+            && ! str_contains($request['messages'][0]['content'][1]['text'], '"translation"'));
+
+        // 2) The customer taps "translate": no extra paper is used for the first translation
+        $this->postJson("/api/customer/documents/$id/translate", ['lang' => 'ar'])->assertOk()
+            ->assertJsonPath('data.ai_status', 'pending');
+        $this->getJson('/api/customer/subscription')->assertJsonPath('data.used', 1);
+        Bus::assertDispatchedAfterResponse(ProcessCustomerDocument::class, fn ($job) => $job->translate && ! $job->countsAgainstAllowance);
+
+        (new ProcessCustomerDocument($id, false, false, true))->handle();
+        $doc->refresh();
+        $this->assertSame(['done', 'النص المترجم كاملاً', 'ملخص', 'jobcenter'], [$doc->ai_status, $doc->translation, $doc->summary, $doc->folder]);
+        // Both calls are counted for documents:ai-cost
+        $this->assertSame([3000, 1100], [$doc->ai_input_tokens, $doc->ai_output_tokens]);
+
+        // 3) Translating again into another language uses one paper of the allowance
+        $this->postJson("/api/customer/documents/$id/translate", ['lang' => 'en'])->assertOk();
+        $this->getJson('/api/customer/subscription')->assertJsonPath('data.used', 2);
     }
 
     public function test_a_paper_that_could_not_be_sorted_gives_its_place_back(): void

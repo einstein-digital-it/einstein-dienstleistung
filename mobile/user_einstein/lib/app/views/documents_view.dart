@@ -561,7 +561,9 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
       if (doc == null) {
         return Scaffold(appBar: AppBar(), body: EmptyState(icon: Icons.description_outlined, text: 'files_not_found'.tr));
       }
-      final otherLanguage = doc.translationLanguage != null && doc.translationLanguage != controller.langCode;
+      // The full translation is made only when the customer asks for it
+      final notTranslated = doc.aiStatus == 'done' && (doc.translation ?? '').isEmpty;
+      final otherLanguage = !notTranslated && doc.translationLanguage != null && doc.translationLanguage != controller.langCode;
       return Scaffold(
         appBar: AppBar(
           title: Text(folderName(doc.folder)),
@@ -664,12 +666,13 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
               icon: const Icon(Icons.open_in_new_rounded),
               label: Text('files_open_original'.tr),
             ),
-            if (otherLanguage && !doc.isProcessing) ...[
+            if ((notTranslated || otherLanguage) && !doc.isProcessing) ...[
               const SizedBox(height: 10),
               OutlinedButton.icon(
+                key: const Key('translate_document'),
                 onPressed: () => controller.translateAgain(doc),
                 icon: const Icon(Icons.translate_rounded),
-                label: Text('files_translate_mine'.tr),
+                label: Text((notTranslated ? 'files_translate_now' : 'files_translate_mine').tr),
               ),
             ],
           ],

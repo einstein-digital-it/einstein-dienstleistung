@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 /**
- * Reads an uploaded document with Claude, sorts it into the right folder and
- * translates it into the customer's language. Runs right after the upload
- * response is sent (dispatchAfterResponse), so no queue worker is needed.
+ * Reads an uploaded document with Claude. After an upload it only sorts the paper
+ * (folder, title, sender, short summary, dates); the full translation is the
+ * expensive part and is made only when the customer asks for it ($translate).
+ * Runs right after the response is sent (dispatchAfterResponse), so no queue worker is needed.
  */
 class ProcessCustomerDocument
 {
@@ -37,7 +38,12 @@ class ProcessCustomerDocument
     /** Tokens billed for the last call to Claude. */
     private array $usage = [];
 
-    public function __construct(public int $documentId, public bool $autoFolder, public bool $countsAgainstAllowance = true) {}
+    public function __construct(
+        public int $documentId,
+        public bool $autoFolder,
+        public bool $countsAgainstAllowance = true,
+        public bool $translate = false,
+    ) {}
 
     public static function enabled(): bool
     {
@@ -69,12 +75,23 @@ class ProcessCustomerDocument
         } catch (Throwable $e) {
             Log::warning('document processing failed', ['id' => $doc->id, 'error' => $e->getMessage()]);
             // A cut-off answer is still billed, so keep its tokens for documents:ai-cost
-            $doc->update([
-                'ai_status' => 'failed',
-                'ai_input_tokens' => $this->usage['input_tokens'] ?? null,
-                'ai_output_tokens' => $this->usage['output_tokens'] ?? null,
-            ]);
+            $doc->update(['ai_status' => 'failed'] + $this->tokens($doc));
             $this->giveBackAllowance($doc);
+
+            return;
+        }
+
+        if ($this->translate) {
+            $doc->update([
+                'summary' => $result['summary'] ?? $doc->summary,
+                'translation' => $result['translation'] ?? null,
+                'ai_status' => 'done',
+            ] + $this->tokens($doc));
+            $this->notify($doc, [
+                'de' => ['Dokument übersetzt', "„{$doc->title}“ ist übersetzt."],
+                'ar' => ['تمت ترجمة مستند', "تمت ترجمة «{$doc->title}»."],
+                'en' => ['Document translated', "“{$doc->title}” has been translated."],
+            ]);
 
             return;
         }
@@ -86,25 +103,45 @@ class ProcessCustomerDocument
             'sender' => isset($result['sender']) ? mb_substr((string) $result['sender'], 0, 255) : null,
             'sender_email' => filter_var($result['sender_email'] ?? null, FILTER_VALIDATE_EMAIL) ?: null,
             'summary' => $result['summary'] ?? null,
-            'translation' => $result['translation'] ?? null,
+            'translation' => null, // made on request, see $translate
             'deadline' => $this->validDate($result['deadline'] ?? null),
             'section' => $doc->customer_file_id ? $this->sectionFrom($doc, $result['section'] ?? null) : null,
-            'ai_input_tokens' => $this->usage['input_tokens'] ?? null,
-            'ai_output_tokens' => $this->usage['output_tokens'] ?? null,
             'ai_status' => 'done',
-        ]);
+        ] + $this->tokens($doc));
         $this->saveReminders($doc, $result['dates'] ?? []);
 
-        $titles = ['ar' => 'تمت ترجمة مستند', 'de' => 'Dokument übersetzt', 'en' => 'Document translated'];
+        $this->notify($doc, [
+            'de' => ['Dokument sortiert', "„{$doc->title}“ ist einsortiert. Die Übersetzung können Sie mit einem Klick anfordern."],
+            'ar' => ['تم ترتيب مستند', "تم ترتيب «{$doc->title}». يمكنك طلب الترجمة بضغطة زر."],
+            'en' => ['Document sorted', "“{$doc->title}” has been sorted. You can ask for the translation with one click."],
+        ]);
+    }
+
+    /** @param array<string, array{0: string, 1: string}> $texts */
+    private function notify(CustomerDocument $doc, array $texts): void
+    {
         Notification::create([
             'user_email' => $doc->user_email,
             'type' => 'document_processed',
-            'title_de' => $titles['de'], 'title_ar' => $titles['ar'], 'title_en' => $titles['en'],
-            'message_de' => "„{$doc->title}“ ist sortiert und übersetzt.",
-            'message_ar' => "تم ترتيب «{$doc->title}» وترجمته.",
-            'message_en' => "“{$doc->title}” has been sorted and translated.",
+            'title_de' => $texts['de'][0], 'title_ar' => $texts['ar'][0], 'title_en' => $texts['en'][0],
+            'message_de' => $texts['de'][1], 'message_ar' => $texts['ar'][1], 'message_en' => $texts['en'][1],
             'link' => 'MyDocuments',
         ]);
+    }
+
+    /** Tokens of this call; a translation is added to what sorting already cost. */
+    private function tokens(CustomerDocument $doc): array
+    {
+        $in = $this->usage['input_tokens'] ?? null;
+        $out = $this->usage['output_tokens'] ?? null;
+        if ($this->translate) {
+            return [
+                'ai_input_tokens' => $in === null ? $doc->ai_input_tokens : (int) $doc->ai_input_tokens + (int) $in,
+                'ai_output_tokens' => $out === null ? $doc->ai_output_tokens : (int) $doc->ai_output_tokens + (int) $out,
+            ];
+        }
+
+        return ['ai_input_tokens' => $in, 'ai_output_tokens' => $out];
     }
 
     private function ask(CustomerDocument $doc, string $mime, string $language): array
@@ -124,6 +161,14 @@ class ProcessCustomerDocument
               "section": the sub-folder of the customer's file this paper belongs in: a short German name of 1-3 words joined by underscores, using ae/oe/ue/ss instead of umlauts and no number. Use an existing one if it fits (existing: $existing). Otherwise prefer one of: $standard, or make a similar one,
             TXT;
         }
+        $translatePrompt = <<<TXT
+        This is a letter or document a customer of a German administrative service uploaded.
+        Reply with ONE JSON object only, no other text:
+        {
+          "summary": 2-4 plain sentences in $language: what it is about, what the customer must do, and any deadline or amount,
+          "translation": a faithful full translation of the document text into $language (keep names, numbers, dates, reference numbers; use line breaks)
+        }
+        TXT;
         $prompt = <<<TXT
         This is a letter or document a customer of a German administrative service uploaded.
         Reply with ONE JSON object only, no other text:
@@ -133,7 +178,6 @@ class ProcessCustomerDocument
           "sender": who sent it (organisation name as written),
           "sender_email": the sender's e-mail address if one is printed on the letter, else null,
           "summary": 2-4 plain sentences in $language: what it is about, what the customer must do, and any deadline or amount,
-          "translation": a faithful full translation of the document text into $language (keep names, numbers, dates, reference numbers; use line breaks),
           "deadline": the most important deadline as YYYY-MM-DD, or null,
           "dates": a list of every future date the customer must act on, each
             {"date": "YYYY-MM-DD",
@@ -145,12 +189,13 @@ class ProcessCustomerDocument
         }
         TXT;
 
-        $messages = [['role' => 'user', 'content' => [$block, ['type' => 'text', 'text' => $prompt]]]];
+        $messages = [['role' => 'user', 'content' => [$block, ['type' => 'text', 'text' => $this->translate ? $translatePrompt : $prompt]]]];
         $this->refuseIfTooLong($messages);
 
         $response = $this->claude()->timeout(300)->post('https://api.anthropic.com/v1/messages', [
             'model' => (string) config('services.anthropic.model'),
-            'max_tokens' => 16000, // a full translation is often longer than the original
+            // A full translation is often longer than the original; sorting needs only a short answer
+            'max_tokens' => $this->translate ? 16000 : 3000,
             'messages' => $messages,
         ]);
 

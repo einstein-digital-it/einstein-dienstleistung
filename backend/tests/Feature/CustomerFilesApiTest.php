@@ -58,7 +58,7 @@ class CustomerFilesApiTest extends TestCase
         $this->assertNull(User::where('email', 'victim@example.com')->value('phone'));
     }
 
-    public function test_letter_is_sorted_translated_and_creates_reminders(): void
+    public function test_letter_is_sorted_and_creates_reminders(): void
     {
         Storage::fake('local');
         config(['services.anthropic.key' => 'test-key']);

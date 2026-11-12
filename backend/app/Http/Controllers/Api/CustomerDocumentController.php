@@ -68,7 +68,11 @@ class CustomerDocumentController extends Controller
         return response()->json(null, 204);
     }
 
-    /** POST customer/documents/{document}/translate { lang } — translate again into another language. */
+    /**
+     * POST customer/documents/{document}/translate { lang } — the full translation, made only on request.
+     * The first translation of a paper that was already sorted is part of that paper;
+     * translating again (another language) or an unsorted paper uses one of the monthly papers.
+     */
     public function translate(Request $request, CustomerDocument $document): JsonResponse
     {
         $this->authorizeAccess($request, $document);
@@ -79,11 +83,15 @@ class CustomerDocumentController extends Controller
         if (! ProcessCustomerDocument::enabled()) {
             return response()->json(['message' => 'Automatic translation is not set up.'], 503);
         }
-        if (! $request->user()->consumeFileAboQuota()) {
+        if ($document->ai_status === 'pending') {
+            return response()->json(['data' => $document]);
+        }
+        $included = $document->ai_status === 'done' && empty($document->translation);
+        if (! $included && ! $request->user()->consumeFileAboQuota()) {
             return response()->json(['message' => 'The monthly allowance is used up.', 'limit_reached' => true], 429);
         }
         $document->update(['translation_language' => $data['lang'], 'ai_status' => 'pending']);
-        ProcessCustomerDocument::dispatchAfterResponse($document->id, false);
+        ProcessCustomerDocument::dispatchAfterResponse($document->id, false, ! $included, true);
 
         return response()->json(['data' => $document->fresh()]);
     }

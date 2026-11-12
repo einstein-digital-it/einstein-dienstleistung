@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   BadgeCheck, Share2, Briefcase, Building2, ChevronLeft, ChevronRight, Download, FileText, Folder, GraduationCap,
-  HeartPulse, Home as HomeIcon, Sparkles, CalendarClock, ChevronDown, Landmark, Loader2, Lock, PiggyBank, Shield, Trash2, Upload, Users, Globe2, Baby,
-} from "lucide-react";
+  HeartPulse, Home as HomeIcon, Sparkles, CalendarClock, ChevronDown, Landmark, Loader2, Lock, PiggyBank, Shield, Trash2, Upload, Users, Globe2, Baby, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { customerDocumentsApi } from "@/api/backendClient";
@@ -37,9 +36,9 @@ const T = {
     byEinstein: "von EinStein", deleteConfirm: "Datei wirklich löschen?", login: "Bitte melden Sie sich an, um Ihre Unterlagen zu sehen.",
     error: "Das hat nicht geklappt. Bitte erneut versuchen.", customer: "Kunde (E-Mail)", open: "Öffnen", customers: "Kunden mit Unterlagen",
     hint: "PDF, Foto, Word oder Excel – bis 20 MB.",
-    autoTitle: "Hochladen – wir sortieren und übersetzen", autoDesc: "Laden Sie einen Brief hoch (PDF oder Foto). Er wird automatisch dem richtigen Ordner zugeordnet und in Ihre Sprache übersetzt.",
+    autoTitle: "Hochladen – wir sortieren und übersetzen", autoDesc: "Laden Sie ein Schreiben hoch (PDF oder Foto). Es wird automatisch in den richtigen Ordner sortiert und kurz zusammengefasst. Die vollständige Übersetzung erhalten Sie mit einem Klick.",
     reminders: "Erinnerungen", daysLeft: (n) => (n < 0 ? "überfällig" : n === 0 ? "heute" : `in ${n} Tagen`), done: "Erledigt", translateMine: "In meine Sprache übersetzen",
-    processing: "Wird sortiert und übersetzt…", failed: "Automatische Übersetzung fehlgeschlagen", tooLong: "Dieses Dokument ist zu lang für die automatische Übersetzung. Es wurde nur gespeichert.", summary: "Zusammenfassung", translation: "Übersetzung", showTranslation: "Übersetzung anzeigen", hideTranslation: "Übersetzung ausblenden", deadline: "Frist", from: "Von",
+    translateNow: "Übersetzen", processing: "Wird bearbeitet…", failed: "Automatische Übersetzung fehlgeschlagen", tooLong: "Dieses Dokument ist zu lang für die automatische Übersetzung. Es wurde nur gespeichert.", summary: "Zusammenfassung", translation: "Übersetzung", showTranslation: "Übersetzung anzeigen", hideTranslation: "Übersetzung ausblenden", deadline: "Frist", from: "Von",
     aiNote: "Die Datei wird zur Sortierung und Übersetzung automatisch mit Claude (Anthropic) ausgewertet. Die Übersetzung ist eine Hilfe, keine beglaubigte Übersetzung.",
     aboTitle: "Sortieren & Übersetzen", aboPitch: "Wir sortieren jeden Brief in den richtigen Ordner, übersetzen ihn in Ihre Sprache und erinnern Sie an Fristen.",
     aboPrice: (p) => `${p} € / Monat inkl. MwSt. · monatlich kündbar`, aboSubscribe: "Jetzt abonnieren", aboActive: "Sortieren & Übersetzen ist aktiv",
@@ -55,9 +54,9 @@ const T = {
     byEinstein: "من آينشتاين", deleteConfirm: "هل تريد حذف الملف؟", login: "سجّل الدخول لترى ملفاتك.",
     error: "لم تنجح العملية. حاول مرة أخرى.", customer: "الزبون (الإيميل)", open: "فتح", customers: "زبائن لديهم ملفات",
     hint: "PDF أو صورة أو Word أو Excel – حتى 20 ميغابايت.",
-    autoTitle: "ارفع الملف – ونحن نرتّبه ونترجمه", autoDesc: "ارفع الرسالة (PDF أو صورة)، وتنحط تلقائياً بالمجلد الصحيح وتتترجم للغتك.",
+    autoTitle: "ارفع الملف – ونحن نرتّبه ونترجمه", autoDesc: "ارفع رسالة (PDF أو صورة). تُحفظ تلقائياً في المجلد الصحيح مع ملخص قصير، وتحصل على الترجمة الكاملة بضغطة زر.",
     reminders: "تذكيرات", daysLeft: (n) => (n < 0 ? "متأخر" : n === 0 ? "اليوم" : `بعد ${n} يوم`), done: "تم", translateMine: "ترجمها للغتي",
-    processing: "جارٍ الترتيب والترجمة…", failed: "فشلت الترجمة التلقائية", tooLong: "هذا الملف طويل جداً على الترجمة التلقائية، لذلك تم حفظه فقط.", summary: "الملخص", translation: "الترجمة", showTranslation: "عرض الترجمة", hideTranslation: "إخفاء الترجمة", deadline: "آخر موعد", from: "من",
+    translateNow: "ترجمة", processing: "جارٍ المعالجة…", failed: "فشلت الترجمة التلقائية", tooLong: "هذا الملف طويل جداً على الترجمة التلقائية، لذلك تم حفظه فقط.", summary: "الملخص", translation: "الترجمة", showTranslation: "عرض الترجمة", hideTranslation: "إخفاء الترجمة", deadline: "آخر موعد", from: "من",
     aiNote: "يتم تحليل الملف تلقائياً بواسطة Claude (Anthropic) لترتيبه وترجمته. الترجمة للمساعدة فقط وليست ترجمة محلّفة.",
     aboTitle: "ترتيب وترجمة", aboPitch: "نرتّب كل رسالة في المجلد الصحيح، ونترجمها للغتك، ونذكّرك بالمواعيد.",
     aboPrice: (p) => `${p} € شهرياً شامل الضريبة · يمكن الإلغاء شهرياً`, aboSubscribe: "اشترك الآن", aboActive: "الترتيب والترجمة مفعّلان",
@@ -73,9 +72,9 @@ const T = {
     byEinstein: "from EinStein", deleteConfirm: "Delete this file?", login: "Please sign in to see your documents.",
     error: "That didn't work. Please try again.", customer: "Customer (email)", open: "Open", customers: "Customers with documents",
     hint: "PDF, photo, Word or Excel – up to 20 MB.",
-    autoTitle: "Upload – we sort and translate it", autoDesc: "Upload a letter (PDF or photo). It is put into the right folder automatically and translated into your language.",
+    autoTitle: "Upload – we sort and translate it", autoDesc: "Upload a letter (PDF or photo). It is put into the right folder automatically with a short summary. You get the full translation with one click.",
     reminders: "Reminders", daysLeft: (n) => (n < 0 ? "overdue" : n === 0 ? "today" : `in ${n} days`), done: "Done", translateMine: "Translate into my language",
-    processing: "Sorting and translating…", failed: "Automatic translation failed", tooLong: "This document is too long for automatic translation. It was only stored.", summary: "Summary", translation: "Translation", showTranslation: "Show translation", hideTranslation: "Hide translation", deadline: "Deadline", from: "From",
+    translateNow: "Translate", processing: "Processing…", failed: "Automatic translation failed", tooLong: "This document is too long for automatic translation. It was only stored.", summary: "Summary", translation: "Translation", showTranslation: "Show translation", hideTranslation: "Hide translation", deadline: "Deadline", from: "From",
     aiNote: "The file is analysed automatically by Claude (Anthropic) to sort and translate it. The translation is a help, not a certified translation.",
     aboTitle: "Sorting & translation", aboPitch: "We sort every letter into the right folder, translate it into your language and remind you of deadlines.",
     aboPrice: (p) => `${p} € / month incl. VAT · cancel monthly`, aboSubscribe: "Subscribe now", aboActive: "Sorting & translation is active",
@@ -92,9 +91,9 @@ T.tr = {
   byEinstein: "EinStein'dan", deleteConfirm: "Bu dosya silinsin mi?", login: "Belgelerinizi görmek için lütfen giriş yapın.",
   error: "Bu işlem olmadı. Lütfen tekrar deneyin.", customer: "Müşteri (e-posta)", open: "Aç", customers: "Belgesi olan müşteriler",
   hint: "PDF, fotoğraf, Word veya Excel – en fazla 20 MB.",
-  autoTitle: "Yükleyin – biz sıralayıp çeviririz", autoDesc: "Bir mektup yükleyin (PDF veya fotoğraf). Otomatik olarak doğru klasöre yerleştirilir ve dilinize çevrilir.",
+  autoTitle: "Yükleyin – biz sıralayıp çeviririz", autoDesc: "Bir mektup yükleyin (PDF veya fotoğraf). Otomatik olarak doğru klasöre yerleştirilir ve kısaca özetlenir. Tam çeviriyi tek tıkla alırsınız.",
   reminders: "Hatırlatmalar", daysLeft: (n) => (n < 0 ? "süresi geçti" : n === 0 ? "bugün" : `${n} gün sonra`), done: "Tamam", translateMine: "Dilime çevir",
-  processing: "Sıralanıyor ve çevriliyor…", failed: "Otomatik çeviri başarısız oldu", tooLong: "Bu belge otomatik çeviri için çok uzun. Yalnızca kaydedildi.", summary: "Özet", translation: "Çeviri", showTranslation: "Çeviriyi göster", hideTranslation: "Çeviriyi gizle", deadline: "Son tarih", from: "Gönderen",
+  translateNow: "Çevir", processing: "İşleniyor…", failed: "Otomatik çeviri başarısız oldu", tooLong: "Bu belge otomatik çeviri için çok uzun. Yalnızca kaydedildi.", summary: "Özet", translation: "Çeviri", showTranslation: "Çeviriyi göster", hideTranslation: "Çeviriyi gizle", deadline: "Son tarih", from: "Gönderen",
   aiNote: "Dosya, sıralanması ve çevrilmesi için Claude (Anthropic) tarafından otomatik olarak analiz edilir. Çeviri bir yardımdır, yeminli çeviri değildir.",
   aboTitle: "Sıralama ve çeviri", aboPitch: "Her mektubu doğru klasöre yerleştirir, dilinize çevirir ve son tarihleri hatırlatırız.",
   aboPrice: (p) => `${p} € / ay KDV dahil · aylık iptal`, aboSubscribe: "Şimdi abone ol", aboActive: "Sıralama ve çeviri etkin",
@@ -110,9 +109,9 @@ T.es = {
   byEinstein: "de EinStein", deleteConfirm: "¿Eliminar este archivo?", login: "Inicie sesión para ver sus documentos.",
   error: "No ha funcionado. Inténtelo de nuevo.", customer: "Cliente (correo)", open: "Abrir", customers: "Clientes con documentos",
   hint: "PDF, foto, Word o Excel – hasta 20 MB.",
-  autoTitle: "Súbalo – nosotros lo ordenamos y traducimos", autoDesc: "Suba una carta (PDF o foto). Se guarda automáticamente en la carpeta correcta y se traduce a su idioma.",
+  autoTitle: "Súbalo – nosotros lo ordenamos y traducimos", autoDesc: "Suba una carta (PDF o foto). Se guarda automáticamente en la carpeta correcta con un breve resumen. La traducción completa la obtiene con un clic.",
   reminders: "Recordatorios", daysLeft: (n) => (n < 0 ? "vencido" : n === 0 ? "hoy" : `en ${n} días`), done: "Hecho", translateMine: "Traducir a mi idioma",
-  processing: "Ordenando y traduciendo…", failed: "La traducción automática ha fallado", tooLong: "Este documento es demasiado largo para la traducción automática. Solo se ha guardado.", summary: "Resumen", translation: "Traducción", showTranslation: "Mostrar traducción", hideTranslation: "Ocultar traducción", deadline: "Plazo", from: "De",
+  translateNow: "Traducir", processing: "Procesando…", failed: "La traducción automática ha fallado", tooLong: "Este documento es demasiado largo para la traducción automática. Solo se ha guardado.", summary: "Resumen", translation: "Traducción", showTranslation: "Mostrar traducción", hideTranslation: "Ocultar traducción", deadline: "Plazo", from: "De",
   aiNote: "Claude (Anthropic) analiza el archivo automáticamente para ordenarlo y traducirlo. La traducción es una ayuda, no una traducción jurada.",
   aboTitle: "Ordenar y traducir", aboPitch: "Ordenamos cada carta en la carpeta correcta, la traducimos a su idioma y le recordamos los plazos.",
   aboPrice: (p) => `${p} € / mes IVA incl. · cancelable mensualmente`, aboSubscribe: "Suscribirse ahora", aboActive: "Ordenar y traducir está activo",
@@ -128,9 +127,9 @@ T.uk = {
   byEinstein: "від EinStein", deleteConfirm: "Видалити цей файл?", login: "Увійдіть, щоб побачити свої документи.",
   error: "Не вдалося. Спробуйте ще раз.", customer: "Клієнт (e-mail)", open: "Відкрити", customers: "Клієнти з документами",
   hint: "PDF, фото, Word або Excel – до 20 МБ.",
-  autoTitle: "Завантажте – ми впорядкуємо й перекладемо", autoDesc: "Завантажте лист (PDF або фото). Він автоматично потрапить у потрібну папку й буде перекладений вашою мовою.",
+  autoTitle: "Завантажте – ми впорядкуємо й перекладемо", autoDesc: "Завантажте лист (PDF або фото). Він автоматично потрапить у потрібну папку з коротким підсумком. Повний переклад – одним натисканням.",
   reminders: "Нагадування", daysLeft: (n) => (n < 0 ? "прострочено" : n === 0 ? "сьогодні" : `через ${n} дн.`), done: "Виконано", translateMine: "Перекласти моєю мовою",
-  processing: "Впорядковуємо й перекладаємо…", failed: "Автоматичний переклад не вдався", tooLong: "Цей документ задовгий для автоматичного перекладу. Його лише збережено.", summary: "Коротко", translation: "Переклад", showTranslation: "Показати переклад", hideTranslation: "Сховати переклад", deadline: "Строк", from: "Від",
+  translateNow: "Перекласти", processing: "Обробляємо…", failed: "Автоматичний переклад не вдався", tooLong: "Цей документ задовгий для автоматичного перекладу. Його лише збережено.", summary: "Коротко", translation: "Переклад", showTranslation: "Показати переклад", hideTranslation: "Сховати переклад", deadline: "Строк", from: "Від",
   aiNote: "Файл автоматично аналізує Claude (Anthropic), щоб упорядкувати й перекласти його. Переклад – це допомога, а не завірений переклад.",
   aboTitle: "Впорядкування та переклад", aboPitch: "Ми розкладаємо кожен лист у потрібну папку, перекладаємо вашою мовою та нагадуємо про строки.",
   aboPrice: (p) => `${p} € / міс. з ПДВ · скасування щомісяця`, aboSubscribe: "Підписатися", aboActive: "Впорядкування та переклад активні",
@@ -206,6 +205,9 @@ export default function MyDocuments() {
     return () => { clearInterval(timer); clearTimeout(stop); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aboReturn]);
+
+  const translate = (doc) => customerDocumentsApi.translate(doc.id, lang).then(() => { load(); loadAbo(); })
+    .catch((err) => setError(err.status === 402 ? t.aboNeeded : err.status === 429 ? t.aboReached : t.error));
 
   const load = async () => {
     setLoading(true);
@@ -474,6 +476,12 @@ export default function MyDocuments() {
                          </p>
                        )}
                        {doc.summary && <p><strong>{t.summary}:</strong> {doc.summary}</p>}
+                       {/* The full translation is made only when the customer asks for it */}
+                       {!doc.translation && !isAdmin && (
+                         <button onClick={() => translate(doc)} className="inline-flex items-center gap-1.5 rounded-lg border border-purple-200 bg-white px-3 py-1.5 text-xs font-semibold text-[#6B46C1] transition hover:border-[#7c3aed] hover:bg-purple-50">
+                           <Languages className="w-3.5 h-3.5" />{t.translateNow}
+                         </button>
+                       )}
                        {doc.translation && (
                          <div>
                            <button onClick={() => setOpenId(openId === doc.id ? null : doc.id)} className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B46C1]">
@@ -483,7 +491,7 @@ export default function MyDocuments() {
                            {openId === doc.id && <p className="mt-2 whitespace-pre-line rounded-lg bg-white p-3 border border-gray-100 leading-relaxed">{doc.translation}</p>}
                            {doc.translation_language && doc.translation_language !== lang && !isAdmin && (
                              <button
-                               onClick={() => customerDocumentsApi.translate(doc.id, lang).then(load).catch(() => setError(t.error))}
+                               onClick={() => translate(doc)}
                                className="ms-3 text-xs font-semibold text-[#6B46C1] underline"
                              >
                                {t.translateMine || T.en.translateMine}
