@@ -14,16 +14,16 @@ export function PageScaffold({
     <div className="min-h-screen bg-[#f4f7fb] py-8 text-[#13233a]">
       <div className={`${maxWidth} mx-auto px-4`}>
         <header className="mb-8 overflow-hidden rounded-[18px] border border-[#d9e4f2] bg-white shadow-[0_18px_50px_rgba(15,35,65,0.08)]">
-          <div className="bg-[#122238] px-5 py-6 text-white sm:px-7">
+          <div className="bg-gradient-to-br from-[#1f0b52] via-[#3b1478] to-[#6d28d9] px-5 py-6 text-white sm:px-7">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-start gap-4">
                 {Icon && (
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-white/10 text-[#d4af25] ring-1 ring-white/10">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-white/10 text-purple-100 ring-1 ring-white/15">
                     <Icon className="h-7 w-7" />
                   </div>
                 )}
                 <div>
-                  <p className="mb-2 text-sm font-bold text-[#d4af25]">{eyebrow}</p>
+                  <p className="mb-2 text-sm font-bold text-purple-200">{eyebrow}</p>
                   <h1 className="text-3xl font-black leading-tight sm:text-4xl">{title}</h1>
                   {description && (
                     <p className="mt-3 max-w-3xl text-base leading-8 text-white/78">{description}</p>
@@ -106,7 +106,7 @@ export function PrimaryButton({ children, className = "", ...props }) {
   return (
     <button
       type="button"
-      className={`inline-flex h-11 items-center justify-center gap-2 rounded-[10px] bg-[#122238] px-5 text-sm font-extrabold text-white transition hover:bg-[#1d3350] focus:outline-none focus:ring-2 focus:ring-[#122238] focus:ring-offset-2 ${className}`}
+      className={`inline-flex h-11 items-center justify-center gap-2 rounded-[10px] bg-[#4c1d95] px-5 text-sm font-extrabold text-white transition hover:bg-[#5b21b6] focus:outline-none focus:ring-2 focus:ring-[#7c3aed] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       {...props}
     >
       {children}
@@ -118,7 +118,7 @@ export function SecondaryButton({ children, className = "", ...props }) {
   return (
     <button
       type="button"
-      className={`inline-flex h-11 items-center justify-center gap-2 rounded-[10px] border border-[#d9e4f2] bg-white px-5 text-sm font-extrabold text-[#1e3a5f] transition hover:bg-[#f8fbff] focus:outline-none focus:ring-2 focus:ring-[#b5c7e5] focus:ring-offset-2 ${className}`}
+      className={`inline-flex h-11 items-center justify-center gap-2 rounded-[10px] border border-[#d9e4f2] bg-white px-5 text-sm font-extrabold text-[#1e3a5f] transition hover:bg-[#f8fbff] focus:outline-none focus:ring-2 focus:ring-[#b5c7e5] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       {...props}
     >
       {children}

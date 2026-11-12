@@ -159,6 +159,27 @@ const translations = {
   }
 };
 
+// Menu texts that are not part of `translations`, in all six languages
+const MENU = {
+  customerRequests: { de: "Kundenanfragen", ar: "طلبات العملاء", en: "Customer requests", tr: "Müşteri talepleri", es: "Solicitudes de clientes", uk: "Запити клієнтів" },
+  myDashboard: { de: "Mein Dashboard", ar: "لوحتي", en: "My dashboard", tr: "Hesabım", es: "Mi área", uk: "Мій кабінет" },
+  customerDocs: { de: "Kundenunterlagen", ar: "ملفات الزبائن", en: "Customer documents", tr: "Müşteri belgeleri", es: "Documentos de clientes", uk: "Документи клієнтів" },
+  myDocs: { de: "Meine Unterlagen", ar: "ملفاتي", en: "My documents", tr: "Belgelerim", es: "Mis documentos", uk: "Мої документи" },
+  providerDashboard: { de: "Anbieter-Dashboard", ar: "لوحة المزود", en: "Provider dashboard", tr: "Sağlayıcı paneli", es: "Panel del profesional", uk: "Кабінет виконавця" },
+  admin: { de: "Admin", ar: "الإدارة", en: "Admin", tr: "Yönetim", es: "Administración", uk: "Адмін" },
+  bookings: { de: "Buchungen", ar: "الحجوزات", en: "Bookings", tr: "Rezervasyonlar", es: "Reservas", uk: "Бронювання" },
+  reports: { de: "Berichte", ar: "التقارير", en: "Reports", tr: "Raporlar", es: "Informes", uk: "Звіти" },
+  providerApplications: { de: "Fachkraft-Anträge", ar: "طلبات المزودين", en: "Provider applications", tr: "Sağlayıcı başvuruları", es: "Solicitudes de profesionales", uk: "Заявки виконавців" },
+  users: { de: "Benutzer", ar: "المستخدمون", en: "Users", tr: "Kullanıcılar", es: "Usuarios", uk: "Користувачі" },
+  prices: { de: "Preise", ar: "الأسعار", en: "Prices", tr: "Fiyatlar", es: "Precios", uk: "Ціни" },
+  clientWorkspace: { de: "Kundenbereich", ar: "مساحة عمل العملاء", en: "Client workspace", tr: "Müşteri alanı", es: "Área de clientes", uk: "Простір клієнтів" },
+  customerService: { de: "Kundenservice", ar: "خدمة العملاء", en: "Customer service", tr: "Müşteri hizmetleri", es: "Atención al cliente", uk: "Служба підтримки" },
+  myProfile: { de: "Mein Profil", ar: "ملفي الشخصي", en: "My profile", tr: "Profilim", es: "Mi perfil", uk: "Мій профіль" },
+  notifications: { de: "Benachrichtigungen", ar: "إعدادات الإشعارات", en: "Notifications", tr: "Bildirimler", es: "Notificaciones", uk: "Сповіщення" },
+  help: { de: "Hilfe", ar: "خدمة العملاء", en: "Support", tr: "Yardım", es: "Ayuda", uk: "Підтримка" },
+  contact: { de: "Kontakt", ar: "اتصل بنا", en: "Contact", tr: "İletişim", es: "Contacto", uk: "Контакти" },
+};
+
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -168,7 +189,8 @@ export default function Layout({ children, currentPageName }) {
   const [isProvider, setIsProvider] = useState(() => {
     try { return localStorage.getItem("einstein_is_provider") === "true"; } catch { return false; }
   });
-  const t = translations[lang] || translations.ar;
+  const t = translations[lang] || translations.de;
+  const m = (key) => MENU[key][lang] || MENU[key].de;
 
   useEffect(() => {
     const init = () => {
@@ -277,22 +299,22 @@ export default function Layout({ children, currentPageName }) {
               </Link>
               {(isProvider || isAdmin) && (
                 <Link to={createPageUrl("CustomerRequests")} className="hover:text-[#6B46C1] transition-colors">
-                  {lang === "ar" ? "طلبات العملاء" : lang === "en" ? "Customer Requests" : lang === "uk" ? "Запити клієнтів" : "Kundenanfragen"}
+                  {m("customerRequests")}
                 </Link>
               )}
               {user && !isAdmin && (
                 <>
                   <Link to={createPageUrl("CustomerDashboard")} className="hover:text-[#6B46C1] transition-colors font-medium">
-                    {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : lang === "uk" ? "Мій кабінет" : "Mein Dashboard"}
+                    {m("myDashboard")}
                   </Link>
                   <Link to={createPageUrl("MyDocuments")} className="hover:text-[#6B46C1] transition-colors font-medium">
                     {isProvider
-                      ? (lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : lang === "uk" ? "Документи клієнтів" : "Kundenunterlagen")
-                      : (lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : lang === "uk" ? "Мої документи" : "Meine Unterlagen")}
+                      ? (m("customerDocs"))
+                      : (m("myDocs"))}
                   </Link>
                   {isProvider && (
                     <Link to={createPageUrl("ProviderDashboard")} className="hover:text-[#6B46C1] transition-colors">
-                      {lang === "ar" ? "لوحة المزود" : lang === "en" ? "Provider Dashboard" : lang === "uk" ? "Кабінет виконавця" : "Anbieter-Dashboard"}
+                      {m("providerDashboard")}
                     </Link>
                   )}
                 </>
@@ -301,7 +323,7 @@ export default function Layout({ children, currentPageName }) {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="text-[#2e1065] hover:text-[#6B46C1] hover:bg-purple-50 font-medium px-2">
-                      {lang === "ar" ? "الإدارة" : lang === "en" ? "Admin" : lang === "uk" ? "Адмін" : "Admin"}
+                      {m("admin")}
                       <ChevronDown className="w-3 h-3 ms-1" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -309,19 +331,19 @@ export default function Layout({ children, currentPageName }) {
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("AdminBookings")} className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "الحجوزات" : lang === "en" ? "Bookings" : lang === "uk" ? "Бронювання" : "Buchungen"}
+                        {m("bookings")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("BookingReports")} className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "التقارير" : lang === "en" ? "Reports" : lang === "uk" ? "Звіти" : "Berichte"}
+                        {m("reports")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("ProviderApprovals")} className="flex items-center gap-2">
                         <User className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "طلبات المزودين" : lang === "en" ? "Providers" : lang === "uk" ? "Виконавці" : "Fachkraft-Anträge"}
+                        {m("providerApplications")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -345,25 +367,25 @@ export default function Layout({ children, currentPageName }) {
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("MyDocuments")} className="flex items-center gap-2">
                         <FileText className="w-4 h-4" />
-                        {lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : lang === "uk" ? "Документи клієнтів" : "Kundenunterlagen"}
+                        {m("customerDocs")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("AdminUsers")} className="flex items-center gap-2">
                         <User className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "المستخدمون" : lang === "en" ? "Users" : lang === "uk" ? "Користувачі" : "Benutzer"}
+                        {m("users")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("PriceAdmin")} className="flex items-center gap-2">
                         <CreditCard className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "الأسعار" : lang === "en" ? "Prices" : lang === "uk" ? "Ціни" : "Preise"}
+                        {m("prices")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("ClientWorkspace")} className="flex items-center gap-2">
                         <Briefcase className="w-4 h-4 text-gray-400" />
-                        {lang === "ar" ? "مساحة عمل العملاء" : lang === "en" ? "Client Workspace" : lang === "uk" ? "Простір клієнтів" : "Kundenbereich"}
+                        {m("clientWorkspace")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -382,7 +404,7 @@ export default function Layout({ children, currentPageName }) {
                 </DropdownMenu>
               )}
                                                                                                                           <Link to={createPageUrl("CustomerService")} className="hover:text-[#6B46C1] transition-colors">
-                                                                                                                          {lang === "ar" ? "خدمة العملاء" : lang === "en" ? "Customer Service" : lang === "uk" ? "Служба підтримки" : "Kundenservice"}
+                                                                                                                          {m("customerService")}
                                                                                                                           </Link>
                                                                                                                           </nav>
 
@@ -435,26 +457,26 @@ export default function Layout({ children, currentPageName }) {
                     <DropdownMenuItem asChild>
                                                 <Link to={createPageUrl("Profile")}>
                                                   <User className="w-4 h-4 me-2" />
-                                                  {lang === "ar" ? "ملفي الشخصي" : lang === "en" ? "My Profile" : lang === "uk" ? "Мій профіль" : "Mein Profil"}
+                                                  {m("myProfile")}
                                                 </Link>
                                               </DropdownMenuItem>
                                               <DropdownMenuItem asChild>
                                                 <Link to={createPageUrl("NotificationSettings")}>
                                                   <Bell className="w-4 h-4 me-2" />
-                                                  {lang === "ar" ? "إعدادات الإشعارات" : lang === "en" ? "Notifications" : lang === "uk" ? "Сповіщення" : "Benachrichtigungen"}
+                                                  {m("notifications")}
                                                 </Link>
                                               </DropdownMenuItem>
                                               <DropdownMenuItem asChild>
                                                 <Link to={createPageUrl("CustomerDashboard")}>
                                                   <Calendar className="w-4 h-4 me-2" />
-                                                  {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : lang === "uk" ? "Мій кабінет" : "Mein Dashboard"}
+                                                  {m("myDashboard")}
                                                 </Link>
                                               </DropdownMenuItem>
                                               {isProvider && (
                                               <DropdownMenuItem asChild>
                                                 <Link to={createPageUrl("ProviderDashboard")}>
                                                   <Briefcase className="w-4 h-4 me-2" />
-                                                  {lang === "ar" ? "لوحة المزود" : lang === "en" ? "Provider Dashboard" : lang === "uk" ? "Кабінет виконавця" : "Anbieter-Dashboard"}
+                                                  {m("providerDashboard")}
                                                 </Link>
                                               </DropdownMenuItem>
                                               )}
@@ -463,7 +485,7 @@ export default function Layout({ children, currentPageName }) {
                                                     <DropdownMenuItem asChild>
                                                       <Link to={createPageUrl("ProviderApprovals")}>
                                                         <User className="w-4 h-4 me-2" />
-                                                        {lang === "ar" ? "طلبات المزودين" : lang === "en" ? "Provider Applications" : lang === "uk" ? "Заявки виконавців" : "Fachkraft-Anträge"}
+                                                        {m("providerApplications")}
                                                       </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
@@ -551,7 +573,7 @@ export default function Layout({ children, currentPageName }) {
                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                              onClick={() => setIsMenuOpen(false)}
                                            >
-                                             {lang === "ar" ? "طلبات العملاء" : lang === "en" ? "Customer Requests" : lang === "uk" ? "Запити клієнтів" : "Kundenanfragen"}
+                                             {m("customerRequests")}
                                            </Link>
                                          )}
                                          <Link 
@@ -559,7 +581,7 @@ export default function Layout({ children, currentPageName }) {
                                            className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                            onClick={() => setIsMenuOpen(false)}
                                          >
-                                           {lang === "ar" ? "خدمة العملاء" : lang === "en" ? "Support" : lang === "uk" ? "Підтримка" : "Hilfe"}
+                                           {m("help")}
                                          </Link>
                                         {user && !isAdmin && (
                                           <Link 
@@ -567,7 +589,7 @@ export default function Layout({ children, currentPageName }) {
                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                             onClick={() => setIsMenuOpen(false)}
                                           >
-                                            {lang === "ar" ? "لوحتي" : lang === "en" ? "My Dashboard" : lang === "uk" ? "Мій кабінет" : "Mein Dashboard"}
+                                            {m("myDashboard")}
                                           </Link>
                                         )}
                                         {user && (
@@ -577,8 +599,8 @@ export default function Layout({ children, currentPageName }) {
                                             onClick={() => setIsMenuOpen(false)}
                                           >
                                             {isAdmin || isProvider
-                                              ? (lang === "ar" ? "ملفات الزبائن" : lang === "en" ? "Customer documents" : lang === "uk" ? "Документи клієнтів" : "Kundenunterlagen")
-                                              : (lang === "ar" ? "ملفاتي" : lang === "en" ? "My documents" : lang === "uk" ? "Мої документи" : "Meine Unterlagen")}
+                                              ? (m("customerDocs"))
+                                              : (m("myDocs"))}
                                           </Link>
                                         )}
                                         {isAdmin && (
@@ -623,14 +645,14 @@ export default function Layout({ children, currentPageName }) {
                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                              onClick={() => setIsMenuOpen(false)}
                                             >
-                                             {lang === "ar" ? "الأسعار" : lang === "en" ? "Prices" : lang === "uk" ? "Ціни" : "Preise"}
+                                             {m("prices")}
                                             </Link>
                                             <Link 
                                              to={createPageUrl("AdminUsers")} 
                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
                                              onClick={() => setIsMenuOpen(false)}
                                             >
-                                             {lang === "ar" ? "المستخدمون" : lang === "en" ? "Users" : lang === "uk" ? "Користувачі" : "Benutzer"}
+                                             {m("users")}
                                             </Link>
                                              </>
                                              )}
@@ -694,7 +716,7 @@ export default function Layout({ children, currentPageName }) {
             {/* Contact */}
             <div>
               <h4 className="font-semibold mb-4 text-purple-200">
-                {lang === "de" ? "Kontakt" : lang === "ar" ? "اتصل بنا" : lang === "uk" ? "Контакти" : "Contact"}
+                {m("contact")}
               </h4>
               <div className="space-y-2 text-sm text-gray-300">
                 <p>Frankfurt, Deutschland</p>

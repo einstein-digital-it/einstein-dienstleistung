@@ -72,6 +72,15 @@ const translations = {
     info: "Información",
     no_results: "No se encontraron resultados",
     press_enter: "Presiona Enter para buscar"
+  },
+  uk: {
+    placeholder: "Пошук послуг, інформації...",
+    trending: "Популярні запити",
+    services: "Послуги",
+    pages: "Сторінки",
+    info: "Інформація",
+    no_results: "Нічого не знайдено",
+    press_enter: "Натисніть Enter для пошуку"
   }
 };
 
@@ -205,17 +214,17 @@ export default function GlobalSearch({ lang = "de", variant = "hero" }) {
     const q = query.toLowerCase();
     
     const filteredServices = searchData.services.filter(s => 
-      s.names[lang]?.toLowerCase().includes(q) ||
+      (s.names[lang] || s.names.en)?.toLowerCase().includes(q) ||
       s.keywords.some(k => k.includes(q))
     );
 
     const filteredPages = searchData.pages.filter(p =>
-      p.names[lang]?.toLowerCase().includes(q) ||
+      (p.names[lang] || p.names.en)?.toLowerCase().includes(q) ||
       p.key.toLowerCase().includes(q)
     );
 
     const filteredInfo = searchData.info.filter(i =>
-      i.names[lang]?.toLowerCase().includes(q) ||
+      (i.names[lang] || i.names.en)?.toLowerCase().includes(q) ||
       i.keywords.some(k => k.includes(q))
     );
 
@@ -342,7 +351,7 @@ export default function GlobalSearch({ lang = "de", variant = "hero" }) {
                                   <Icon className="w-6 h-6 text-white" />
                                 </div>
                                 <div className="flex-1 text-start">
-                                  <div className="font-semibold text-gray-800">{item.names[lang]}</div>
+                                  <div className="font-semibold text-gray-800">{item.names[lang] || item.names.en}</div>
                                 </div>
                                 <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-[#6B46C1] group-hover:translate-x-1 transition-all" />
                               </button>
@@ -369,7 +378,7 @@ export default function GlobalSearch({ lang = "de", variant = "hero" }) {
                                   <Icon className="w-6 h-6 text-gray-600" />
                                 </div>
                                 <div className="flex-1 text-start">
-                                  <div className="font-semibold text-gray-800">{item.names[lang]}</div>
+                                  <div className="font-semibold text-gray-800">{item.names[lang] || item.names.en}</div>
                                 </div>
                                 <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-[#6B46C1] group-hover:translate-x-1 transition-all" />
                               </button>
@@ -396,7 +405,7 @@ export default function GlobalSearch({ lang = "de", variant = "hero" }) {
                                   <Icon className="w-6 h-6 text-[#6B46C1]" />
                                 </div>
                                 <div className="flex-1 text-start">
-                                  <div className="font-semibold text-gray-800">{item.names[lang]}</div>
+                                  <div className="font-semibold text-gray-800">{item.names[lang] || item.names.en}</div>
                                 </div>
                                 <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-[#6B46C1] group-hover:translate-x-1 transition-all" />
                               </button>

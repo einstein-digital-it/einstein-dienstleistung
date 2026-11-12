@@ -51,6 +51,21 @@ const translations = {
     thinking: "Typing...",
     errorMessage: "Sorry, there was a problem. Please try again."
   },
+  tr: {
+    title: "EinStein Destek",
+    subtitle: "Nasıl yardımcı olabiliriz?",
+    placeholder: "Mesajınızı yazın...",
+    welcome: "Merhaba! 👋 EinStein'a hoş geldiniz. Ben sanal asistanınızım. Bugün size nasıl yardımcı olabilirim?",
+    quickQuestions: [
+      "Hangi hizmetleri sunuyorsunuz?",
+      "Nasıl rezervasyon yapabilirim?",
+      "Türkçe konuşuyor musunuz?"
+    ],
+    escalate: "Bir çalışanla görüş",
+    escalateMessage: "Sizi ekibimize yönlendiriyorum. Bize şuradan ulaşabilirsiniz:",
+    thinking: "Yazıyor...",
+    errorMessage: "Üzgünüz, bir sorun oluştu. Lütfen tekrar deneyin."
+  },
   es: {
     title: "Soporte EinStein",
     subtitle: "¿Cómo podemos ayudarte?",

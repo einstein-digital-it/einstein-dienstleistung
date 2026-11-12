@@ -17,11 +17,11 @@ import '@fontsource/playfair-display/600.css'
 import '@fontsource/playfair-display/700.css'
 import '@/index.css'
 
-// The header defaults to Arabic while most pages defaulted to German, so a
-// first-time visitor saw an Arabic menu with German content. Store the
+// Pages once had different default languages, so a
+// first-time visitor saw a mixed page. Store the German
 // default once so every page starts in the same language.
 try {
-  if (!localStorage.getItem('einstein_lang')) localStorage.setItem('einstein_lang', 'ar')
+  if (!localStorage.getItem('einstein_lang')) localStorage.setItem('einstein_lang', 'de')
 } catch {
   // storage blocked: pages fall back to their own default
 }

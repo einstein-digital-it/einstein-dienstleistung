@@ -1,16 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { customerApi } from "@/api/backendClient";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Bell,
-  Calendar,
-  CheckCheck,
-  CheckCircle,
-  Clock,
-  CreditCard,
-  Trash2,
-  UserCheck
-} from "lucide-react";
+import { Bell, Calendar, CheckCheck, CheckCircle, Clock, CreditCard, Trash2 } from "lucide-react";
+import { getLang } from "@/lib/lang";
 import {
   CardHeader,
   DesignCard,
@@ -21,56 +14,25 @@ import {
   StatusPill
 } from "@/components/design/PageScaffold";
 
-const today = [
-  {
-    icon: Calendar,
-    title: "طلب جديد بانتظار المراجعة",
-    message: "تم استلام طلب مساعدة النماذج رقم ES-2048.",
-    time: "منذ 8 دقائق",
-    tone: "gold",
-    unread: true
-  },
-  {
-    icon: CreditCard,
-    title: "دفعة مستلمة",
-    message: "تم تسجيل دفعة بقيمة 85 € لحجز مؤكد.",
-    time: "منذ 42 دقيقة",
-    tone: "green",
-    unread: true
-  },
-  {
-    icon: UserCheck,
-    title: "مزود خدمة متاح",
-    message: "مزود جديد متاح لخدمات التعليم ومرافقة التعلم.",
-    time: "قبل ساعتين",
-    tone: "blue",
-    unread: false
-  }
-];
+const T = {
+  de: { title: "Benachrichtigungen", eyebrow: "Kundenkonto", desc: "Neuigkeiten zu Ihren Buchungen, Zahlungen und Unterlagen.", deleteRead: "Gelesene löschen", markAll: "Alle als gelesen markieren", all: "Alle", unread: "Ungelesen", read: "Gelesen", newTitle: "Neu", earlier: "Bereits gelesen", badge: "Neu", markRead: "Als gelesen markieren", loginPre: "Bitte ", login: "melden Sie sich an", loginPost: ", um Ihre Benachrichtigungen zu sehen.", loading: "Wird geladen…", none: "Sie haben noch keine Benachrichtigungen.", noneNew: "Keine neuen Benachrichtigungen." },
+  ar: { title: "الإشعارات", eyebrow: "حساب العميل", desc: "آخر المستجدات عن حجوزاتك ومدفوعاتك وملفاتك.", deleteRead: "حذف المقروءة", markAll: "تحديد الكل كمقروء", all: "الكل", unread: "غير مقروءة", read: "مقروءة", newTitle: "جديدة", earlier: "مقروءة سابقاً", badge: "جديد", markRead: "تحديد كمقروء", loginPre: "يرجى ", login: "تسجيل الدخول", loginPost: " لعرض إشعاراتك.", loading: "جارٍ التحميل…", none: "لا توجد إشعارات بعد.", noneNew: "لا توجد إشعارات جديدة." },
+  en: { title: "Notifications", eyebrow: "Customer account", desc: "News about your bookings, payments and documents.", deleteRead: "Delete read", markAll: "Mark all as read", all: "All", unread: "Unread", read: "Read", newTitle: "New", earlier: "Already read", badge: "New", markRead: "Mark as read", loginPre: "Please ", login: "sign in", loginPost: " to see your notifications.", loading: "Loading…", none: "You have no notifications yet.", noneNew: "No new notifications." },
+  tr: { title: "Bildirimler", eyebrow: "Müşteri hesabı", desc: "Rezervasyonlarınız, ödemeleriniz ve belgelerinizle ilgili haberler.", deleteRead: "Okunanları sil", markAll: "Tümünü okundu işaretle", all: "Tümü", unread: "Okunmamış", read: "Okunmuş", newTitle: "Yeni", earlier: "Daha önce okunanlar", badge: "Yeni", markRead: "Okundu işaretle", loginPre: "Bildirimlerinizi görmek için lütfen ", login: "giriş yapın", loginPost: ".", loading: "Yükleniyor…", none: "Henüz bildiriminiz yok.", noneNew: "Yeni bildirim yok." },
+  es: { title: "Notificaciones", eyebrow: "Cuenta de cliente", desc: "Novedades sobre sus reservas, pagos y documentos.", deleteRead: "Eliminar leídas", markAll: "Marcar todas como leídas", all: "Todas", unread: "Sin leer", read: "Leídas", newTitle: "Nuevas", earlier: "Ya leídas", badge: "Nueva", markRead: "Marcar como leída", loginPre: "Por favor, ", login: "inicie sesión", loginPost: " para ver sus notificaciones.", loading: "Cargando…", none: "Aún no tiene notificaciones.", noneNew: "No hay notificaciones nuevas." },
+  uk: { title: "Сповіщення", eyebrow: "Акаунт клієнта", desc: "Новини про ваші бронювання, платежі та документи.", deleteRead: "Видалити прочитані", markAll: "Позначити всі як прочитані", all: "Усі", unread: "Непрочитані", read: "Прочитані", newTitle: "Нові", earlier: "Уже прочитані", badge: "Нове", markRead: "Позначити як прочитане", loginPre: "Будь ласка, ", login: "увійдіть", loginPost: ", щоб побачити сповіщення.", loading: "Завантаження…", none: "У вас ще немає сповіщень.", noneNew: "Нових сповіщень немає." },
+};
 
-const earlier = [
-  {
-    icon: CheckCircle,
-    title: "اكتمل حجز",
-    message: "تم إغلاق حجز السكرتارية بنجاح وإصدار الفاتورة.",
-    time: "أمس",
-    tone: "green",
-    unread: false
-  },
-  {
-    icon: Clock,
-    title: "تذكير بموعد",
-    message: "موعد متابعة المستندات غداً الساعة 10:30.",
-    time: "قبل يومين",
-    tone: "purple",
-    unread: false
-  }
-];
+const LOCALES = { de: "de-DE", ar: "ar", en: "en-GB", tr: "tr-TR", es: "es-ES", uk: "uk-UA" };
 
-function NotificationRow({ item }) {
+/** Text in the visitor's language; Ukrainian falls back to English, everything to German. */
+const localized = (item, field, lang) =>
+  item[`${field}_${lang}`] || (lang !== "de" && lang !== "ar" && item[`${field}_en`]) || item[`${field}_de`] || item[`${field}_en`] || item[`${field}_ar`] || "";
+
+function NotificationRow({ item, t, onRead }) {
   const Icon = item.icon;
   return (
-    <article className={`rounded-[15px] border p-4 ${item.unread ? "border-[#d4af25]/40 bg-[#fffaf0]" : "border-[#e2ebf6] bg-[#fbfdff]"}`}>
+    <article className={`rounded-[15px] border p-4 ${item.unread ? "border-[#7c3aed]/30 bg-[#faf7ff]" : "border-[#e2ebf6] bg-[#fbfdff]"}`}>
       <div className="flex gap-4">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[13px] bg-white text-[#2e1065] shadow-sm">
           <Icon className="h-5 w-5" />
@@ -79,15 +41,16 @@ function NotificationRow({ item }) {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-black text-[#1f0b52]">{item.title}</h2>
             <div className="flex items-center gap-2">
-              {item.unread && <StatusPill tone="gold">جديد</StatusPill>}
-              <span className="text-xs font-bold text-[#8ea0b7]">{item.time}</span>
+              {item.unread && <StatusPill tone="purple">{t.badge}</StatusPill>}
+              <span className="text-xs font-bold text-[#8ea0b7]"><bdi>{item.time}</bdi></span>
             </div>
           </div>
-          <p className="mt-2 text-sm leading-7 text-[#65758b]">{item.message}</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <SecondaryButton className="h-9 px-3">عرض</SecondaryButton>
-            {item.unread && <SecondaryButton className="h-9 px-3">تحديد كمقروء</SecondaryButton>}
-          </div>
+          {item.message && <p className="mt-2 text-sm leading-7 text-[#65758b]">{item.message}</p>}
+          {item.unread && (
+            <div className="mt-3">
+              <SecondaryButton className="h-9 px-3" onClick={() => onRead(item.id)}>{t.markRead}</SecondaryButton>
+            </div>
+          )}
         </div>
       </div>
     </article>
@@ -95,74 +58,82 @@ function NotificationRow({ item }) {
 }
 
 export default function Notifications() {
+  const lang = getLang();
+  const t = T[lang] || T.de;
   const queryClient = useQueryClient();
-  const email = localStorage.getItem("einstein_customer_email") || "customer@example.com";
+  const email = localStorage.getItem("einstein_customer_email") || "";
+  const queryKey = ["customer-notifications", email];
+  const refresh = () => queryClient.invalidateQueries({ queryKey });
 
-  const { data: backendNotifications = [] } = useQuery({
-    queryKey: ["customer-notifications", email],
+  const { data: backendNotifications = [], isLoading } = useQuery({
+    queryKey,
     queryFn: () => customerApi.listNotifications(email),
+    enabled: Boolean(email),
   });
 
-  const markAllReadMutation = useMutation({
-    mutationFn: () => customerApi.markAllNotificationsRead(email),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["customer-notifications", email] }),
-  });
+  const markReadMutation = useMutation({ mutationFn: (id) => customerApi.markNotificationRead(id), onSuccess: refresh });
+  const markAllReadMutation = useMutation({ mutationFn: () => customerApi.markAllNotificationsRead(email), onSuccess: refresh });
+  const deleteReadMutation = useMutation({ mutationFn: () => customerApi.deleteReadNotifications(email), onSuccess: refresh });
 
-  const deleteReadMutation = useMutation({
-    mutationFn: () => customerApi.deleteReadNotifications(email),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["customer-notifications", email] }),
-  });
-
-  const liveNotifications = backendNotifications.map((item) => ({
+  const items = backendNotifications.map((item) => ({
+    id: item.id,
     icon: item.type === "payment_received" ? CreditCard : item.type?.includes("booking") ? Calendar : Bell,
-    title: item.title_ar || item.title_en || item.title_de || item.type,
-    message: item.message_ar || item.message_en || item.message_de || "",
-    time: item.created_at ? new Date(item.created_at).toLocaleString() : "",
-    tone: item.is_read ? "blue" : "gold",
+    title: localized(item, "title", lang) || item.type,
+    message: localized(item, "message", lang),
+    time: item.created_at ? new Date(item.created_at).toLocaleString(LOCALES[lang] || "de-DE", { dateStyle: "medium", timeStyle: "short" }) : "",
     unread: !item.is_read,
   }));
-  const todayItems = liveNotifications.length > 0 ? liveNotifications : today;
-  const unreadCount = todayItems.filter((item) => item.unread).length;
+  const unread = items.filter((item) => item.unread);
+  const read = items.filter((item) => !item.unread);
 
   return (
     <PageScaffold
-      title="الإشعارات"
-      eyebrow="مركز التنبيهات"
+      title={t.title}
+      eyebrow={t.eyebrow}
       icon={Bell}
-      description="تصميم صفحة الإشعارات مع تجميع اليوم والسابق، وأزرار إدارة التنبيهات."
+      description={t.desc}
       maxWidth="max-w-5xl"
-      actions={
+      actions={email && items.length > 0 && (
         <>
-          <SecondaryButton onClick={() => deleteReadMutation.mutate()}>
+          <SecondaryButton onClick={() => deleteReadMutation.mutate()} disabled={read.length === 0 || deleteReadMutation.isPending}>
             <Trash2 className="h-4 w-4" />
-            حذف المقروء
+            {t.deleteRead}
           </SecondaryButton>
-          <PrimaryButton onClick={() => markAllReadMutation.mutate()}>
+          <PrimaryButton onClick={() => markAllReadMutation.mutate()} disabled={unread.length === 0 || markAllReadMutation.isPending}>
             <CheckCheck className="h-4 w-4" />
-            تحديد الكل كمقروء
+            {t.markAll}
           </PrimaryButton>
         </>
-      }
+      )}
     >
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        <StatCard icon={Bell} label="كل الإشعارات" value="24" tone="blue" />
-        <StatCard icon={Clock} label="غير مقروءة" value="2" tone="gold" />
-        <StatCard icon={CheckCircle} label="مقروءة" value="22" tone="green" />
+        <StatCard icon={Bell} label={t.all} value={String(items.length)} tone="blue" />
+        <StatCard icon={Clock} label={t.unread} value={String(unread.length)} tone="gold" />
+        <StatCard icon={CheckCircle} label={t.read} value={String(read.length)} tone="green" />
       </div>
 
       <DesignCard className="mt-6">
-        <CardHeader title="اليوم" description="أحدث التنبيهات المهمة." />
+        <CardHeader title={t.newTitle} />
         <div className="space-y-4 p-5">
-          {todayItems.map((item) => <NotificationRow key={item.title} item={item} />)}
+          {!email && (
+            <p className="text-sm font-semibold text-[#65758b]">
+              {t.loginPre}<Link to="/Login" className="text-[#6B46C1] underline">{t.login}</Link>{t.loginPost}
+            </p>
+          )}
+          {email && isLoading && <p className="text-sm font-semibold text-[#65758b]">{t.loading}</p>}
+          {email && !isLoading && unread.length === 0 && <p className="text-sm font-semibold text-[#65758b]">{items.length === 0 ? t.none : t.noneNew}</p>}
+          {unread.map((item) => <NotificationRow key={item.id} item={item} t={t} onRead={(id) => markReadMutation.mutate(id)} />)}
         </div>
       </DesignCard>
 
-      <DesignCard className="mt-6">
-        <CardHeader title="سابقاً" />
-        <div className="space-y-4 p-5">
-          {earlier.map((item) => <NotificationRow key={item.title} item={item} />)}
-        </div>
-      </DesignCard>
+      {read.length > 0 && (
+        <DesignCard className="mt-6">
+          <CardHeader title={t.earlier} />
+          <div className="space-y-4 p-5">
+            {read.map((item) => <NotificationRow key={item.id} item={item} t={t} onRead={() => {}} />)}
+          </div>
+        </DesignCard>
+      )}
     </PageScaffold>
   );
 }

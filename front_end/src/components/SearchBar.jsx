@@ -63,6 +63,15 @@ const translations = {
     services: "Servicios",
     noResults: "No se encontraron resultados",
     allResults: "Ver todos los resultados"
+  },
+  uk: {
+    placeholder: "Пошук послуг...",
+    search: "Пошук",
+    recent: "Останні запити",
+    popular: "Популярні запити",
+    services: "Послуги",
+    noResults: "Нічого не знайдено",
+    allResults: "Усі результати"
   }
 };
 
@@ -106,6 +115,14 @@ const serviceData = {
     { key: "coordination", name: "Servicios de Coordinación", desc: "Coordinación de proyectos, programación", icon: Settings, color: "bg-indigo-500" },
     { key: "mercosur", name: "MERCOSUR (LATAM)", desc: "Apostilla, legalización, visa", icon: Globe, color: "bg-amber-500" },
     { key: "print", name: "Servicios de Impresión y Sellos", desc: "Impresión de documentos, copias, sellos", icon: Printer, color: "bg-pink-500" }
+  ],
+  uk: [
+    { key: "office", name: "Офісні та організаційні послуги", desc: "E-mail, зустрічі, документи, рахунки", icon: Briefcase, color: "bg-purple-500" },
+    { key: "forms", name: "Допомога з установами та формулярами", desc: "Заяви, формуляри, візити до установ", icon: ClipboardList, color: "bg-teal-500" },
+    { key: "admin", name: "Адміністративні послуги", desc: "Ведення документів, листування", icon: FileText, color: "bg-green-500" },
+    { key: "coordination", name: "Послуги координації", desc: "Координація проєктів, планування зустрічей", icon: Settings, color: "bg-indigo-500" },
+    { key: "mercosur", name: "MERCOSUR (Латинська Америка)", desc: "Апостиль, легалізація, віза", icon: Globe, color: "bg-amber-500" },
+    { key: "print", name: "Друк і печатки", desc: "Друк документів, копії, печатки", icon: Printer, color: "bg-pink-500" }
   ]
 };
 
@@ -114,7 +131,8 @@ const popularSearches = {
   ar: ["نماذج", "خدمة مكتب", "وثائق", "تنسيق"],
   en: ["Forms", "Office Service", "Documents", "Coordination"],
   tr: ["Formlar", "Ofis Hizmeti", "Belgeler", "Koordinasyon"],
-  es: ["Formularios", "Servicio de Oficina", "Documentos", "Coordinación"]
+  es: ["Formularios", "Servicio de Oficina", "Documentos", "Coordinación"],
+  uk: ["Формуляри", "Офісні послуги", "Документи", "Координація"]
 };
 
 export default function SearchBar({ lang = "de", variant = "hero" }) {

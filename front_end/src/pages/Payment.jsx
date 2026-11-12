@@ -224,7 +224,7 @@ export default function Payment() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="border-0 shadow-lg p-8 text-center">
-          <p className="text-gray-600">Booking not found</p>
+          <p className="text-gray-600">{({ de: "Buchung nicht gefunden", ar: "لم يُعثر على الحجز", en: "Booking not found", tr: "Rezervasyon bulunamadı", es: "No se encontró la reserva", uk: "Бронювання не знайдено" })[lang] || "Buchung nicht gefunden"}</p>
           <Link to={createPageUrl("CustomerDashboard")}>
             <Button className="mt-4">{t.back}</Button>
           </Link>

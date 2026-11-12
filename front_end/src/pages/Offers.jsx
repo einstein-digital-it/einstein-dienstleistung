@@ -410,6 +410,198 @@ const translations = {
     cta: "Отримати консультацію",
     contact_us: "Зв’язатися з нами",
     prices_title: "Ціни"
+  },
+  tr: {
+    title: "EinStein paketleri",
+    subtitle: "Tek elden kapsamlı destek",
+    intro_title: "EinStein yapılandırılmış ve kapsamlı hizmet paketleri sunar",
+    intro_desc: "Amaç, birden fazla dış hizmet sağlayıcıyla uğraşmadan eksiksiz destek ve organizasyon sağlamaktır. EinStein merkezi kurum ve tek muhatabınızdır.",
+    concept_title: "Konseptimiz: tek kurum – tüm hizmetler",
+    concept_desc: "EinStein bütüncül bir destek anlayışını temsil eder. Paketlerimiz şunları birleştirir:",
+    concept_items: [
+      "Ev ve gayrimenkul hizmetleri",
+      "Bürokratik ve organizasyonel destek",
+      "Zanaat ve teknik hizmetler",
+      "Dijital ve idari koordinasyon"
+    ],
+    packages: {
+      fullservice: {
+        title: "Ev ve aile için kapsamlı destek",
+        subtitle: "Tam hizmet",
+        desc: "Bu paket, günlük hayatta tam rahatlama isteyen ev sahipleri, aileler ve bireyler içindir.",
+        features: [
+          "Tüm ev işlerinin organizasyonu ve koordinasyonu",
+          "İç ve dış alanların temizliği, bakımı ve onarımı",
+          "Tamirat, usta ve uzmanların koordinasyonu",
+          "Ev, gayrimenkul ve aile için bürokratik destek",
+          "Dış hizmet sağlayıcı olmadan merkezi destek"
+        ]
+      },
+      yearly: {
+        title: "Yıllık destek",
+        subtitle: "Tam yıl modeli",
+        desc: "Yıllık destek, sürekli ve uzun vadeli bir destek sunar.",
+        suitable: "Kimler için: ev sahipleri, çocuklu aileler, organizasyon yükü fazla olan çalışanlar",
+        features: [
+          "Ev ve gayrimenkulün sürekli organizasyonu",
+          "Temizlik, bakım ve onarımların düzenli koordinasyonu",
+          "Sürekli bürokratik destek",
+          "Sabit irtibat kişileri ve düzenli süreçler"
+        ]
+      },
+      monthly: {
+        title: "Aylık destek",
+        subtitle: "Esnek abonelik",
+        desc: "Aylık destek, düzenli yardıma ihtiyaç duyan ama esnek kalmak isteyen müşteriler içindir.",
+        features: [
+          "Ev ve günlük işlerin aylık organizasyonu",
+          "Bürokratik destek ve randevu yönetimi",
+          "Gerektiğinde zanaat ve teknik hizmetlerin koordinasyonu"
+        ]
+      },
+      weekly: {
+        title: "Haftalık destek",
+        subtitle: "Kısa süreli rahatlama",
+        desc: "Haftalık destek; yoğun iş dönemleri, hastalık veya stresli durumlar ve süreli projeler için idealdir.",
+        features: [
+          "Kısa süreli ev organizasyonu",
+          "Bürokrasi ve randevularda destek",
+          "Gerekli hizmetlerin koordinasyonu",
+          "Belirli bir süre için düzenli rahatlama"
+        ]
+      },
+      single: {
+        title: "Tekil ve tek seferlik hizmetler",
+        desc: "EinStein, belirli ihtiyaçlar için tek seferlik hizmetler de sunar.",
+        examples: [
+          "Taşınma veya tadilat organizasyonu",
+          "Belirli başvurular için bürokratik destek",
+          "Tek seferlik onarım veya teknik koordinasyon",
+          "Ev organizasyonu veya detaylı temizlik",
+          "Dijital veya idari destek"
+        ]
+      }
+    },
+    bureaucracy_title: "Bürokrasi ve organizasyon – merkezi yönetim",
+    bureaucracy_desc: "Tüm paketler, istenirse sürekli bürokratik ve organizasyonel destek içerir:",
+    bureaucracy_features: [
+      "Formlar ve başvurularda destek",
+      "Resmi yazıların açıklanması",
+      "Randevu organizasyonu ve takibi",
+      "Dijital düzen ve belge yönetimi"
+    ],
+    flexible_title: "Esnek biçimde birleştirilebilir",
+    flexible_items: [
+      "Farklı hizmet alanlarının birleştirilmesi",
+      "Kişisel ihtiyaçlara uyarlama",
+      "Destek modelleri arasında geçiş mümkün"
+    ],
+    promise_title: "Sözümüz",
+    promise_items: [
+      "Birçok sağlayıcı yerine tek kurum",
+      "Net sorumluluk ve sabit irtibat kişileri",
+      "Düzenli, hukuken güvenli süreçler",
+      "Ev, aile ve günlük yaşam için kapsamlı destek"
+    ],
+    cta: "Hemen danışın",
+    contact_us: "Bize ulaşın",
+    prices_title: "Fiyatlar"
+  },
+  es: {
+    title: "Ofertas de EinStein",
+    subtitle: "Atención integral de una sola mano",
+    intro_title: "EinStein ofrece paquetes de servicios estructurados y completos",
+    intro_desc: "El objetivo es garantizar una atención y organización completas, sin tener que contratar a varios proveedores externos. EinStein actúa como institución central y único interlocutor.",
+    concept_title: "Nuestro concepto: una institución – todos los servicios",
+    concept_desc: "EinStein apuesta por una atención integral. Nuestras ofertas combinan:",
+    concept_items: [
+      "Servicios para el hogar y la vivienda",
+      "Apoyo burocrático y organizativo",
+      "Servicios técnicos y de oficios",
+      "Coordinación digital y administrativa"
+    ],
+    packages: {
+      fullservice: {
+        title: "Atención integral para hogar y familia",
+        subtitle: "Servicio completo",
+        desc: "Esta oferta está pensada para propietarios, familias y personas que quieren un alivio total en el día a día.",
+        features: [
+          "Organización y coordinación de todas las tareas del hogar",
+          "Limpieza, cuidado y mantenimiento de interiores y exteriores",
+          "Coordinación de reparaciones, técnicos y especialistas",
+          "Apoyo burocrático para hogar, vivienda y familia",
+          "Atención centralizada sin proveedores externos"
+        ]
+      },
+      yearly: {
+        title: "Atención anual",
+        subtitle: "Modelo de año completo",
+        desc: "La atención anual ofrece un apoyo continuo y a largo plazo.",
+        suitable: "Adecuado para: propietarios, familias con hijos, profesionales con mucha carga organizativa",
+        features: [
+          "Organización continua del hogar y la vivienda",
+          "Coordinación periódica de limpieza, mantenimiento y reparaciones",
+          "Apoyo burocrático continuo",
+          "Personas de contacto fijas y procesos estructurados"
+        ]
+      },
+      monthly: {
+        title: "Atención mensual",
+        subtitle: "Suscripción flexible",
+        desc: "La atención mensual es para clientes que necesitan apoyo regular pero quieren seguir siendo flexibles.",
+        features: [
+          "Organización mensual del hogar y las tareas diarias",
+          "Apoyo burocrático y gestión de citas",
+          "Coordinación de servicios técnicos y de oficios cuando haga falta"
+        ]
+      },
+      weekly: {
+        title: "Atención semanal",
+        subtitle: "Alivio a corto plazo",
+        desc: "La atención semanal es ideal para fases de trabajo intenso, enfermedad o estrés y proyectos de duración limitada.",
+        features: [
+          "Organización del hogar a corto plazo",
+          "Apoyo con la burocracia y las citas",
+          "Coordinación de los servicios necesarios",
+          "Alivio estructurado durante un periodo definido"
+        ]
+      },
+      single: {
+        title: "Servicios individuales y puntuales",
+        desc: "Para necesidades concretas, EinStein también ofrece servicios puntuales.",
+        examples: [
+          "Organización de una mudanza o reforma",
+          "Apoyo burocrático para solicitudes concretas",
+          "Reparación puntual o coordinación técnica",
+          "Organización del hogar o limpieza a fondo",
+          "Apoyo digital o administrativo"
+        ]
+      }
+    },
+    bureaucracy_title: "Burocracia y organización – gestión centralizada",
+    bureaucracy_desc: "Todas las ofertas incluyen, si lo desea, apoyo burocrático y organizativo continuo:",
+    bureaucracy_features: [
+      "Ayuda con formularios y solicitudes",
+      "Explicación de cartas oficiales",
+      "Organización y seguimiento de citas",
+      "Orden digital y gestión de documentos"
+    ],
+    flexible_title: "Combinable con flexibilidad",
+    flexible_items: [
+      "Combinación de distintas áreas de servicio",
+      "Adaptación a las necesidades individuales",
+      "Posibilidad de cambiar de modelo de atención"
+    ],
+    promise_title: "Nuestra promesa",
+    promise_items: [
+      "Una institución en lugar de muchos proveedores",
+      "Responsabilidad clara y personas de contacto fijas",
+      "Procesos estructurados y jurídicamente seguros",
+      "Atención integral para hogar, familia y vida diaria"
+    ],
+    cta: "Pida asesoramiento",
+    contact_us: "Contáctenos",
+    prices_title: "Precios"
   }
 };
 
@@ -751,7 +943,7 @@ export default function Offers() {
           <Card className="border-0 shadow-lg bg-[#2e1065] text-white">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold mb-4">
-                EinStein – eine Lösung für alles
+                {({ de: "EinStein – eine Lösung für alles", ar: "آينشتاين – حل واحد لكل شيء", en: "EinStein – one solution for everything", tr: "EinStein – her şey için tek çözüm", es: "EinStein – una solución para todo", uk: "EinStein – одне рішення для всього" })[lang] || "EinStein – eine Lösung für alles"}
               </h3>
               <p className="text-purple-200 mb-6">
                 {t.contact_us}

@@ -83,8 +83,42 @@ const T = {
     aboNeeded: "Without a subscription the letter is only stored, not sorted or translated.", aboThanks: "Thank you! Your subscription starts as soon as the payment is confirmed.", aboTerms: "Our terms apply (AGB § 8b).", aboLimit: (n) => `Up to ${n} letters a month`, aboUsage: (u, n) => `${u} of ${n} letters this month`, aboReached: "Your monthly allowance is used up. New letters are only stored.",
   },
 };
-T.tr = { ...T.en, aboTitle: "Sıralama ve çeviri", aboSubscribe: "Şimdi abone ol", aboPrice: (p) => `${p} € / ay KDV dahil · aylık iptal`, title: "Belgelerim", subtitle: "Tüm belgeleriniz kurum ve konuya göre sıralı.", upload: "Dosya yükle", back: "Tüm klasörler", autoTitle: "Yükleyin – biz sıralayıp çeviririz", processing: "Sıralanıyor ve çevriliyor…", summary: "Özet", translation: "Çeviri", showTranslation: "Çeviriyi göster", hideTranslation: "Çeviriyi gizle", deadline: "Son tarih", from: "Gönderen" };
-T.es = { ...T.en, aboTitle: "Ordenar y traducir", aboSubscribe: "Suscribirse ahora", aboPrice: (p) => `${p} € / mes IVA incl. · cancelable mensualmente`, title: "Mis documentos", subtitle: "Todos sus documentos, ordenados por organismo y tema.", upload: "Subir archivo", back: "Todas las carpetas", autoTitle: "Súbalo – nosotros lo ordenamos y traducimos", processing: "Ordenando y traduciendo…", summary: "Resumen", translation: "Traducción", showTranslation: "Mostrar traducción", hideTranslation: "Ocultar traducción", deadline: "Plazo", from: "De" };
+T.tr = {
+  title: "Belgelerim", subtitle: "Tüm belgeleriniz kurum ve konuya göre sıralı.",
+  private: "Bu dosyaları yalnızca siz ve EinStein görebilir.",
+  folders: { jobcenter: "Jobcenter", auslaenderbehoerde: "Yabancılar dairesi", finanzamt: "Vergi dairesi", familienkasse: "Çocuk parası / Kindergeld", krankenkasse: "Sağlık sigortası", rentenversicherung: "Emeklilik sigortası", wohnen: "Konut / ev sahibi", arbeit: "İş / işveren", schule: "Okul / kreş", bank: "Banka", versicherung: "Sigorta", sonstiges: "Diğer" },
+  files: (n) => `${n} dosya`, back: "Tüm klasörler", upload: "Dosya yükle",
+  titleField: "Başlık (isteğe bağlı)", empty: "Bu klasörde henüz dosya yok.", uploading: "Yükleniyor…",
+  byEinstein: "EinStein'dan", deleteConfirm: "Bu dosya silinsin mi?", login: "Belgelerinizi görmek için lütfen giriş yapın.",
+  error: "Bu işlem olmadı. Lütfen tekrar deneyin.", customer: "Müşteri (e-posta)", open: "Aç", customers: "Belgesi olan müşteriler",
+  hint: "PDF, fotoğraf, Word veya Excel – en fazla 20 MB.",
+  autoTitle: "Yükleyin – biz sıralayıp çeviririz", autoDesc: "Bir mektup yükleyin (PDF veya fotoğraf). Otomatik olarak doğru klasöre yerleştirilir ve dilinize çevrilir.",
+  reminders: "Hatırlatmalar", daysLeft: (n) => (n < 0 ? "süresi geçti" : n === 0 ? "bugün" : `${n} gün sonra`), done: "Tamam", translateMine: "Dilime çevir",
+  processing: "Sıralanıyor ve çevriliyor…", failed: "Otomatik çeviri başarısız oldu", tooLong: "Bu belge otomatik çeviri için çok uzun. Yalnızca kaydedildi.", summary: "Özet", translation: "Çeviri", showTranslation: "Çeviriyi göster", hideTranslation: "Çeviriyi gizle", deadline: "Son tarih", from: "Gönderen",
+  aiNote: "Dosya, sıralanması ve çevrilmesi için Claude (Anthropic) tarafından otomatik olarak analiz edilir. Çeviri bir yardımdır, yeminli çeviri değildir.",
+  aboTitle: "Sıralama ve çeviri", aboPitch: "Her mektubu doğru klasöre yerleştirir, dilinize çevirir ve son tarihleri hatırlatırız.",
+  aboPrice: (p) => `${p} € / ay KDV dahil · aylık iptal`, aboSubscribe: "Şimdi abone ol", aboActive: "Sıralama ve çeviri etkin",
+  aboUntil: (d) => `İptal edildi – ${d} tarihine kadar etkin`, aboCancel: "Aboneliği iptal et", aboCancelConfirm: "Abonelik iptal edilsin mi? Ödenen ayın sonuna kadar etkin kalır.",
+  aboNeeded: "Abonelik olmadan mektup yalnızca kaydedilir; sıralanmaz ve çevrilmez.", aboThanks: "Teşekkürler! Ödeme onaylanır onaylanmaz aboneliğiniz başlar.", aboTerms: "Şartlarımız geçerlidir (AGB § 8b).", aboLimit: (n) => `Ayda en fazla ${n} mektup`, aboUsage: (u, n) => `Bu ay ${n} mektuptan ${u} tanesi`, aboReached: "Aylık hakkınız doldu. Yeni mektuplar yalnızca kaydedilir.",
+};
+T.es = {
+  title: "Mis documentos", subtitle: "Todos sus documentos, ordenados por organismo y tema.",
+  private: "Solo usted y EinStein pueden ver estos archivos.",
+  folders: { jobcenter: "Jobcenter", auslaenderbehoerde: "Oficina de extranjería", finanzamt: "Hacienda", familienkasse: "Prestación por hijos / Kindergeld", krankenkasse: "Seguro médico", rentenversicherung: "Seguro de pensiones", wohnen: "Vivienda / arrendador", arbeit: "Trabajo / empleador", schule: "Escuela / guardería", bank: "Banco", versicherung: "Seguros", sonstiges: "Otros" },
+  files: (n) => (n === 1 ? "1 archivo" : `${n} archivos`), back: "Todas las carpetas", upload: "Subir archivo",
+  titleField: "Título (opcional)", empty: "Aún no hay archivos en esta carpeta.", uploading: "Subiendo…",
+  byEinstein: "de EinStein", deleteConfirm: "¿Eliminar este archivo?", login: "Inicie sesión para ver sus documentos.",
+  error: "No ha funcionado. Inténtelo de nuevo.", customer: "Cliente (correo)", open: "Abrir", customers: "Clientes con documentos",
+  hint: "PDF, foto, Word o Excel – hasta 20 MB.",
+  autoTitle: "Súbalo – nosotros lo ordenamos y traducimos", autoDesc: "Suba una carta (PDF o foto). Se guarda automáticamente en la carpeta correcta y se traduce a su idioma.",
+  reminders: "Recordatorios", daysLeft: (n) => (n < 0 ? "vencido" : n === 0 ? "hoy" : `en ${n} días`), done: "Hecho", translateMine: "Traducir a mi idioma",
+  processing: "Ordenando y traduciendo…", failed: "La traducción automática ha fallado", tooLong: "Este documento es demasiado largo para la traducción automática. Solo se ha guardado.", summary: "Resumen", translation: "Traducción", showTranslation: "Mostrar traducción", hideTranslation: "Ocultar traducción", deadline: "Plazo", from: "De",
+  aiNote: "Claude (Anthropic) analiza el archivo automáticamente para ordenarlo y traducirlo. La traducción es una ayuda, no una traducción jurada.",
+  aboTitle: "Ordenar y traducir", aboPitch: "Ordenamos cada carta en la carpeta correcta, la traducimos a su idioma y le recordamos los plazos.",
+  aboPrice: (p) => `${p} € / mes IVA incl. · cancelable mensualmente`, aboSubscribe: "Suscribirse ahora", aboActive: "Ordenar y traducir está activo",
+  aboUntil: (d) => `Cancelada – activa hasta el ${d}`, aboCancel: "Cancelar suscripción", aboCancelConfirm: "¿Cancelar la suscripción? Sigue activa hasta el final del mes pagado.",
+  aboNeeded: "Sin suscripción la carta solo se guarda; no se ordena ni se traduce.", aboThanks: "¡Gracias! Su suscripción empieza en cuanto se confirme el pago.", aboTerms: "Se aplican nuestras condiciones (AGB § 8b).", aboLimit: (n) => `Hasta ${n} cartas al mes`, aboUsage: (u, n) => `${u} de ${n} cartas este mes`, aboReached: "Ha agotado su cupo mensual. Las cartas nuevas solo se guardan.",
+};
 T.uk = {
   title: "Мої документи", subtitle: "Усі ваші документи, впорядковані за установами та темами.",
   private: "Ці файли бачите лише ви та EinStein.",

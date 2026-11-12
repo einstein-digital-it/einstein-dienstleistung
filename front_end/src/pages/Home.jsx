@@ -810,8 +810,42 @@ const X = {
     ctaTitle: "Готові передати нам папери?", ctaSub: "Бронюйте за кілька хвилин – ми швидко відповімо.",
   },
 };
-X.tr = { ...X.en, badge: "Almanya’da günlük yaşam ortağınız", heroTitle: "Resmi yazılar, randevular, büro – biz hallediyoruz.", heroSub: "EinStein formları, yazıları ve organizasyonu sizin için halleder – çok dilli, kişisel ve uygun fiyatlarla.", ctaBook: "Şimdi rezervasyon", ctaFile: "Mektup yükle", servicesKicker: "Hizmetler", servicesMore: "Tüm hizmetler", book: "Rezervasyon", ctaTitle: "Evrak işlerini bize bırakmaya hazır mısınız?" };
-X.es = { ...X.en, badge: "Su aliado para la vida diaria en Alemania", heroTitle: "Cartas oficiales, citas, oficina – nos encargamos.", heroSub: "EinStein se ocupa de formularios, cartas y organización por usted – en varios idiomas, en persona y a precios justos.", ctaBook: "Reservar ahora", ctaFile: "Subir una carta", servicesKicker: "Servicios", servicesMore: "Ver todos los servicios", book: "Reservar", ctaTitle: "¿Listo para delegar el papeleo?" };
+X.tr = {
+  badge: "Almanya’da günlük yaşam ortağınız",
+  heroTitle: "Resmi yazılar, randevular, büro – biz hallediyoruz.",
+  heroSub: "EinStein formları, yazıları ve organizasyonu sizin için halleder – çok dilli, kişisel ve uygun fiyatlarla.",
+  ctaBook: "Şimdi rezervasyon", ctaFile: "Mektup yükle",
+  trust: ["Arapça, Almanca, İngilizce, Türkçe …", "Sabit bir irtibat kişisi", "Şeffaf fiyatlar"],
+  demoFrom: "Jobcenter Frankfurt", demoTitle: "Devam başvurusu (Bürgergeld)", demoSorted: "Klasör: Jobcenter", demoSummary: "Bürgergeld ödemeniz 30.11. tarihinde bitiyor. Devam başvurusunu bu tarihten önce yapın.", demoReminder: "5 gün sonra hatırlatma",
+  authorities: "Şu kurumlardan gelen yazılarda yardımcı oluyoruz",
+  servicesKicker: "Hizmetler", servicesMore: "Tüm hizmetler", book: "Rezervasyon",
+  fileKicker: "Belgelerim", fileTitle: "Her mektup sıralı, çevrilmiş ve son tarihi gözünüzün önünde.", fileSub: "Mektuplarınızın fotoğrafını çekin. Yapay zekâmız doğru klasöre yerleştirir, dilinize çevirir ve son tarihleri hatırlatır.",
+  fileSteps: [["Yükleyin", "Fotoğraf veya PDF, birkaçı birden"], ["Sıralanır ve çevrilir", "Doğru klasörde, kendi dilinizde"], ["Hatırlatma", "Son tarih geçmeden önce"]],
+  fileCta: "Belgelerimi aç", fileNote: "Aylık abonelik, istediğiniz zaman iptal",
+  howKicker: "Nasıl çalışır", howTitle: "Üç adımda tamam",
+  how: [["Hizmeti seçin", "Online veya telefonla – kendi dilinizde."], ["Randevu alın", "Onaylar ve fiyatı baştan söyleriz."], ["Tamam", "Biz hallederiz – siz bilgilendirilirsiniz."]],
+  whyKicker: "Neden EinStein",
+  forKicker: "Kimler için",
+  ctaTitle: "Evrak işlerini bize bırakmaya hazır mısınız?", ctaSub: "Birkaç dakikada rezervasyon yapın – hızlıca dönüş yaparız.",
+};
+X.es = {
+  badge: "Su aliado para la vida diaria en Alemania",
+  heroTitle: "Cartas oficiales, citas, oficina – nos encargamos.",
+  heroSub: "EinStein se ocupa de formularios, cartas y organización por usted – en varios idiomas, en persona y a precios justos.",
+  ctaBook: "Reservar ahora", ctaFile: "Subir una carta",
+  trust: ["Árabe, alemán, inglés, turco …", "Una persona de contacto fija", "Precios transparentes"],
+  demoFrom: "Jobcenter Frankfurt", demoTitle: "Solicitud de continuación (Bürgergeld)", demoSorted: "Carpeta: Jobcenter", demoSummary: "Su Bürgergeld termina el 30.11. Presente la solicitud de continuación antes de esa fecha.", demoReminder: "Recordatorio en 5 días",
+  authorities: "Le ayudamos con cartas de",
+  servicesKicker: "Servicios", servicesMore: "Ver todos los servicios", book: "Reservar",
+  fileKicker: "Mis documentos", fileTitle: "Cada carta ordenada, traducida y con su plazo a la vista.", fileSub: "Fotografíe su correo. Nuestra IA lo guarda en la carpeta correcta, lo traduce a su idioma y le recuerda los plazos.",
+  fileSteps: [["Suba", "Foto o PDF, varios a la vez"], ["Ordenado y traducido", "En la carpeta correcta, en su idioma"], ["Recordatorio", "Antes de que venza el plazo"]],
+  fileCta: "Abrir mis documentos", fileNote: "Suscripción mensual, cancele cuando quiera",
+  howKicker: "Cómo funciona", howTitle: "Listo en tres pasos",
+  how: [["Elija un servicio", "En línea o por teléfono – en su idioma."], ["Pida una cita", "Confirmamos y le decimos el precio por adelantado."], ["Listo", "Nos encargamos de todo – usted se mantiene informado."]],
+  whyKicker: "Por qué EinStein",
+  forKicker: "Para quién",
+  ctaTitle: "¿Listo para delegar el papeleo?", ctaSub: "Reserve en minutos – le respondemos rápido.",
+};
 
 const AUTHORITIES = ["Jobcenter", "Ausländerbehörde", "Finanzamt", "Familienkasse", "Krankenkasse", "Rentenversicherung", "Vermieter"];
 
