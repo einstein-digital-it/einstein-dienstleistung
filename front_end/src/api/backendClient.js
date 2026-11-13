@@ -291,6 +291,14 @@ export const paymentsApi = {
   }),
 };
 
+// Admin: voucher codes for a free Unterlagen-Abo
+export const aboVouchersApi = {
+  list: () => request("/admin/abo-vouchers"),
+  create: (data) => request("/admin/abo-vouchers", { method: "POST", body: JSON.stringify(data) }),
+  update: (id, data) => request(`/admin/abo-vouchers/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  remove: (id) => request(`/admin/abo-vouchers/${id}`, { method: "DELETE" }),
+};
+
 export const revenueReportsApi = {
   getRevenueReport: (year) => request(`/admin/revenue-reports?year=${encodeURIComponent(year)}`),
 };
@@ -361,6 +369,8 @@ export const customerDocumentsApi = {
   subscription: () => request("/customer/subscription"),
   subscribe: (lang) => request("/customer/subscription/checkout", { method: "POST", body: JSON.stringify({ lang }) }),
   cancelSubscription: () => request("/customer/subscription/cancel", { method: "POST", body: "{}" }),
+  // Voucher code from EinStein: free months without payment
+  redeemVoucher: (code) => request("/customer/subscription/redeem", { method: "POST", body: JSON.stringify({ code }) }),
   reminders: (email) => request(`/customer/reminders${toQuery({ email })}`),
   updateReminder: (id, payload) => request(`/customer/reminders/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   upload: ({ file, folder, title, note, lang }) => {

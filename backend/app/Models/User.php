@@ -89,6 +89,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'form_data' => 'array',
             'file_abo_ends_at' => 'datetime',
+            'file_abo_free_until' => 'datetime',
         ];
     }
 
@@ -99,6 +100,12 @@ class User extends Authenticatable
             return true;
         }
 
-        return in_array($this->file_abo_status, ['active', 'past_due'], true);
+        return in_array($this->file_abo_status, ['active', 'past_due'], true) || $this->hasFreeFileAbo();
+    }
+
+    /** Free months from a voucher code (AboVoucher) that have not run out yet. */
+    public function hasFreeFileAbo(): bool
+    {
+        return $this->file_abo_free_until !== null && $this->file_abo_free_until->isFuture();
     }
 }

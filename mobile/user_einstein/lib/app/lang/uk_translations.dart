@@ -1,5 +1,15 @@
 // Ukrainian (uk). Keys missing here fall back to English.
 const Map<String, String> ukTranslations = {
+  "voucher_ask": "Маєте код купона?",
+  "voucher_hint": "Код купона",
+  "voucher_redeem": "Застосувати",
+  "voucher_ok": "Код прийнято. Безкоштовно до @date.",
+  "abo_free_until": "Безкоштовно до @date (купон)",
+  "voucher_invalid": "Цей код недійсний.",
+  "voucher_expired": "Термін дії цього коду минув.",
+  "voucher_used_up": "Цей код уже використано.",
+  "voucher_already": "Ви вже використали цей код.",
+  "voucher_subscribed": "У вас уже є платна підписка.",
   "notifications_unread_hint": "@count нових сповіщень про бронювання, платежі та документи.",
   "cases_title": "Мої власні справи",
   "cases_new": "Нова справа",

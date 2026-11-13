@@ -759,6 +759,7 @@ void main() {
     expect(find.text('00_Uebersicht'), findsOneWidget);
     expect(find.byTooltip('Share'), findsOneWidget);
     expect(find.text('01_Arbeitsvertrag'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Not sorted'), 200, scrollable: find.byType(Scrollable).first);
     expect(find.text('Not sorted'), findsOneWidget);
 
     final docs = Get.find<DocumentsController>();

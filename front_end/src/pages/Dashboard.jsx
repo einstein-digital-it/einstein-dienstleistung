@@ -8,8 +8,7 @@ import {
   FileSearch,
   Search,
   ShieldCheck,
-  Users
-} from "lucide-react";
+  Users, Gift } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,6 +24,7 @@ const translations = {
     links: [
       { label: "الحجوزات", href: "/AdminBookings", icon: ClipboardList, note: "عرض الحجوزات الحالية" },
       { label: "التقارير", href: "/BookingReports", icon: BarChart3, note: "تقارير الحجوزات والحالات" },
+      { label: "القسائم", href: "/AdminVouchers", icon: Gift, note: "رموز اشتراك مجاني للعملاء" },
       { label: "تقرير الإيرادات", href: "/RevenueReports", icon: Euro, note: "الإيرادات والمقارنة الشهرية" },
       { label: "المستخدمون", href: "/Users", icon: Users, note: "حسابات العملاء والمديرين" },
       { label: "SEO", href: "/SEO", icon: Search, note: "بيانات الميتا وخريطة الموقع" }
@@ -49,6 +49,7 @@ const quickLinksByLanguage = {
   en: [
     { label: "Bookings", href: "/AdminBookings", icon: ClipboardList, note: "View current bookings" },
     { label: "Reports", href: "/BookingReports", icon: BarChart3, note: "Booking and status reports" },
+    { label: "Voucher codes", href: "/AdminVouchers", icon: Gift, note: "Free subscription codes for customers" },
     { label: "Revenue Report", href: "/RevenueReports", icon: Euro, note: "Revenue and monthly comparison" },
     { label: "Users", href: "/Users", icon: Users, note: "Customer and administrator accounts" },
     { label: "SEO", href: "/SEO", icon: Search, note: "Meta data and sitemap" },
@@ -56,6 +57,7 @@ const quickLinksByLanguage = {
   de: [
     { label: "Buchungen", href: "/AdminBookings", icon: ClipboardList, note: "Aktuelle Buchungen anzeigen" },
     { label: "Berichte", href: "/BookingReports", icon: BarChart3, note: "Buchungs- und Statusberichte" },
+    { label: "Gutscheine", href: "/AdminVouchers", icon: Gift, note: "Codes fuer ein kostenloses Abo" },
     { label: "Umsatzbericht", href: "/RevenueReports", icon: Euro, note: "Umsatz und monatlicher Vergleich" },
     { label: "Benutzer", href: "/Users", icon: Users, note: "Kunden- und Administratorkonten" },
     { label: "SEO", href: "/SEO", icon: Search, note: "Meta-Daten und Sitemap" },

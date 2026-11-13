@@ -1,6 +1,16 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'voucher_ask': 'Do you have a voucher code?',
+  'voucher_hint': 'Voucher code',
+  'voucher_redeem': 'Redeem',
+  'voucher_ok': 'Code accepted. Free until @date.',
+  'abo_free_until': 'Free until @date (voucher)',
+  'voucher_invalid': 'This code is not valid.',
+  'voucher_expired': 'This code has expired.',
+  'voucher_used_up': 'This code has already been used.',
+  'voucher_already': 'You have already used this code.',
+  'voucher_subscribed': 'You already have a paid subscription.',
   'notifications_unread_hint': '@count new notes about bookings, payments and documents.',
   'abo_limit': 'Up to @limit letters a month',
   'abo_usage': '@used of @limit letters this month',
@@ -146,6 +156,16 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'voucher_ask': 'هل لديك رمز قسيمة؟',
+  'voucher_hint': 'رمز القسيمة',
+  'voucher_redeem': 'تفعيل',
+  'voucher_ok': 'تم قبول الرمز. مجاناً حتى @date.',
+  'abo_free_until': 'مفعّل مجاناً حتى @date (قسيمة)',
+  'voucher_invalid': 'هذا الرمز غير صالح.',
+  'voucher_expired': 'انتهت صلاحية هذا الرمز.',
+  'voucher_used_up': 'تم استخدام هذا الرمز من قبل.',
+  'voucher_already': 'لقد استخدمت هذا الرمز سابقاً.',
+  'voucher_subscribed': 'لديك اشتراك مدفوع بالفعل.',
   'notifications_unread_hint': '@count إشعارات جديدة عن الحجوزات والمدفوعات والمستندات.',
   'abo_limit': 'حتى @limit ورقة شهرياً',
   'abo_usage': '@used من @limit ورقة هذا الشهر',
@@ -291,6 +311,16 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'voucher_ask': 'Haben Sie einen Gutscheincode?',
+  'voucher_hint': 'Gutscheincode',
+  'voucher_redeem': 'Einlösen',
+  'voucher_ok': 'Code angenommen. Kostenlos bis @date.',
+  'abo_free_until': 'Kostenlos aktiv bis @date (Gutschein)',
+  'voucher_invalid': 'Dieser Code ist nicht gültig.',
+  'voucher_expired': 'Dieser Code ist abgelaufen.',
+  'voucher_used_up': 'Dieser Code wurde bereits eingelöst.',
+  'voucher_already': 'Sie haben diesen Code schon eingelöst.',
+  'voucher_subscribed': 'Sie haben bereits ein bezahltes Abo.',
   'notifications_unread_hint': '@count neue Hinweise zu Buchungen, Zahlungen und Unterlagen.',
   'abo_limit': 'Bis zu @limit Schreiben pro Monat',
   'abo_usage': '@used von @limit Schreiben diesen Monat',

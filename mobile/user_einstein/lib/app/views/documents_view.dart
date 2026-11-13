@@ -180,7 +180,9 @@ class AboCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      ends == null ? 'abo_active'.tr : 'abo_active_until'.trParams({'date': formatDate(ends)}),
+                      c.aboFree.value && c.aboFreeUntil.value != null
+                          ? 'abo_free_until'.trParams({'date': formatDate(c.aboFreeUntil.value!)})
+                          : ends == null ? 'abo_active'.tr : 'abo_active_until'.trParams({'date': formatDate(ends)}),
                       style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
                     ),
                     if (c.aboLimit.value > 0) ...[
@@ -195,7 +197,7 @@ class AboCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (ends == null)
+              if (ends == null && !c.aboFree.value)
                 TextButton(
                   onPressed: c.aboBusy.value ? null : () => _confirmCancel(c),
                   child: Text('abo_cancel'.tr),
@@ -235,6 +237,39 @@ class AboCard extends StatelessWidget {
                 label: Text('abo_subscribe'.tr),
               ),
             ),
+            const SizedBox(height: 14),
+            // Voucher code from EinStein: free months, no payment
+            Text('voucher_ask'.tr, style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w600, fontSize: 13)),
+            const SizedBox(height: 6),
+            Row(children: [
+              Expanded(
+                child: TextField(
+                  key: const Key('voucher_code_field'),
+                  controller: c.voucherController,
+                  textCapitalization: TextCapitalization.characters,
+                  textDirection: TextDirection.ltr,
+                  autocorrect: false,
+                  onSubmitted: (_) => c.redeemVoucher(),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText: 'voucher_hint'.tr,
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              OutlinedButton(
+                key: const Key('voucher_redeem'),
+                onPressed: c.aboBusy.value ? null : c.redeemVoucher,
+                child: Text('voucher_redeem'.tr),
+              ),
+            ]),
+            if (c.voucherError.value.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text(c.voucherError.value, style: const TextStyle(color: Color(0xFFB91C1C), fontWeight: FontWeight.w600, fontSize: 13)),
+            ],
           ],
         ),
       );

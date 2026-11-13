@@ -18,7 +18,8 @@ import {
   CreditCard,
   Wrench as WrenchIcon,
   Briefcase,
-  TrendingUp
+  TrendingUp,
+  Gift
 } from "lucide-react";
 
 import NotificationBell from "@/components/NotificationBell";
@@ -163,6 +164,7 @@ const MENU = {
   myProfile: { de: "Mein Profil", ar: "ملفي الشخصي", en: "My profile", tr: "Profilim", es: "Mi perfil", uk: "Мій профіль" },
   notifications: { de: "Benachrichtigungen", ar: "إعدادات الإشعارات", en: "Notifications", tr: "Bildirimler", es: "Notificaciones", uk: "Сповіщення" },
   help: { de: "Hilfe", ar: "خدمة العملاء", en: "Support", tr: "Yardım", es: "Ayuda", uk: "Підтримка" },
+  vouchers: { de: "Gutscheine", ar: "القسائم", en: "Voucher codes", tr: "Kuponlar", es: "Cupones", uk: "Купони" },
   contact: { de: "Kontakt", ar: "اتصل بنا", en: "Contact", tr: "İletişim", es: "Contacto", uk: "Контакти" },
 };
 
@@ -310,6 +312,12 @@ export default function Layout({ children, currentPageName }) {
                       <Link to={createPageUrl("BookingReports")} className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-gray-400" />
                         {m("reports")}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to={createPageUrl("AdminVouchers")} className="flex items-center gap-2">
+                        <Gift className="w-4 h-4 text-gray-400" />
+                        {m("vouchers")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -549,6 +557,13 @@ export default function Layout({ children, currentPageName }) {
                                               onClick={() => setIsMenuOpen(false)}
                                             >
                                               {t.myBookings}
+                                            </Link>
+                                            <Link
+                                              to={createPageUrl("AdminVouchers")}
+                                              className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
+                                              onClick={() => setIsMenuOpen(false)}
+                                            >
+                                              {m("vouchers")}
                                             </Link>
                                             <Link 
                                               to={createPageUrl("Payments")} 

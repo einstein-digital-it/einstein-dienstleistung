@@ -40,7 +40,7 @@ const T = {
     reminders: "Erinnerungen", daysLeft: (n) => (n < 0 ? "überfällig" : n === 0 ? "heute" : `in ${n} Tagen`), done: "Erledigt", translateMine: "In meine Sprache übersetzen",
     translateNow: "Übersetzen", processing: "Wird bearbeitet…", failed: "Automatische Übersetzung fehlgeschlagen", tooLong: "Dieses Dokument ist zu lang für die automatische Übersetzung. Es wurde nur gespeichert.", summary: "Zusammenfassung", translation: "Übersetzung", showTranslation: "Übersetzung anzeigen", hideTranslation: "Übersetzung ausblenden", deadline: "Frist", from: "Von",
     aiNote: "Die Datei wird zur Sortierung und Übersetzung automatisch mit Claude (Anthropic) ausgewertet. Die Übersetzung ist eine Hilfe, keine beglaubigte Übersetzung.",
-    aboTitle: "Sortieren & Übersetzen", aboPitch: "Wir sortieren jeden Brief in den richtigen Ordner, übersetzen ihn in Ihre Sprache und erinnern Sie an Fristen.",
+    voucherAsk: "Haben Sie einen Gutscheincode?", voucherPlaceholder: "Gutscheincode", voucherRedeem: "Einlösen", aboFree: "Kostenlos aktiv bis {d} (Gutschein)", voucherInvalid: "Dieser Code ist nicht gültig.", voucherExpired: "Dieser Code ist abgelaufen.", voucherUsedUp: "Dieser Code wurde bereits eingelöst.", voucherAlready: "Sie haben diesen Code schon eingelöst.", voucherSubscribed: "Sie haben bereits ein bezahltes Abo.", aboTitle: "Sortieren & Übersetzen", aboPitch: "Wir sortieren jeden Brief in den richtigen Ordner, übersetzen ihn in Ihre Sprache und erinnern Sie an Fristen.",
     aboPrice: (p) => `${p} € / Monat inkl. MwSt. · monatlich kündbar`, aboSubscribe: "Jetzt abonnieren", aboActive: "Sortieren & Übersetzen ist aktiv",
     aboUntil: (d) => `Gekündigt – aktiv bis ${d}`, aboCancel: "Abo kündigen", aboCancelConfirm: "Abo kündigen? Es bleibt bis zum Ende des bezahlten Monats aktiv.",
     aboNeeded: "Ohne Abo wird der Brief nur gespeichert, nicht sortiert oder übersetzt.", aboThanks: "Danke! Ihr Abo wird aktiviert, sobald die Zahlung bestätigt ist.", aboTerms: "Es gelten die AGB (§ 8b).", aboLimit: (n) => `Bis zu ${n} Schreiben pro Monat`, aboUsage: (u, n) => `${u} von ${n} Schreiben diesen Monat`, aboReached: "Ihr Monatskontingent ist aufgebraucht. Neue Schreiben werden nur gespeichert.",
@@ -58,7 +58,7 @@ const T = {
     reminders: "تذكيرات", daysLeft: (n) => (n < 0 ? "متأخر" : n === 0 ? "اليوم" : `بعد ${n} يوم`), done: "تم", translateMine: "ترجمها للغتي",
     translateNow: "ترجمة", processing: "جارٍ المعالجة…", failed: "فشلت الترجمة التلقائية", tooLong: "هذا الملف طويل جداً على الترجمة التلقائية، لذلك تم حفظه فقط.", summary: "الملخص", translation: "الترجمة", showTranslation: "عرض الترجمة", hideTranslation: "إخفاء الترجمة", deadline: "آخر موعد", from: "من",
     aiNote: "يتم تحليل الملف تلقائياً بواسطة Claude (Anthropic) لترتيبه وترجمته. الترجمة للمساعدة فقط وليست ترجمة محلّفة.",
-    aboTitle: "ترتيب وترجمة", aboPitch: "نرتّب كل رسالة في المجلد الصحيح، ونترجمها للغتك، ونذكّرك بالمواعيد.",
+    voucherAsk: "هل لديك رمز قسيمة؟", voucherPlaceholder: "رمز القسيمة", voucherRedeem: "تفعيل", aboFree: "مفعّل مجاناً حتى {d} (قسيمة)", voucherInvalid: "هذا الرمز غير صالح.", voucherExpired: "انتهت صلاحية هذا الرمز.", voucherUsedUp: "تم استخدام هذا الرمز من قبل.", voucherAlready: "لقد استخدمت هذا الرمز سابقاً.", voucherSubscribed: "لديك اشتراك مدفوع بالفعل.", aboTitle: "ترتيب وترجمة", aboPitch: "نرتّب كل رسالة في المجلد الصحيح، ونترجمها للغتك، ونذكّرك بالمواعيد.",
     aboPrice: (p) => `${p} € شهرياً شامل الضريبة · يمكن الإلغاء شهرياً`, aboSubscribe: "اشترك الآن", aboActive: "الترتيب والترجمة مفعّلان",
     aboUntil: (d) => `تم الإلغاء – مفعّل حتى ${d}`, aboCancel: "إلغاء الاشتراك", aboCancelConfirm: "إلغاء الاشتراك؟ يبقى مفعّلاً حتى نهاية الشهر المدفوع.",
     aboNeeded: "بدون اشتراك تُحفظ الرسالة فقط، بدون ترتيب أو ترجمة.", aboThanks: "شكراً! يتفعّل اشتراكك فور تأكيد الدفع.", aboTerms: "تسري الشروط العامة (§ 8b).", aboLimit: (n) => `حتى ${n} ورقة في الشهر`, aboUsage: (u, n) => `${u} من ${n} ورقة هذا الشهر`, aboReached: "انتهى رصيدك لهذا الشهر. الأوراق الجديدة تُحفظ فقط دون ترتيب أو ترجمة.",
@@ -76,7 +76,7 @@ const T = {
     reminders: "Reminders", daysLeft: (n) => (n < 0 ? "overdue" : n === 0 ? "today" : `in ${n} days`), done: "Done", translateMine: "Translate into my language",
     translateNow: "Translate", processing: "Processing…", failed: "Automatic translation failed", tooLong: "This document is too long for automatic translation. It was only stored.", summary: "Summary", translation: "Translation", showTranslation: "Show translation", hideTranslation: "Hide translation", deadline: "Deadline", from: "From",
     aiNote: "The file is analysed automatically by Claude (Anthropic) to sort and translate it. The translation is a help, not a certified translation.",
-    aboTitle: "Sorting & translation", aboPitch: "We sort every letter into the right folder, translate it into your language and remind you of deadlines.",
+    voucherAsk: "Do you have a voucher code?", voucherPlaceholder: "Voucher code", voucherRedeem: "Redeem", aboFree: "Free until {d} (voucher)", voucherInvalid: "This code is not valid.", voucherExpired: "This code has expired.", voucherUsedUp: "This code has already been used.", voucherAlready: "You have already used this code.", voucherSubscribed: "You already have a paid subscription.", aboTitle: "Sorting & translation", aboPitch: "We sort every letter into the right folder, translate it into your language and remind you of deadlines.",
     aboPrice: (p) => `${p} € / month incl. VAT · cancel monthly`, aboSubscribe: "Subscribe now", aboActive: "Sorting & translation is active",
     aboUntil: (d) => `Cancelled – active until ${d}`, aboCancel: "Cancel subscription", aboCancelConfirm: "Cancel the subscription? It stays active until the end of the paid month.",
     aboNeeded: "Without a subscription the letter is only stored, not sorted or translated.", aboThanks: "Thank you! Your subscription starts as soon as the payment is confirmed.", aboTerms: "Our terms apply (AGB § 8b).", aboLimit: (n) => `Up to ${n} letters a month`, aboUsage: (u, n) => `${u} of ${n} letters this month`, aboReached: "Your monthly allowance is used up. New letters are only stored.",
@@ -95,7 +95,7 @@ T.tr = {
   reminders: "Hatırlatmalar", daysLeft: (n) => (n < 0 ? "süresi geçti" : n === 0 ? "bugün" : `${n} gün sonra`), done: "Tamam", translateMine: "Dilime çevir",
   translateNow: "Çevir", processing: "İşleniyor…", failed: "Otomatik çeviri başarısız oldu", tooLong: "Bu belge otomatik çeviri için çok uzun. Yalnızca kaydedildi.", summary: "Özet", translation: "Çeviri", showTranslation: "Çeviriyi göster", hideTranslation: "Çeviriyi gizle", deadline: "Son tarih", from: "Gönderen",
   aiNote: "Dosya, sıralanması ve çevrilmesi için Claude (Anthropic) tarafından otomatik olarak analiz edilir. Çeviri bir yardımdır, yeminli çeviri değildir.",
-  aboTitle: "Sıralama ve çeviri", aboPitch: "Her mektubu doğru klasöre yerleştirir, dilinize çevirir ve son tarihleri hatırlatırız.",
+  voucherAsk: "Kupon kodunuz var mı?", voucherPlaceholder: "Kupon kodu", voucherRedeem: "Kullan", aboFree: "{d} tarihine kadar ücretsiz (kupon)", voucherInvalid: "Bu kod geçerli değil.", voucherExpired: "Bu kodun süresi dolmuş.", voucherUsedUp: "Bu kod daha önce kullanılmış.", voucherAlready: "Bu kodu zaten kullandınız.", voucherSubscribed: "Zaten ücretli bir aboneliğiniz var.", aboTitle: "Sıralama ve çeviri", aboPitch: "Her mektubu doğru klasöre yerleştirir, dilinize çevirir ve son tarihleri hatırlatırız.",
   aboPrice: (p) => `${p} € / ay KDV dahil · aylık iptal`, aboSubscribe: "Şimdi abone ol", aboActive: "Sıralama ve çeviri etkin",
   aboUntil: (d) => `İptal edildi – ${d} tarihine kadar etkin`, aboCancel: "Aboneliği iptal et", aboCancelConfirm: "Abonelik iptal edilsin mi? Ödenen ayın sonuna kadar etkin kalır.",
   aboNeeded: "Abonelik olmadan mektup yalnızca kaydedilir; sıralanmaz ve çevrilmez.", aboThanks: "Teşekkürler! Ödeme onaylanır onaylanmaz aboneliğiniz başlar.", aboTerms: "Şartlarımız geçerlidir (AGB § 8b).", aboLimit: (n) => `Ayda en fazla ${n} mektup`, aboUsage: (u, n) => `Bu ay ${n} mektuptan ${u} tanesi`, aboReached: "Aylık hakkınız doldu. Yeni mektuplar yalnızca kaydedilir.",
@@ -113,7 +113,7 @@ T.es = {
   reminders: "Recordatorios", daysLeft: (n) => (n < 0 ? "vencido" : n === 0 ? "hoy" : `en ${n} días`), done: "Hecho", translateMine: "Traducir a mi idioma",
   translateNow: "Traducir", processing: "Procesando…", failed: "La traducción automática ha fallado", tooLong: "Este documento es demasiado largo para la traducción automática. Solo se ha guardado.", summary: "Resumen", translation: "Traducción", showTranslation: "Mostrar traducción", hideTranslation: "Ocultar traducción", deadline: "Plazo", from: "De",
   aiNote: "Claude (Anthropic) analiza el archivo automáticamente para ordenarlo y traducirlo. La traducción es una ayuda, no una traducción jurada.",
-  aboTitle: "Ordenar y traducir", aboPitch: "Ordenamos cada carta en la carpeta correcta, la traducimos a su idioma y le recordamos los plazos.",
+  voucherAsk: "¿Tiene un código de cupón?", voucherPlaceholder: "Código de cupón", voucherRedeem: "Canjear", aboFree: "Gratis hasta el {d} (cupón)", voucherInvalid: "Este código no es válido.", voucherExpired: "Este código ha caducado.", voucherUsedUp: "Este código ya se ha utilizado.", voucherAlready: "Ya ha utilizado este código.", voucherSubscribed: "Ya tiene una suscripción de pago.", aboTitle: "Ordenar y traducir", aboPitch: "Ordenamos cada carta en la carpeta correcta, la traducimos a su idioma y le recordamos los plazos.",
   aboPrice: (p) => `${p} € / mes IVA incl. · cancelable mensualmente`, aboSubscribe: "Suscribirse ahora", aboActive: "Ordenar y traducir está activo",
   aboUntil: (d) => `Cancelada – activa hasta el ${d}`, aboCancel: "Cancelar suscripción", aboCancelConfirm: "¿Cancelar la suscripción? Sigue activa hasta el final del mes pagado.",
   aboNeeded: "Sin suscripción la carta solo se guarda; no se ordena ni se traduce.", aboThanks: "¡Gracias! Su suscripción empieza en cuanto se confirme el pago.", aboTerms: "Se aplican nuestras condiciones (AGB § 8b).", aboLimit: (n) => `Hasta ${n} cartas al mes`, aboUsage: (u, n) => `${u} de ${n} cartas este mes`, aboReached: "Ha agotado su cupo mensual. Las cartas nuevas solo se guardan.",
@@ -131,7 +131,7 @@ T.uk = {
   reminders: "Нагадування", daysLeft: (n) => (n < 0 ? "прострочено" : n === 0 ? "сьогодні" : `через ${n} дн.`), done: "Виконано", translateMine: "Перекласти моєю мовою",
   translateNow: "Перекласти", processing: "Обробляємо…", failed: "Автоматичний переклад не вдався", tooLong: "Цей документ задовгий для автоматичного перекладу. Його лише збережено.", summary: "Коротко", translation: "Переклад", showTranslation: "Показати переклад", hideTranslation: "Сховати переклад", deadline: "Строк", from: "Від",
   aiNote: "Файл автоматично аналізує Claude (Anthropic), щоб упорядкувати й перекласти його. Переклад – це допомога, а не завірений переклад.",
-  aboTitle: "Впорядкування та переклад", aboPitch: "Ми розкладаємо кожен лист у потрібну папку, перекладаємо вашою мовою та нагадуємо про строки.",
+  voucherAsk: "Маєте код купона?", voucherPlaceholder: "Код купона", voucherRedeem: "Застосувати", aboFree: "Безкоштовно до {d} (купон)", voucherInvalid: "Цей код недійсний.", voucherExpired: "Термін дії цього коду минув.", voucherUsedUp: "Цей код уже використано.", voucherAlready: "Ви вже використали цей код.", voucherSubscribed: "У вас уже є платна підписка.", aboTitle: "Впорядкування та переклад", aboPitch: "Ми розкладаємо кожен лист у потрібну папку, перекладаємо вашою мовою та нагадуємо про строки.",
   aboPrice: (p) => `${p} € / міс. з ПДВ · скасування щомісяця`, aboSubscribe: "Підписатися", aboActive: "Впорядкування та переклад активні",
   aboUntil: (d) => `Скасовано – активно до ${d}`, aboCancel: "Скасувати підписку", aboCancelConfirm: "Скасувати підписку? Вона діє до кінця оплаченого місяця.",
   aboNeeded: "Без підписки лист лише зберігається, без впорядкування й перекладу.", aboThanks: "Дякуємо! Підписка почне діяти, щойно оплату буде підтверджено.", aboTerms: "Діють наші умови (AGB § 8b).", aboLimit: (n) => `До ${n} листів на місяць`, aboUsage: (u, n) => `${u} з ${n} листів цього місяця`, aboReached: "Ваш місячний ліміт вичерпано. Нові листи лише зберігаються.",
@@ -208,6 +208,24 @@ export default function MyDocuments() {
 
   const translate = (doc) => customerDocumentsApi.translate(doc.id, lang).then(() => { load(); loadAbo(); })
     .catch((err) => setError(err.status === 402 ? t.aboNeeded : err.status === 429 ? t.aboReached : t.error));
+
+  const [voucherCode, setVoucherCode] = useState("");
+  const [voucherError, setVoucherError] = useState("");
+  const redeemVoucher = async (event) => {
+    event.preventDefault();
+    setVoucherError("");
+    setAboBusy(true);
+    try {
+      setAbo(await customerDocumentsApi.redeemVoucher(voucherCode.trim()));
+      setVoucherCode("");
+      load();
+    } catch (err) {
+      const texts = { invalid_code: t.voucherInvalid, code_expired: t.voucherExpired, code_used_up: t.voucherUsedUp, already_redeemed: t.voucherAlready, already_subscribed: t.voucherSubscribed };
+      setVoucherError(texts[err.code] || t.error);
+    } finally {
+      setAboBusy(false);
+    }
+  };
 
   const load = async () => {
     setLoading(true);
@@ -351,19 +369,22 @@ export default function MyDocuments() {
             <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-100 bg-white p-4">
               <BadgeCheck className="w-5 h-5 text-emerald-600" />
               <p className="flex-1 font-semibold text-[#2e1065]">
-                {abo.ends_at ? t.aboUntil(new Date(abo.ends_at).toLocaleDateString(lang === "ar" ? "ar" : lang)) : t.aboActive}
+                {abo.free
+                  ? t.aboFree.replace("{d}", new Date(abo.free_until).toLocaleDateString(lang === "ar" ? "ar" : lang))
+                  : abo.ends_at ? t.aboUntil(new Date(abo.ends_at).toLocaleDateString(lang === "ar" ? "ar" : lang)) : t.aboActive}
               </p>
               {abo.limit > 0 && (
                 <p className={`order-last w-full text-sm ${abo.used >= abo.limit ? "font-semibold text-amber-700" : "text-gray-500"}`}>
                   {abo.used >= abo.limit ? t.aboReached : t.aboUsage(abo.used, abo.limit)}
                 </p>
               )}
-              {!abo.ends_at && (
+              {!abo.ends_at && !abo.free && (
                 <Button variant="ghost" onClick={cancelAbo} disabled={aboBusy} className="text-gray-600">{t.aboCancel}</Button>
               )}
             </div>
           ) : (
-            <div className="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-5 flex flex-col md:flex-row md:items-center gap-4">
+            <div className="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-5">
+             <div className="flex flex-col md:flex-row md:items-center gap-4">
               <div className="flex-1">
                 <p className="font-bold text-[#2e1065]">{t.aboTitle}</p>
                 <p className="text-sm text-[#2e1065]/80 mt-1">{aboReturn === "1" ? t.aboThanks : `${t.aboPitch} ${t.aboNeeded}`}</p>
@@ -375,6 +396,25 @@ export default function MyDocuments() {
                 {aboBusy ? <Loader2 className="w-4 h-4 me-2 animate-spin" /> : <Sparkles className="w-4 h-4 me-2" />}
                 {t.aboSubscribe}
               </Button>
+             </div>
+             {/* Voucher code from EinStein: free months, no payment */}
+             {!isAdmin && (
+               <form onSubmit={redeemVoucher} className="mt-4 flex flex-col gap-2 border-t border-purple-100 pt-4 sm:flex-row sm:items-center">
+                 <label htmlFor="voucher-code" className="text-sm font-semibold text-[#2e1065] sm:me-2">{t.voucherAsk}</label>
+                 <input
+                   id="voucher-code"
+                   value={voucherCode}
+                   onChange={(e) => { setVoucherCode(e.target.value.toUpperCase()); setVoucherError(""); }}
+                   placeholder={t.voucherPlaceholder}
+                   dir="ltr"
+                   maxLength={40}
+                   autoComplete="off"
+                   className="h-10 flex-1 rounded-lg border border-purple-200 bg-white px-3 font-mono text-sm tracking-wider outline-none focus:border-[#7c3aed] focus:ring-4 focus:ring-[#7c3aed]/15 sm:max-w-xs"
+                 />
+                 <Button type="submit" variant="outline" disabled={aboBusy || !voucherCode.trim()} className="border-purple-200 font-bold text-[#6B46C1]">{t.voucherRedeem}</Button>
+               </form>
+             )}
+             {voucherError && <p className="mt-2 text-sm font-semibold text-red-600" role="alert">{voucherError}</p>}
             </div>
           ))}
           {!isAdmin && <CustomerCases lang={lang} abo={abo} onOpenChange={setCaseOpen} onUploaded={loadAbo} />}

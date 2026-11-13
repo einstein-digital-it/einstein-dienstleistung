@@ -201,10 +201,20 @@ class CustomerSubscriptionController extends Controller
 
     private function state(User $user): array
     {
+        return self::stateFor($user);
+    }
+
+    public static function stateFor(User $user): array
+    {
+        $paid = in_array($user->file_abo_status, ['active', 'past_due'], true);
+
         return [
             'active' => $user->hasFileAbo(),
             'status' => $user->file_abo_status ?? 'none',
             'ends_at' => $user->file_abo_ends_at?->toIso8601String(),
+            // Free months from a voucher code; "free" is true while they are what keeps the Abo active
+            'free' => ! $paid && $user->hasFreeFileAbo(),
+            'free_until' => $user->hasFreeFileAbo() ? $user->file_abo_free_until->toIso8601String() : null,
             'price' => round(self::priceCents() / 100, 2),
             'currency' => 'EUR',
             'vat_included' => true,

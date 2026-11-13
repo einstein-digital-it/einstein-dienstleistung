@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AboVoucherController;
 use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\AdminClientWorkspaceController;
 use App\Http\Controllers\Api\AdminServiceController;
@@ -91,6 +92,7 @@ Route::middleware('api.auth:admin,user')->group(function () {
     Route::get('customer/subscription', [CustomerSubscriptionController::class, 'show']);
     Route::post('customer/subscription/checkout', [CustomerSubscriptionController::class, 'checkout'])->middleware('throttle:10,1');
     Route::post('customer/subscription/cancel', [CustomerSubscriptionController::class, 'cancel']);
+    Route::post('customer/subscription/redeem', [AboVoucherController::class, 'redeem'])->middleware('throttle:10,1');
     Route::get('customer/reminders', [CustomerReminderController::class, 'index']);
     Route::post('customer/reminders', [CustomerReminderController::class, 'store']);
     Route::patch('customer/reminders/{reminder}', [CustomerReminderController::class, 'update']);
@@ -143,6 +145,7 @@ Route::middleware('api.auth:admin')->group(function () {
     Route::patch('admin/payments/{booking}/refund', [PaymentAdminController::class, 'refund']);
     Route::delete('admin/payments/{booking}/delete-unpaid', [PaymentAdminController::class, 'deleteUnpaid']);
     Route::get('admin/revenue-reports', [RevenueReportController::class, 'index']);
+    Route::apiResource('admin/abo-vouchers', AboVoucherController::class)->only(['index', 'store', 'update', 'destroy'])->parameters(['abo-vouchers' => 'voucher']);
     Route::apiResource('admin/seo-settings', SeoSettingController::class)->parameters(['seo-settings' => 'seoSetting']);
     Route::patch('customer-requests/{customerRequest}/accept', [CustomerRequestController::class, 'accept']);
     Route::patch('customer-requests/{customerRequest}/reject', [CustomerRequestController::class, 'reject']);

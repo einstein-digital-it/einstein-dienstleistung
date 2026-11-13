@@ -3,6 +3,7 @@
 import AGB from './pages/AGB';
 import AdminBookings from './pages/AdminBookings';
 import AdminUsers from './pages/AdminUsers';
+import AdminVouchers from './pages/AdminVouchers';
 import AdminServices from './pages/AdminServices';
 import Administration from './pages/Administration';
 import Booking from './pages/Booking';
@@ -42,6 +43,7 @@ export const PAGES = {
     "AGB": AGB,
     "AdminBookings": AdminBookings,
     "AdminUsers": AdminUsers,
+    "AdminVouchers": AdminVouchers,
     "AdminServices": AdminServices,
     "Administration": Administration,
     "Booking": Booking,

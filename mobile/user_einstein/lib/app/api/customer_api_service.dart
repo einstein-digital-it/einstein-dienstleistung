@@ -354,6 +354,12 @@ class CustomerApiService {
     return (Map<String, dynamic>.from(data as Map))['url'].toString();
   }
 
+  /// Voucher code from EinStein: free months without payment.
+  Future<Map<String, dynamic>> redeemVoucher(String code) async {
+    final data = await client.post('customer/subscription/redeem', body: {'code': code});
+    return data is Map ? Map<String, dynamic>.from(data) : <String, dynamic>{};
+  }
+
   Future<Map<String, dynamic>> cancelFileSubscription() async {
     final data = await client.post('customer/subscription/cancel', body: const {});
     return data is Map ? Map<String, dynamic>.from(data) : <String, dynamic>{};

@@ -3,6 +3,7 @@ import 'dart:io' show File;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_filex/open_filex.dart';
@@ -39,6 +40,11 @@ class DocumentsController extends GetxController {
   final aboUsed = 0.obs;
   final aboLimit = 0.obs;
   final aboEndsAt = Rxn<DateTime>();
+  /// Free months from a voucher code (no payment, nothing to cancel).
+  final aboFree = false.obs;
+  final aboFreeUntil = Rxn<DateTime>();
+  final voucherController = TextEditingController();
+  final voucherError = ''.obs;
   final aboBusy = false.obs;
 
   // Files the customer created
@@ -242,9 +248,37 @@ class DocumentsController extends GetxController {
     aboActive.value = data['active'] == true;
     aboPrice.value = double.tryParse('${data['price'] ?? ''}') ?? aboPrice.value;
     aboEndsAt.value = DateTime.tryParse('${data['ends_at'] ?? ''}')?.toLocal();
+    aboFree.value = data['free'] == true;
+    aboFreeUntil.value = DateTime.tryParse('${data['free_until'] ?? ''}')?.toLocal();
     aboUsed.value = int.tryParse('${data['used'] ?? ''}') ?? 0;
     aboLimit.value = int.tryParse('${data['limit'] ?? ''}') ?? 0;
     aboKnown.value = true;
+  }
+
+  /// Enter a voucher code from EinStein: sorting and translation for free.
+  Future<void> redeemVoucher() async {
+    final code = voucherController.text.trim();
+    if (code.isEmpty) return;
+    aboBusy.value = true;
+    voucherError.value = '';
+    try {
+      _applyAbo(await api.redeemVoucher(code));
+      voucherController.clear();
+      Get.snackbar('abo_title'.tr, 'voucher_ok'.trParams({'date': _date(aboFreeUntil.value)}));
+    } on ApiException catch (e) {
+      voucherError.value = switch (e.code) {
+        'invalid_code' => 'voucher_invalid'.tr,
+        'code_expired' => 'voucher_expired'.tr,
+        'code_used_up' => 'voucher_used_up'.tr,
+        'already_redeemed' => 'voucher_already'.tr,
+        'already_subscribed' => 'voucher_subscribed'.tr,
+        _ => e.message,
+      };
+    } catch (_) {
+      voucherError.value = 'auth_connection_error'.tr;
+    } finally {
+      aboBusy.value = false;
+    }
   }
 
   /// Opens Stripe's payment page; the Abo turns active once Stripe confirms it.
