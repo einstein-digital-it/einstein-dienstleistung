@@ -153,7 +153,9 @@ class ServicesController extends GetxController {
   Future<void> loadServices() async {
     isLoading.value = true;
     try {
-      final remoteServices = await api.services();
+      final remoteServices = await api.services(
+        local: {for (final service in services) service.id: service},
+      );
       if (remoteServices.isNotEmpty) services.assignAll(remoteServices);
     } catch (_) {
       errorText.value = 'Using local services data.';

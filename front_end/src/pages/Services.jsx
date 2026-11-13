@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { publicApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
+import { serviceFeatures, serviceText, unitLabel, useSiteServices } from "@/lib/siteServices";
 import StarRating from "@/components/StarRating";
 import { displayPrice, allPricesNote, isNetPriced, plusVatNote } from "@/lib/priceUtils";
 import { motion } from "framer-motion";
@@ -724,6 +725,13 @@ const serviceData = [
   { key: "dokumentabo", icon: Mail, image: img("1454165804606-c3d57bc86b40") },
   { key: "bueromanagement", icon: Building2, image: img("1497366216548-37526070297c") },
 ];
+// Icon and picture per category; which services show, their order and texts come from "Dienste verwalten"
+const SERVICE_LOOK = {
+  office: { icon: Briefcase, image: img("1499750310107-5fef28a66643") },
+  ...Object.fromEntries(serviceData.map(({ key, icon, image }) => [key, { icon, image }])),
+};
+const DEFAULT_LOOK = { icon: Briefcase, image: img("1454165804606-c3d57bc86b40") };
+const FALLBACK_SERVICE_KEYS = serviceData.map(({ key }) => key);
 
 export default function Services() {
   const [lang, setLang] = useState(() => { try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; } });
@@ -782,25 +790,34 @@ export default function Services() {
   const getPrices = (key) => (customPrices?.[key]
     ? customPrices[key].map((item) => ({ label: fromDb(item, "label"), price: item.price, unit: fromDb(item, "unit") }))
     : t.services[key]?.prices || []);
-  const getServiceName = (key) => (customPrices?.[key]?.[0] && fromDb(customPrices[key][0], "label")) || t.services[key].name;
+  const siteServices = useSiteServices(FALLBACK_SERVICE_KEYS);
+  const getServiceName = (key, db) => serviceText(db, "name", lang) || (customPrices?.[key]?.[0] && fromDb(customPrices[key][0], "label")) || t.services[key]?.name || key;
+  const getServicePrices = (key, db) => {
+    const prices = getPrices(key);
+    if (prices.length || !db || !(Number(db.price_from) > 0)) return prices;
+    return [{ label: getServiceName(key, db), price: Number(db.price_from), unit: unitLabel(db.price_unit, lang) }];
+  };
 
   return (
     <div className="overflow-x-hidden bg-white">
       <PageHero kicker={p.kicker} title={t.title} subtitle={t.subtitle}>
         <nav aria-label={p.jump} className="mt-8 flex flex-wrap gap-2">
-          {serviceData.map(({ key, icon: Icon }) => (
+          {siteServices.map(({ key, db }) => { const Icon = (SERVICE_LOOK[key] || DEFAULT_LOOK).icon; return (
             <a key={key} href={`#service-${key}`} className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-white px-4 py-2 text-sm font-semibold text-[#4c1d95] shadow-sm transition hover:border-[#7c3aed] hover:bg-purple-50">
-              <Icon className="h-4 w-4 text-[#7c3aed]" />{getServiceName(key)}
+              <Icon className="h-4 w-4 text-[#7c3aed]" />{getServiceName(key, db)}
             </a>
-          ))}
+          ); })}
         </nav>
       </PageHero>
 
       <div className="mx-auto max-w-7xl space-y-10 px-4 py-12 md:space-y-16 md:py-16">
-        {serviceData.map(({ key, icon: Icon, image }, index) => {
-          const info = t.services[key];
+        {siteServices.map(({ key, db }, index) => {
+          const { icon: Icon, image } = SERVICE_LOOK[key] || DEFAULT_LOOK;
+          const info = t.services[key] || {};
+          const description = serviceText(db, "description", lang) || info.desc;
+          const features = serviceFeatures(db, lang).length ? serviceFeatures(db, lang) : info.features || [];
           const rating = categoryRatings[key];
-          const prices = getPrices(key);
+          const prices = getServicePrices(key, db);
           return (
             <motion.article
               key={key}
@@ -823,19 +840,19 @@ export default function Services() {
               </div>
 
               <div className="flex flex-col p-6 md:p-10">
-                <h2 className="text-2xl font-black leading-snug text-[#1f0b52] md:text-3xl">{getServiceName(key)}</h2>
-                <p className="mt-3 leading-relaxed text-slate-600">{info.desc}</p>
+                <h2 className="text-2xl font-black leading-snug text-[#1f0b52] md:text-3xl">{getServiceName(key, db)}</h2>
+                <p className="mt-3 leading-relaxed text-slate-600">{description}</p>
 
-                <h3 className="mt-6 text-sm font-bold uppercase tracking-wide text-slate-400">{p.included}</h3>
+                {features.length > 0 && <h3 className="mt-6 text-sm font-bold uppercase tracking-wide text-slate-400">{p.included}</h3>}
                 <ul className="mt-3 grid gap-2.5 sm:grid-cols-2">
-                  {info.features.map((feature) => (
+                  {features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-700">
                       <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />{feature}
                     </li>
                   ))}
                 </ul>
 
-                <div className="mt-6 rounded-2xl bg-[#f7f3ff] p-4">
+                {prices.length > 0 && <div className="mt-6 rounded-2xl bg-[#f7f3ff] p-4">
                   <p className="text-sm font-bold text-[#4c1d95]">{p.prices}</p>
                   <ul className="mt-2 divide-y divide-purple-100">
                     {prices.map((item) => (
@@ -846,7 +863,7 @@ export default function Services() {
                     ))}
                   </ul>
                   <p className="mt-1 text-xs text-slate-500">{isNetPriced(key) ? plusVatNote(lang) : allPricesNote(lang)}</p>
-                </div>
+                </div>}
 
                 {info.note && (
                   <p className="mt-4 flex gap-2 rounded-2xl bg-slate-50 p-4 text-xs leading-relaxed text-slate-500">

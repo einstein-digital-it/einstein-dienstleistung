@@ -5,6 +5,7 @@ import { createPageUrl } from "../utils";
 import { publicApi } from "@/api/backendClient";
 import { displayPrice, priceNote } from "@/lib/priceUtils";
 import { useQuery } from "@tanstack/react-query";
+import { serviceText, unitLabel, useSiteServices } from "@/lib/siteServices";
 import { motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import SearchBar from "../components/SearchBar";
@@ -633,6 +634,7 @@ const translations = {
   }
 };
 
+// Icons per category; the list itself comes from "Dienste verwalten" (see lib/siteServices.js)
 const services = [
   { key: "office", icon: Briefcase, color: "bg-purple-500" },
   { key: "forms", icon: ClipboardList, color: "bg-teal-500" },
@@ -644,6 +646,8 @@ const services = [
   { key: "dokumentabo", icon: Mail, color: "bg-purple-600" },
   { key: "bueromanagement", icon: Briefcase, color: "bg-sky-700" }
 ];
+const SERVICE_ICONS = Object.fromEntries(services.map(({ key, icon }) => [key, icon]));
+const FALLBACK_SERVICE_KEYS = services.map(({ key }) => key);
 
 // Texts of the redesigned home page (the older keys above still feed services, why and quality)
 const X = {
@@ -860,6 +864,8 @@ const SERVICE_IMAGES = {
   dokumentabo: img("1559057287-ce0f595679a8"),
   bueromanagement: img("1752650732081-8f61e81813ed"),
 };
+// For services added later in the admin area
+const DEFAULT_SERVICE_IMAGE = img("1454165804606-c3d57bc86b40");
 
 const prefersReducedMotion = () => {
   try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch { return false; }
@@ -1020,14 +1026,17 @@ export default function Home() {
     return (byLang && p[byLang]) || p[`${field}_de`] || p[field];
   };
   const serviceName = (key) => (customPrices?.[key]?.[0] && fromDb(customPrices[key][0], "label")) || t[key];
-  const servicePrice = (key) => {
+  const servicePrice = (key, db) => {
     const p = customPrices?.[key]?.[0];
     if (p) {
       const unit = fromDb(p, "unit");
       return `${displayPrice(p.price, lang, key)}${unit ? " " + unit : ""}`;
     }
-    return displayPrice(t[`${key}_price`] || "", lang, key);
+    if (t[`${key}_price`]) return displayPrice(t[`${key}_price`], lang, key);
+    if (db && Number(db.price_from) > 0) return `${displayPrice(Number(db.price_from), lang, key)}${db.price_unit ? " " + unitLabel(db.price_unit, lang) : ""}`;
+    return "";
   };
+  const siteServices = useSiteServices(FALLBACK_SERVICE_KEYS);
 
   return (
     <div className="overflow-x-hidden bg-white">
@@ -1087,28 +1096,28 @@ export default function Home() {
           <div className="mt-8"><SearchBar lang={lang} variant="inline" /></div>
           <div className="mt-10">
             <AutoCarousel isRTL={isRTL} slideClass="basis-[86%] sm:basis-1/2 lg:basis-1/3">
-              {services.map(({ key, icon: Icon }) => (
+              {siteServices.map(({ key, db }) => { const Icon = SERVICE_ICONS[key] || Briefcase; return (
                 <Link key={key} to={`${createPageUrl("Booking")}?category=${key}`} className="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition hover:border-purple-200 hover:shadow-xl hover:shadow-purple-900/5">
                   <div className="relative h-44 overflow-hidden bg-purple-50">
-                    <img src={SERVICE_IMAGES[key]} alt="" loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    <img src={SERVICE_IMAGES[key] || DEFAULT_SERVICE_IMAGE} alt="" loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1f0b52]/60 to-transparent" />
                     <span className="absolute bottom-4 start-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#6d28d9] shadow-lg">
                       <Icon className="h-5 w-5" />
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col p-6">
-                    <h3 className="text-lg font-bold text-[#1f0b52]">{serviceName(key)}</h3>
-                    <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-600">{t[`${key}_desc`]}</p>
+                    <h3 className="text-lg font-bold text-[#1f0b52]">{serviceText(db, "name", lang) || serviceName(key)}</h3>
+                    <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-600">{serviceText(db, "description", lang) || t[`${key}_desc`]}</p>
                     <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
                       <span className="text-sm font-bold text-[#4c1d95]">
-                        <bdi>{servicePrice(key)}</bdi>
+                        <bdi>{servicePrice(key, db)}</bdi>
                         <span className="block text-[11px] font-medium text-slate-400">{priceNote(lang, key)}</span>
                       </span>
                       <span className="inline-flex items-center gap-1 text-sm font-bold text-[#6d28d9]">{x.book}<Arrow className="h-4 w-4" /></span>
                     </div>
                   </div>
                 </Link>
-              ))}
+              ); })}
             </AutoCarousel>
           </div>
         </div>

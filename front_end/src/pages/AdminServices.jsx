@@ -36,10 +36,17 @@ const initialService = {
   name_de: "",
   name_ar: "",
   name_en: "",
+  name_tr: "",
+  name_es: "",
+  name_uk: "",
   category: "office",
   description_de: "",
   description_ar: "",
   description_en: "",
+  description_tr: "",
+  description_es: "",
+  description_uk: "",
+  features: { de: "", ar: "", en: "", tr: "", es: "", uk: "" },
   price_from: "",
   price_unit: "hour",
   status: "active",
@@ -52,8 +59,23 @@ const categoryMeta = (t) => ({
   admin: { label: t.categories.admin, icon: FileText, color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
   coordination: { label: t.categories.coordination, icon: Settings, color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
   mercosur: { label: t.categories.mercosur, icon: Globe, color: "bg-amber-50 text-amber-700 border-amber-200" },
-  print: { label: t.categories.print, icon: Printer, color: "bg-pink-50 text-pink-700 border-pink-200" }
+  print: { label: t.categories.print, icon: Printer, color: "bg-pink-50 text-pink-700 border-pink-200" },
+  secretariat: { label: t.categories.secretariat, icon: Briefcase, color: "bg-violet-50 text-violet-700 border-violet-200" },
+  eur1: { label: t.categories.eur1, icon: Globe, color: "bg-rose-50 text-rose-700 border-rose-200" },
+  dokumentabo: { label: t.categories.dokumentabo, icon: FileText, color: "bg-purple-50 text-purple-700 border-purple-200" },
+  bueromanagement: { label: t.categories.bueromanagement, icon: Briefcase, color: "bg-sky-50 text-sky-700 border-sky-200" }
 });
+
+// The website has six languages; these fields only exist on this page, so their labels live here
+const EXTRA_LANGS = [["tr", "Türkçe"], ["es", "Español"], ["uk", "Українська"]];
+const FEATURE_LANGS = [["de", "Deutsch"], ["ar", "العربية"], ["en", "English"], ["tr", "Türkçe"], ["es", "Español"], ["uk", "Українська"]];
+const EXTRA_TEXT = {
+  de: { name: "Name", description: "Beschreibung", features: "Leistungspunkte auf der Seite „Leistungen“ (einer pro Zeile)", category: "Kategorie-Schlüssel (für neue Dienste ein neues Wort, z. B. „uebersetzung“)" },
+  ar: { name: "الاسم", description: "الوصف", features: "النقاط الظاهرة في صفحة الخدمات (نقطة في كل سطر)", category: "مفتاح الفئة (لخدمة جديدة اكتب كلمة جديدة بالأحرف اللاتينية)" },
+  en: { name: "Name", description: "Description", features: "Bullet points on the Services page (one per line)", category: "Category key (for a new service type a new word, e.g. \"translation\")" },
+};
+const featuresToText = (features) => Object.fromEntries(FEATURE_LANGS.map(([code]) => [code, (features?.[code] || []).join("\n")]));
+const textToFeatures = (text) => Object.fromEntries(FEATURE_LANGS.map(([code]) => [code, (text?.[code] || "").split("\n").map((line) => line.trim()).filter(Boolean)]));
 
 export default function AdminServices() {
   const [search, setSearch] = useState("");
@@ -64,6 +86,7 @@ export default function AdminServices() {
   const [formError, setFormError] = useState("");
   const language = getAdminLocale();
   const t = getAdminText(language).services;
+  const x = EXTRA_TEXT[language] || EXTRA_TEXT.de;
   const categories = categoryMeta(t);
   const queryClient = useQueryClient();
   const { data: backendServices = [] } = useQuery({
@@ -123,10 +146,17 @@ export default function AdminServices() {
       name_de: service.name_de || service.name || "",
       name_ar: service.name_ar || "",
       name_en: service.name_en || "",
+      name_tr: service.name_tr || "",
+      name_es: service.name_es || "",
+      name_uk: service.name_uk || "",
       category: service.category || "office",
       description_de: service.description_de || service.description || "",
       description_ar: service.description_ar || "",
       description_en: service.description_en || "",
+      description_tr: service.description_tr || "",
+      description_es: service.description_es || "",
+      description_uk: service.description_uk || "",
+      features: featuresToText(service.features),
       price_from: String(service.price_from ?? ""),
       price_unit: service.price_unit || "hour",
       status: service.status || "active",
@@ -141,7 +171,7 @@ export default function AdminServices() {
     event.preventDefault();
     const price = Number(serviceForm.price_from);
 
-    if (!serviceForm.name_de.trim() || !serviceForm.category || Number.isNaN(price) || price < 0) {
+    if (!serviceForm.name_de.trim() || !serviceForm.category.trim() || Number.isNaN(price) || price < 0) {
       setFormError(t.requiredFields);
       return;
     }
@@ -151,10 +181,17 @@ export default function AdminServices() {
       name_de: serviceForm.name_de.trim(),
       name_ar: serviceForm.name_ar.trim() || null,
       name_en: serviceForm.name_en.trim() || null,
-      category: serviceForm.category,
+      name_tr: serviceForm.name_tr.trim() || null,
+      name_es: serviceForm.name_es.trim() || null,
+      name_uk: serviceForm.name_uk.trim() || null,
+      category: serviceForm.category.trim().toLowerCase(),
       description_de: serviceForm.description_de.trim() || null,
       description_ar: serviceForm.description_ar.trim() || null,
       description_en: serviceForm.description_en.trim() || null,
+      description_tr: serviceForm.description_tr.trim() || null,
+      description_es: serviceForm.description_es.trim() || null,
+      description_uk: serviceForm.description_uk.trim() || null,
+      features: textToFeatures(serviceForm.features),
       price_from: price,
       price_unit: serviceForm.price_unit,
       status: serviceForm.status,
@@ -256,7 +293,7 @@ export default function AdminServices() {
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-3">
           {filteredServices.map((service, index) => {
-            const meta = categories[service.category] || categories.admin;
+            const meta = categories[service.category] || { label: service.category, icon: Briefcase, color: "bg-slate-50 text-slate-700 border-slate-200" };
             const Icon = meta.icon;
             const serviceName = service[`name_${language}`] || service.name;
             const serviceDescription = service[`description_${language}`] || service.description;
@@ -358,13 +395,37 @@ export default function AdminServices() {
             <LocalizedDescription id="service-description-de" label={t.descriptionGerman} value={serviceForm.description_de} onChange={(value) => updateForm("description_de", value)} />
             <LocalizedDescription id="service-description-ar" label={t.descriptionArabic} value={serviceForm.description_ar} onChange={(value) => updateForm("description_ar", value)} dir="rtl" />
             <LocalizedDescription id="service-description-en" label={t.descriptionEnglish} value={serviceForm.description_en} onChange={(value) => updateForm("description_en", value)} dir="ltr" />
+            {EXTRA_LANGS.map(([code, label]) => (
+              <div key={code} className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <Label htmlFor={`service-name-${code}`}>{x.name} ({label})</Label>
+                  <Input id={`service-name-${code}`} value={serviceForm[`name_${code}`]} onChange={(event) => updateForm(`name_${code}`, event.target.value)} dir="ltr" />
+                </div>
+                <div className="md:col-span-2">
+                  <LocalizedDescription id={`service-description-${code}`} label={`${x.description} (${label})`} value={serviceForm[`description_${code}`]} onChange={(value) => updateForm(`description_${code}`, value)} dir="ltr" />
+                </div>
+              </div>
+            ))}
+            <div className="space-y-3 rounded-lg border border-slate-200 p-4">
+              <p className="text-sm font-semibold text-[#1e3a5f]">{x.features}</p>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {FEATURE_LANGS.map(([code, label]) => (
+                  <LocalizedDescription
+                    key={code}
+                    id={`service-features-${code}`}
+                    label={label}
+                    value={serviceForm.features[code]}
+                    onChange={(value) => setServiceForm((current) => ({ ...current, features: { ...current.features, [code]: value } }))}
+                    dir={code === "ar" ? "rtl" : "ltr"}
+                  />
+                ))}
+              </div>
+            </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="space-y-2">
-                <Label>{t.category}</Label>
-                <Select value={serviceForm.category} onValueChange={(value) => updateForm("category", value)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{Object.entries(t.categories).map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent>
-                </Select>
+                <Label htmlFor="service-category">{t.category}</Label>
+                <Input id="service-category" list="service-category-keys" value={serviceForm.category} onChange={(event) => updateForm("category", event.target.value)} dir="ltr" title={x.category} placeholder={x.category} />
+                <datalist id="service-category-keys">{Object.entries(t.categories).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</datalist>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="service-price">{t.priceFrom} (EUR)</Label>

@@ -86,14 +86,19 @@ class CustomerApiService {
     return Map<String, dynamic>.from(data as Map);
   }
 
-  Future<List<ServiceItem>> services() async {
+  /// Active services from "Dienste verwalten", in the admin's order. [local] are the built-in
+  /// cards by category (icons, colours and translations).
+  Future<List<ServiceItem>> services({
+    Map<String, ServiceItem> local = const {},
+  }) async {
     final data = await client.get('public/services');
-    return (data as List)
-        .map(
-          (item) =>
-              ServiceItem.fromJson(Map<String, dynamic>.from(item as Map)),
-        )
-        .toList();
+    return (data as List).map((item) {
+      final json = Map<String, dynamic>.from(item as Map);
+      return ServiceItem.fromJson(
+        json,
+        local: local[(json['category'] ?? '').toString()],
+      );
+    }).toList();
   }
 
   Future<List<OfferPackage>> offers() async {

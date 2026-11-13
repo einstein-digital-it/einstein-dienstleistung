@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../api/customer_api_service.dart';
 import '../models/service_item.dart';
 
 class HomeController extends GetxController {
   final selectedIndex = 0.obs;
 
-  final services = const <ServiceItem>[
-    ServiceItem(
+  final services = <ServiceItem>[
+    const ServiceItem(
       id: 'forms',
       title: 'service_forms_title',
       description: 'service_forms_description',
@@ -20,7 +21,7 @@ class HomeController extends GetxController {
         'service_forms_feature_3',
       ],
     ),
-    ServiceItem(
+    const ServiceItem(
       id: 'admin',
       title: 'service_admin_title',
       description: 'service_admin_description',
@@ -33,7 +34,7 @@ class HomeController extends GetxController {
         'service_admin_feature_3',
       ],
     ),
-    ServiceItem(
+    const ServiceItem(
       id: 'coordination',
       title: 'service_coordination_title',
       description: 'service_coordination_description',
@@ -46,7 +47,7 @@ class HomeController extends GetxController {
         'service_coordination_feature_3',
       ],
     ),
-    ServiceItem(
+    const ServiceItem(
       id: 'office',
       title: 'service_office_title',
       description: 'service_office_description',
@@ -59,7 +60,7 @@ class HomeController extends GetxController {
         'service_office_feature_3',
       ],
     ),
-  ];
+  ].obs;
 
   final promises = const <String>[
     'promise_all_in_one',
@@ -67,4 +68,27 @@ class HomeController extends GetxController {
     'promise_fast',
     'promise_contact',
   ];
+
+  @override
+  void onInit() {
+    super.onInit();
+    _hideRemovedServices();
+  }
+
+  /// Cards the admin deleted or switched off in "Dienste verwalten" disappear here too.
+  /// Without a connection all cards stay.
+  Future<void> _hideRemovedServices() async {
+    if (!Get.isRegistered<CustomerApiService>()) return;
+    try {
+      final remote = await Get.find<CustomerApiService>().services(
+        local: {for (final service in services) service.id: service},
+      );
+      if (remote.isEmpty) return;
+      final byId = {for (final service in remote) service.id: service};
+      services.assignAll([
+        for (final service in services)
+          if (byId.containsKey(service.id)) byId[service.id]!,
+      ]);
+    } catch (_) {}
+  }
 }

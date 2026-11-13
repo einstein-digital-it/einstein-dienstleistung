@@ -1,0 +1,658 @@
+[
+  {
+    "category": "office",
+    "sort_order": 10,
+    "name_de": "Projektbezogener Büro- und Organisationsservice",
+    "description_de": "Projektbezogene Büro- und Organisationsdienstleistungen für Selbstständige, kleine Unternehmen sowie Privatpersonen.",
+    "name_ar": "خدمة المكتب والتنظيم المشروعية",
+    "description_ar": "خدمات مكتبية وتنظيمية على أساس المشاريع للعاملين لحسابهم الخاص والشركات الصغيرة والأفراد.",
+    "name_en": "Project-Based Office & Organization Service",
+    "description_en": "Project-based office and organizational services for freelancers, small businesses and individuals.",
+    "name_tr": "Proje Bazli Ofis ve Organizasyon Hizmeti",
+    "description_tr": "Serbest calisanlar, kucuk isletmeler ve bireyler icin proje bazli ofis ve organizasyon hizmetleri.",
+    "name_es": "Servicio de Oficina y Organización por Proyecto",
+    "description_es": "Servicios de oficina y organización basados en proyectos para autónomos, pequeñas empresas y particulares.",
+    "name_uk": "Проєктні офісні та організаційні послуги",
+    "description_uk": "Офісні та організаційні послуги для фрилансерів, малого бізнесу та приватних осіб.",
+    "features": {
+      "de": [
+        "E-Mail-Management",
+        "Terminplanung und Kalenderkoordination",
+        "Dokumentenerstellung und -formatierung",
+        "Rechnungs- und Angebotsvorbereitung",
+        "Digitale Dokumentenorganisation"
+      ],
+      "ar": [
+        "إدارة البريد الإلكتروني",
+        "جدولة المواعيد وتنسيق التقويم",
+        "إعداد وتنسيق المستندات",
+        "إعداد الفواتير والعروض",
+        "التنظيم الرقمي للمستندات"
+      ],
+      "en": [
+        "Email management",
+        "Appointment scheduling and calendar coordination",
+        "Document creation and formatting",
+        "Invoice and quote preparation",
+        "Digital document organization"
+      ],
+      "tr": [
+        "E-posta yonetimi",
+        "Randevu planlama ve takvim koordinasyonu",
+        "Belge olusturma ve bicimlendirme",
+        "Fatura ve teklif hazirlama",
+        "Dijital belge organizasyonu"
+      ],
+      "es": [
+        "Gestión de correo electrónico",
+        "Programación de citas y coordinación de calendario",
+        "Creación y formateo de documentos",
+        "Preparación de facturas y presupuestos",
+        "Organización digital de documentos"
+      ],
+      "uk": [
+        "Ведення пошти",
+        "Планування зустрічей і календаря",
+        "Створення та оформлення документів",
+        "Підготовка рахунків і пропозицій",
+        "Цифрове впорядкування документів"
+      ]
+    },
+    "price_from": 40,
+    "price_unit": "hour"
+  },
+  {
+    "category": "secretariat",
+    "sort_order": 20,
+    "name_de": "Büro & Sekretariat (Vor-Ort)",
+    "description_de": "Professionelle Sekretariatsleistungen direkt bei Ihnen vor Ort – stundenweise oder als günstiges Monatspaket.",
+    "name_ar": "المكتب والسكرتارية (حضوري)",
+    "description_ar": "خدمات سكرتارية احترافية مباشرة لديك – بالساعة أو كباقة شهرية مخفضة.",
+    "name_en": "Office & Secretariat (On-Site)",
+    "description_en": "Professional on-site secretarial services – hourly or as a discounted monthly package.",
+    "name_tr": "Ofis & Sekreterlik (Yerinde)",
+    "description_tr": "Yerinde profesyonel sekreterlik hizmetleri – saatlik veya indirimli aylik paket olarak.",
+    "name_es": "Oficina & Secretariado (Presencial)",
+    "description_es": "Servicios de secretariado profesional en sus instalaciones – por horas o como paquete mensual con descuento.",
+    "name_uk": "Офіс і секретаріат (на місці)",
+    "description_uk": "Професійні секретарські послуги на місці – погодинно або як вигідний місячний пакет.",
+    "features": {
+      "de": [
+        "Stundenweise Buchung möglich",
+        "Vor-Ort-Einsätze beim Kunden",
+        "E-Mail- und Korrespondenzmanagement",
+        "Termin- und Kalenderverwaltung",
+        "Mehrsprachige Kommunikation",
+        "Optional: günstige Monatspakete"
+      ],
+      "ar": [
+        "حجز بالساعة متاح",
+        "زيارات ميدانية عند العميل",
+        "إدارة البريد الإلكتروني والمراسلات",
+        "إدارة المواعيد والتقويم",
+        "تواصل متعدد اللغات",
+        "اختياري: باقات شهرية مخفضة"
+      ],
+      "en": [
+        "Hourly booking available",
+        "On-site visits at the customer",
+        "Email and correspondence management",
+        "Appointment and calendar management",
+        "Multilingual communication",
+        "Optional: discounted monthly packages"
+      ],
+      "tr": [
+        "Saatlik rezervasyon",
+        "Musteride yerinde ziyaretler",
+        "E-posta ve yazisma yonetimi",
+        "Randevu ve takvim yonetimi",
+        "Cok dilli iletisim",
+        "Opsiyonel: indirimli aylik paketler"
+      ],
+      "es": [
+        "Reserva por horas disponible",
+        "Visitas presenciales al cliente",
+        "Gestión de correo y correspondencia",
+        "Gestión de citas y calendario",
+        "Comunicación multilingüe",
+        "Opcional: paquetes mensuales con descuento"
+      ],
+      "uk": [
+        "Погодинне бронювання",
+        "Виїзд до клієнта",
+        "Ведення пошти та листування",
+        "Керування зустрічами та календарем",
+        "Спілкування кількома мовами",
+        "За бажанням: вигідні місячні пакети"
+      ]
+    },
+    "price_from": 45,
+    "price_unit": "hour"
+  },
+  {
+    "category": "forms",
+    "sort_order": 30,
+    "name_de": "Behörden & Formularhilfe",
+    "description_de": "Unterstützung bei Behördenangelegenheiten, Ausfüllen von Formularen und Anträgen.",
+    "name_ar": "مساعدة الدوائر والنماذج",
+    "description_ar": "دعم في الشؤون الحكومية، ملء النماذج والطلبات.",
+    "name_en": "Government & Form Assistance",
+    "description_en": "Support with government matters, filling out forms and applications.",
+    "name_tr": "Resmi Daire ve Form Yardimi",
+    "description_tr": "Resmi isler, form ve basvuru doldurma destegi.",
+    "name_es": "Asistencia Gubernamental y Formularios",
+    "description_es": "Apoyo con asuntos gubernamentales, llenado de formularios y solicitudes.",
+    "name_uk": "Допомога з установами та формулярами",
+    "description_uk": "Допомога зі справами в установах, заповнення формулярів і заяв.",
+    "features": {
+      "de": [
+        "Ausfüllen von Anträgen und Formularen",
+        "Unterstützung bei Behördengängen",
+        "Erklärung von Bescheiden",
+        "Vorbereitung von Unterlagen",
+        "Übersetzungshilfe bei Dokumenten"
+      ],
+      "ar": [
+        "ملء الطلبات والنماذج",
+        "المساعدة في المعاملات الحكومية",
+        "شرح القرارات",
+        "تحضير الوثائق",
+        "المساعدة في ترجمة المستندات"
+      ],
+      "en": [
+        "Filling out applications and forms",
+        "Support with government visits",
+        "Explanation of official notices",
+        "Document preparation",
+        "Translation assistance for documents"
+      ],
+      "tr": [
+        "Basvuru ve form doldurma",
+        "Resmi daire ziyaretlerinde destek",
+        "Resmi bildirilerin aciklanmasi",
+        "Belge hazirlama",
+        "Belge ceviri yardimi"
+      ],
+      "es": [
+        "Llenado de solicitudes y formularios",
+        "Apoyo en visitas gubernamentales",
+        "Explicación de notificaciones oficiales",
+        "Preparación de documentos",
+        "Asistencia de traducción de documentos"
+      ],
+      "uk": [
+        "Заповнення заяв і формулярів",
+        "Супровід на прийомах в установах",
+        "Пояснення офіційних листів",
+        "Підготовка документів",
+        "Допомога з перекладом документів"
+      ]
+    },
+    "price_from": 40,
+    "price_unit": "hour"
+  },
+  {
+    "category": "admin",
+    "sort_order": 40,
+    "name_de": "Administrative Dienstleistungen",
+    "description_de": "Umfassende administrative Unterstützung für alle Ihre Verwaltungsaufgaben.",
+    "name_ar": "الخدمات الإدارية",
+    "description_ar": "دعم إداري شامل لجميع مهامك الإدارية.",
+    "name_en": "Administrative Services",
+    "description_en": "Comprehensive administrative support for all your management tasks.",
+    "name_tr": "Idari Hizmetler",
+    "description_tr": "Tum yonetim gorevleriniz icin kapsamli idari destek.",
+    "name_es": "Servicios Administrativos",
+    "description_es": "Apoyo administrativo integral para todas sus tareas de gestión.",
+    "name_uk": "Адміністративні послуги",
+    "description_uk": "Повна адміністративна підтримка для всіх ваших справ.",
+    "features": {
+      "de": [
+        "Dokumentenmanagement",
+        "Korrespondenz und Schriftverkehr",
+        "Terminkoordination",
+        "Datenpflege und -organisation",
+        "Allgemeine Büroarbeiten"
+      ],
+      "ar": [
+        "إدارة المستندات",
+        "المراسلات والخطابات",
+        "تنسيق المواعيد",
+        "صيانة البيانات وتنظيمها",
+        "أعمال مكتبية عامة"
+      ],
+      "en": [
+        "Document management",
+        "Correspondence and written communication",
+        "Appointment coordination",
+        "Data maintenance and organization",
+        "General office work"
+      ],
+      "tr": [
+        "Belge yonetimi",
+        "Yazisma ve iletisim",
+        "Randevu koordinasyonu",
+        "Veri bakimi ve organizasyonu",
+        "Genel ofis isleri"
+      ],
+      "es": [
+        "Gestión de documentos",
+        "Correspondencia y comunicación escrita",
+        "Coordinación de citas",
+        "Mantenimiento y organización de datos",
+        "Trabajo de oficina general"
+      ],
+      "uk": [
+        "Ведення документів",
+        "Листування та письмова комунікація",
+        "Узгодження зустрічей",
+        "Ведення та впорядкування даних",
+        "Загальна офісна робота"
+      ]
+    },
+    "price_from": 40,
+    "price_unit": "hour"
+  },
+  {
+    "category": "coordination",
+    "sort_order": 50,
+    "name_de": "Koordinationsleistungen",
+    "description_de": "Professionelle Koordination und Projektbetreuung für Ihre Vorhaben.",
+    "name_ar": "خدمات التنسيق",
+    "description_ar": "تنسيق ومتابعة مهنية لمشاريعك.",
+    "name_en": "Coordination Services",
+    "description_en": "Professional coordination and project supervision for your projects.",
+    "name_tr": "Koordinasyon Hizmetleri",
+    "description_tr": "Projeleriniz icin profesyonel koordinasyon ve proje denetimi.",
+    "name_es": "Servicios de Coordinación",
+    "description_es": "Coordinación profesional y supervisión de proyectos.",
+    "name_uk": "Послуги координації",
+    "description_uk": "Професійна координація та супровід ваших проєктів.",
+    "features": {
+      "de": [
+        "Projektkoordination",
+        "Terminplanung und -überwachung",
+        "Kommunikation mit Dienstleistern",
+        "Qualitätskontrolle",
+        "Berichterstattung"
+      ],
+      "ar": [
+        "تنسيق المشاريع",
+        "تخطيط ومتابعة المواعيد",
+        "التواصل مع مقدمي الخدمات",
+        "مراقبة الجودة",
+        "إعداد التقارير"
+      ],
+      "en": [
+        "Project coordination",
+        "Schedule planning and monitoring",
+        "Communication with service providers",
+        "Quality control",
+        "Reporting"
+      ],
+      "tr": [
+        "Proje koordinasyonu",
+        "Program planlama ve izleme",
+        "Hizmet saglayicilarla iletisim",
+        "Kalite kontrolu",
+        "Raporlama"
+      ],
+      "es": [
+        "Coordinación de proyectos",
+        "Planificación y seguimiento de horarios",
+        "Comunicación con proveedores de servicios",
+        "Control de calidad",
+        "Informes"
+      ],
+      "uk": [
+        "Координація проєктів",
+        "Планування строків і контроль",
+        "Комунікація з виконавцями",
+        "Контроль якості",
+        "Звітність"
+      ]
+    },
+    "price_from": 30,
+    "price_unit": "hour"
+  },
+  {
+    "category": "mercosur",
+    "sort_order": 60,
+    "name_de": "MERCOSUR (LATAM)",
+    "description_de": "Spezialisierte Dienstleistungen für lateinamerikanische Dokumente und Angelegenheiten.",
+    "name_ar": "ميركوسور (أمريكا اللاتينية)",
+    "description_ar": "خدمات متخصصة للوثائق والشؤون اللاتينية الأمريكية.",
+    "name_en": "MERCOSUR (LATAM)",
+    "description_en": "Specialized services for Latin American documents and matters.",
+    "name_tr": "MERCOSUR (LATAM)",
+    "description_tr": "Latin Amerika belgeleri ve konulari icin ozel hizmetler.",
+    "name_es": "MERCOSUR (LATAM)",
+    "description_es": "Servicios especializados para documentos y asuntos latinoamericanos.",
+    "name_uk": "MERCOSUR (Латинська Америка)",
+    "description_uk": "Спеціалізовані послуги для документів і справ, пов’язаних з Латинською Америкою.",
+    "features": {
+      "de": [
+        "Apostille und Legalisation",
+        "Dokumentenübersetzung",
+        "Beratung zu MERCOSUR-Abkommen",
+        "Unterstützung bei Visumsangelegenheiten",
+        "Anerkennung von Abschlüssen"
+      ],
+      "ar": [
+        "الأبوستيل والتصديق",
+        "ترجمة المستندات",
+        "استشارات اتفاقية ميركوسور",
+        "دعم شؤون التأشيرات",
+        "الاعتراف بالشهادات"
+      ],
+      "en": [
+        "Apostille and legalization",
+        "Document translation",
+        "MERCOSUR agreement consultation",
+        "Visa matter support",
+        "Recognition of qualifications"
+      ],
+      "tr": [
+        "Apostil ve legalizasyon",
+        "Belge cevirisi",
+        "MERCOSUR anlasma danismanligi",
+        "Vize konularinda destek",
+        "Yeterliliklerin taninmasi"
+      ],
+      "es": [
+        "Apostilla y legalización",
+        "Traducción de documentos",
+        "Consulta sobre acuerdos MERCOSUR",
+        "Apoyo en asuntos de visa",
+        "Reconocimiento de calificaciones"
+      ],
+      "uk": [
+        "Апостиль і легалізація",
+        "Переклад документів",
+        "Консультація щодо угоди MERCOSUR",
+        "Допомога з візовими питаннями",
+        "Визнання кваліфікацій"
+      ]
+    },
+    "price_from": 150,
+    "price_unit": "service"
+  },
+  {
+    "category": "print",
+    "sort_order": 70,
+    "name_de": "Druck- und Stempeldienstleistungen",
+    "description_de": "Professionelle Druck- und Stempelservices für alle Ihre Bedürfnisse.",
+    "name_ar": "خدمات الطباعة والأختام",
+    "description_ar": "خدمات طباعة وأختام احترافية لجميع احتياجاتك.",
+    "name_en": "Printing & Stamp Services",
+    "description_en": "Professional printing and stamp services for all your needs.",
+    "name_tr": "Baski ve Damga Hizmetleri",
+    "description_tr": "Tum ihtiyaclariniz icin profesyonel baski ve damga hizmetleri.",
+    "name_es": "Servicios de Impresión y Sellos",
+    "description_es": "Servicios profesionales de impresión y sellos para todas sus necesidades.",
+    "name_uk": "Друк і печатки",
+    "description_uk": "Професійний друк і виготовлення печаток для всіх ваших потреб.",
+    "features": {
+      "de": [
+        "Dokumentendruck",
+        "Kopierservice",
+        "Stempelherstellung",
+        "Laminieren und Binden",
+        "Scan-Service"
+      ],
+      "ar": [
+        "طباعة المستندات",
+        "خدمة النسخ",
+        "صنع الأختام",
+        "التغليف والتجليد",
+        "خدمة المسح الضوئي"
+      ],
+      "en": [
+        "Document printing",
+        "Copy service",
+        "Stamp making",
+        "Laminating and binding",
+        "Scan service"
+      ],
+      "tr": [
+        "Belge baskisi",
+        "Kopya hizmeti",
+        "Damga yapimi",
+        "Laminasyon ve ciltleme",
+        "Tarama hizmeti"
+      ],
+      "es": [
+        "Impresión de documentos",
+        "Servicio de copias",
+        "Fabricación de sellos",
+        "Laminado y encuadernación",
+        "Servicio de escaneo"
+      ],
+      "uk": [
+        "Друк документів",
+        "Копіювання",
+        "Виготовлення печаток",
+        "Ламінування та палітурка",
+        "Сканування"
+      ]
+    },
+    "price_from": 1,
+    "price_unit": "service"
+  },
+  {
+    "category": "eur1",
+    "sort_order": 80,
+    "name_de": "Dokumentenservice für EU–Syrien Warenverkehr / EUR.1",
+    "description_de": "Administrative Vorbereitung von Export-/Importunterlagen für den Warenverkehr EU–Syrien.",
+    "name_ar": "خدمة وثائق التصدير/الاستيراد بين سوريا والاتحاد الأوروبي / EUR.1",
+    "description_ar": "تحضير إداري لوثائق التصدير/الاستيراد في التبادل التجاري بين الاتحاد الأوروبي وسوريا.",
+    "name_en": "EU–Syria Trade Document Service / EUR.1",
+    "description_en": "Administrative preparation of export/import documents for EU–Syria trade.",
+    "name_tr": "AB–Suriye Ticaret Belge Hizmeti / EUR.1",
+    "description_tr": "AB–Suriye ticareti icin ihracat/ithalat belgelerinin idari hazirligi.",
+    "name_es": "Servicio de Documentos Comerciales UE–Siria / EUR.1",
+    "description_es": "Preparación administrativa de documentos de exportación/importación para el comercio UE–Siria.",
+    "name_uk": "Документи для торгівлі ЄС–Сирія / EUR.1",
+    "description_uk": "Адміністративна підготовка експортних/імпортних документів для торгівлі ЄС–Сирія.",
+    "features": {
+      "de": [
+        "Administrative Vorbereitung von Export-/Importunterlagen",
+        "Checklisten",
+        "EUR.1-Vorbereitung",
+        "Übersetzungen"
+      ],
+      "ar": [
+        "تحضير إداري لوثائق التصدير/الاستيراد",
+        "قوائم المراجعة (Checklisten)",
+        "تجهيز EUR.1",
+        "الترجمات"
+      ],
+      "en": [
+        "Administrative preparation of export/import documents",
+        "Checklists",
+        "EUR.1 preparation",
+        "Translations"
+      ],
+      "tr": [
+        "Ihracat/ithalat belgelerinin idari hazirligi",
+        "Kontrol listeleri (Checklisten)",
+        "EUR.1 hazirligi",
+        "Ceviriler"
+      ],
+      "es": [
+        "Preparación administrativa de documentos de exportación/importación",
+        "Listas de verificación (Checklisten)",
+        "Preparación EUR.1",
+        "Traducciones"
+      ],
+      "uk": [
+        "Адміністративна підготовка експортних/імпортних документів",
+        "Чек-листи",
+        "Підготовка EUR.1",
+        "Переклади"
+      ]
+    },
+    "price_from": 150,
+    "price_unit": "service"
+  },
+  {
+    "category": "dokumentabo",
+    "sort_order": 90,
+    "name_de": "EinStein Dokumenten-Abo – Ihre Post. Unsere Aufgabe.",
+    "description_de": "Briefe vom Jobcenter, der Ausländerbehörde, dem Finanzamt, der Krankenkasse oder dem Vermieter? Sie schicken uns ein Foto – wir kümmern uns um den Rest.",
+    "name_ar": "اشتراك EinStein للمستندات – بريدك علينا",
+    "description_ar": "رسالة من الجوب سنتر، أو مكتب الأجانب، أو الضرائب، أو التأمين الصحي، أو المؤجّر؟ صوّرها وأرسلها لنا، ونحن نتابع الباقي.",
+    "name_en": "EinStein Document Subscription – Your mail. Our job.",
+    "description_en": "Letters from the Jobcenter, the immigration office, the tax office, your health insurer or your landlord? Send us a photo – we take care of the rest.",
+    "name_tr": "EinStein Belge Aboneliği – Postanız bize emanet.",
+    "description_tr": "Jobcenter, Yabancılar Dairesi, Vergi Dairesi, sağlık sigortası veya ev sahibinden mektup mu geldi? Bize bir fotoğraf gönderin – gerisini biz hallederiz.",
+    "name_es": "Suscripción de Documentos EinStein – Tu correo. Nuestro trabajo.",
+    "description_es": "¿Cartas del Jobcenter, la oficina de extranjería, Hacienda, tu seguro médico o tu casero? Envíanos una foto – nosotros nos encargamos del resto.",
+    "name_uk": "Документна підписка EinStein – ваша пошта, наша робота.",
+    "description_uk": "Листи від Jobcenter, відомства у справах іноземців, податкової, медичної каси чи орендодавця? Надішліть фото – решту зробимо ми.",
+    "features": {
+      "de": [
+        "Lesen, Übersetzen und Erklären Ihrer Post (bis zu 8 Schreiben pro Monat)",
+        "Fristen- und Terminerinnerung",
+        "Ausfüllen von Formularen und Anträgen",
+        "Einfache Antworten: Unterlagen nachreichen, Termine bestätigen, Adressänderungen",
+        "Digitale Ablage",
+        "Fester Ansprechpartner"
+      ],
+      "ar": [
+        "قراءة الرسائل وترجمتها وشرحها (حتى 8 رسائل شهرياً)",
+        "تذكير بالمواعيد والمهل",
+        "تعبئة الاستمارات والطلبات",
+        "ردود بسيطة: إرسال وثائق ناقصة، تأكيد موعد، تغيير عنوان",
+        "أرشفة رقمية",
+        "شخص ثابت يتابع ملفك"
+      ],
+      "en": [
+        "Reading, translating and explaining your mail (up to 8 letters per month)",
+        "Deadline and appointment reminders",
+        "Filling in forms and applications",
+        "Simple replies: submitting documents, confirming appointments, address changes",
+        "Digital filing",
+        "Fixed contact person"
+      ],
+      "tr": [
+        "Postanızı okuma, çevirme ve açıklama (ayda en fazla 8 yazı)",
+        "Süre ve randevu hatırlatma",
+        "Form ve başvuru doldurma",
+        "Basit yanıtlar: belge gönderme, randevu onaylama, adres değişikliği",
+        "Dijital arşivleme",
+        "Sabit irtibat kişisi"
+      ],
+      "es": [
+        "Lectura, traducción y explicación de tu correo (hasta 8 cartas al mes)",
+        "Recordatorio de plazos y citas",
+        "Rellenar formularios y solicitudes",
+        "Respuestas sencillas: enviar documentos, confirmar citas, cambios de dirección",
+        "Archivo digital",
+        "Persona de contacto fija"
+      ],
+      "uk": [
+        "Читаємо, перекладаємо й пояснюємо вашу пошту (до 8 листів на місяць)",
+        "Нагадування про строки та зустрічі",
+        "Заповнення формулярів і заяв",
+        "Прості відповіді: подання документів, підтвердження зустрічей, зміна адреси",
+        "Цифровий архів",
+        "Постійна контактна особа"
+      ]
+    },
+    "price_from": 49,
+    "price_unit": "month"
+  },
+  {
+    "category": "bueromanagement",
+    "sort_order": 100,
+    "name_de": "Büro-Management für kleine Betriebe",
+    "description_de": "Weniger Papier im Kopf, mehr Zeit für Ihre Kunden. Wir übernehmen Ihre gesamte Büro- und Personalorganisation – von den Unterlagen neuer Mitarbeitender bis zur Abstimmung mit Steuerberatung, Kammern und Behörden. Fester Monatsbetrag nach Betriebsgröße.",
+    "name_ar": "إدارة المكتب للشركات الصغيرة",
+    "description_ar": "ورق أقل في رأسك، ووقت أكثر لزبائنك. نتولى كامل تنظيم المكتب وشؤون الموظفين – من أوراق الموظفين الجدد حتى التنسيق مع المستشار الضريبي والغرف المهنية والدوائر الرسمية. مبلغ شهري ثابت حسب حجم المنشأة.",
+    "name_en": "Office Management for Small Businesses",
+    "description_en": "Less paperwork on your mind, more time for your customers. We take over your entire office and HR administration – from new employees' documents to coordinating with your tax advisor, chambers and authorities. Fixed monthly fee based on company size.",
+    "name_tr": "Küçük İşletmeler için Büro Yönetimi",
+    "description_tr": "Kafanızda daha az evrak, müşterilerinize daha fazla zaman. Yeni çalışanların belgelerinden mali müşavir, odalar ve resmi kurumlarla yazışmalara kadar tüm büro ve personel organizasyonunuzu üstleniyoruz. İşletme büyüklüğüne göre sabit aylık ücret.",
+    "name_es": "Gestión de Oficina para Pequeñas Empresas",
+    "description_es": "Menos papeleo en la cabeza, más tiempo para sus clientes. Nos encargamos de toda la organización administrativa y de personal – desde los documentos de nuevos empleados hasta la coordinación con su asesoría fiscal, cámaras y autoridades. Cuota mensual fija según el tamaño de la empresa.",
+    "name_uk": "Офіс-менеджмент для малого бізнесу",
+    "description_uk": "Менше паперів – більше часу для клієнтів. Ми беремо на себе всю офісну та кадрову організацію – від документів нових працівників до листування з податковим консультантом, палатами та установами. Фіксована місячна плата залежно від розміру компанії.",
+    "features": {
+      "de": [
+        "Personalstammdaten erfassen, pflegen und auf Vollständigkeit prüfen (z. B. Steuer-ID, IBAN)",
+        "Personalfragebögen, Minijob-Befreiungsanträge und weitere Formulare",
+        "Schreibservice: Arbeitsverträge, Vertragsänderungen und Mitarbeiterschreiben nach Ihren Vorgaben",
+        "Unterlagen bei Betriebsübernahme, Eröffnung oder Umzug",
+        "Formulare für Handwerkskammer, Berufsgenossenschaft und Meldebehörden",
+        "Formulare zur Beschäftigungserlaubnis und Überwachung von Aufenthaltsdokumenten",
+        "Korrespondenz mit Steuerberatung, Kammern, Behörden und Vermietern",
+        "Überwachung von Abgabe- und Meldefristen",
+        "Digitalisierung und geordnete Ablage je Mitarbeitendem",
+        "Erklärung von Unterlagen auf Arabisch, Deutsch, Englisch und Türkisch"
+      ],
+      "ar": [
+        "تسجيل بيانات الموظفين وتحديثها والتحقق من اكتمالها (مثل الرقم الضريبي وIBAN)",
+        "تعبئة استمارات الموظفين وطلبات الإعفاء من التأمين التقاعدي (Minijob) واستمارات أخرى",
+        "خدمة كتابة: عقود العمل وتعديلاتها ورسائل الموظفين حسب تعليماتك",
+        "تنظيم الأوراق عند استلام منشأة أو افتتاحها أو نقلها",
+        "استمارات غرفة الحرف (Handwerkskammer) وBerufsgenossenschaft ودوائر التسجيل",
+        "استمارات إذن العمل ومتابعة صلاحية وثائق الإقامة",
+        "المراسلات مع المستشار الضريبي والغرف والدوائر الرسمية والمؤجرين",
+        "متابعة مواعيد التسليم والإبلاغ والتذكير بها",
+        "رقمنة الوثائق وأرشفتها بشكل منظم لكل موظف",
+        "شرح الوثائق بالعربية والألمانية والإنجليزية والتركية"
+      ],
+      "en": [
+        "Recording, maintaining and checking employee master data (e.g. tax ID, IBAN)",
+        "Personnel questionnaires, Minijob pension exemption requests and other forms",
+        "Writing service: employment contracts, amendments and employee letters based on your instructions",
+        "Paperwork for business takeovers, openings or relocations",
+        "Forms for the Chamber of Crafts, Berufsgenossenschaft and registration offices",
+        "Work permit forms and monitoring of residence document validity",
+        "Correspondence with tax advisors, chambers, authorities and landlords",
+        "Monitoring filing and reporting deadlines",
+        "Digitising and filing documents per employee",
+        "Explaining documents in Arabic, German, English and Turkish"
+      ],
+      "tr": [
+        "Personel bilgilerinin kaydı, güncellenmesi ve eksiksizlik kontrolü (ör. vergi numarası, IBAN)",
+        "Personel formları, Minijob emeklilik muafiyeti başvuruları ve diğer formlar",
+        "Yazı hizmeti: talimatlarınıza göre iş sözleşmeleri, değişiklikler ve çalışan yazıları",
+        "İşletme devri, açılışı veya taşınmasında belgelerin düzenlenmesi",
+        "Zanaatkarlar Odası, Berufsgenossenschaft ve kayıt daireleri için formlar",
+        "Çalışma izni formları ve oturum belgelerinin geçerlilik takibi",
+        "Mali müşavir, odalar, resmi kurumlar ve ev sahipleriyle yazışmalar",
+        "Teslim ve bildirim sürelerinin takibi",
+        "Belgelerin dijitalleştirilmesi ve çalışan bazında düzenli arşivlenmesi",
+        "Belgelerin Arapça, Almanca, İngilizce ve Türkçe açıklanması"
+      ],
+      "es": [
+        "Registro, mantenimiento y verificación de datos del personal (p. ej. número fiscal, IBAN)",
+        "Cuestionarios de personal, solicitudes de exención de pensión (Minijob) y otros formularios",
+        "Servicio de redacción: contratos de trabajo, modificaciones y cartas al personal según sus indicaciones",
+        "Documentación en traspasos, aperturas o traslados de negocio",
+        "Formularios para la Cámara de Artesanía, Berufsgenossenschaft y oficinas de registro",
+        "Formularios de permiso de trabajo y control de la validez de documentos de residencia",
+        "Correspondencia con asesoría fiscal, cámaras, autoridades y arrendadores",
+        "Control de plazos de presentación y notificación",
+        "Digitalización y archivo ordenado por empleado",
+        "Explicación de documentos en árabe, alemán, inglés y turco"
+      ],
+      "uk": [
+        "Внесення, ведення та перевірка даних працівників (напр. податковий номер, IBAN)",
+        "Кадрові анкети, заяви щодо звільнення Minijob від пенсійних внесків та інші форми",
+        "Підготовка текстів: трудові договори, зміни та листи працівникам за вашими вказівками",
+        "Документи при передачі, відкритті чи переїзді бізнесу",
+        "Форми для ремісничої палати, Berufsgenossenschaft і реєстраційних установ",
+        "Форми дозволу на роботу та контроль дійсності документів на проживання",
+        "Листування з податковими консультантами, палатами, установами та орендодавцями",
+        "Контроль строків подання та звітності",
+        "Оцифрування та архівування документів за працівниками",
+        "Пояснення документів арабською, німецькою, англійською та турецькою"
+      ]
+    },
+    "price_from": 200,
+    "price_unit": "month"
+  }
+]

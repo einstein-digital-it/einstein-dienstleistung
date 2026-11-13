@@ -16,11 +16,18 @@ class Service extends Model
         'name_de',
         'name_ar',
         'name_en',
+        'name_tr',
+        'name_es',
+        'name_uk',
         'category',
         'description',
         'description_de',
         'description_ar',
         'description_en',
+        'description_tr',
+        'description_es',
+        'description_uk',
+        'features',
         'price_from',
         'price_unit',
         'status',
@@ -31,6 +38,7 @@ class Service extends Model
     {
         return [
             'price_from' => 'decimal:2',
+            'features' => 'array',
             'sort_order' => 'integer',
         ];
     }

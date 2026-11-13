@@ -51,7 +51,7 @@ class McpController extends Controller
         ],
         'services' => [
             'model' => Service::class,
-            'about' => 'Services shown on the website/app (names and descriptions in de/ar/en).',
+            'about' => 'Services shown on the website/app, one row per category (e.g. "eur1", "forms"). Names and descriptions in de/ar/en/tr/es/uk; features is JSON {"de": ["…"], ...}. Hide a service with status "inactive".',
             'writable' => '*', 'create' => true, 'delete' => true,
             'search' => ['name', 'name_de', 'name_ar', 'name_en', 'category'],
         ],

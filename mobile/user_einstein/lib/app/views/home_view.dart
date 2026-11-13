@@ -35,13 +35,20 @@ class HomeView extends GetView<HomeController> {
               action: 'see_all'.tr,
               onAction: () => Get.offNamed(AppRoutes.services),
             ),
-            for (final service in controller.services) ...[
-              ServiceCard(
-                service: service,
-                onTap: () => Get.toNamed(AppRoutes.services, arguments: {'expand': service.id}),
+            Obx(
+              () => Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final service in controller.services) ...[
+                    ServiceCard(
+                      service: service,
+                      onTap: () => Get.toNamed(AppRoutes.services, arguments: {'expand': service.id}),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ],
               ),
-              const SizedBox(height: 12),
-            ],
+            ),
           ],
         ),
       ),
