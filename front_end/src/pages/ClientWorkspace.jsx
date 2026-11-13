@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { getAdminText } from "@/lib/adminLocalization";
+import { getStaffLang } from "@/lib/lang";
 
 const labels = {
   ar: {
@@ -27,8 +28,8 @@ const labels = {
 };
 
 export default function ClientWorkspace() {
-  const lang = localStorage.getItem("einstein_lang") || "ar";
-  const t = labels[lang] || labels.ar;
+  const lang = getStaffLang();
+  const t = labels[lang] || labels.de;
   const adminT = getAdminText(lang);
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState(null);

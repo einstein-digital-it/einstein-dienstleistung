@@ -1,3 +1,4 @@
+import { getStaffLang } from "@/lib/lang";
 import React, { useState, useEffect } from "react";
 import { seoSettingsApi } from "@/api/backendClient";
 import { requireStoredUser } from "@/lib/backendAuth";
@@ -151,7 +152,7 @@ const frequencyOptions = [
 ];
 
 export default function SEOAdmin() {
-  const [lang, setLang] = useState("ar");
+  const [lang, setLang] = useState(getStaffLang);
   const [user, setUser] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
@@ -165,8 +166,7 @@ export default function SEOAdmin() {
   const adminT = getAdminText(lang);
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("einstein_lang");
-    if (savedLang) setLang(savedLang);
+    setLang(getStaffLang());
 
     const checkUser = () => setUser(requireStoredUser({ role: "admin" }));
     checkUser();

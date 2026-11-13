@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
-import { de, ar, enUS } from "date-fns/locale";
+import { de, ar, enUS, tr as trLocale, es as esLocale, uk as ukLocale } from "date-fns/locale";
 
 const typeIcons = {
   booking_confirmed: CheckCircle,
@@ -49,7 +49,7 @@ export default function NotificationBell({ user, lang = "de" }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const locales = { de, ar, en: enUS };
+  const locales = { de, ar, en: enUS, tr: trLocale, es: esLocale, uk: ukLocale };
 
   const translations = {
     de: {
@@ -69,6 +69,24 @@ export default function NotificationBell({ user, lang = "de" }) {
       no_notifications: "No new notifications",
       mark_all_read: "Mark all as read",
       view_all: "View all"
+    },
+    tr: {
+      notifications: "Bildirimler",
+      no_notifications: "Yeni bildirim yok",
+      mark_all_read: "Tümünü okundu işaretle",
+      view_all: "Tümünü göster"
+    },
+    es: {
+      notifications: "Notificaciones",
+      no_notifications: "No hay notificaciones nuevas",
+      mark_all_read: "Marcar todo como leído",
+      view_all: "Ver todo"
+    },
+    uk: {
+      notifications: "Сповіщення",
+      no_notifications: "Немає нових сповіщень",
+      mark_all_read: "Позначити все як прочитане",
+      view_all: "Показати все"
     }
   };
 
@@ -101,17 +119,14 @@ export default function NotificationBell({ user, lang = "de" }) {
     }
   });
 
-  const getTitle = (notification) => {
-    if (lang === "ar" && notification.title_ar) return notification.title_ar;
-    if (lang === "en" && notification.title_en) return notification.title_en;
-    return notification.title_de || "";
-  };
-
-  const getMessage = (notification) => {
-    if (lang === "ar" && notification.message_ar) return notification.message_ar;
-    if (lang === "en" && notification.message_en) return notification.message_en;
-    return notification.message_de || "";
-  };
+  // Text in the visitor's language; Ukrainian falls back to English, everything else to German
+  const pick = (notification, field) =>
+    notification[`${field}_${lang}`] ||
+    (lang === "uk" ? notification[`${field}_en`] : "") ||
+    notification[`${field}_de`] ||
+    "";
+  const getTitle = (notification) => pick(notification, "title");
+  const getMessage = (notification) => pick(notification, "message");
 
   const handleNotificationClick = (notification, href) => {
     if (!notification.is_read) {

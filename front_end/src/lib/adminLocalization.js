@@ -1,3 +1,4 @@
+import { getStaffLang } from "@/lib/lang";
 const adminText = {
   ar: {
     admin: "الإدارة",
@@ -185,10 +186,10 @@ const adminText = {
 };
 
 export function getAdminLocale() {
-  const language = localStorage.getItem("einstein_lang");
-  return Object.hasOwn(adminText, language) ? language : "ar";
+  const language = getStaffLang();
+  return Object.hasOwn(adminText, language) ? language : "de";
 }
 
 export function getAdminText(language = getAdminLocale()) {
-  return adminText[language] || adminText.ar;
+  return adminText[language] || adminText.de;
 }

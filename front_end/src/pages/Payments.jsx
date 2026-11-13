@@ -53,6 +53,7 @@ import {
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
 import InvoicePreview from "@/components/InvoicePreview";
+import { getStaffLang } from "@/lib/lang";
 
 const translations = {
   de: {
@@ -216,7 +217,7 @@ const statusIcons = {
 };
 
 export default function Payments() {
-  const [lang, setLang] = useState("ar");
+  const [lang, setLang] = useState(getStaffLang);
   const [user, setUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -232,8 +233,7 @@ export default function Payments() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("einstein_lang");
-    if (savedLang) setLang(savedLang);
+    setLang(getStaffLang());
   }, []);
 
   const t = translations[lang] || translations.de;

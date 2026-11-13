@@ -19,6 +19,14 @@ export function getLang() {
   }
 }
 
+/** Admin pages exist in German, Arabic and English; Turkish, Spanish and Ukrainian show German. */
+export const STAFF_LANGS = ["de", "ar", "en"];
+
+export function getStaffLang() {
+  const lang = getLang();
+  return STAFF_LANGS.includes(lang) ? lang : "de";
+}
+
 /** Booking states in every language (used by the customer pages). */
 export const BOOKING_STATUS = {
   de: { pending: "Ausstehend", confirmed: "Bestätigt", in_progress: "In Bearbeitung", completed: "Abgeschlossen", cancelled: "Storniert", paid: "Bezahlt", unpaid: "Offen" },

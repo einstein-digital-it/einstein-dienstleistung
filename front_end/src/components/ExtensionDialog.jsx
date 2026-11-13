@@ -52,6 +52,51 @@ const labels = {
     uploading: "Uploading...",
     paying: "Processing payment...",
     proceed: "Proceed to payment"
+  },
+  tr: {
+    title: "Hizmet Uzatma",
+    subtitle: "Ek olarak neye ihtiyacınız olduğunu açıklayın",
+    description_label: "Neyi uzatmak istiyorsunuz?",
+    description_placeholder: "Ek ihtiyaçlarınızı açıklayın...",
+    upload: "Belge yükle (isteğe bağlı)",
+    amount: "Tutar: 15 EUR + %19 KDV = 17,85 EUR",
+    pay: "Ödemeyi onayla",
+    success: "Uzatma talebi başarıyla gönderildi!",
+    success_msg: "En kısa sürede sizinle iletişime geçeceğiz.",
+    cancel: "İptal",
+    uploading: "Yükleniyor...",
+    paying: "Ödeme işleniyor...",
+    proceed: "Ödemeye geç"
+  },
+  es: {
+    title: "Ampliación del servicio",
+    subtitle: "Describa qué necesita además",
+    description_label: "¿Qué desea ampliar?",
+    description_placeholder: "Describa sus necesidades adicionales...",
+    upload: "Subir documentos (opcional)",
+    amount: "Importe: 15 EUR + 19 % IVA = 17,85 EUR",
+    pay: "Autorizar el pago",
+    success: "¡Solicitud de ampliación enviada!",
+    success_msg: "Nos pondremos en contacto con usted en breve.",
+    cancel: "Cancelar",
+    uploading: "Subiendo...",
+    paying: "Procesando el pago...",
+    proceed: "Continuar al pago"
+  },
+  uk: {
+    title: "Розширення послуги",
+    subtitle: "Опишіть, що вам потрібно додатково",
+    description_label: "Що ви хочете розширити?",
+    description_placeholder: "Опишіть ваші додаткові потреби...",
+    upload: "Завантажити документи (необов’язково)",
+    amount: "Сума: 15 EUR + 19 % ПДВ = 17,85 EUR",
+    pay: "Підтвердити оплату",
+    success: "Запит на розширення надіслано!",
+    success_msg: "Ми незабаром зв’яжемося з вами.",
+    cancel: "Скасувати",
+    uploading: "Завантаження...",
+    paying: "Обробка оплати...",
+    proceed: "Перейти до оплати"
   }
 };
 

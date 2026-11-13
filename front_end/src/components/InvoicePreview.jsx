@@ -57,19 +57,19 @@ const translations = {
   },
   tr: {
     invoice: "Fatura",
-    invoice_number: "Fatura Numarasi",
+    invoice_number: "Fatura Numarası",
     date: "Tarih",
-    customer: "Musteri",
+    customer: "Müşteri",
     service: "Hizmet",
-    description: "Aciklama",
+    description: "Açıklama",
     net_amount: "Net Tutar",
     vat: "KDV (19%)",
     total: "Toplam Tutar",
-    print: "Yazdir",
-    booking_number: "Rezervasyon Numarasi",
-    provider: "Saglayici",
+    print: "Yazdır",
+    booking_number: "Rezervasyon Numarası",
+    provider: "Sağlayıcı",
     address: "Adres",
-    thank_you: "Guveniniz icin tesekkurler!"
+    thank_you: "Güveniniz için teşekkürler!"
   },
   es: {
     invoice: "Factura",
@@ -86,6 +86,22 @@ const translations = {
     provider: "Proveedor",
     address: "Dirección",
     thank_you: "¡Gracias por su confianza!"
+  },
+  uk: {
+    invoice: "Рахунок",
+    invoice_number: "Номер рахунку",
+    date: "Дата",
+    customer: "Клієнт",
+    service: "Послуга",
+    description: "Опис",
+    net_amount: "Сума без ПДВ",
+    vat: "ПДВ (19%)",
+    total: "Загальна сума",
+    print: "Друк",
+    booking_number: "Номер бронювання",
+    provider: "Виконавець",
+    address: "Адреса",
+    thank_you: "Дякуємо за довіру!"
   }
 };
 

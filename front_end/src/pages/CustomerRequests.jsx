@@ -20,21 +20,53 @@ import {
   StatCard,
   StatusPill
 } from "@/components/design/PageScaffold";
+import { getStaffLang } from "@/lib/lang";
 
-const statusMeta = {
-  new: { label: "جديد", tone: "gold" },
-  reviewing: { label: "قيد المراجعة", tone: "blue" },
-  accepted: { label: "مقبول", tone: "green" },
-  rejected: { label: "مرفوض", tone: "red" },
+const TEXT = {
+  de: {
+    status: { new: "Neu", reviewing: "In Prüfung", accepted: "Angenommen", rejected: "Abgelehnt" },
+    title: "Kundenanfragen", eyebrow: "Anfragen verwalten",
+    description: "Neue Anfragen ansehen, Details prüfen und annehmen oder ablehnen.",
+    statNew: "Neue Anfragen", statReviewing: "In Bearbeitung", statAccepted: "Angenommen", statRejected: "Abgelehnt",
+    listTitle: "Anfragen", listDescription: "Alle Anfragen vom Server.",
+    loading: "Wird geladen…", empty: "Zurzeit keine Anfragen.",
+    accept: "Annehmen", reject: "Ablehnen",
+    checkTitle: "Kurz prüfen", checkText: "Die wichtigsten Angaben stehen bei jeder Anfrage, damit die Entscheidung schnell und klar ist.",
+    checklist: ["Unterlagen prüfen", "Preis prüfen", "Zuständige Person festlegen"],
+  },
+  ar: {
+    status: { new: "جديد", reviewing: "قيد المراجعة", accepted: "مقبول", rejected: "مرفوض" },
+    title: "طلبات العملاء", eyebrow: "إدارة الطلبات",
+    description: "عرض الطلبات الجديدة، مراجعة التفاصيل، وقبول الطلب أو رفضه.",
+    statNew: "طلبات جديدة", statReviewing: "قيد المعالجة", statAccepted: "مقبولة", statRejected: "مرفوضة",
+    listTitle: "قائمة الطلبات", listDescription: "كل الطلبات من الخادم.",
+    loading: "جارٍ التحميل…", empty: "لا توجد طلبات حالياً.",
+    accept: "قبول الطلب", reject: "رفض",
+    checkTitle: "لوحة المراجعة السريعة", checkText: "يتم عرض أهم تفاصيل الطلب قبل اتخاذ القرار حتى تبقى عملية القبول واضحة وسريعة.",
+    checklist: ["التحقق من المستندات", "مراجعة السعر", "تعيين مسؤول متابعة"],
+  },
+  en: {
+    status: { new: "New", reviewing: "In review", accepted: "Accepted", rejected: "Rejected" },
+    title: "Customer requests", eyebrow: "Manage requests",
+    description: "See new requests, check the details and accept or reject them.",
+    statNew: "New requests", statReviewing: "In progress", statAccepted: "Accepted", statRejected: "Rejected",
+    listTitle: "Requests", listDescription: "All requests from the server.",
+    loading: "Loading…", empty: "No requests at the moment.",
+    accept: "Accept", reject: "Reject",
+    checkTitle: "Quick check", checkText: "The key details are shown with each request so the decision stays quick and clear.",
+    checklist: ["Check the documents", "Check the price", "Assign a person"],
+  },
 };
+
+const STATUS_TONES = { new: "gold", reviewing: "blue", accepted: "green", rejected: "red" };
 
 const formatPrice = (price) => {
   if (price === null || price === undefined || price === "") return "-";
   return `${Number(price).toFixed(2)} EUR`;
 };
 
-const normalizeRequest = (request) => {
-  const meta = statusMeta[request.status] || statusMeta.new;
+const normalizeRequest = (request, t) => {
+  const status = STATUS_TONES[request.status] ? request.status : "new";
 
   return {
     id: request.request_number || request.id,
@@ -45,15 +77,15 @@ const normalizeRequest = (request) => {
     time: request.time || "-",
     address: request.address || "-",
     price: formatPrice(request.price),
-    status: meta.label,
-    tone: meta.tone,
+    status: t.status[status],
+    tone: STATUS_TONES[status],
     description: request.description || "",
-    isBackend: true,
   };
 };
 
 export default function CustomerRequests() {
   const queryClient = useQueryClient();
+  const t = TEXT[getStaffLang()] || TEXT.de;
 
   const { data: backendRequests = [], isLoading } = useQuery({
     queryKey: ["customer-requests"],
@@ -70,7 +102,8 @@ export default function CustomerRequests() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["customer-requests"] }),
   });
 
-  const displayedRequests = backendRequests.map(normalizeRequest);
+  const busy = acceptMutation.isPending || rejectMutation.isPending;
+  const displayedRequests = backendRequests.map((request) => normalizeRequest(request, t));
   const statCounts = backendRequests.reduce((acc, request) => {
     acc[request.status] = (acc[request.status] || 0) + 1;
     return acc;
@@ -78,28 +111,28 @@ export default function CustomerRequests() {
 
   return (
     <PageScaffold
-      title="طلبات العملاء"
-      eyebrow="إدارة الطلبات"
+      title={t.title}
+      eyebrow={t.eyebrow}
       icon={AlertCircle}
-      description="عرض الطلبات الجديدة، مراجعة التفاصيل، وقبول الطلب أو رفضه."
+      description={t.description}
     >
       <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
-        <StatCard icon={AlertCircle} label="طلبات جديدة" value={String(statCounts.new || 0)} tone="gold" />
-        <StatCard icon={Clock} label="قيد المعالجة" value={String(statCounts.reviewing || 0)} tone="blue" />
-        <StatCard icon={CheckCircle} label="مقبولة" value={String(statCounts.accepted || 0)} tone="green" />
-        <StatCard icon={XCircle} label="مرفوضة" value={String(statCounts.rejected || 0)} tone="red" />
+        <StatCard icon={AlertCircle} label={t.statNew} value={String(statCounts.new || 0)} tone="gold" />
+        <StatCard icon={Clock} label={t.statReviewing} value={String(statCounts.reviewing || 0)} tone="blue" />
+        <StatCard icon={CheckCircle} label={t.statAccepted} value={String(statCounts.accepted || 0)} tone="green" />
+        <StatCard icon={XCircle} label={t.statRejected} value={String(statCounts.rejected || 0)} tone="red" />
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1fr_360px]">
         <DesignCard>
           <CardHeader
-            title="قائمة الطلبات"
-            description="كل الطلبات من الخادم."
+            title={t.listTitle}
+            description={t.listDescription}
           />
           <div className="space-y-4 p-5">
-            {isLoading && <p className="text-sm font-semibold text-[#65758b]">جارٍ التحميل…</p>}
+            {isLoading && <p className="text-sm font-semibold text-[#65758b]">{t.loading}</p>}
             {!isLoading && displayedRequests.length === 0 && (
-              <p className="text-sm font-semibold text-[#65758b]">لا توجد طلبات حالياً.</p>
+              <p className="text-sm font-semibold text-[#65758b]">{t.empty}</p>
             )}
             {displayedRequests.map((request) => (
               <article key={request.id} className="rounded-[15px] border border-[#e2ebf6] bg-[#fbfdff] p-5">
@@ -122,20 +155,9 @@ export default function CustomerRequests() {
                   <span className="flex items-center gap-2"><MapPin className="h-4 w-4 text-[#8ea0b7]" />{request.address}</span>
                 </div>
 
-                <div
-                  className="mt-5 flex flex-wrap gap-3"
-                  onClick={(event) => {
-                    if (!request.isBackend || acceptMutation.isPending || rejectMutation.isPending) return;
-                    const button = event.target.closest("button");
-                    if (!button || !request.backendId) return;
-                    const index = Array.from(button.parentElement.children).indexOf(button);
-                    if (index === 0) acceptMutation.mutate(request.backendId);
-                    if (index === 2) rejectMutation.mutate(request.backendId);
-                  }}
-                >
-                  <PrimaryButton>قبول الطلب</PrimaryButton>
-                  <SecondaryButton>تفاصيل الطلب</SecondaryButton>
-                  <SecondaryButton className="text-red-700">رفض</SecondaryButton>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <PrimaryButton disabled={busy} onClick={() => acceptMutation.mutate(request.backendId)}>{t.accept}</PrimaryButton>
+                  <SecondaryButton disabled={busy} className="text-red-700" onClick={() => rejectMutation.mutate(request.backendId)}>{t.reject}</SecondaryButton>
                 </div>
               </article>
             ))}
@@ -146,12 +168,12 @@ export default function CustomerRequests() {
           <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-[14px] bg-[#fff7df] text-[#9a6b00]">
             <FileText className="h-6 w-6" />
           </div>
-          <h2 className="text-xl font-black text-[#13233a]">لوحة المراجعة السريعة</h2>
+          <h2 className="text-xl font-black text-[#13233a]">{t.checkTitle}</h2>
           <p className="mt-2 text-sm leading-7 text-[#65758b]">
-            يتم عرض أهم تفاصيل الطلب قبل اتخاذ القرار حتى تبقى عملية القبول واضحة وسريعة.
+            {t.checkText}
           </p>
           <div className="mt-5 space-y-3">
-            {["التحقق من المستندات", "مراجعة السعر", "تعيين مسؤول متابعة"].map((item) => (
+            {t.checklist.map((item) => (
               <div key={item} className="flex items-center justify-between rounded-[12px] bg-[#f8fbff] px-4 py-3">
                 <span className="text-sm font-bold text-[#334155]">{item}</span>
                 <CheckCircle className="h-4 w-4 text-green-600" />

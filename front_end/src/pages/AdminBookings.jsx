@@ -1,3 +1,4 @@
+import { getStaffLang } from "@/lib/lang";
 import React, { useState, useEffect } from "react";
 import { bookingsApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
@@ -149,16 +150,16 @@ const adminBookingText = {
 };
 
 export default function AdminBookings() {
-  const [lang, setLang] = useState("ar");
+  const [lang, setLang] = useState(getStaffLang);
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
-  const t = translations[lang] || translations.ar;
-  const ui = adminBookingText[lang] || adminBookingText.ar;
+  const t = translations[lang] || translations.de;
+  const ui = adminBookingText[lang] || adminBookingText.de;
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("einstein_lang") || "ar";
+    const savedLang = getStaffLang();
     setLang(savedLang);
     const checkUser = () => setUser(requireStoredUser({ role: "admin" }));
     checkUser();

@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { adminDashboardApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
+import { getStaffLang } from "@/lib/lang";
 
 const translations = {
   ar: {
@@ -88,15 +89,15 @@ function formatCurrency(value, lang) {
 }
 
 export default function Dashboard() {
-  const [lang, setLang] = useState(() => localStorage.getItem("einstein_lang") || "ar");
+  const [lang, setLang] = useState(getStaffLang);
   useEffect(() => {
-    const syncLanguage = () => setLang(localStorage.getItem("einstein_lang") || "ar");
+    const syncLanguage = () => setLang(getStaffLang());
     window.addEventListener("storage", syncLanguage);
     return () => window.removeEventListener("storage", syncLanguage);
   }, []);
-  const t = translations[lang] || translations.ar;
-  const quickLinks = quickLinksByLanguage[lang] || quickLinksByLanguage.ar;
-  const activity = activityByLanguage[lang] || activityByLanguage.ar;
+  const t = translations[lang] || translations.de;
+  const quickLinks = quickLinksByLanguage[lang] || quickLinksByLanguage.de;
+  const activity = activityByLanguage[lang] || activityByLanguage.de;
   const { data: dashboard } = useQuery({
     queryKey: ["admin-dashboard"],
     queryFn: adminDashboardApi.getDashboard,

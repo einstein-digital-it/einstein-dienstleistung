@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { getAdminText } from "@/lib/adminLocalization";
+import { getStaffLang } from "@/lib/lang";
 
 export default function AdminUsers() {
-  const [lang] = useState(() => localStorage.getItem("einstein_lang") || "ar");
+  const [lang] = useState(getStaffLang);
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
 

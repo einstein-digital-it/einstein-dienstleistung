@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
+import { getStaffLang } from "@/lib/lang";
 
 const MONTHS_DE = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
 const MONTHS_AR = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
@@ -35,14 +36,13 @@ const CATEGORY_LABELS = {
 };
 
 export default function RevenueReports() {
-  const [lang, setLang] = useState("ar");
+  const [lang, setLang] = useState(getStaffLang);
   const [user, setUser] = useState(null);
   const [yearFilter, setYearFilter] = useState(new Date().getFullYear().toString());
   const [chartType, setChartType] = useState("bar"); // bar | line | pie
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("einstein_lang");
-    if (savedLang) setLang(savedLang);
+    setLang(getStaffLang());
     const init = () => setUser(requireStoredUser({ role: "admin" }));
     init();
   }, []);

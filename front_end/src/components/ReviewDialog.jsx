@@ -67,6 +67,18 @@ const tr = {
     success: "¡Gracias por tu reseña!",
     cancel: "Cancelar",
     select_rating: "Por favor selecciona una puntuación"
+  },
+  uk: {
+    title: "Залишити відгук",
+    subtitle: "Як вам сподобалася ця послуга?",
+    rating_label: "Ваша оцінка",
+    review_label: "Ваш коментар (необов’язково)",
+    review_placeholder: "Поділіться своїм досвідом...",
+    submit: "Надіслати відгук",
+    submitting: "Надсилання...",
+    success: "Дякуємо за ваш відгук!",
+    cancel: "Скасувати",
+    select_rating: "Будь ласка, виберіть оцінку"
   }
 };
 

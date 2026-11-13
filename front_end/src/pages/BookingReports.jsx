@@ -1,3 +1,4 @@
+import { getStaffLang } from "@/lib/lang";
 import React, { useState, useEffect } from "react";
 import { reportsApi } from "@/api/backendClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -195,15 +196,14 @@ const bookingReportText = {
 };
 
 export default function BookingReports() {
-  const [lang, setLang] = useState("ar");
+  const [lang, setLang] = useState(getStaffLang);
   const [user, setUser] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState({ open: false, booking: null });
   const [filter, setFilter] = useState("all");
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("einstein_lang");
-    if (savedLang) setLang(savedLang);
+    setLang(getStaffLang());
 
     const checkAuth = async () => {
       const userData = requireStoredUser();
