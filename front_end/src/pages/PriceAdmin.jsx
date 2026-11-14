@@ -24,6 +24,18 @@ import { priceAdminApi } from "@/api/backendClient";
 import { getAdminLocale, getAdminText } from "@/lib/adminLocalization";
 
 const icons = [ClipboardList, Settings, Briefcase, Printer, Globe, BookOpen, FileText];
+const LANGS = [
+  { code: "de", label: "DE" },
+  { code: "en", label: "EN" },
+  { code: "tr", label: "TR" },
+  { code: "ar", label: "AR", dir: "rtl" },
+];
+
+const withLocalizedDefaults = (item) => ({
+  ...item,
+  label_de: item.label_de ?? item.label ?? "",
+  unit_de: item.unit_de ?? item.unit ?? "",
+});
 
 export default function PriceAdmin() {
   const t = getAdminText(getAdminLocale()).prices;
@@ -38,7 +50,7 @@ export default function PriceAdmin() {
   // Copy server data into local editable state (only when nothing is being edited)
   useEffect(() => {
     if (dirtyIds.size === 0) {
-      setPriceGroups(backendPriceGroups.map((group) => ({ ...group, items: group.items.map((item) => ({ ...item })) })));
+      setPriceGroups(backendPriceGroups.map((group) => ({ ...group, items: group.items.map(withLocalizedDefaults) })));
     }
   }, [backendPriceGroups]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -58,7 +70,7 @@ export default function PriceAdmin() {
     setPriceGroups((groups) => groups.map((group) => (
       group.id !== groupId ? group : {
         ...group,
-        items: [...group.items, { label: "", price: "", unit: "", status: "active", _key: `new-${Date.now()}` }],
+        items: [...group.items, { label_de: "", label_en: "", label_tr: "", label_ar: "", price: "", unit_de: "", unit_en: "", unit_tr: "", unit_ar: "", status: "active", _key: `new-${Date.now()}` }],
       }
     )));
     markDirty(groupId);
@@ -75,14 +87,16 @@ export default function PriceAdmin() {
     mutationFn: async (groups) => Promise.all(groups.map((group) => priceAdminApi.updatePriceGroup(group.id, {
       category: group.category,
       items: group.items
-        .filter((item) => String(item.label ?? "").trim() !== "")
-        .map((item, index) => ({
-          label: String(item.label).trim(),
-          price: String(item.price ?? "").trim(),
-          unit: item.unit ? String(item.unit).trim() : null,
-          status: item.status || "active",
-          sort_order: index,
-        })),
+        .filter((item) => LANGS.some(({ code }) => String(item[`label_${code}`] ?? "").trim() !== ""))
+        .map((item, index) => {
+          const clean = (value) => (value && String(value).trim() ? String(value).trim() : null);
+          const payload = { price: String(item.price ?? "").trim(), status: item.status || "active", sort_order: index };
+          LANGS.forEach(({ code }) => {
+            payload[`label_${code}`] = clean(item[`label_${code}`]);
+            payload[`unit_${code}`] = clean(item[`unit_${code}`]);
+          });
+          return payload;
+        }),
     }))),
     onSuccess: () => {
       setDirtyIds(new Set());
@@ -195,7 +209,7 @@ export default function PriceAdmin() {
                   </CardHeader>
                   <CardContent className="p-0">
                     <div className="overflow-x-auto">
-                      <table className="w-full min-w-[720px] text-sm">
+                      <table className="w-full min-w-[900px] text-sm">
                         <thead className="bg-[#f8fbff] text-[#65758b]">
                           <tr>
                             <th className="px-5 py-4 text-start font-semibold">{t.label}</th>
@@ -208,14 +222,28 @@ export default function PriceAdmin() {
                         <tbody className="divide-y divide-[#e3e9f2]">
                           {group.items.map((item, itemIndex) => (
                             <tr key={item.id ?? item._key ?? itemIndex} className="bg-white">
-                              <td className="px-5 py-4">
-                                <Input value={item.label ?? ""} onChange={(event) => updateItem(group.id, itemIndex, "label", event.target.value)} className="border-[#dbe3ee] bg-white" />
+                              <td className="px-5 py-4 align-top">
+                                <div className="grid grid-cols-1 gap-2">
+                                  {LANGS.map(({ code, label, dir }) => (
+                                    <div key={code} className="flex items-center gap-2">
+                                      <span className="w-7 text-xs font-semibold text-[#65758b]">{label}</span>
+                                      <Input dir={dir} value={item[`label_${code}`] ?? ""} onChange={(event) => updateItem(group.id, itemIndex, `label_${code}`, event.target.value)} className="border-[#dbe3ee] bg-white" />
+                                    </div>
+                                  ))}
+                                </div>
                               </td>
-                              <td className="px-5 py-4">
+                              <td className="px-5 py-4 align-top">
                                 <Input value={item.price ?? ""} onChange={(event) => updateItem(group.id, itemIndex, "price", event.target.value)} className="max-w-[180px] border-[#dbe3ee] bg-white font-bold text-[#1e3a5f]" />
                               </td>
-                              <td className="px-5 py-4">
-                                <Input value={item.unit ?? ""} onChange={(event) => updateItem(group.id, itemIndex, "unit", event.target.value)} className="max-w-[180px] border-[#dbe3ee] bg-white" />
+                              <td className="px-5 py-4 align-top">
+                                <div className="grid grid-cols-1 gap-2">
+                                  {LANGS.map(({ code, label, dir }) => (
+                                    <div key={code} className="flex items-center gap-2">
+                                      <span className="w-7 text-xs font-semibold text-[#65758b]">{label}</span>
+                                      <Input dir={dir} value={item[`unit_${code}`] ?? ""} onChange={(event) => updateItem(group.id, itemIndex, `unit_${code}`, event.target.value)} className="max-w-[180px] border-[#dbe3ee] bg-white" />
+                                    </div>
+                                  ))}
+                                </div>
                               </td>
                               <td className="px-5 py-4">
                                 <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">{t.active}</Badge>
