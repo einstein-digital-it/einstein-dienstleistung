@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { publicApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
+import { formatEuro, getServiceName, getServiceUnit } from "@/lib/priceUtils";
 import StarRating from "@/components/StarRating";
 import { motion } from "framer-motion";
 import {
@@ -731,6 +732,14 @@ export default function Services() {
     refetchOnMount: true,
   });
   
+  // Services (with prices) managed in admin "Manage services"
+  const { data: dbServices = [] } = useQuery({
+    queryKey: ["public-services"],
+    queryFn: publicApi.listServices,
+    staleTime: 0,
+    refetchOnMount: true,
+  });
+
   // Convert array to object
   const customPrices = React.useMemo(() => {
     if (!priceSettingsData || priceSettingsData.length === 0) return null;
@@ -779,6 +788,14 @@ export default function Services() {
         label: getLabelByLang(p),
         price: p.price,
         unit: getUnitByLang(p)
+      }));
+    }
+    const servicesInCategory = dbServices.filter((service) => service.category === serviceKey && service.price_from != null);
+    if (servicesInCategory.length > 0) {
+      return servicesInCategory.map((service) => ({
+        label: getServiceName(service, lang),
+        price: formatEuro(service.price_from),
+        unit: getServiceUnit(service.price_unit, lang),
       }));
     }
     return t.services[serviceKey]?.prices || [];

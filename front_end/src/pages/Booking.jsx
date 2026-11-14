@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import { adminServicesApi, bookingsApi, priceAdminApi, providersApi, uploadApi } from "@/api/backendClient";
+import { bookingsApi, providersApi, publicApi, uploadApi } from "@/api/backendClient";
 import { getStoredAuthUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -46,7 +46,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { format, isSameDay, addDays, startOfDay } from "date-fns";
-import { getPriceNumber } from "@/lib/priceUtils";
+import { formatEuro, getPriceNumber, getServiceUnit } from "@/lib/priceUtils";
 import SecretariatPackages from "@/components/SecretariatPackages";
 
 const translations = {
@@ -311,10 +311,16 @@ export default function Booking() {
   
   const t = translations[lang] || translations.de;
   
+  // Active services with prices from admin "Manage services" (public endpoint)
+  const { data: allServices = [] } = useQuery({
+    queryKey: ["public-services"],
+    queryFn: publicApi.listServices,
+  });
+
   // Load custom prices from database
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings"],
-    queryFn: priceAdminApi.listPriceGroups,
+    queryFn: publicApi.listPricing,
   });
 
   const customPrices = React.useMemo(() => {
@@ -358,6 +364,11 @@ export default function Booking() {
          price: customPrices[cat][0].price,
          unit: getUnitByLang(customPrices[cat][0])
        };
+    }
+    // Fall back to the price set in admin "Manage services"
+    const service = allServices.find((item) => item.category === cat && item.price_from != null);
+    if (service) {
+      return { price: formatEuro(service.price_from), unit: getServiceUnit(service.price_unit, lang) };
     }
     return null;
   }
@@ -426,11 +437,7 @@ export default function Booking() {
   });
 
   // Fetch service price for selected category
-  const { data: categoryServices = [] } = useQuery({
-    queryKey: ["category-services", formData.category],
-    queryFn: () => adminServicesApi.listServices({ category: formData.category, status: "active" }),
-    enabled: !!formData.category
-  });
+  const categoryServices = allServices.filter((service) => service.category === formData.category);
 
   // Get booked slots for a specific date
   const getBookedSlotsForDate = (date) => {

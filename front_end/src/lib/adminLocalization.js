@@ -95,6 +95,12 @@ const adminText = {
       status: "الحالة",
       active: "نشط",
       addItem: "إضافة بند",
+      saving: "جارٍ الحفظ...",
+      saved: "تم حفظ الأسعار",
+      saveError: "تعذر حفظ الأسعار. حاول مجددًا.",
+      newGroupPrompt: "اسم الفئة (office, forms, admin, coordination, mercosur, tutoring, print):",
+      remove: "حذف",
+      unsaved: "توجد تعديلات غير محفوظة",
     },
     providers: {
       breadcrumb: "الإدارة / المزوّدون",
@@ -151,7 +157,7 @@ const adminText = {
       categories: { office: "Office", forms: "Forms", admin: "Administration", coordination: "Coordination", mercosur: "MERCOSUR", tutoring: "Tutoring", print: "Print" },
     },
     prices: {
-      breadcrumb: "Admin / Prices", title: "Manage Prices", subtitle: "Manage price lists, units, and service packages.", add: "Add Price", save: "Save Changes", groups: "Price Groups", items: "Price Items", average: "Average", positions: "items", label: "Name", price: "Price", unit: "Unit", status: "Status", active: "Active", addItem: "Add Item",
+      breadcrumb: "Admin / Prices", title: "Manage Prices", subtitle: "Manage price lists, units, and service packages.", add: "Add Price", save: "Save Changes", groups: "Price Groups", items: "Price Items", average: "Average", positions: "items", label: "Name", price: "Price", unit: "Unit", status: "Status", active: "Active", addItem: "Add Item", saving: "Saving...", saved: "Prices saved", saveError: "Could not save prices. Please try again.", newGroupPrompt: "Category key (office, forms, admin, coordination, mercosur, tutoring, print):", remove: "Remove", unsaved: "You have unsaved changes",
     },
     providers: {
       breadcrumb: "Admin / Providers", title: "Manage Providers", subtitle: "Manage providers, documents, categories, and statuses.", export: "Export", add: "Add Provider", total: "Providers", approved: "Approved", pending: "Pending", documents: "Documents", search: "Search providers...", jobs: "jobs", categories: "Categories", languages: "Languages", hourlyRate: "Hourly Rate", hour: "hour", details: "Details",
@@ -170,7 +176,7 @@ const adminText = {
       categories: { office: "Buero", forms: "Formulare", admin: "Administration", coordination: "Koordination", mercosur: "MERCOSUR", tutoring: "Nachhilfe", print: "Druck" },
     },
     prices: {
-      breadcrumb: "Admin / Preise", title: "Preise verwalten", subtitle: "Preislisten, Einheiten und Dienstleistungspakete verwalten.", add: "Preis hinzufuegen", save: "Aenderungen speichern", groups: "Preisgruppen", items: "Preispositionen", average: "Durchschnitt", positions: "Positionen", label: "Bezeichnung", price: "Preis", unit: "Einheit", status: "Status", active: "Aktiv", addItem: "Position hinzufuegen",
+      breadcrumb: "Admin / Preise", title: "Preise verwalten", subtitle: "Preislisten, Einheiten und Dienstleistungspakete verwalten.", add: "Preis hinzufuegen", save: "Aenderungen speichern", groups: "Preisgruppen", items: "Preispositionen", average: "Durchschnitt", positions: "Positionen", label: "Bezeichnung", price: "Preis", unit: "Einheit", status: "Status", active: "Aktiv", addItem: "Position hinzufuegen", saving: "Wird gespeichert...", saved: "Preise gespeichert", saveError: "Preise konnten nicht gespeichert werden.", newGroupPrompt: "Kategorie-Schluessel (office, forms, admin, coordination, mercosur, tutoring, print):", remove: "Entfernen", unsaved: "Es gibt ungespeicherte Aenderungen",
     },
     providers: {
       breadcrumb: "Admin / Anbieter", title: "Anbieter verwalten", subtitle: "Anbieter, Dokumente, Kategorien und Status verwalten.", export: "Exportieren", add: "Anbieter hinzufuegen", total: "Anbieter", approved: "Genehmigt", pending: "Ausstehend", documents: "Dokumente", search: "Anbieter suchen...", jobs: "Auftraege", categories: "Kategorien", languages: "Sprachen", hourlyRate: "Stundensatz", hour: "Stunde", details: "Details",

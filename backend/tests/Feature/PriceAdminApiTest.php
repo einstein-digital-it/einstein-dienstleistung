@@ -56,4 +56,24 @@ class PriceAdminApiTest extends TestCase
             'label' => 'Print page',
         ]);
     }
+
+    public function test_price_items_store_four_languages(): void
+    {
+        $this->withApiUser('admin');
+        $this->postJson('/api/admin/price-groups', [
+            'category' => 'tutoring',
+            'items' => [[
+                'label_de' => 'Einzelunterricht', 'label_en' => 'Private lesson',
+                'label_tr' => 'Özel ders', 'label_ar' => 'درس فردي',
+                'price' => '25 EUR',
+                'unit_de' => 'pro Stunde', 'unit_en' => 'per hour',
+                'unit_tr' => 'saat başı', 'unit_ar' => 'بالساعة',
+            ]],
+        ])
+            ->assertCreated()
+            ->assertJsonPath('data.items.0.label', 'Einzelunterricht')
+            ->assertJsonPath('data.items.0.label_tr', 'Özel ders')
+            ->assertJsonPath('data.items.0.label_ar', 'درس فردي')
+            ->assertJsonPath('data.items.0.unit_en', 'per hour');
+    }
 }
