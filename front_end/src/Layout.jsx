@@ -345,12 +345,6 @@ export default function Layout({ children, currentPageName }) {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to={createPageUrl("PriceAdmin")} className="flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-gray-400" />
-                        {m("prices")}
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
                       <Link to={createPageUrl("ClientWorkspace")} className="flex items-center gap-2">
                         <Briefcase className="w-4 h-4 text-gray-400" />
                         {m("clientWorkspace")}
@@ -585,13 +579,6 @@ export default function Layout({ children, currentPageName }) {
                                               onClick={() => setIsMenuOpen(false)}
                                             >
                                               SEO
-                                            </Link>
-                                            <Link 
-                                             to={createPageUrl("PriceAdmin")} 
-                                             className="px-4 py-2 hover:bg-gray-100 rounded-lg text-[#2e1065]"
-                                             onClick={() => setIsMenuOpen(false)}
-                                            >
-                                             {m("prices")}
                                             </Link>
                                             <Link 
                                              to={createPageUrl("AdminUsers")} 
