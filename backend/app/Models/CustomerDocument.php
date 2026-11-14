@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustomerDocument extends Model
 {
+    /** A deleted letter takes its reminders with it (the database would only unlink them). */
+    protected static function booted(): void
+    {
+        static::deleting(function (CustomerDocument $document) {
+            CustomerReminder::where('customer_document_id', $document->id)->delete();
+        });
+    }
+
     /** Folder keys shown to customers (labels are translated in the frontend). */
     public const FOLDERS = [
         'jobcenter', 'auslaenderbehoerde', 'finanzamt', 'familienkasse', 'krankenkasse',
