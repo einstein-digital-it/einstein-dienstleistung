@@ -165,6 +165,7 @@ const MENU = {
   notifications: { de: "Benachrichtigungen", ar: "إعدادات الإشعارات", en: "Notifications", tr: "Bildirimler", es: "Notificaciones", uk: "Сповіщення" },
   help: { de: "Hilfe", ar: "خدمة العملاء", en: "Support", tr: "Yardım", es: "Ayuda", uk: "Підтримка" },
   vouchers: { de: "Gutscheine", ar: "القسائم", en: "Voucher codes", tr: "Kuponlar", es: "Cupones", uk: "Купони" },
+  madeBy: { de: "Webdesign & Entwicklung von", ar: "تصميم وتطوير الموقع:", en: "Web design & development by", tr: "Web tasarımı ve geliştirme:", es: "Diseño y desarrollo web:", uk: "Вебдизайн і розробка:" },
   contact: { de: "Kontakt", ar: "اتصل بنا", en: "Contact", tr: "İletişim", es: "Contacto", uk: "Контакти" },
 };
 
@@ -673,6 +674,13 @@ export default function Layout({ children, currentPageName }) {
               <Link to="/AGB" className="hover:text-white transition-colors">AGB</Link>
             </div>
             <p>© 2026 EinStein – Inhaber Beshr Alhoury Alhomsi</p>
+            {/* Credit for the web agency, in the visitor's language */}
+            <p className="mt-3">
+              {m("madeBy")}{" "}
+              <a href="https://www.einstein-it.de" target="_blank" rel="noopener" dir="ltr" className="font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">
+                Einstein IT · www.einstein-it.de
+              </a>
+            </p>
           </div>
         </div>
       </footer>
