@@ -787,15 +787,20 @@ export default function Services() {
     const byLang = { ar: `${field}_ar`, en: `${field}_en`, tr: `${field}_tr`, es: `${field}_es`, uk: `${field}_en` }[lang];
     return (byLang && item[byLang]) || item[`${field}_de`] || item[field];
   };
+  // Prices from the admin "Prices" page (price groups), if any were set for this category.
   const getPrices = (key) => (customPrices?.[key]
     ? customPrices[key].map((item) => ({ label: fromDb(item, "label"), price: item.price, unit: fromDb(item, "unit") }))
-    : t.services[key]?.prices || []);
+    : []);
   const siteServices = useSiteServices(FALLBACK_SERVICE_KEYS);
   const getServiceName = (key, db) => serviceText(db, "name", lang) || (customPrices?.[key]?.[0] && fromDb(customPrices[key][0], "label")) || t.services[key]?.name || key;
   const getServicePrices = (key, db) => {
+    // Order: "Prices" page -> price from "Manage services" -> built-in default text.
     const prices = getPrices(key);
-    if (prices.length || !db || !(Number(db.price_from) > 0)) return prices;
-    return [{ label: getServiceName(key, db), price: Number(db.price_from), unit: unitLabel(db.price_unit, lang) }];
+    if (prices.length) return prices;
+    if (db && Number(db.price_from) > 0) {
+      return [{ label: getServiceName(key, db), price: Number(db.price_from), unit: unitLabel(db.price_unit, lang) }];
+    }
+    return t.services[key]?.prices || [];
   };
 
   return (

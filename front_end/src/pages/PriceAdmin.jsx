@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
   BookOpen,
   Briefcase,
@@ -12,6 +13,7 @@ import {
   Printer,
   Save,
   Settings,
+  Trash2,
   TrendingUp
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +24,18 @@ import { priceAdminApi } from "@/api/backendClient";
 import { getAdminLocale, getAdminText } from "@/lib/adminLocalization";
 
 const icons = [ClipboardList, Settings, Briefcase, Printer, Globe, BookOpen, FileText];
+const LANGS = [
+  { code: "de", label: "DE" },
+  { code: "en", label: "EN" },
+  { code: "tr", label: "TR" },
+  { code: "ar", label: "AR", dir: "rtl" },
+];
+
+const withLocalizedDefaults = (item) => ({
+  ...item,
+  label_de: item.label_de ?? item.label ?? "",
+  unit_de: item.unit_de ?? item.unit ?? "",
+});
 
 export default function PriceAdmin() {
   const t = getAdminText(getAdminLocale()).prices;
@@ -29,7 +43,84 @@ export default function PriceAdmin() {
     queryKey: ["admin-price-groups"],
     queryFn: priceAdminApi.listPriceGroups,
   });
-  const priceGroups = backendPriceGroups;
+  const queryClient = useQueryClient();
+  const [priceGroups, setPriceGroups] = useState([]);
+  const [dirtyIds, setDirtyIds] = useState(new Set());
+
+  // Copy server data into local editable state (only when nothing is being edited)
+  useEffect(() => {
+    if (dirtyIds.size === 0) {
+      setPriceGroups(backendPriceGroups.map((group) => ({ ...group, items: group.items.map(withLocalizedDefaults) })));
+    }
+  }, [backendPriceGroups]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const markDirty = (groupId) => setDirtyIds((current) => new Set(current).add(groupId));
+
+  const updateItem = (groupId, itemIndex, field, value) => {
+    setPriceGroups((groups) => groups.map((group) => (
+      group.id !== groupId ? group : {
+        ...group,
+        items: group.items.map((item, index) => (index === itemIndex ? { ...item, [field]: value } : item)),
+      }
+    )));
+    markDirty(groupId);
+  };
+
+  const addItem = (groupId) => {
+    setPriceGroups((groups) => groups.map((group) => (
+      group.id !== groupId ? group : {
+        ...group,
+        items: [...group.items, { label_de: "", label_en: "", label_tr: "", label_ar: "", price: "", unit_de: "", unit_en: "", unit_tr: "", unit_ar: "", status: "active", _key: `new-${Date.now()}` }],
+      }
+    )));
+    markDirty(groupId);
+  };
+
+  const removeItem = (groupId, itemIndex) => {
+    setPriceGroups((groups) => groups.map((group) => (
+      group.id !== groupId ? group : { ...group, items: group.items.filter((_, index) => index !== itemIndex) }
+    )));
+    markDirty(groupId);
+  };
+
+  const saveMutation = useMutation({
+    mutationFn: async (groups) => Promise.all(groups.map((group) => priceAdminApi.updatePriceGroup(group.id, {
+      category: group.category,
+      items: group.items
+        .filter((item) => LANGS.some(({ code }) => String(item[`label_${code}`] ?? "").trim() !== ""))
+        .map((item, index) => {
+          const clean = (value) => (value && String(value).trim() ? String(value).trim() : null);
+          const payload = { price: String(item.price ?? "").trim(), status: item.status || "active", sort_order: index };
+          LANGS.forEach(({ code }) => {
+            payload[`label_${code}`] = clean(item[`label_${code}`]);
+            payload[`unit_${code}`] = clean(item[`unit_${code}`]);
+          });
+          return payload;
+        }),
+    }))),
+    onSuccess: () => {
+      setDirtyIds(new Set());
+      queryClient.invalidateQueries({ queryKey: ["admin-price-groups"] });
+      toast.success(t.saved);
+    },
+    onError: () => toast.error(t.saveError),
+  });
+
+  const createGroupMutation = useMutation({
+    mutationFn: (category) => priceAdminApi.createPriceGroup({ category, items: [] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-price-groups"] }),
+    onError: () => toast.error(t.saveError),
+  });
+
+  const handleSave = () => {
+    const changed = priceGroups.filter((group) => dirtyIds.has(group.id));
+    if (changed.length) saveMutation.mutate(changed);
+  };
+
+  const handleAddGroup = () => {
+    const name = window.prompt(t.newGroupPrompt);
+    if (name && name.trim()) createGroupMutation.mutate(name.trim());
+  };
   const itemCount = priceGroups.reduce((sum, group) => sum + group.items.length, 0);
   const numericPrices = priceGroups
     .flatMap((group) => group.items)
@@ -55,13 +146,19 @@ export default function PriceAdmin() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" className="border-[#dbe3ee]">
+            <Button variant="outline" className="border-[#dbe3ee]" onClick={handleAddGroup} disabled={createGroupMutation.isPending}>
               <Plus className="mr-2 h-4 w-4" />
               {t.add}
             </Button>
-            <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8a]">
+            <Button
+              className="bg-[#1e3a5f] hover:bg-[#2d5a8a]"
+              onClick={handleSave}
+              disabled={dirtyIds.size === 0 || saveMutation.isPending}
+              title={dirtyIds.size > 0 ? t.unsaved : undefined}
+            >
               <Save className="mr-2 h-4 w-4" />
-              {t.save}
+              {saveMutation.isPending ? t.saving : t.save}
+              {dirtyIds.size > 0 && !saveMutation.isPending ? " •" : ""}
             </Button>
           </div>
         </motion.div>
@@ -112,29 +209,49 @@ export default function PriceAdmin() {
                   </CardHeader>
                   <CardContent className="p-0">
                     <div className="overflow-x-auto">
-                      <table className="w-full min-w-[720px] text-sm">
+                      <table className="w-full min-w-[900px] text-sm">
                         <thead className="bg-[#f8fbff] text-[#65758b]">
                           <tr>
                             <th className="px-5 py-4 text-start font-semibold">{t.label}</th>
                             <th className="px-5 py-4 text-start font-semibold">{t.price}</th>
                             <th className="px-5 py-4 text-start font-semibold">{t.unit}</th>
                             <th className="px-5 py-4 text-start font-semibold">{t.status}</th>
+                            <th className="px-5 py-4" />
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[#e3e9f2]">
-                          {group.items.map((item) => (
-                            <tr key={`${group.id}-${item.label}`} className="bg-white">
-                              <td className="px-5 py-4">
-                                <Input value={item.label} readOnly className="border-[#dbe3ee] bg-white" />
+                          {group.items.map((item, itemIndex) => (
+                            <tr key={item.id ?? item._key ?? itemIndex} className="bg-white">
+                              <td className="px-5 py-4 align-top">
+                                <div className="grid grid-cols-1 gap-2">
+                                  {LANGS.map(({ code, label, dir }) => (
+                                    <div key={code} className="flex items-center gap-2">
+                                      <span className="w-7 text-xs font-semibold text-[#65758b]">{label}</span>
+                                      <Input dir={dir} value={item[`label_${code}`] ?? ""} onChange={(event) => updateItem(group.id, itemIndex, `label_${code}`, event.target.value)} className="border-[#dbe3ee] bg-white" />
+                                    </div>
+                                  ))}
+                                </div>
                               </td>
-                              <td className="px-5 py-4">
-                                <Input value={item.price} readOnly className="max-w-[180px] border-[#dbe3ee] bg-white font-bold text-[#1e3a5f]" />
+                              <td className="px-5 py-4 align-top">
+                                <Input value={item.price ?? ""} onChange={(event) => updateItem(group.id, itemIndex, "price", event.target.value)} className="max-w-[180px] border-[#dbe3ee] bg-white font-bold text-[#1e3a5f]" />
                               </td>
-                              <td className="px-5 py-4">
-                                <Input value={item.unit} readOnly className="max-w-[180px] border-[#dbe3ee] bg-white" />
+                              <td className="px-5 py-4 align-top">
+                                <div className="grid grid-cols-1 gap-2">
+                                  {LANGS.map(({ code, label, dir }) => (
+                                    <div key={code} className="flex items-center gap-2">
+                                      <span className="w-7 text-xs font-semibold text-[#65758b]">{label}</span>
+                                      <Input dir={dir} value={item[`unit_${code}`] ?? ""} onChange={(event) => updateItem(group.id, itemIndex, `unit_${code}`, event.target.value)} className="max-w-[180px] border-[#dbe3ee] bg-white" />
+                                    </div>
+                                  ))}
+                                </div>
                               </td>
                               <td className="px-5 py-4">
                                 <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">{t.active}</Badge>
+                              </td>
+                              <td className="px-5 py-4 text-end">
+                                <Button variant="ghost" size="icon" title={t.remove} onClick={() => removeItem(group.id, itemIndex)}>
+                                  <Trash2 className="h-4 w-4 text-red-500" />
+                                </Button>
                               </td>
                             </tr>
                           ))}
@@ -142,7 +259,7 @@ export default function PriceAdmin() {
                       </table>
                     </div>
                     <div className="flex justify-end border-t border-[#e3e9f2] bg-[#fbfdff] p-4">
-                      <Button variant="outline" className="border-[#dbe3ee]">
+                      <Button variant="outline" className="border-[#dbe3ee]" onClick={() => addItem(group.id)}>
                         <Plus className="mr-2 h-4 w-4" />
                         {t.addItem}
                       </Button>
