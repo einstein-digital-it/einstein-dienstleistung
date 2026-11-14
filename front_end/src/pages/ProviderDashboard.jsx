@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { priceAdminApi, providerDashboardApi, uploadApi } from "@/api/backendClient";
+import { publicApi, providerDashboardApi, uploadApi } from "@/api/backendClient";
 import { requireStoredUser } from "@/lib/backendAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -262,7 +262,7 @@ export default function ProviderDashboard() {
 
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings-provider-dashboard"],
-    queryFn: priceAdminApi.listPriceGroups,
+    queryFn: publicApi.listPricing,
   });
 
   const customPrices = React.useMemo(() => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { priceAdminApi, providersApi } from "@/api/backendClient";
+import { publicApi, providersApi } from "@/api/backendClient";
 import { requireStoredUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -128,7 +128,7 @@ export default function ProvidersList() {
 
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings-providers-list"],
-    queryFn: priceAdminApi.listPriceGroups,
+    queryFn: publicApi.listPricing,
   });
 
   const customPrices = React.useMemo(() => {

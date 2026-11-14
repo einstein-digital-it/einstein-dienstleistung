@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import { priceAdminApi, providersApi } from "@/api/backendClient";
+import { publicApi, providersApi } from "@/api/backendClient";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -179,7 +179,7 @@ export default function ProviderProfile() {
 
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings-provider-profile"],
-    queryFn: priceAdminApi.listPriceGroups,
+    queryFn: publicApi.listPricing,
   });
 
   const customPrices = React.useMemo(() => {
