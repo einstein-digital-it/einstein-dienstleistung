@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
-import { adminServicesApi, bookingsApi, priceAdminApi, uploadApi } from "@/api/backendClient";
+import { bookingsApi, publicApi, uploadApi } from "@/api/backendClient";
+import { unitLabel } from "@/lib/siteServices";
 import { getStoredAuthUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -355,7 +356,14 @@ export default function Booking() {
   // Load custom prices from database
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings"],
-    queryFn: priceAdminApi.listPriceGroups,
+    queryFn: publicApi.listPricing,
+  });
+
+  // Active services with their prices from admin "Manage services" (public endpoint;
+  // customers cannot use the admin endpoints).
+  const { data: allServices = [] } = useQuery({
+    queryKey: ["public-services"],
+    queryFn: publicApi.listServices,
   });
 
   const customPrices = React.useMemo(() => {
@@ -402,6 +410,11 @@ export default function Booking() {
          unit: getUnitByLang(customPrices[cat][0])
        };
     }
+    // Fall back to the price set in admin "Manage services"
+    const service = allServices.find((item) => item.category === cat && Number(item.price_from) > 0);
+    if (service) {
+      return { price: `${Number(service.price_from)} €`, unit: unitLabel(service.price_unit, lang) };
+    }
     return null;
   }
 
@@ -435,11 +448,7 @@ export default function Booking() {
   });
 
   // Fetch service price for selected category
-  const { data: categoryServices = [] } = useQuery({
-    queryKey: ["category-services", formData.category],
-    queryFn: () => adminServicesApi.listServices({ category: formData.category, status: "active" }),
-    enabled: !!formData.category
-  });
+  const categoryServices = allServices.filter((service) => service.category === formData.category);
 
   // Get booked slots for a specific date
   const getBookedSlotsForDate = (date) => {
