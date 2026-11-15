@@ -103,7 +103,10 @@ String _price(Map<String, dynamic> json) {
       json['price_from'];
   final unit = json['unit'] ?? 'EUR';
   // "Dienste verwalten" stores the unit as a key: hour, service, visit, day, month
-  final per = json['price_unit'] == null ? '' : ' / ${json['price_unit']}';
+  final key = json['price_unit']?.toString();
+  final per = key == null || key.isEmpty
+      ? ''
+      : ' / ${const {'hour', 'service', 'visit', 'day', 'month'}.contains(key) ? 'unit_$key'.tr : key}';
   if (price == null) return 'Price on request';
   // Server prices are net; customers see the gross price (PAngV).
   final net = num.tryParse(price.toString());

@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>EinStein app video</title>
+<style>
+  @font-face { font-family: "Plex Arabic"; src: url("../../mobile/user_einstein/assets/fonts/IBMPlexSansArabic_700Bold.ttf"); font-weight: 700; }
+  @font-face { font-family: "Plex Arabic"; src: url("../../mobile/user_einstein/assets/fonts/IBMPlexSansArabic_400Regular.ttf"); font-weight: 400; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1280px; height: 720px; overflow: hidden; }
+  body {
+    font-family: "Plex Arabic", "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(120% 120% at 15% 10%, #3b1478 0%, #1f0b52 55%, #14063a 100%);
+    color: #fff;
+  }
+  .stage { position: relative; width: 1280px; height: 720px; }
+  .hex { position: absolute; color: rgba(255,255,255,.07); }
+  .scene { position: absolute; inset: 0; display: flex; align-items: center; gap: 72px; padding: 0 110px; opacity: 0; }
+  .copy { flex: 1; }
+  .kicker { display: inline-block; font-size: 18px; font-weight: 700; letter-spacing: .04em; color: #d8c4ff; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: 999px; padding: 6px 16px; margin-bottom: 22px; }
+  h1 { font-size: 62px; line-height: 1.12; font-weight: 700; }
+  p { margin-top: 20px; font-size: 26px; line-height: 1.45; color: #e3d7ff; max-width: 560px; }
+  [dir="rtl"] .copy { text-align: right; }
+  .phone { width: 300px; height: 620px; border-radius: 46px; background: #0c0420; padding: 12px; box-shadow: 0 40px 90px rgba(0,0,0,.45), 0 0 0 2px rgba(255,255,255,.12); flex: none; position: relative; }
+  .phone .screen { width: 100%; height: 100%; border-radius: 36px; overflow: hidden; background: #fff; }
+  .phone img { width: 100%; display: block; }
+  .center { justify-content: center; flex-direction: column !important; text-align: center; gap: 0; }
+  .center p { max-width: 900px; margin-left: auto; margin-right: auto; }
+  .logo { width: 132px; height: 132px; border-radius: 34px; background: #fff; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+  .logo img { width: 100px; }
+  .url { margin-top: 28px; display: inline-block; font-size: 28px; font-weight: 700; color: #1f0b52; background: #fff; border-radius: 18px; padding: 14px 30px; direction: ltr; }
+  .dots { position: absolute; bottom: 34px; left: 0; right: 0; display: flex; justify-content: center; gap: 10px; }
+  .dots span { width: 10px; height: 10px; border-radius: 99px; background: rgba(255,255,255,.25); }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <svg class="hex" style="width:620px;height:620px;right:-160px;top:-180px" viewBox="0 0 100 100"><polygon points="50,2 92,26 92,74 50,98 8,74 8,26" fill="none" stroke="currentColor" stroke-width="0.6"/><polygon points="50,16 80,33 80,67 50,84 20,67 20,33" fill="none" stroke="currentColor" stroke-width="0.6"/></svg>
+  <svg class="hex" style="width:420px;height:420px;left:-140px;bottom:-170px" viewBox="0 0 100 100"><polygon points="50,2 92,26 92,74 50,98 8,74 8,26" fill="currentColor"/></svg>
+  <div id="scenes"></div>
+  <div class="dots" id="dots"></div>
+</div>
+<script>
+// Scene list and timing (seconds). Filled by render.mjs through window.setup().
+const SCENES = [
+  { key: 'intro', from: 0, to: 3.6, center: true },
+  { key: 'upload', from: 3.6, to: 8.2, screen: 'documents' },
+  { key: 'sorted', from: 8.2, to: 12.8, screen: 'recent' },
+  { key: 'summary', from: 12.8, to: 17.4, screen: 'detail' },
+  { key: 'reminder', from: 17.4, to: 22.0, screen: 'reminders' },
+  { key: 'booking', from: 22.0, to: 26.6, screen: 'services' },
+  { key: 'outro', from: 26.6, to: 30.0, center: true, url: true },
+];
+window.DURATION = 30;
+const ease = (x) => (x < 0 ? 0 : x > 1 ? 1 : 1 - Math.pow(1 - x, 3));
+
+window.setup = ({ texts, rtl, shots, logo }) => {
+  document.documentElement.lang = rtl ? 'ar' : 'en';
+  document.getElementById('stage').setAttribute('dir', rtl ? 'rtl' : 'ltr');
+  const host = document.getElementById('scenes');
+  host.innerHTML = SCENES.map((s, i) => {
+    const [h, p] = texts[s.key];
+    if (s.center) {
+      return `<section class="scene center" id="s${i}">
+        <div class="logo"><img src="${logo}" alt=""></div>
+        <h1>${h}</h1>${s.url ? `<span class="url">${p}</span>` : `<p>${p}</p>`}
+      </section>`;
+    }
+    return `<section class="scene" id="s${i}">
+      <div class="copy"><span class="kicker">${String(i).padStart(2, '0')}</span><h1>${h}</h1><p>${p}</p></div>
+      <div class="phone"><div class="screen"><img id="img${i}" src="${shots[s.screen]}" alt=""></div></div>
+    </section>`;
+  }).join('');
+  document.getElementById('dots').innerHTML = SCENES.filter((s) => !s.center).map((_, i) => `<span id="d${i}"></span>`).join('');
+};
+
+// Deterministic: every frame is drawn from the time alone
+window.setTime = (t) => {
+  let dot = -1;
+  SCENES.forEach((s, i) => {
+    const el = document.getElementById('s' + i);
+    if (!el) return;
+    const fadeIn = ease((t - s.from) / 0.55);
+    const fadeOut = i === SCENES.length - 1 ? 1 : 1 - ease((t - (s.to - 0.4)) / 0.4);
+    const v = t < s.from - 0.05 || t > s.to + 0.05 ? 0 : Math.max(0, Math.min(fadeIn, fadeOut));
+    el.style.opacity = v;
+    const copy = el.querySelector('.copy, h1');
+    const phone = el.querySelector('.phone');
+    if (copy) copy.style.transform = `translateY(${(1 - fadeIn) * 30}px)`;
+    if (phone) {
+      phone.style.transform = `translateY(${(1 - fadeIn) * 60}px) rotate(${(1 - fadeIn) * -2}deg)`;
+      const img = el.querySelector('.phone img');
+      const local = Math.max(0, Math.min(1, (t - s.from - 0.8) / (s.to - s.from - 1.4)));
+      if (img && s.scroll) img.style.transform = `translateY(${-ease(local) * 90}px)`;
+    }
+    if (!s.center && t >= s.from && t < s.to) dot = SCENES.filter((x) => !x.center).indexOf(s);
+  });
+  document.querySelectorAll('#dots span').forEach((d, i) => { d.style.background = i === dot ? '#fff' : 'rgba(255,255,255,.25)'; d.style.width = i === dot ? '30px' : '10px'; });
+  document.getElementById('dots').style.opacity = dot === -1 ? 0 : 1;
+};
+</script>
+</body>
+</html>

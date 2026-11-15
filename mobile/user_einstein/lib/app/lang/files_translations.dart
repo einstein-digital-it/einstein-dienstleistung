@@ -1,6 +1,11 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'unit_hour': 'hour',
+  'unit_service': 'service',
+  'unit_visit': 'visit',
+  'unit_day': 'day',
+  'unit_month': 'month',
   'voucher_ask': 'Do you have a voucher code?',
   'voucher_hint': 'Voucher code',
   'voucher_redeem': 'Redeem',
@@ -156,6 +161,11 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'unit_hour': 'ساعة',
+  'unit_service': 'خدمة',
+  'unit_visit': 'زيارة',
+  'unit_day': 'يوم',
+  'unit_month': 'شهر',
   'voucher_ask': 'هل لديك رمز قسيمة؟',
   'voucher_hint': 'رمز القسيمة',
   'voucher_redeem': 'تفعيل',
@@ -311,6 +321,11 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'unit_hour': 'Stunde',
+  'unit_service': 'Vorgang',
+  'unit_visit': 'Besuch',
+  'unit_day': 'Tag',
+  'unit_month': 'Monat',
   'voucher_ask': 'Haben Sie einen Gutscheincode?',
   'voucher_hint': 'Gutscheincode',
   'voucher_redeem': 'Einlösen',

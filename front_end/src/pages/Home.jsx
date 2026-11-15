@@ -842,6 +842,16 @@ const WORK = {
   }
 };
 
+// App intro video: one file per language in /public/video (made with marketing/app-video)
+const APP_VIDEO = {
+  de: { kicker: "Die App", title: "So einfach funktioniert die EinStein-App", sub: "Brief fotografieren, automatisch einsortieren lassen, kurz erklärt bekommen und keine Frist verpassen – in 30 Sekunden erklärt." },
+  ar: { kicker: "التطبيق", title: "هكذا يعمل تطبيق آينشتاين ببساطة", sub: "صوّر الرسالة، فتُرتَّب تلقائياً، وتحصل على شرح مختصر، ولا تفوّت أي موعد – في 30 ثانية." },
+  en: { kicker: "The app", title: "How the EinStein app works", sub: "Snap a letter, get it sorted automatically, read a short explanation and never miss a deadline – explained in 30 seconds." },
+  tr: { kicker: "Uygulama", title: "EinStein uygulaması böyle çalışır", sub: "Mektubu fotoğraflayın, otomatik sıralansın, kısa açıklamasını okuyun ve hiçbir süreyi kaçırmayın – 30 saniyede." },
+  es: { kicker: "La app", title: "Así funciona la app de EinStein", sub: "Fotografíe la carta, se ordena automáticamente, lea una breve explicación y no pierda ningún plazo – en 30 segundos." },
+  uk: { kicker: "Застосунок", title: "Ось як працює застосунок EinStein", sub: "Сфотографуйте лист – він сам потрапить у папку, ви отримаєте коротке пояснення й не пропустите жодного строку. За 30 секунд." },
+};
+
 const AUTHORITIES = ["Jobcenter", "Ausländerbehörde", "Finanzamt", "Familienkasse", "Krankenkasse", "Rentenversicherung", "Vermieter"];
 
 // Photos for the service cards (Unsplash, free to use)
@@ -1068,6 +1078,32 @@ export default function Home() {
             <span className="shrink-0 text-sm font-semibold text-slate-400">{x.authorities}</span>
             <div className="w-full min-w-0 flex-1"><Marquee items={AUTHORITIES} /></div>
           </div>
+        </div>
+      </section>
+
+      {/* App intro video */}
+      <section className="px-4 pt-20">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1fr_1.4fr]">
+          <motion.div {...fadeUp}>
+            <Kicker>{(APP_VIDEO[lang] || APP_VIDEO.de).kicker}</Kicker>
+            <h2 className="mt-4 text-3xl font-black text-[#1f0b52] md:text-4xl">{(APP_VIDEO[lang] || APP_VIDEO.de).title}</h2>
+            <p className="mt-3 text-lg leading-relaxed text-slate-600">{(APP_VIDEO[lang] || APP_VIDEO.de).sub}</p>
+          </motion.div>
+          <motion.div {...fadeUp} className="overflow-hidden rounded-[2rem] bg-[#1f0b52] shadow-2xl shadow-purple-900/20 ring-1 ring-purple-200">
+            <video
+              key={lang}
+              className="block aspect-video w-full"
+              src={`/video/app-intro-${APP_VIDEO[lang] ? lang : "de"}.mp4`}
+              poster={`/video/app-intro-${APP_VIDEO[lang] ? lang : "de"}.jpg`}
+              controls
+              muted
+              playsInline
+              loop
+              preload="metadata"
+              autoPlay={!prefersReducedMotion()}
+              aria-label={(APP_VIDEO[lang] || APP_VIDEO.de).title}
+            />
+          </motion.div>
         </div>
       </section>
 

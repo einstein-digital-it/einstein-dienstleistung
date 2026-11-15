@@ -1,5 +1,10 @@
 // Ukrainian (uk). Keys missing here fall back to English.
 const Map<String, String> ukTranslations = {
+  "unit_hour": "година",
+  "unit_service": "послуга",
+  "unit_visit": "візит",
+  "unit_day": "день",
+  "unit_month": "місяць",
   "voucher_ask": "Маєте код купона?",
   "voucher_hint": "Код купона",
   "voucher_redeem": "Застосувати",

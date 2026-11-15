@@ -449,7 +449,7 @@ final Map<String, String> _customerArRaw = {
   'support': 'الدعم',
   'book_now': 'احجز الآن',
   'services_title': 'خدماتنا',
-  'services_subtitle': 'كل معاملاتك وأوراقك بمكان واحد – بلغتك.',
+  'services_subtitle': 'جميع معاملاتك وأوراقك في مكان واحد – بلغتك.',
   'quality_guaranteed': 'معتمد من آينشتاين - جودة مضمونة',
   'book_service': 'حجز خدمة',
   'quick_booking': 'حجز سريع',
