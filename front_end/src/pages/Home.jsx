@@ -16,7 +16,6 @@ import {
   BadgeCheck,
   BellRing,
   Briefcase,
-  CheckCircle,
   ChevronLeft,
   ChevronRight,
   ClipboardList,
@@ -656,7 +655,6 @@ const X = {
     heroTitle: "Behördenpost, Termine, Büro – wir kümmern uns.",
     heroSub: "EinStein erledigt Formulare, Briefe und Organisation für Sie – mehrsprachig, persönlich und zu fairen Preisen.",
     ctaBook: "Jetzt buchen", ctaFile: "Brief hochladen",
-    trust: ["Arabisch, Deutsch, Englisch, Türkisch …", "Feste Ansprechperson", "Transparente Preise"],
     demoFrom: "Jobcenter Frankfurt", demoTitle: "Weiterbewilligungsantrag", demoSorted: "Sortiert: Jobcenter", demoSummary: "Ihr Bürgergeld endet am 30.11. Stellen Sie bis dahin den Weiterbewilligungsantrag.", demoReminder: "Erinnerung in 5 Tagen",
     authorities: "Wir helfen bei Post von",
     servicesKicker: "Leistungen", servicesMore: "Alle Leistungen ansehen", book: "Buchen",
@@ -674,7 +672,6 @@ const X = {
     heroTitle: "رسائل الدوائر الرسمية والمواعيد والأعمال المكتبية – نتولاها عنك.",
     heroSub: "يتولى آينشتاين عنك الاستمارات والرسائل والتنظيم – بلغتك، وبتواصل شخصي، وبأسعار عادلة.",
     ctaBook: "احجز الآن", ctaFile: "ارفع رسالة",
-    trust: ["العربية، الألمانية، الإنجليزية، التركية …", "جهة تواصل ثابتة", "أسعار واضحة"],
     demoFrom: "Jobcenter Frankfurt", demoTitle: "طلب استمرار إعانة المواطن (Bürgergeld)", demoSorted: "حُفظت في مجلد: مركز العمل", demoSummary: "تنتهي إعانة المواطن الخاصة بك في 30.11. قدّم طلب الاستمرار قبل هذا التاريخ.", demoReminder: "تذكير بعد 5 أيام",
     authorities: "نساعدك في الرسائل الواردة من",
     servicesKicker: "خدماتنا", servicesMore: "جميع الخدمات", book: "احجز",
@@ -692,7 +689,6 @@ const X = {
     heroTitle: "Official letters, appointments, office work – handled.",
     heroSub: "EinStein takes care of forms, letters and organisation for you – multilingual, personal and at fair prices.",
     ctaBook: "Book now", ctaFile: "Upload a letter",
-    trust: ["Arabic, German, English, Turkish …", "One fixed contact person", "Transparent prices"],
     demoFrom: "Jobcenter Frankfurt", demoTitle: "Continuation application", demoSorted: "Sorted: Jobcenter", demoSummary: "Your Bürgergeld ends on 30.11. Submit the continuation application before then.", demoReminder: "Reminder in 5 days",
     authorities: "We help with letters from",
     servicesKicker: "Services", servicesMore: "See all services", book: "Book",
@@ -710,7 +706,6 @@ const X = {
     heroTitle: "Листи з установ, зустрічі, офіс – ми все владнаємо.",
     heroSub: "EinStein бере на себе формуляри, листи й організацію – кількома мовами, особисто й за чесними цінами.",
     ctaBook: "Забронювати", ctaFile: "Завантажити лист",
-    trust: ["Арабська, німецька, англійська, турецька …", "Постійна контактна особа", "Прозорі ціни"],
     demoFrom: "Jobcenter Frankfurt", demoTitle: "Заява на продовження", demoSorted: "Папка: Jobcenter", demoSummary: "Ваш Bürgergeld закінчується 30.11. Подайте заяву на продовження до цієї дати.", demoReminder: "Нагадування через 5 днів",
     authorities: "Допомагаємо з листами від",
     servicesKicker: "Послуги", servicesMore: "Усі послуги", book: "Забронювати",
@@ -729,7 +724,6 @@ X.tr = {
   heroTitle: "Resmi yazılar, randevular, büro – biz hallediyoruz.",
   heroSub: "EinStein formları, yazıları ve organizasyonu sizin için halleder – çok dilli, kişisel ve uygun fiyatlarla.",
   ctaBook: "Şimdi rezervasyon", ctaFile: "Mektup yükle",
-  trust: ["Arapça, Almanca, İngilizce, Türkçe …", "Sabit bir irtibat kişisi", "Şeffaf fiyatlar"],
   demoFrom: "Jobcenter Frankfurt", demoTitle: "Devam başvurusu (Bürgergeld)", demoSorted: "Klasör: Jobcenter", demoSummary: "Bürgergeld ödemeniz 30.11. tarihinde bitiyor. Devam başvurusunu bu tarihten önce yapın.", demoReminder: "5 gün sonra hatırlatma",
   authorities: "Şu kurumlardan gelen yazılarda yardımcı oluyoruz",
   servicesKicker: "Hizmetler", servicesMore: "Tüm hizmetler", book: "Rezervasyon",
@@ -747,7 +741,6 @@ X.es = {
   heroTitle: "Cartas oficiales, citas, oficina – nos encargamos.",
   heroSub: "EinStein se ocupa de formularios, cartas y organización por usted – en varios idiomas, en persona y a precios justos.",
   ctaBook: "Reservar ahora", ctaFile: "Subir una carta",
-  trust: ["Árabe, alemán, inglés, turco …", "Una persona de contacto fija", "Precios transparentes"],
   demoFrom: "Jobcenter Frankfurt", demoTitle: "Solicitud de continuación (Bürgergeld)", demoSorted: "Carpeta: Jobcenter", demoSummary: "Su Bürgergeld termina el 30.11. Presente la solicitud de continuación antes de esa fecha.", demoReminder: "Recordatorio en 5 días",
   authorities: "Le ayudamos con cartas de",
   servicesKicker: "Servicios", servicesMore: "Ver todos los servicios", book: "Reservar",
@@ -1063,11 +1056,6 @@ export default function Home() {
                 <Upload className="h-5 w-5" />{x.ctaFile}
               </Link>
             </div>
-            <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-3">
-              {x.trust.map((item) => (
-                <li key={item} className="flex items-center gap-2 text-sm font-medium text-slate-600"><CheckCircle className="h-4 w-4 text-emerald-500" />{item}</li>
-              ))}
-            </ul>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.15 }}>
             <LetterDemo x={x} />
