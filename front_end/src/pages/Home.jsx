@@ -997,7 +997,7 @@ export default function Home() {
   const { data: priceSettingsData = [] } = useQuery({
     queryKey: ["price-settings"],
     queryFn: publicApi.listPricing,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60 * 1000,
   });
   const customPrices = React.useMemo(() => {
     if (!priceSettingsData || priceSettingsData.length === 0) return null;
@@ -1032,8 +1032,9 @@ export default function Home() {
       const unit = fromDb(p, "unit");
       return `${displayPrice(p.price, lang, key)}${unit ? " " + unit : ""}`;
     }
-    if (t[`${key}_price`]) return displayPrice(t[`${key}_price`], lang, key);
+    // Same order as the services page: price from "Manage services" before the built-in text
     if (db && Number(db.price_from) > 0) return `${displayPrice(Number(db.price_from), lang, key)}${db.price_unit ? " " + unitLabel(db.price_unit, lang) : ""}`;
+    if (t[`${key}_price`]) return displayPrice(t[`${key}_price`], lang, key);
     return "";
   };
   const siteServices = useSiteServices(FALLBACK_SERVICE_KEYS);
