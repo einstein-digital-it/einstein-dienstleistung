@@ -46,6 +46,15 @@ class DocumentsController extends GetxController {
   final voucherController = TextEditingController();
   final voucherError = ''.obs;
   final aboBusy = false.obs;
+  // Plans and the AI questions of this month (null limit = unlimited)
+  final aboPlans = <AboPlan>[].obs;
+  final aboPlan = 'basic'.obs;
+  final aboStatus = 'none'.obs;
+  final aboQuestionsUsed = 0.obs;
+  final aboQuestionsLimit = Rxn<int>();
+
+  /// A paid Stripe Abo runs (not only voucher months): the plan can be switched.
+  bool get aboPaid => aboStatus.value == 'active' || aboStatus.value == 'past_due';
 
   // Files the customer created
   final cases = <CustomerCase>[].obs;
@@ -252,6 +261,14 @@ class DocumentsController extends GetxController {
     aboFreeUntil.value = DateTime.tryParse('${data['free_until'] ?? ''}')?.toLocal();
     aboUsed.value = int.tryParse('${data['used'] ?? ''}') ?? 0;
     aboLimit.value = int.tryParse('${data['limit'] ?? ''}') ?? 0;
+    aboStatus.value = '${data['status'] ?? 'none'}';
+    aboPlan.value = '${data['plan'] ?? 'basic'}';
+    final plans = data['plans'];
+    if (plans is List) {
+      aboPlans.assignAll(plans.whereType<Map>().map((e) => AboPlan.fromJson(Map<String, dynamic>.from(e))));
+    }
+    aboQuestionsUsed.value = int.tryParse('${data['questions_used'] ?? ''}') ?? 0;
+    aboQuestionsLimit.value = data['questions_limit'] == null ? null : int.tryParse('${data['questions_limit']}');
     aboKnown.value = true;
   }
 
@@ -282,16 +299,29 @@ class DocumentsController extends GetxController {
   }
 
   /// Opens Stripe's payment page; the Abo turns active once Stripe confirms it.
-  Future<void> subscribe() async {
+  Future<void> subscribe([String plan = 'basic']) async {
     aboBusy.value = true;
     try {
-      final url = await api.startFileSubscription(Get.locale?.languageCode ?? 'de');
+      final url = await api.startFileSubscription(Get.locale?.languageCode ?? 'de', plan: plan);
       final opened = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
       Get.snackbar('abo_title'.tr, opened ? 'abo_pending'.tr : 'abo_start_error'.tr);
     } on ApiException catch (e) {
       Get.snackbar('abo_title'.tr, e.message);
     } catch (_) {
       Get.snackbar('abo_title'.tr, 'abo_start_error'.tr);
+    } finally {
+      aboBusy.value = false;
+    }
+  }
+
+  /// Switches the paid Abo to another plan; Stripe charges the difference pro rata.
+  Future<void> changePlan(String plan) async {
+    aboBusy.value = true;
+    try {
+      _applyAbo(await api.changeFilePlan(plan));
+      Get.snackbar('abo_title'.tr, 'abo_plan_changed'.trParams({'name': 'abo_plan_$plan'.tr}));
+    } catch (_) {
+      Get.snackbar('abo_title'.tr, 'abo_plan_change_error'.tr);
     } finally {
       aboBusy.value = false;
     }
@@ -447,6 +477,10 @@ class DocumentsController extends GetxController {
     aboActive.value = false;
     aboKnown.value = false;
     aboEndsAt.value = null;
+    aboPlans.clear();
+    aboStatus.value = 'none';
+    aboQuestionsUsed.value = 0;
+    aboQuestionsLimit.value = null;
   }
 
   @override

@@ -103,6 +103,50 @@ class User extends Authenticatable
         return in_array($this->file_abo_status, ['active', 'past_due'], true) || $this->hasFreeFileAbo();
     }
 
+    /** AI questions per month for this customer's plan; null = unlimited (staff always). */
+    public function fileAboQuestionLimit(): ?int
+    {
+        if (in_array($this->role, ['admin', 'provider'], true)) {
+            return null;
+        }
+        // Free months from a voucher give the basic plan
+        $plan = in_array($this->file_abo_status, ['active', 'past_due'], true) ? $this->file_abo_plan : \App\Support\FileAboPlans::DEFAULT;
+
+        return \App\Support\FileAboPlans::get($plan)['questions'];
+    }
+
+    /** AI questions asked this calendar month. */
+    public function fileAboQuestionsUsed(): int
+    {
+        return $this->file_abo_questions_month === now()->format('Y-m') ? (int) $this->file_abo_questions_used : 0;
+    }
+
+    /** Takes one question from this month's allowance; false when it is used up. */
+    public function consumeFileAboQuestion(): bool
+    {
+        $month = now()->format('Y-m');
+        static::query()->whereKey($this->id)
+            ->where(fn ($q) => $q->whereNull('file_abo_questions_month')->orWhere('file_abo_questions_month', '!=', $month))
+            ->update(['file_abo_questions_month' => $month, 'file_abo_questions_used' => 0]);
+
+        $limit = $this->fileAboQuestionLimit();
+        $query = static::query()->whereKey($this->id);
+        if ($limit !== null) {
+            // One conditional update, so parallel questions cannot pass the limit together
+            $query->where('file_abo_questions_used', '<', $limit);
+        }
+        $taken = $query->increment('file_abo_questions_used') > 0;
+        $this->refresh();
+
+        return $taken;
+    }
+
+    /** Gives a question back (e.g. when the AI could not answer). */
+    public function returnFileAboQuestion(): void
+    {
+        static::query()->whereKey($this->id)->where('file_abo_questions_used', '>', 0)->decrement('file_abo_questions_used');
+    }
+
     /** Free months from a voucher code (AboVoucher) that have not run out yet. */
     public function hasFreeFileAbo(): bool
     {

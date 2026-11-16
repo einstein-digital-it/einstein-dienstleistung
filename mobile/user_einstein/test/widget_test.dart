@@ -62,6 +62,8 @@ class _FakeBackend {
   final uploads = <String>[];
   final savedFormData = <Map<String, dynamic>>[];
   bool aboActive = false;
+  /// Questions asked the AI about letters, and the answers.
+  final questions = <Map<String, dynamic>>[];
   String? registeredLanguage;
   int caseUploads = 0;
 
@@ -106,6 +108,17 @@ class _FakeBackend {
     }
     return null;
   }
+
+  Map<String, dynamic> _subscription() => {
+        'active': aboActive, 'status': aboActive ? 'active' : 'none', 'ends_at': null, 'price': 6.99, 'vat_included': true,
+        'used': 3, 'limit': 50, 'plan': 'basic',
+        'plans': [
+          {'key': 'basic', 'price': 6.99, 'questions': 10},
+          {'key': 'silver', 'price': 9.99, 'questions': 20},
+          {'key': 'unlimited', 'price': 17.99, 'questions': null},
+        ],
+        'questions_used': questions.length, 'questions_limit': 10,
+      };
 
   http.Response _json(Object data, [int status = 200]) => http.Response(
     jsonEncode({'data': data}),
@@ -237,7 +250,15 @@ class _FakeBackend {
       return _json({'id': 30}, 201);
     }
     if (method == 'GET' && path == 'customer/subscription') {
-      return _json({'active': aboActive, 'status': aboActive ? 'active' : 'none', 'ends_at': null, 'price': 6.99, 'vat_included': true, 'used': 3, 'limit': 50});
+      return _json(_subscription());
+    }
+    if (path == 'customer/documents/7/questions') {
+      if (method == 'POST') {
+        final body = jsonDecode(request.body) as Map<String, dynamic>;
+        questions.add({'id': questions.length + 1, 'question': body['question'], 'answer': 'Your permit ends on 31 January. Apply for an extension now.'});
+        return _json(questions, 201);
+      }
+      return _json(questions);
     }
     if (method == 'GET' && path == 'customer/forms') {
       return _json(_forms);
@@ -670,10 +691,12 @@ void main() {
     await tester.tap(find.text('My file').last);
     await tester.pumpAndSettle();
     expect(find.text('All your letters, sorted by authority.'), findsOneWidget);
-    // Without the Abo, sorting & translation is offered for 6.99 € a month
+    // Without the Abo, three plans are offered: 6.99 €, 9.99 € and 17.99 € a month
     expect(find.text('Sorting & translation'), findsOneWidget);
-    expect(find.text('6,99 € / month incl. VAT · cancel any time'), findsOneWidget);
-    expect(find.text('Subscribe'), findsOneWidget);
+    expect(find.text('6,99 € / month'), findsOneWidget);
+    expect(find.text('20 questions to the AI per month'), findsOneWidget);
+    expect(find.text('Unlimited questions to the AI'), findsOneWidget);
+    expect(find.text('Choose'), findsNWidgets(3));
 
     // The letter sits in its authority's folder
     final folder = find.text('Immigration office');
@@ -738,7 +761,41 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Sorting & translation is active'), findsOneWidget);
     expect(find.text('3 of 50 letters this month'), findsOneWidget);
-    expect(find.text('Subscribe'), findsNothing);
+    expect(find.text('Choose'), findsNothing);
+    // A paid Abo can switch to another plan
+    expect(find.text('Your plan'), findsOneWidget);
+    expect(find.text('Switch'), findsNWidgets(2));
+  });
+
+  testWidgets('My file: with the Abo the customer asks the AI about a letter', (tester) async {
+    await pumpApp(tester);
+    await signIn(tester);
+    await tester.tap(find.text('My file').last);
+    await tester.pumpAndSettle();
+
+    final docs = Get.find<DocumentsController>();
+    backend.aboActive = true;
+    await tester.runAsync(docs.loadSubscription);
+    await tester.pumpAndSettle();
+    Get.toNamed(AppRoutes.documentDetail, arguments: 7);
+    await tester.pumpAndSettle();
+    expect(find.text('Ask about this letter'), findsOneWidget);
+    expect(find.text('0 of 10 questions this month'), findsOneWidget);
+
+    final field = find.byKey(const Key('ask_field'));
+    await tester.ensureVisible(field);
+    await tester.enterText(field, 'Until when is my permit valid?');
+    await tester.runAsync(() async {
+      await tester.tap(find.byKey(const Key('ask_send')));
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+    });
+    await tester.pumpAndSettle();
+
+    expect(backend.questions, hasLength(1));
+    expect(find.text('Until when is my permit valid?'), findsOneWidget);
+    expect(find.text('Your permit ends on 31 January. Apply for an extension now.'), findsOneWidget);
+    expect(docs.aboQuestionsUsed.value, 1);
+    expect(find.text('1 of 10 questions this month'), findsOneWidget);
   });
 
   testWidgets('My file: a created file shows numbered folders and takes several papers', (
@@ -751,13 +808,17 @@ void main() {
 
     final item = find.text('Max Mustermann');
     await tester.scrollUntilVisible(item, 200, scrollable: find.byType(Scrollable).first);
-    await tester.ensureVisible(item);
+    // Centre it, clear of the bottom navigation bar
+    Scrollable.ensureVisible(tester.element(item), alignment: 0.5);
     await tester.pumpAndSettle();
     await tester.tap(item);
     await tester.pumpAndSettle();
 
+    // The Abo plans sit above the folders
+    await tester.scrollUntilVisible(find.text('00_Uebersicht'), 200, scrollable: find.byType(Scrollable).first);
     expect(find.text('00_Uebersicht'), findsOneWidget);
     expect(find.byTooltip('Share'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('01_Arbeitsvertrag'), 200, scrollable: find.byType(Scrollable).first);
     expect(find.text('01_Arbeitsvertrag'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Not sorted'), 200, scrollable: find.byType(Scrollable).first);
     expect(find.text('Not sorted'), findsOneWidget);

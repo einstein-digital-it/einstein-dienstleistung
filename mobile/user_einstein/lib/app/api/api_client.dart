@@ -28,8 +28,9 @@ class ApiClient {
     String path, {
     Map<String, dynamic>? body,
     Map<String, String?> query = const {},
+    Duration? timeout,
   }) {
-    return _send('POST', path, body: body, query: query);
+    return _send('POST', path, body: body, query: query, timeout: timeout);
   }
 
   Future<dynamic> patch(
@@ -61,6 +62,7 @@ class ApiClient {
     String path, {
     Map<String, dynamic>? body,
     Map<String, String?> query = const {},
+    Duration? timeout,
   }) async {
     await session.ensureLoaded();
     final normalizedBase = baseUrl.endsWith('/')
@@ -99,7 +101,7 @@ class ApiClient {
 
     // Generous on purpose: on slow mobile networks a short timeout reports
     // failure for requests the server has already saved (e.g. bookings).
-    final response = await request.timeout(const Duration(seconds: 20));
+    final response = await request.timeout(timeout ?? const Duration(seconds: 20));
 
     final decoded = response.body.isEmpty ? null : jsonDecode(response.body);
     if (response.statusCode < 200 || response.statusCode >= 300) {

@@ -7,6 +7,7 @@ import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/ui.dart';
+import 'abo_plans_view.dart';
 import 'customer_case_view.dart';
 
 String folderName(String folder) => 'folder_$folder'.tr;
@@ -170,7 +171,7 @@ class AboCard extends StatelessWidget {
     return Obx(() {
       if (c.aboActive.value) {
         final ends = c.aboEndsAt.value;
-        return AppCard(
+        final status = AppCard(
           child: Row(
             children: [
               const Icon(Icons.verified_rounded, color: AppColors.success),
@@ -205,6 +206,15 @@ class AboCard extends StatelessWidget {
             ],
           ),
         );
+        // Paid Abo: the plan can be switched for more or fewer AI questions
+        if (ends == null && !c.aboFree.value && c.aboPaid && c.aboPlans.isNotEmpty) {
+          return Column(children: [
+            status,
+            const SizedBox(height: 10),
+            const AboPlanTiles(change: true),
+          ]);
+        }
+        return status;
       }
       return Container(
         padding: const EdgeInsets.all(16),
@@ -223,20 +233,26 @@ class AboCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text('abo_pitch'.tr, style: const TextStyle(color: AppColors.navy, height: 1.5)),
             const SizedBox(height: 4),
-            Text('abo_price'.trParams({'price': c.aboPriceText}),
-                style: const TextStyle(color: AppColors.purple, fontWeight: FontWeight.w700)),
             if (c.aboLimit.value > 0)
               Text('abo_limit'.trParams({'limit': '${c.aboLimit.value}'}),
                   style: const TextStyle(color: AppColors.navy, fontSize: 13)),
             const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: c.aboBusy.value ? null : c.subscribe,
-                icon: const Icon(Icons.lock_open_rounded),
-                label: Text('abo_subscribe'.tr),
+            // Three plans; an older server without plans keeps the single button
+            if (c.aboPlans.isNotEmpty)
+              const AboPlanTiles()
+            else ...[
+              Text('abo_price'.trParams({'price': c.aboPriceText}),
+                  style: const TextStyle(color: AppColors.purple, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: c.aboBusy.value ? null : () => c.subscribe(),
+                  icon: const Icon(Icons.lock_open_rounded),
+                  label: Text('abo_subscribe'.tr),
+                ),
               ),
-            ),
+            ],
             const SizedBox(height: 14),
             // Voucher code from EinStein: free months, no payment
             Text('voucher_ask'.tr, style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w600, fontSize: 13)),
@@ -695,6 +711,11 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
                   ],
                 ]),
               ),
+            // Questions to the AI about this letter (Abo)
+            if (controller.aboActive.value && !doc.isProcessing && doc.aiStatus != 'too_long') ...[
+              const SizedBox(height: 12),
+              LetterChat(key: ValueKey('chat_${doc.id}'), doc: doc),
+            ],
             const SizedBox(height: 18),
             FilledButton.icon(
               onPressed: () => controller.open(doc),

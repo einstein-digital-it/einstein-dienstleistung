@@ -367,7 +367,12 @@ export const customerDocumentsApi = {
   translate: (id, lang) => request(`/customer/documents/${id}/translate`, { method: "POST", body: JSON.stringify({ lang }) }),
   // Unterlagen-Abo: automatic sorting + translation (monthly, VAT included)
   subscription: () => request("/customer/subscription"),
-  subscribe: (lang) => request("/customer/subscription/checkout", { method: "POST", body: JSON.stringify({ lang }) }),
+  subscribe: (lang, plan) => request("/customer/subscription/checkout", { method: "POST", body: JSON.stringify({ lang, plan }) }),
+  // Switch a running paid Abo to another plan (basic / silver / unlimited)
+  changePlan: (plan) => request("/customer/subscription/plan", { method: "POST", body: JSON.stringify({ plan }) }),
+  // Questions to the AI about one letter
+  questions: (id) => request(`/customer/documents/${id}/questions`),
+  askQuestion: (id, question, lang) => request(`/customer/documents/${id}/questions`, { method: "POST", body: JSON.stringify({ question, lang }) }),
   cancelSubscription: () => request("/customer/subscription/cancel", { method: "POST", body: "{}" }),
   // Voucher code from EinStein: free months without payment
   redeemVoucher: (code) => request("/customer/subscription/redeem", { method: "POST", body: JSON.stringify({ code }) }),

@@ -354,10 +354,36 @@ class CustomerApiService {
   }
 
   /// Starts the Stripe subscription checkout and returns the payment page URL.
-  Future<String> startFileSubscription(String lang) async {
-    final data = await client.post('customer/subscription/checkout', body: {'lang': lang});
+  Future<String> startFileSubscription(String lang, {String plan = 'basic'}) async {
+    final data = await client.post('customer/subscription/checkout', body: {'lang': lang, 'plan': plan});
     return (Map<String, dynamic>.from(data as Map))['url'].toString();
   }
+
+  /// Switches a running paid Abo to another plan (basic / silver / unlimited).
+  Future<Map<String, dynamic>> changeFilePlan(String plan) async {
+    final data = await client.post('customer/subscription/plan', body: {'plan': plan});
+    return data is Map ? Map<String, dynamic>.from(data) : <String, dynamic>{};
+  }
+
+  /// Questions the customer asked the AI about one letter.
+  Future<List<DocumentAnswer>> documentQuestions(int id) async {
+    final data = await client.get('customer/documents/$id/questions');
+    return _answers(data);
+  }
+
+  /// Asks the AI about a letter; it reads the whole letter, so allow it time.
+  Future<List<DocumentAnswer>> askDocumentQuestion(int id, String question, String lang) async {
+    final data = await client.post(
+      'customer/documents/$id/questions',
+      body: {'question': question, 'lang': lang},
+      timeout: const Duration(seconds: 100),
+    );
+    return _answers(data);
+  }
+
+  List<DocumentAnswer> _answers(Object? data) => data is List
+      ? data.whereType<Map>().map((e) => DocumentAnswer.fromJson(Map<String, dynamic>.from(e))).toList()
+      : const [];
 
   /// Voucher code from EinStein: free months without payment.
   Future<Map<String, dynamic>> redeemVoucher(String code) async {

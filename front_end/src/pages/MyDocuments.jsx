@@ -10,6 +10,8 @@ import { getStoredAuthUser } from "@/lib/backendAuth";
 import { shareFiles } from "@/lib/shareFiles";
 import CustomerCases from "@/components/CustomerCases";
 import OriginalViewer from "@/components/OriginalViewer";
+import AboPlans, { planTexts } from "@/components/AboPlans";
+import LetterChat from "@/components/LetterChat";
 
 const FOLDER_META = {
   jobcenter: { icon: Briefcase, color: "bg-blue-600" },
@@ -171,14 +173,26 @@ export default function MyDocuments() {
 
   const loadAbo = () => customerDocumentsApi.subscription().then(setAbo).catch(() => {});
 
-  const subscribe = async () => {
+  const subscribe = async (plan) => {
     setAboBusy(true);
     setError("");
     try {
-      const res = await customerDocumentsApi.subscribe(lang);
+      const res = await customerDocumentsApi.subscribe(lang, plan);
       window.location.href = res.url;
     } catch (e) {
       setError(e?.message || t.error);
+      setAboBusy(false);
+    }
+  };
+
+  const changePlan = async (plan) => {
+    setAboBusy(true);
+    setError("");
+    try {
+      setAbo(await customerDocumentsApi.changePlan(plan));
+    } catch (e) {
+      setError(e?.message || t.error);
+    } finally {
       setAboBusy(false);
     }
   };
@@ -381,6 +395,12 @@ export default function MyDocuments() {
               {!abo.ends_at && !abo.free && (
                 <Button variant="ghost" onClick={cancelAbo} disabled={aboBusy} className="text-gray-600">{t.aboCancel}</Button>
               )}
+              {/* Paid Abo: switch plan for more or fewer AI questions */}
+              {!abo.free && !abo.ends_at && ["active", "past_due"].includes(abo.status) && (
+                <div className="order-last w-full border-t border-gray-100 pt-3">
+                  <AboPlans abo={abo} lang={lang} busy={aboBusy} mode="change" onPick={changePlan} />
+                </div>
+              )}
             </div>
           ) : (
             <div className="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-5">
@@ -388,15 +408,16 @@ export default function MyDocuments() {
               <div className="flex-1">
                 <p className="font-bold text-[#2e1065]">{t.aboTitle}</p>
                 <p className="text-sm text-[#2e1065]/80 mt-1">{aboReturn === "1" ? t.aboThanks : `${t.aboPitch} ${t.aboNeeded}`}</p>
-                <p className="mt-2 font-bold text-[#6B46C1]">{t.aboPrice(Number(abo.price).toFixed(2).replace(".", ","))}</p>
-                {abo.limit > 0 && <p className="text-sm text-[#2e1065]/80">{t.aboLimit(abo.limit)}</p>}
-                <p className="text-[11px] text-gray-500 mt-1">{t.aboTerms}</p>
+                {abo.limit > 0 && <p className="mt-1 text-sm text-[#2e1065]/80">{t.aboLimit(abo.limit)}</p>}
               </div>
-              <Button onClick={subscribe} disabled={aboBusy || aboReturn === "1"} className="bg-[#6B46C1] hover:bg-[#805AD5] font-bold">
-                {aboBusy ? <Loader2 className="w-4 h-4 me-2 animate-spin" /> : <Sparkles className="w-4 h-4 me-2" />}
-                {t.aboSubscribe}
-              </Button>
              </div>
+             {/* Three plans; each starts the Stripe checkout for itself */}
+             {aboReturn !== "1" && (
+               <div className="mt-4">
+                 <AboPlans abo={abo} lang={lang} busy={aboBusy} mode="choose" onPick={subscribe} />
+               </div>
+             )}
+             <p className="text-[11px] text-gray-500 mt-2">{planTexts(lang).vat} · {t.aboTerms}</p>
              {/* Voucher code from EinStein: free months, no payment */}
              {!isAdmin && (
                <form onSubmit={redeemVoucher} className="mt-4 flex flex-col gap-2 border-t border-purple-100 pt-4 sm:flex-row sm:items-center">
@@ -522,6 +543,8 @@ export default function MyDocuments() {
                            <Languages className="w-3.5 h-3.5" />{t.translateNow}
                          </button>
                        )}
+                       {/* Questions to the AI about this letter (Abo) */}
+                       {!isAdmin && abo?.active && <LetterChat doc={doc} lang={lang} abo={abo} onAsked={loadAbo} />}
                        {doc.translation && (
                          <div>
                            <button onClick={() => setOpenId(openId === doc.id ? null : doc.id)} className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B46C1]">

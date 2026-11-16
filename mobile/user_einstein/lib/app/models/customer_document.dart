@@ -129,3 +129,33 @@ class CustomerReminder {
     documentId: (json['customer_document_id'] as num?)?.toInt(),
   );
 }
+
+/// One plan of the Unterlagen-Abo: gross monthly price and AI questions (null = unlimited).
+class AboPlan {
+  const AboPlan({required this.key, required this.price, this.questions});
+
+  final String key;
+  final double price;
+  final int? questions;
+
+  factory AboPlan.fromJson(Map<String, dynamic> json) => AboPlan(
+        key: '${json['key']}',
+        price: double.tryParse('${json['price']}') ?? 0,
+        questions: json['questions'] == null ? null : int.tryParse('${json['questions']}'),
+      );
+}
+
+/// A question the customer asked the AI about a letter, and its answer.
+class DocumentAnswer {
+  const DocumentAnswer({required this.id, required this.question, required this.answer});
+
+  final int id;
+  final String question;
+  final String answer;
+
+  factory DocumentAnswer.fromJson(Map<String, dynamic> json) => DocumentAnswer(
+        id: int.tryParse('${json['id']}') ?? 0,
+        question: '${json['question'] ?? ''}',
+        answer: '${json['answer'] ?? ''}',
+      );
+}

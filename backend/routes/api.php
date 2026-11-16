@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\McpController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\CustomerClientController;
 use App\Http\Controllers\Api\CustomerDocumentController;
+use App\Http\Controllers\Api\DocumentQuestionController;
 use App\Http\Controllers\Api\CustomerFileController;
 use App\Http\Controllers\Api\CustomerSubscriptionController;
 use App\Http\Controllers\Api\CustomerFormController;
@@ -92,6 +93,9 @@ Route::middleware('api.auth:admin,user')->group(function () {
     Route::get('customer/subscription', [CustomerSubscriptionController::class, 'show']);
     Route::post('customer/subscription/checkout', [CustomerSubscriptionController::class, 'checkout'])->middleware('throttle:10,1');
     Route::post('customer/subscription/cancel', [CustomerSubscriptionController::class, 'cancel']);
+    Route::post('customer/subscription/plan', [CustomerSubscriptionController::class, 'changePlan'])->middleware('throttle:10,1');
+    Route::get('customer/documents/{document}/questions', [DocumentQuestionController::class, 'index']);
+    Route::post('customer/documents/{document}/questions', [DocumentQuestionController::class, 'store'])->middleware('throttle:20,1');
     Route::post('customer/subscription/redeem', [AboVoucherController::class, 'redeem'])->middleware('throttle:10,1');
     Route::get('customer/reminders', [CustomerReminderController::class, 'index']);
     Route::post('customer/reminders', [CustomerReminderController::class, 'store']);
