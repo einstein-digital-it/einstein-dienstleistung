@@ -69,6 +69,28 @@ class DocumentQuestionTest extends TestCase
         $this->getJson("/api/customer/documents/{$doc->id}/questions")->assertOk()->assertJsonCount(1, 'data');
     }
 
+    public function test_replies_and_forms_are_filled_with_the_customers_own_details(): void
+    {
+        $this->fakeClaude("---BRIEF---\nSehr geehrte Damen und Herren,\n---ENDE---\nأرسلي هذه الرسالة بالبريد.");
+        $user = $this->subscriber();
+        $user->forceFill(['form_data' => ['full_name' => 'Amina Musterfrau', 'address_street' => 'Hauptstr. 1', 'bg_number' => '12345BG0001234']])->save();
+        $doc = $this->letter('kunde@example.com');
+
+        $this->postJson("/api/customer/documents/{$doc->id}/questions", ['question' => 'اكتبلي رد إني رح أبعت الأوراق'])
+            ->assertCreated()
+            ->assertJsonPath('data.0.answer', "---BRIEF---\nSehr geehrte Damen und Herren,\n---ENDE---\nأرسلي هذه الرسالة بالبريد.");
+
+        Http::assertSent(function ($r) {
+            $context = $r['messages'][0]['content'][1]['text'];
+
+            return str_contains($context, 'Name: Amina Musterfrau')
+                && str_contains($context, 'Jobcenter BG-Nr.: 12345BG0001234')
+                && str_contains($r['system'], '---BRIEF---')
+                && str_contains($r['system'], 'field by field')
+                && str_contains($r['system'], 'do not write objections (Widerspruch)');
+        });
+    }
+
     public function test_the_plan_sets_the_monthly_questions(): void
     {
         $this->fakeClaude();
@@ -129,18 +151,18 @@ class DocumentQuestionTest extends TestCase
 
         $this->getJson('/api/customer/subscription')->assertOk()
             ->assertJsonPath('data.plans.1.key', 'silver')
-            ->assertJsonPath('data.plans.1.price', 9.99)
+            ->assertJsonPath('data.plans.1.price', 11.99)
             ->assertJsonPath('data.plans.2.questions', null);
 
         $this->postJson('/api/customer/subscription/checkout', ['plan' => 'silver'])->assertOk();
         Http::assertSent(fn ($r) => str_ends_with($r->url(), 'checkout/sessions')
-            && (int) $r['line_items'][0]['price_data']['unit_amount'] === 999
+            && (int) $r['line_items'][0]['price_data']['unit_amount'] === 1199
             && $r['metadata']['plan'] === 'silver');
 
         // Stripe confirms: the plan is stored with the Abo
         $this->postJson('/api/customer/subscription/plan', ['plan' => 'unlimited'])->assertStatus(409);
         $user->forceFill(['file_abo_status' => 'active', 'file_abo_subscription_id' => 'sub_1', 'file_abo_plan' => 'silver'])->save();
-        $this->getJson('/api/customer/subscription')->assertJsonPath('data.plan', 'silver')->assertJsonPath('data.questions_limit', 20)->assertJsonPath('data.price', 9.99);
+        $this->getJson('/api/customer/subscription')->assertJsonPath('data.plan', 'silver')->assertJsonPath('data.questions_limit', 20)->assertJsonPath('data.price', 11.99);
 
         $this->postJson('/api/customer/subscription/plan', ['plan' => 'unlimited'])->assertOk()
             ->assertJsonPath('data.plan', 'unlimited')

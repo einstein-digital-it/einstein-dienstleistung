@@ -114,7 +114,7 @@ class _FakeBackend {
         'used': 3, 'limit': 50, 'plan': 'basic',
         'plans': [
           {'key': 'basic', 'price': 6.99, 'questions': 10},
-          {'key': 'silver', 'price': 9.99, 'questions': 20},
+          {'key': 'silver', 'price': 11.99, 'questions': 20},
           {'key': 'unlimited', 'price': 17.99, 'questions': null},
         ],
         'questions_used': questions.length, 'questions_limit': 10,
@@ -255,7 +255,7 @@ class _FakeBackend {
     if (path == 'customer/documents/7/questions') {
       if (method == 'POST') {
         final body = jsonDecode(request.body) as Map<String, dynamic>;
-        questions.add({'id': questions.length + 1, 'question': body['question'], 'answer': 'Your permit ends on 31 January. Apply for an extension now.'});
+        questions.add({'id': questions.length + 1, 'question': body['question'], 'answer': 'Your permit ends on 31 January.\n---BRIEF---\nSehr geehrte Damen und Herren,\nich beantrage die Verlängerung.\n---ENDE---\nSend it by post.'});
         return _json(questions, 201);
       }
       return _json(questions);
@@ -691,7 +691,7 @@ void main() {
     await tester.tap(find.text('My file').last);
     await tester.pumpAndSettle();
     expect(find.text('All your letters, sorted by authority.'), findsOneWidget);
-    // Without the Abo, three plans are offered: 6.99 €, 9.99 € and 17.99 € a month
+    // Without the Abo, three plans are offered: 6.99 €, 11.99 € and 17.99 € a month
     expect(find.text('Sorting & translation'), findsOneWidget);
     expect(find.text('6,99 € / month'), findsOneWidget);
     expect(find.text('20 questions to the AI per month'), findsOneWidget);
@@ -793,7 +793,12 @@ void main() {
 
     expect(backend.questions, hasLength(1));
     expect(find.text('Until when is my permit valid?'), findsOneWidget);
-    expect(find.text('Your permit ends on 31 January. Apply for an extension now.'), findsOneWidget);
+    expect(find.text('Your permit ends on 31 January.'), findsOneWidget);
+    // The German letter sits in its own box with a copy button
+    expect(find.text('Sehr geehrte Damen und Herren,\nich beantrage die Verlängerung.'), findsOneWidget);
+    expect(find.byKey(const Key('ask_copy')), findsOneWidget);
+    expect(find.text('Send it by post.'), findsOneWidget);
+    expect(find.text('Write a reply'), findsOneWidget);
     expect(docs.aboQuestionsUsed.value, 1);
     expect(find.text('1 of 10 questions this month'), findsOneWidget);
   });

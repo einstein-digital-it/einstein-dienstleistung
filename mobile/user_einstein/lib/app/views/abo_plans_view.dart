@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../api/api_exception.dart';
@@ -131,8 +132,8 @@ class _LetterChatState extends State<LetterChat> {
     super.dispose();
   }
 
-  Future<void> _ask() async {
-    final question = input.text.trim();
+  Future<void> _ask([String? preset]) async {
+    final question = (preset ?? input.text).trim();
     if (question.length < 2 || busy) return;
     setState(() {
       busy = true;
@@ -182,7 +183,7 @@ class _LetterChatState extends State<LetterChat> {
             const SizedBox(height: 6),
             Align(
               alignment: AlignmentDirectional.centerStart,
-              child: _Bubble(text: item.answer, mine: false),
+              child: _AnswerBubble(answer: item.answer),
             ),
             const SizedBox(height: 10),
           ],
@@ -195,6 +196,16 @@ class _LetterChatState extends State<LetterChat> {
                 Text('ask_thinking'.tr, style: const TextStyle(color: AppColors.purple, fontSize: 13)),
               ]),
             ),
+          // Quick questions in the customer's language
+          Wrap(spacing: 8, runSpacing: 6, children: [
+            for (final key in const ['explain', 'reply', 'form'])
+              ActionChip(
+                key: Key('ask_quick_$key'),
+                label: Text('ask_quick_$key'.tr),
+                onPressed: busy || reached ? null : () => _ask('ask_quick_${key}_text'.tr),
+              ),
+          ]),
+          const SizedBox(height: 8),
           Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
             Expanded(
               child: TextField(
@@ -239,6 +250,84 @@ class _LetterChatState extends State<LetterChat> {
           Text('ask_note'.tr, style: const TextStyle(color: AppColors.muted, fontSize: 12)),
         ]);
       }),
+    );
+  }
+}
+
+/// An AI answer: text, and any German letter between ---BRIEF--- and ---ENDE--- in its own box to copy.
+class _AnswerBubble extends StatelessWidget {
+  const _AnswerBubble({required this.answer});
+
+  final String answer;
+
+  static final _letter = RegExp(r'---BRIEF---\s*\n?([\s\S]*?)\n?\s*---ENDE---');
+
+  @override
+  Widget build(BuildContext context) {
+    final parts = <Widget>[];
+    var last = 0;
+    for (final m in _letter.allMatches(answer)) {
+      final before = answer.substring(last, m.start).trim();
+      if (before.isNotEmpty) parts.add(Text(before, style: const TextStyle(color: AppColors.navy, height: 1.45)));
+      parts.add(_LetterBox(text: m.group(1)!.trim()));
+      last = m.end;
+    }
+    final rest = answer.substring(last).trim();
+    if (rest.isNotEmpty) parts.add(Text(rest, style: const TextStyle(color: AppColors.navy, height: 1.45)));
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.85),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+        decoration: BoxDecoration(color: AppColors.purpleSoft, borderRadius: BorderRadius.circular(16)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [for (final p in parts) Padding(padding: const EdgeInsets.symmetric(vertical: 3), child: p)],
+        ),
+      ),
+    );
+  }
+}
+
+class _LetterBox extends StatelessWidget {
+  const _LetterBox({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.line),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 4, 4, 0),
+            child: Row(children: [
+              Expanded(child: Text('ask_letter'.tr, style: const TextStyle(color: AppColors.muted, fontSize: 11.5, fontWeight: FontWeight.w600))),
+              TextButton.icon(
+                key: const Key('ask_copy'),
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: text));
+                  Get.snackbar('ask_title'.tr, 'ask_copied'.tr);
+                },
+                icon: const Icon(Icons.copy_rounded, size: 16),
+                label: Text('ask_copy'.tr),
+              ),
+            ]),
+          ),
+          const Divider(height: 1, color: AppColors.line),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: SelectableText(text, style: const TextStyle(color: AppColors.text, height: 1.45, fontSize: 13.5)),
+          ),
+        ]),
+      ),
     );
   }
 }

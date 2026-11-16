@@ -44,7 +44,7 @@ return [
         // Plans: gross price in cents and AI questions per calendar month (App\Support\FileAboPlans)
         'plans' => [
             'basic' => ['price_cents' => (int) env('FILE_ABO_PRICE_CENTS', 699), 'questions' => (int) env('FILE_ABO_BASIC_QUESTIONS', 10)],
-            'silver' => ['price_cents' => (int) env('FILE_ABO_SILVER_PRICE_CENTS', 999), 'questions' => (int) env('FILE_ABO_SILVER_QUESTIONS', 20)],
+            'silver' => ['price_cents' => (int) env('FILE_ABO_SILVER_PRICE_CENTS', 1199), 'questions' => (int) env('FILE_ABO_SILVER_QUESTIONS', 20)],
             'unlimited' => ['price_cents' => (int) env('FILE_ABO_UNLIMITED_PRICE_CENTS', 1799)],
         ],
     ],

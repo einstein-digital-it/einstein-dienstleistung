@@ -18,7 +18,7 @@ class FileAboPlans
 
         return [
             'basic' => ['price_cents' => (int) ($plans['basic']['price_cents'] ?? 699), 'questions' => (int) ($plans['basic']['questions'] ?? 10)],
-            'silver' => ['price_cents' => (int) ($plans['silver']['price_cents'] ?? 999), 'questions' => (int) ($plans['silver']['questions'] ?? 20)],
+            'silver' => ['price_cents' => (int) ($plans['silver']['price_cents'] ?? 1199), 'questions' => (int) ($plans['silver']['questions'] ?? 20)],
             'unlimited' => ['price_cents' => (int) ($plans['unlimited']['price_cents'] ?? 1799), 'questions' => null],
         ];
     }

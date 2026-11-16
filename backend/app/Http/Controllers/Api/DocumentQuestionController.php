@@ -17,7 +17,9 @@ use Throwable;
 /**
  * Customers ask the AI (Claude) questions about one of their letters. Part of the
  * Unterlagen-Abo; the plan sets how many questions per month (App\Support\FileAboPlans).
- * The answer explains the letter in the customer's language; it is no legal advice.
+ * The AI explains the letter in the customer's language, drafts simple German replies
+ * and tells what to write in each field of a form. No legal advice: objections,
+ * lawsuits and disputes are left to lawyers (RDG).
  */
 class DocumentQuestionController extends Controller
 {
@@ -27,6 +29,19 @@ class DocumentQuestionController extends Controller
 
     /** Earlier questions sent along, so follow-up questions make sense. */
     private const HISTORY = 6;
+
+    /** A drafted German letter sits between these lines, so the apps can offer "copy". */
+    public const LETTER_START = '---BRIEF---';
+
+    public const LETTER_END = '---ENDE---';
+
+    /** The customer's own saved details the AI may use to fill letters and forms. */
+    private const PERSONAL = [
+        'full_name' => 'Name', 'birth_date' => 'Date of birth', 'address_street' => 'Street', 'address_zip_city' => 'Postcode and city',
+        'phone' => 'Phone', 'nationality' => 'Nationality', 'bg_number' => 'Jobcenter BG-Nr.', 'tax_id' => 'Tax ID',
+        'kindergeld_number' => 'Kindergeld number', 'passport_number' => 'Passport number',
+        'permit_type' => 'Residence permit type', 'permit_expiry' => 'Residence permit valid until',
+    ];
 
     /** GET customer/documents/{document}/questions */
     public function index(Request $request, CustomerDocument $document): JsonResponse
@@ -63,7 +78,7 @@ class DocumentQuestionController extends Controller
         $language = self::LANGUAGES[$lang] ?? 'German';
 
         try {
-            [$answer, $usage] = $this->ask($document, $data['question'], $language);
+            [$answer, $usage] = $this->ask($document, $data['question'], $language, $user);
         } catch (Throwable $e) {
             Log::warning('document question failed', ['document' => $document->id, 'error' => $e->getMessage()]);
             $user->returnFileAboQuestion();
@@ -88,7 +103,7 @@ class DocumentQuestionController extends Controller
     }
 
     /** @return array{0: string, 1: array} answer and token usage */
-    private function ask(CustomerDocument $document, string $question, string $language): array
+    private function ask(CustomerDocument $document, string $question, string $language, \App\Models\User $user): array
     {
         $content = [];
         $mime = $this->mimeOf($document);
@@ -108,7 +123,9 @@ class DocumentQuestionController extends Controller
             'Deadline' => $document->deadline?->format('Y-m-d'),
         ]);
         $facts = collect($known)->map(fn ($v, $k) => "$k: $v")->implode("\n");
-        $content[] = ['type' => 'text', 'text' => "This is the customer's letter.".($facts ? "\nWhat we already know about it:\n$facts" : '')];
+        $content[] = ['type' => 'text', 'text' => "This is the customer's letter.".($facts ? "\nWhat we already know about it:\n$facts" : '')
+            ."\nThe customer's own details (use them to fill letters and forms):\n".$this->customerDetails($user)
+            ."\nToday: ".now()->format('d.m.Y')];
 
         // Earlier questions about the same letter (oldest first), then the new one
         $messages = [['role' => 'user', 'content' => $content], ['role' => 'assistant', 'content' => 'I have read the letter. What would you like to know?']];
@@ -120,14 +137,32 @@ class DocumentQuestionController extends Controller
         }
         $messages[] = ['role' => 'user', 'content' => $question];
 
+        $start = self::LETTER_START;
+        $end = self::LETTER_END;
         $system = <<<TXT
-        You help a customer of EinStein, an administrative service in Frankfurt, understand an official letter they received.
-        Answer in $language, in plain and friendly words, short (at most about 150 words). Use the customer's letter as your source.
-        Explain what the letter says, what it asks the customer to do, by when, and what usually happens next.
-        If the letter does not contain the answer, say so honestly; never invent amounts, dates or names.
-        You do not give legal or tax advice and do not judge whether a decision is right. For objections (Widerspruch),
-        lawsuits or legal disputes, recommend a lawyer or an advice centre. For help with forms, replies or appointments,
-        the customer can book EinStein's "Behörden & Formularhilfe" in the app or on the website.
+        You help a customer of EinStein, an administrative service in Frankfurt, with an official letter they received.
+        Talk to the customer in $language, in plain and friendly words. Use the customer's letter as your source.
+
+        1. Explaining: say what the letter says, what it asks the customer to do, by when, and what usually happens next.
+           Keep explanations short (at most about 150 words).
+        2. Reply letters: when the customer asks for a reply or a letter to the authority, write it in German, ready to send:
+           sender (the customer's name and address), recipient (the authority from the letter), place and today's date,
+           the reference numbers from the letter (Aktenzeichen, Kundennummer, BG-Nr.), a clear subject line, a short polite
+           text, "Mit freundlichen Grüßen" and the customer's name. Put the whole German letter alone between a line
+           "$start" and a line "$end". After it, explain in $language in two or three sentences what the letter says
+           and how to send it (post, e-mail or the authority's online portal) and that attachments must be added.
+        3. Forms: when the letter is or contains a form, or the customer asks how to fill one, go through it field by field:
+           the field name as printed on the form, then what to write there in German. Use the customer's details and the
+           letter; never guess personal data. Put the filled fields (as "Field: value" lines) between "$start" and "$end",
+           and explain in $language what to tick, sign and attach.
+        Where you do not know a value, write a placeholder like [bitte ergänzen: Geburtsdatum] and tell the customer.
+        Never invent amounts, dates, names or reference numbers; if the letter does not contain something, say so.
+        Simple letters are fine: sending documents, confirming or asking for an appointment, reporting a change
+        (address, income, family, bank account), asking for more time, asking for an explanation or a copy, applications
+        such as a Weiterbewilligungsantrag. You do not give legal or tax advice, do not judge whether a decision is right,
+        and do not write objections (Widerspruch), lawsuits or legal arguments: for those recommend a lawyer or an advice
+        centre (e.g. a Sozialberatung). The customer checks the letter and sends it themselves. For personal help the
+        customer can book EinStein's "Behörden & Formularhilfe" in the app or on the website.
         TXT;
 
         $response = Http::withHeaders([
@@ -135,7 +170,7 @@ class DocumentQuestionController extends Controller
             'anthropic-version' => '2023-06-01',
         ])->timeout(90)->post('https://api.anthropic.com/v1/messages', [
             'model' => (string) config('services.anthropic.model'),
-            'max_tokens' => 1200,
+            'max_tokens' => 2500,
             'system' => $system,
             'messages' => $messages,
         ]);
@@ -149,6 +184,27 @@ class DocumentQuestionController extends Controller
         }
 
         return [$answer, (array) $response->json('usage', [])];
+    }
+
+    /** Name, address and the details saved for applications (users.form_data), as plain lines. */
+    private function customerDetails(\App\Models\User $user): string
+    {
+        $saved = is_array($user->form_data) ? $user->form_data : [];
+        $values = ['full_name' => $user->full_name ?: $user->name, 'phone' => $user->phone, 'address_street' => $user->address];
+        foreach (self::PERSONAL as $key => $label) {
+            if (filled($saved[$key] ?? null) && is_scalar($saved[$key])) {
+                $values[$key] = (string) $saved[$key];
+            }
+        }
+        $lines = [];
+        foreach (self::PERSONAL as $key => $label) {
+            if (filled($values[$key] ?? null)) {
+                $lines[] = "$label: ".mb_substr((string) $values[$key], 0, 200);
+            }
+        }
+        $lines[] = 'E-mail: '.$user->email;
+
+        return implode("\n", $lines);
     }
 
     private function list(CustomerDocument $document): array
