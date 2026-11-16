@@ -9,6 +9,7 @@ Working branch: `release/android` (not main). The team talks in Levantine Arabic
   - API URL comes from `--dart-define=EINSTEIN_API_BASE_URL=...`.
 - `deploy/server-setup.sh <domain> <admin-email>` — fresh Ubuntu 24.04 server (nginx, php8.3, certbot, MCP secret).
 - `deploy/update.sh` — pull + migrate + rebuild.
+- `deploy/make-main-domain.sh <new> <old> <email>` — the owner wants `app.einsteindienstleistung.de` as the main address (Nov 2026). The new address serves website + API; the old one (`.com`) 301-forwards website pages but keeps serving `/api` (installed apps, Stripe webhook); sets `APP_URL` and runs `update.sh`. Needs the DNS A record of the new address first. Links in code use `config('app.url')`, never a fixed domain.
 - `deploy/add-domain.sh <extra> <main> <email>` — second address (e.g. `app.einsteindienstleistung.de`) that 301-forwards to the main one (`app.einsteindienstleistung.com`), with its own Let's Encrypt certificate. Needs the DNS A record of the extra address first.
 - `.github/workflows/android-release.yml` — builds the signed AAB + APK on push to `mobile/user_einstein/**`.
   - Secrets: `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`. Variable: `API_BASE_URL`.

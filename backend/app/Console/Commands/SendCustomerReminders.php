@@ -66,7 +66,7 @@ class SendCustomerReminders extends Command
         }
         try {
             Mail::raw(
-                "{$r->title}\n{$date}\n\n".($r->details ?? '')."\n\nhttps://app.einsteindienstleistung.com/MyDocuments\n\nEinStein Dienstleistung",
+                "{$r->title}\n{$date}\n\n".($r->details ?? '')."\n\n".rtrim((string) config('app.url'), '/')."/MyDocuments\n\nEinStein Dienstleistung",
                 fn ($m) => $m->to($r->user_email)->subject('EinStein: '.$r->title)
             );
         } catch (Throwable $e) {
