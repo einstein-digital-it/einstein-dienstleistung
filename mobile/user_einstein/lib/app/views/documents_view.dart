@@ -54,6 +54,10 @@ class _DocumentsViewState extends State<DocumentsView> {
                 const UploadHeroCard(),
                 if (controller.aboKnown.value) ...[
                   const SizedBox(height: 12),
+                  const AskAiCard(),
+                ],
+                if (controller.aboKnown.value) ...[
+                  const SizedBox(height: 12),
                   const AboCard(),
                 ],
                 if (controller.hasProcessing) ...[
@@ -602,7 +606,19 @@ class DocumentDetailView extends StatefulWidget {
 
 class _DocumentDetailViewState extends State<DocumentDetailView> {
   final controller = Get.find<DocumentsController>();
+  final chatKey = GlobalKey();
   bool showTranslation = true;
+
+  @override
+  void initState() {
+    super.initState();
+    if (Get.parameters['ask'] == '1') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = chatKey.currentContext;
+        if (ctx != null) Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 300), alignment: 0.1);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -714,7 +730,7 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
             // Questions to the AI about this letter (Abo)
             if (controller.aboActive.value && !doc.isProcessing && doc.aiStatus != 'too_long') ...[
               const SizedBox(height: 12),
-              LetterChat(key: ValueKey('chat_${doc.id}'), doc: doc),
+              KeyedSubtree(key: chatKey, child: LetterChat(key: ValueKey('chat_${doc.id}'), doc: doc)),
             ],
             const SizedBox(height: 18),
             FilledButton.icon(

@@ -12,6 +12,7 @@ import CustomerCases from "@/components/CustomerCases";
 import OriginalViewer from "@/components/OriginalViewer";
 import AboPlans, { planTexts } from "@/components/AboPlans";
 import LetterChat from "@/components/LetterChat";
+import AskAiCard from "@/components/AskAiCard";
 
 const FOLDER_META = {
   jobcenter: { icon: Briefcase, color: "bg-blue-600" },
@@ -169,6 +170,21 @@ export default function MyDocuments() {
   const [abo, setAbo] = useState(null);
   const [aboBusy, setAboBusy] = useState(false);
   const [caseOpen, setCaseOpen] = useState(false);
+  // Letter picked on the "Ask the AI" card: its folder opens with the chat open
+  const [chatDocId, setChatDocId] = useState(null);
+
+  const askAbout = (doc) => {
+    setFolder(doc.folder);
+    setChatDocId(doc.id);
+  };
+
+  useEffect(() => {
+    if (!chatDocId || !folder) return undefined;
+    const timer = setTimeout(() => document.getElementById(`doc-${chatDocId}`)?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
+    return () => clearTimeout(timer);
+  }, [chatDocId, folder]);
+
+  const showPlans = () => document.getElementById("abo-plans")?.scrollIntoView({ behavior: "smooth", block: "start" });
   const aboReturn = searchParams.get("abo");
 
   const loadAbo = () => customerDocumentsApi.subscription().then(setAbo).catch(() => {});
@@ -379,6 +395,9 @@ export default function MyDocuments() {
             </Button>
           </div>
           )}
+          {!isAdmin && !caseOpen && abo && (
+            <AskAiCard documents={data.documents} lang={lang} abo={abo} onPick={askAbout} onShowPlans={showPlans} />
+          )}
           {abo && (abo.active ? (
             <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-100 bg-white p-4">
               <BadgeCheck className="w-5 h-5 text-emerald-600" />
@@ -403,7 +422,7 @@ export default function MyDocuments() {
               )}
             </div>
           ) : (
-            <div className="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-5">
+            <div id="abo-plans" className="mb-6 scroll-mt-24 rounded-2xl border border-purple-100 bg-purple-50 p-5">
              <div className="flex flex-col md:flex-row md:items-center gap-4">
               <div className="flex-1">
                 <p className="font-bold text-[#2e1065]">{t.aboTitle}</p>
@@ -490,7 +509,7 @@ export default function MyDocuments() {
           </>
         ) : (
           <div className="bg-white rounded-2xl border border-gray-100 p-5 md:p-6">
-            <button onClick={() => setFolder(null)} className="mb-4 inline-flex items-center gap-1 text-sm text-[#6B46C1] hover:underline"><BackIcon className="w-4 h-4" />{t.back}</button>
+            <button onClick={() => { setFolder(null); setChatDocId(null); }} className="mb-4 inline-flex items-center gap-1 text-sm text-[#6B46C1] hover:underline"><BackIcon className="w-4 h-4" />{t.back}</button>
             <h2 className="text-xl font-bold text-[#2e1065] mb-4">{t.folders[folder] || folder}</h2>
 
             <div className="mb-6 flex flex-col sm:flex-row gap-2 sm:items-center">
@@ -508,7 +527,7 @@ export default function MyDocuments() {
             ) : (
               <ul className="divide-y">
                 {byFolder[folder].map((doc) => (
-                  <li key={doc.id} className="py-3">
+                  <li key={doc.id} id={`doc-${doc.id}`} className="scroll-mt-24 py-3">
                    <div className="flex items-center gap-3">
                     <FileText className="w-5 h-5 text-[#6B46C1] shrink-0" />
                     <div className="min-w-0 flex-1">
@@ -544,7 +563,7 @@ export default function MyDocuments() {
                          </button>
                        )}
                        {/* Questions to the AI about this letter (Abo) */}
-                       {!isAdmin && abo?.active && <LetterChat doc={doc} lang={lang} abo={abo} onAsked={loadAbo} />}
+                       {!isAdmin && abo?.active && <LetterChat doc={doc} lang={lang} abo={abo} onAsked={loadAbo} autoOpen={chatDocId === doc.id} />}
                        {doc.translation && (
                          <div>
                            <button onClick={() => setOpenId(openId === doc.id ? null : doc.id)} className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B46C1]">

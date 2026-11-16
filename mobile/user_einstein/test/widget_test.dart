@@ -691,7 +691,12 @@ void main() {
     await tester.tap(find.text('My file').last);
     await tester.pumpAndSettle();
     expect(find.text('All your letters, sorted by authority.'), findsOneWidget);
+    // The AI card says the chat is part of the Abo
+    expect(find.text('Ask the AI about your letters'), findsOneWidget);
+    expect(find.text('Part of the document subscription – choose a plan below.'), findsOneWidget);
     // Without the Abo, three plans are offered: 6.99 €, 11.99 € and 17.99 € a month
+    await tester.scrollUntilVisible(find.text('Unlimited questions to the AI'), 150, scrollable: find.byType(Scrollable).first);
+    await tester.pumpAndSettle();
     expect(find.text('Sorting & translation'), findsOneWidget);
     expect(find.text('6,99 € / month'), findsOneWidget);
     expect(find.text('20 questions to the AI per month'), findsOneWidget);
@@ -759,6 +764,8 @@ void main() {
     backend.aboActive = true;
     await tester.runAsync(docs.loadSubscription);
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Sorting & translation is active'), 150, scrollable: find.byType(Scrollable).first);
+    await tester.pumpAndSettle();
     expect(find.text('Sorting & translation is active'), findsOneWidget);
     expect(find.text('3 of 50 letters this month'), findsOneWidget);
     expect(find.text('Choose'), findsNothing);
@@ -777,8 +784,13 @@ void main() {
     backend.aboActive = true;
     await tester.runAsync(docs.loadSubscription);
     await tester.pumpAndSettle();
-    Get.toNamed(AppRoutes.documentDetail, arguments: 7);
+    // The AI card on My file lists the letter; one tap opens its chat
+    final pick = find.byKey(const Key('ask_pick_7'));
+    await tester.ensureVisible(pick);
     await tester.pumpAndSettle();
+    await tester.tap(pick);
+    await tester.pumpAndSettle();
+    expect(Get.currentRoute, startsWith(AppRoutes.documentDetail));
     expect(find.text('Ask about this letter'), findsOneWidget);
     expect(find.text('0 of 10 questions this month'), findsOneWidget);
 

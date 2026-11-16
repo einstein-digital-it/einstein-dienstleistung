@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../api/api_exception.dart';
 import '../controllers/documents_controller.dart';
 import '../models/customer_document.dart';
+import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/ui.dart';
 
@@ -96,6 +97,103 @@ class AboPlanTiles extends StatelessWidget {
               ),
           ],
         ));
+  }
+}
+
+/// "Ask the AI" card on My file: the latest letters, one tap opens the chat for that letter.
+class AskAiCard extends StatelessWidget {
+  const AskAiCard({super.key});
+
+  static const shown = 4;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Get.find<DocumentsController>();
+    return Obx(() {
+      final letters = c.documents.where((d) => d.aiStatus == 'done').toList()
+        ..sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
+      final limit = c.aboQuestionsLimit.value;
+      return Container(
+        key: const Key('ask_ai_card'),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.purple.withValues(alpha: 0.25)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(gradient: AppColors.heroGradient, borderRadius: BorderRadius.circular(12)),
+              child: const Icon(Icons.smart_toy_outlined, color: Colors.white),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('ask_card_title'.tr, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: AppColors.navy)),
+                const SizedBox(height: 4),
+                Text('ask_card_desc'.tr, style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.4)),
+                if (c.aboActive.value) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    limit == null
+                        ? 'ask_unlimited'.tr
+                        : 'ask_left'.trParams({'used': '${c.aboQuestionsUsed.value}', 'limit': '$limit'}),
+                    style: const TextStyle(color: AppColors.purple, fontWeight: FontWeight.w600, fontSize: 12),
+                  ),
+                ],
+              ]),
+            ),
+          ]),
+          const SizedBox(height: 12),
+          if (!c.aboActive.value)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(color: AppColors.purpleSoft, borderRadius: BorderRadius.circular(12)),
+              child: Text('ask_card_needs'.tr, style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w600, fontSize: 13)),
+            )
+          else if (letters.isEmpty)
+            Text('ask_card_empty'.tr, style: const TextStyle(color: AppColors.muted, fontSize: 13))
+          else ...[
+            Text('ask_card_pick'.tr, style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w600, fontSize: 13)),
+            const SizedBox(height: 6),
+            for (final doc in letters.take(shown))
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Material(
+                  color: AppColors.input,
+                  borderRadius: BorderRadius.circular(12),
+                  child: InkWell(
+                    key: Key('ask_pick_${doc.id}'),
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () => Get.toNamed(AppRoutes.documentDetail, arguments: doc.id, parameters: {'ask': '1'}),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      child: Row(children: [
+                        const Icon(Icons.description_outlined, color: AppColors.purple, size: 20),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text(doc.title, maxLines: 1, overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy)),
+                            if ((doc.sender ?? '').isNotEmpty)
+                              Text(doc.sender!, maxLines: 1, overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(color: AppColors.muted, fontSize: 12)),
+                          ]),
+                        ),
+                        const Icon(Icons.chevron_right_rounded, color: AppColors.purple),
+                      ]),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ]),
+      );
+    });
   }
 }
 

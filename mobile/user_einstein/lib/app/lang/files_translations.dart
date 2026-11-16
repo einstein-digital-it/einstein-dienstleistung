@@ -1,6 +1,11 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'ask_card_title': 'Ask the AI about your letters',
+  'ask_card_desc': 'The AI explains every letter in your language, writes replies to the authority and helps you fill in forms.',
+  'ask_card_pick': 'Choose a letter:',
+  'ask_card_empty': 'Upload a letter first – then you can ask questions here.',
+  'ask_card_needs': 'Part of the document subscription – choose a plan below.',
   'ask_copy': 'Copy',
   'ask_copied': 'The text was copied.',
   'ask_letter': 'Text in German',
@@ -195,6 +200,11 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'ask_card_title': 'اسأل الذكاء الاصطناعي عن رسائلك',
+  'ask_card_desc': 'الذكاء الاصطناعي يشرح كل رسالة بلغتك، يكتب ردوداً للدائرة ويساعدك في تعبئة الاستمارات.',
+  'ask_card_pick': 'اختر رسالة:',
+  'ask_card_empty': 'ارفع رسالة أولاً، وبعدها بتقدر تسأل هون.',
+  'ask_card_needs': 'جزء من اشتراك الأوراق – اختر باقة تحت.',
   'ask_copy': 'نسخ',
   'ask_copied': 'تم نسخ النص.',
   'ask_letter': 'النص بالألمانية',
@@ -389,6 +399,11 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'ask_card_title': 'Fragen Sie die KI zu Ihren Briefen',
+  'ask_card_desc': 'Die KI erklärt jeden Brief in Ihrer Sprache, schreibt Antworten an die Behörde und hilft beim Ausfüllen von Formularen.',
+  'ask_card_pick': 'Wählen Sie einen Brief:',
+  'ask_card_empty': 'Laden Sie zuerst einen Brief hoch – dann können Sie hier Fragen stellen.',
+  'ask_card_needs': 'Teil des Unterlagen-Abos – wählen Sie unten einen Tarif.',
   'ask_copy': 'Kopieren',
   'ask_copied': 'Der Text wurde kopiert.',
   'ask_letter': 'Text auf Deutsch',

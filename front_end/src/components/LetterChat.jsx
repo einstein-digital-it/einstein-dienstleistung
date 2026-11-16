@@ -51,9 +51,10 @@ function LetterBox({ text, t }) {
 
 const ERRORS = { needs_subscription: "needs", limit_reached: "limit", too_long: "tooLong", not_available: "unavailable", failed: "failed" };
 
-export default function LetterChat({ doc, lang, abo, onAsked }) {
+export default function LetterChat({ doc, lang, abo, onAsked, autoOpen = false }) {
   const t = T[lang] || T.de;
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(autoOpen);
+  useEffect(() => { if (autoOpen) setOpen(true); }, [autoOpen]);
   const [items, setItems] = useState(null);
   const [question, setQuestion] = useState("");
   const [busy, setBusy] = useState(false);

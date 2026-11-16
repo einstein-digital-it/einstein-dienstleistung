@@ -1,5 +1,10 @@
 // Ukrainian (uk). Keys missing here fall back to English.
 const Map<String, String> ukTranslations = {
+  "ask_card_title": "Запитайте ШІ про ваші листи",
+  "ask_card_desc": "ШІ пояснює кожен лист вашою мовою, пише відповіді установам і допомагає заповнювати форми.",
+  "ask_card_pick": "Оберіть лист:",
+  "ask_card_empty": "Спершу завантажте лист – тоді тут можна ставити запитання.",
+  "ask_card_needs": "Входить у підписку на документи – оберіть тариф нижче.",
   "ask_copy": "Копіювати",
   "ask_copied": "Текст скопійовано.",
   "ask_letter": "Текст німецькою",
