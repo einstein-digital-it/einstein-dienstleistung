@@ -24,7 +24,8 @@ echo "==> Frontend"
 cd "$APP_DIR/front_end"
 DOMAIN="$(grep '^APP_URL=' "$APP_DIR/backend/.env" | cut -d/ -f3)"
 npm ci --no-audit --no-fund
-VITE_BACKEND_API_URL="https://$DOMAIN/api" npm run build
+# Relative: the website works on every address it is served from (.com and .de)
+VITE_BACKEND_API_URL="/api" npm run build
 
 systemctl reload php8.3-fpm nginx
 echo "==> Done: https://$DOMAIN"

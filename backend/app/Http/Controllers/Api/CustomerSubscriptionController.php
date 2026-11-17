@@ -89,7 +89,7 @@ class CustomerSubscriptionController extends Controller
             return response()->json(['message' => 'Online payment is not configured yet (STRIPE_SECRET missing).'], 503);
         }
 
-        $base = rtrim((string) config('app.url'), '/');
+        $base = \App\Support\SiteUrl::for($request);
         $lang = in_array($request->input('lang'), ['de', 'en', 'es'], true) ? $request->input('lang') : 'auto';
         $vatRate = (float) config('services.tax.vat_rate', 0.19);
         $metadata = ['kind' => self::KIND, 'user_id' => (string) $user->id, 'plan' => $plan];

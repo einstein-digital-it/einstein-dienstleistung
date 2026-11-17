@@ -10,6 +10,7 @@ import '../widgets/ui.dart';
 import 'abo_plans_view.dart';
 import 'customer_case_view.dart';
 import 'letter_reply_view.dart';
+import 'sign_document_view.dart';
 
 String folderName(String folder) => 'folder_$folder'.tr;
 
@@ -636,6 +637,13 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
         appBar: AppBar(
           title: Text(folderName(doc.folder)),
           actions: [
+            if (canSignDocument(doc))
+              IconButton(
+                key: const Key('sign_document'),
+                tooltip: 'sign_title'.tr,
+                icon: const Icon(Icons.draw_outlined),
+                onPressed: () => Get.to(() => SignDocumentScreen(doc: doc)),
+              ),
             ShareDocumentsButton(docs: [doc], subject: doc.title),
             IconButton(
               tooltip: 'files_delete'.tr,

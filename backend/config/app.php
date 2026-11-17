@@ -54,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    // More addresses the website also runs on, comma-separated (e.g. https://app.einsteindienstleistung.de)
+    'extra_urls' => env('APP_EXTRA_URLS', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

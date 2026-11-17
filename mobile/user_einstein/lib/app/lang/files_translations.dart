@@ -1,6 +1,11 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'sign_title': 'Sign document',
+  'sign_error': 'The document could not be opened.',
+  'sign_need': 'Draw your signature first.',
+  'sign_size': 'Size',
+  'sign_hint': 'Drag the signature to the right place. Simple electronic signature – where a handwritten original is required, print and sign by hand.',
   'reply_title': 'Reply',
   'reply_start': 'What do I do?',
   'reply_working': 'The AI is reading the letter…',
@@ -226,6 +231,11 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'sign_title': 'توقيع المستند',
+  'sign_error': 'ما قدرنا نفتح المستند.',
+  'sign_need': 'ارسم توقيعك أولاً.',
+  'sign_size': 'الحجم',
+  'sign_hint': 'اسحب التوقيع لمكانه الصحيح. توقيع إلكتروني بسيط – إذا الدائرة طالبة توقيع بخط اليد، اطبعها ووقّعها بإيدك.',
   'reply_title': 'الرد',
   'reply_start': 'شو لازم أعمل؟',
   'reply_working': 'الذكاء الاصطناعي يقرأ الرسالة…',
@@ -451,6 +461,11 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'sign_title': 'Dokument unterschreiben',
+  'sign_error': 'Das Dokument konnte nicht geöffnet werden.',
+  'sign_need': 'Zeichnen Sie zuerst Ihre Unterschrift.',
+  'sign_size': 'Größe',
+  'sign_hint': 'Ziehen Sie die Unterschrift an die richtige Stelle. Einfache elektronische Unterschrift – wo Schriftform verlangt ist, bitte ausdrucken und von Hand unterschreiben.',
   'reply_title': 'Antwort',
   'reply_start': 'Was soll ich tun?',
   'reply_working': 'Die KI liest den Brief…',

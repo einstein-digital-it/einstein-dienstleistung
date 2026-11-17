@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
-  BadgeCheck, Share2, Briefcase, Building2, ChevronLeft, ChevronRight, Download, FileText, Folder, GraduationCap,
+  BadgeCheck, PenLine, Share2, Briefcase, Building2, ChevronLeft, ChevronRight, Download, FileText, Folder, GraduationCap,
   HeartPulse, Home as HomeIcon, Sparkles, CalendarClock, ChevronDown, Landmark, Loader2, Lock, PiggyBank, Shield, Trash2, Upload, Users, Globe2, Baby, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import AboPlans, { planTexts } from "@/components/AboPlans";
 import LetterChat from "@/components/LetterChat";
 import AskAiCard from "@/components/AskAiCard";
 import LetterReply from "@/components/LetterReply";
+import SignDocument, { canSign } from "@/components/SignDocument";
 
 const FOLDER_META = {
   jobcenter: { icon: Briefcase, color: "bg-blue-600" },
@@ -31,7 +32,7 @@ const FOLDER_META = {
 };
 
 const T = {
-  de: {
+  de: { signDoc: "Unterschreiben",
     title: "Meine Unterlagen", subtitle: "Alle Ihre Dokumente, sortiert nach Behörde und Thema.",
     private: "Nur Sie und EinStein sehen diese Dateien.",
     folders: { jobcenter: "Jobcenter", auslaenderbehoerde: "Ausländerbehörde", finanzamt: "Finanzamt", familienkasse: "Familienkasse / Kindergeld", krankenkasse: "Krankenkasse", rentenversicherung: "Rentenversicherung", wohnen: "Wohnen / Vermieter", arbeit: "Arbeit / Arbeitgeber", schule: "Schule / Kita", bank: "Bank", versicherung: "Versicherungen", sonstiges: "Sonstiges" },
@@ -49,7 +50,7 @@ const T = {
     aboUntil: (d) => `Gekündigt – aktiv bis ${d}`, aboCancel: "Abo kündigen", aboCancelConfirm: "Abo kündigen? Es bleibt bis zum Ende des bezahlten Monats aktiv.",
     aboNeeded: "Ohne Abo wird der Brief nur gespeichert, nicht sortiert oder übersetzt.", aboThanks: "Danke! Ihr Abo wird aktiviert, sobald die Zahlung bestätigt ist.", aboTerms: "Es gelten die AGB (§ 8b).", aboLimit: (n) => `Bis zu ${n} Schreiben pro Monat`, aboUsage: (u, n) => `${u} von ${n} Schreiben diesen Monat`, aboReached: "Ihr Monatskontingent ist aufgebraucht. Neue Schreiben werden nur gespeichert.",
   },
-  ar: {
+  ar: { signDoc: "توقيع",
     title: "ملفاتي", subtitle: "كل مستنداتك مرتبة حسب الجهة والموضوع.",
     private: "هذه الملفات لا يراها إلا أنت وفريق آينشتاين.",
     folders: { jobcenter: "الجوب سنتر", auslaenderbehoerde: "دائرة الأجانب", finanzamt: "مكتب الضرائب", familienkasse: "صندوق العائلة / الكيندرغلد", krankenkasse: "التأمين الصحي", rentenversicherung: "التأمين التقاعدي", wohnen: "السكن / المؤجر", arbeit: "العمل / صاحب العمل", schule: "المدرسة / الروضة", bank: "البنك", versicherung: "التأمينات", sonstiges: "أخرى" },
@@ -67,7 +68,7 @@ const T = {
     aboUntil: (d) => `تم الإلغاء – مفعّل حتى ${d}`, aboCancel: "إلغاء الاشتراك", aboCancelConfirm: "إلغاء الاشتراك؟ يبقى مفعّلاً حتى نهاية الشهر المدفوع.",
     aboNeeded: "بدون اشتراك تُحفظ الرسالة فقط، بدون ترتيب أو ترجمة.", aboThanks: "شكراً! يتفعّل اشتراكك فور تأكيد الدفع.", aboTerms: "تسري الشروط العامة (§ 8b).", aboLimit: (n) => `حتى ${n} ورقة في الشهر`, aboUsage: (u, n) => `${u} من ${n} ورقة هذا الشهر`, aboReached: "انتهى رصيدك لهذا الشهر. الأوراق الجديدة تُحفظ فقط دون ترتيب أو ترجمة.",
   },
-  en: {
+  en: { signDoc: "Sign",
     title: "My documents", subtitle: "All your documents, sorted by authority and topic.",
     private: "Only you and EinStein can see these files.",
     folders: { jobcenter: "Jobcenter", auslaenderbehoerde: "Immigration office", finanzamt: "Tax office", familienkasse: "Family benefits / Kindergeld", krankenkasse: "Health insurance", rentenversicherung: "Pension insurance", wohnen: "Housing / landlord", arbeit: "Work / employer", schule: "School / daycare", bank: "Bank", versicherung: "Insurance", sonstiges: "Other" },
@@ -86,7 +87,7 @@ const T = {
     aboNeeded: "Without a subscription the letter is only stored, not sorted or translated.", aboThanks: "Thank you! Your subscription starts as soon as the payment is confirmed.", aboTerms: "Our terms apply (AGB § 8b).", aboLimit: (n) => `Up to ${n} letters a month`, aboUsage: (u, n) => `${u} of ${n} letters this month`, aboReached: "Your monthly allowance is used up. New letters are only stored.",
   },
 };
-T.tr = {
+T.tr = { signDoc: "İmzala",
   title: "Belgelerim", subtitle: "Tüm belgeleriniz kurum ve konuya göre sıralı.",
   private: "Bu dosyaları yalnızca siz ve EinStein görebilir.",
   folders: { jobcenter: "Jobcenter", auslaenderbehoerde: "Yabancılar dairesi", finanzamt: "Vergi dairesi", familienkasse: "Çocuk parası / Kindergeld", krankenkasse: "Sağlık sigortası", rentenversicherung: "Emeklilik sigortası", wohnen: "Konut / ev sahibi", arbeit: "İş / işveren", schule: "Okul / kreş", bank: "Banka", versicherung: "Sigorta", sonstiges: "Diğer" },
@@ -104,7 +105,7 @@ T.tr = {
   aboUntil: (d) => `İptal edildi – ${d} tarihine kadar etkin`, aboCancel: "Aboneliği iptal et", aboCancelConfirm: "Abonelik iptal edilsin mi? Ödenen ayın sonuna kadar etkin kalır.",
   aboNeeded: "Abonelik olmadan mektup yalnızca kaydedilir; sıralanmaz ve çevrilmez.", aboThanks: "Teşekkürler! Ödeme onaylanır onaylanmaz aboneliğiniz başlar.", aboTerms: "Şartlarımız geçerlidir (AGB § 8b).", aboLimit: (n) => `Ayda en fazla ${n} mektup`, aboUsage: (u, n) => `Bu ay ${n} mektuptan ${u} tanesi`, aboReached: "Aylık hakkınız doldu. Yeni mektuplar yalnızca kaydedilir.",
 };
-T.es = {
+T.es = { signDoc: "Firmar",
   title: "Mis documentos", subtitle: "Todos sus documentos, ordenados por organismo y tema.",
   private: "Solo usted y EinStein pueden ver estos archivos.",
   folders: { jobcenter: "Jobcenter", auslaenderbehoerde: "Oficina de extranjería", finanzamt: "Hacienda", familienkasse: "Prestación por hijos / Kindergeld", krankenkasse: "Seguro médico", rentenversicherung: "Seguro de pensiones", wohnen: "Vivienda / arrendador", arbeit: "Trabajo / empleador", schule: "Escuela / guardería", bank: "Banco", versicherung: "Seguros", sonstiges: "Otros" },
@@ -122,7 +123,7 @@ T.es = {
   aboUntil: (d) => `Cancelada – activa hasta el ${d}`, aboCancel: "Cancelar suscripción", aboCancelConfirm: "¿Cancelar la suscripción? Sigue activa hasta el final del mes pagado.",
   aboNeeded: "Sin suscripción la carta solo se guarda; no se ordena ni se traduce.", aboThanks: "¡Gracias! Su suscripción empieza en cuanto se confirme el pago.", aboTerms: "Se aplican nuestras condiciones (AGB § 8b).", aboLimit: (n) => `Hasta ${n} cartas al mes`, aboUsage: (u, n) => `${u} de ${n} cartas este mes`, aboReached: "Ha agotado su cupo mensual. Las cartas nuevas solo se guardan.",
 };
-T.uk = {
+T.uk = { signDoc: "Підписати",
   title: "Мої документи", subtitle: "Усі ваші документи, впорядковані за установами та темами.",
   private: "Ці файли бачите лише ви та EinStein.",
   folders: { jobcenter: "Jobcenter", auslaenderbehoerde: "Відомство у справах іноземців", finanzamt: "Податкова", familienkasse: "Сімейна каса / Kindergeld", krankenkasse: "Медична каса", rentenversicherung: "Пенсійне страхування", wohnen: "Житло / орендодавець", arbeit: "Робота / роботодавець", schule: "Школа / садок", bank: "Банк", versicherung: "Страхування", sonstiges: "Інше" },
@@ -173,6 +174,8 @@ export default function MyDocuments() {
   const [caseOpen, setCaseOpen] = useState(false);
   // Letter picked on the "Ask the AI" card: its folder opens with the chat open
   const [chatDocId, setChatDocId] = useState(null);
+  // Letter being signed (any PDF or photo)
+  const [signDoc, setSignDoc] = useState(null);
 
   const askAbout = (doc) => {
     setFolder(doc.folder);
@@ -539,6 +542,7 @@ export default function MyDocuments() {
                       </p>
                     </div>
                     <OriginalViewer doc={doc} lang={lang} />
+                    {!isAdmin && canSign(doc) && <Button variant="outline" size="icon" onClick={() => setSignDoc(doc)} aria-label={t.signDoc} title={t.signDoc}><PenLine className="w-4 h-4" /></Button>}
                     <Button variant="outline" size="icon" onClick={() => onShare(doc)} aria-label="Share" title="Share"><Share2 className="w-4 h-4" /></Button>
                     <Button variant="outline" size="icon" onClick={() => customerDocumentsApi.download(doc).catch(() => setError(t.error))} aria-label="Download"><Download className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => onDelete(doc)} aria-label="Delete" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
@@ -592,6 +596,7 @@ export default function MyDocuments() {
           </div>
         )}
       </div>
+      {signDoc && <SignDocument doc={signDoc} lang={lang} onClose={() => setSignDoc(null)} />}
     </div>
   );
 }

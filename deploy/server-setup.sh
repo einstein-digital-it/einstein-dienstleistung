@@ -139,7 +139,7 @@ CRON_LINE="* * * * * cd $APP_DIR/backend && php artisan schedule:run >> /dev/nul
 step "Frontend (React)"
 cd "$APP_DIR/front_end"
 npm ci --no-audit --no-fund
-VITE_BACKEND_API_URL="https://$DOMAIN/api" npm run build
+VITE_BACKEND_API_URL="/api" npm run build
 
 # ---------------------------------------------------------------- 5. Nginx + HTTPS
 step "Nginx"

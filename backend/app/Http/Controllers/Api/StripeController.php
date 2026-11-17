@@ -55,7 +55,7 @@ class StripeController extends Controller
         }
 
         $isSubscription = in_array($booking->category, self::SUBSCRIPTION_CATEGORIES, true);
-        $base = rtrim((string) config('app.url'), '/');
+        $base = \App\Support\SiteUrl::for($request);
         $lang = in_array($request->input('lang'), ['de', 'en', 'es'], true) ? $request->input('lang') : 'auto';
 
         $lineItem = [

@@ -1,5 +1,10 @@
 // Ukrainian (uk). Keys missing here fall back to English.
 const Map<String, String> ukTranslations = {
+  "sign_title": "Підписати документ",
+  "sign_error": "Не вдалося відкрити документ.",
+  "sign_need": "Спершу намалюйте підпис.",
+  "sign_size": "Розмір",
+  "sign_hint": "Перетягніть підпис у потрібне місце. Простий електронний підпис – якщо потрібен власноручний, роздрукуйте й підпишіть від руки.",
   "reply_title": "Відповідь",
   "reply_start": "Що мені робити?",
   "reply_working": "ШІ читає лист…",

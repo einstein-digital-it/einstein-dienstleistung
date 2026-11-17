@@ -844,6 +844,8 @@ void main() {
     expect(find.byKey(const Key('reply_sign')), findsOneWidget);
     expect(find.byKey(const Key('reply_mail')), findsOneWidget);
     expect(find.byKey(const Key('reply_share')), findsOneWidget);
+    // Any PDF letter can be signed
+    expect(find.byKey(const Key('sign_document')), findsOneWidget);
   });
 
   testWidgets('My file: a created file shows numbered folders and takes several papers', (
