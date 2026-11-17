@@ -1,4 +1,23 @@
-const API_BASE_URL = import.meta.env?.VITE_BACKEND_API_URL || "http://127.0.0.1:8000/api";
+const BUILT_API_URL = import.meta.env?.VITE_BACKEND_API_URL || "http://127.0.0.1:8000/api";
+
+/**
+ * The website runs on several of our addresses (.com and .de). Opened on one of them, it always
+ * talks to the API on that same address, even if the build named another one — otherwise the
+ * browser blocks the requests (CORS). Local development keeps the built URL.
+ */
+function apiBaseUrl() {
+  try {
+    const ours = /(^|\.)einsteindienstleistung\.(com|de)$/i;
+    const here = window.location.hostname;
+    const built = new URL(BUILT_API_URL, window.location.origin);
+    if (ours.test(here) && built.hostname !== here) return `${window.location.origin}/api`;
+  } catch {
+    // no window (tests) or an odd URL: use the built one
+  }
+  return BUILT_API_URL;
+}
+
+const API_BASE_URL = apiBaseUrl();
 
 function getAuthToken() {
   try {
