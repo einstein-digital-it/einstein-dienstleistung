@@ -381,6 +381,18 @@ class CustomerApiService {
     return _answers(data);
   }
 
+  /// The last "What do I do?" result for a letter, or null.
+  Future<Map<String, dynamic>?> documentDraft(int id) async {
+    final data = await client.get('customer/documents/$id/draft');
+    return data is Map ? Map<String, dynamic>.from(data) : null;
+  }
+
+  /// The AI decides whether a reply is needed and prepares it; it reads the whole letter.
+  Future<Map<String, dynamic>> prepareDocumentDraft(int id, String lang) async {
+    final data = await client.post('customer/documents/$id/draft', body: {'lang': lang}, timeout: const Duration(seconds: 100));
+    return Map<String, dynamic>.from(data as Map);
+  }
+
   List<DocumentAnswer> _answers(Object? data) => data is List
       ? data.whereType<Map>().map((e) => DocumentAnswer.fromJson(Map<String, dynamic>.from(e))).toList()
       : const [];

@@ -13,6 +13,7 @@ import OriginalViewer from "@/components/OriginalViewer";
 import AboPlans, { planTexts } from "@/components/AboPlans";
 import LetterChat from "@/components/LetterChat";
 import AskAiCard from "@/components/AskAiCard";
+import LetterReply from "@/components/LetterReply";
 
 const FOLDER_META = {
   jobcenter: { icon: Briefcase, color: "bg-blue-600" },
@@ -563,6 +564,7 @@ export default function MyDocuments() {
                          </button>
                        )}
                        {/* Questions to the AI about this letter (Abo) */}
+                       {!isAdmin && abo?.active && <LetterReply doc={doc} lang={lang} onUsed={loadAbo} />}
                        {!isAdmin && abo?.active && <LetterChat doc={doc} lang={lang} abo={abo} onAsked={loadAbo} autoOpen={chatDocId === doc.id} />}
                        {doc.translation && (
                          <div>

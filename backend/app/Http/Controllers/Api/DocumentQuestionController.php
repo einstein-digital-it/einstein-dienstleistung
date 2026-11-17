@@ -41,6 +41,7 @@ class DocumentQuestionController extends Controller
         'phone' => 'Phone', 'nationality' => 'Nationality', 'bg_number' => 'Jobcenter BG-Nr.', 'tax_id' => 'Tax ID',
         'kindergeld_number' => 'Kindergeld number', 'passport_number' => 'Passport number',
         'permit_type' => 'Residence permit type', 'permit_expiry' => 'Residence permit valid until',
+        'jobcenter_email' => 'Jobcenter e-mail', 'abh_email' => 'Ausländerbehörde e-mail', 'familienkasse_email' => 'Familienkasse e-mail', 'buergeramt_email' => 'Bürgeramt e-mail',
     ];
 
     /** GET customer/documents/{document}/questions */
@@ -105,27 +106,7 @@ class DocumentQuestionController extends Controller
     /** @return array{0: string, 1: array} answer and token usage */
     private function ask(CustomerDocument $document, string $question, string $language, \App\Models\User $user): array
     {
-        $content = [];
-        $mime = $this->mimeOf($document);
-        if (in_array($mime, self::SUPPORTED, true) && $document->file_path && Storage::disk('local')->exists($document->file_path)) {
-            $data = base64_encode(Storage::disk('local')->get($document->file_path));
-            $content[] = [
-                'type' => $mime === 'application/pdf' ? 'document' : 'image',
-                'source' => ['type' => 'base64', 'media_type' => $mime, 'data' => $data],
-                // Follow-up questions within a few minutes reuse the letter at a lower price
-                'cache_control' => ['type' => 'ephemeral'],
-            ];
-        }
-        $known = array_filter([
-            'Title' => $document->title,
-            'Sender' => $document->sender,
-            'Summary' => $document->summary,
-            'Deadline' => $document->deadline?->format('Y-m-d'),
-        ]);
-        $facts = collect($known)->map(fn ($v, $k) => "$k: $v")->implode("\n");
-        $content[] = ['type' => 'text', 'text' => "This is the customer's letter.".($facts ? "\nWhat we already know about it:\n$facts" : '')
-            ."\nThe customer's own details (use them to fill letters and forms):\n".$this->customerDetails($user)
-            ."\nToday: ".now()->format('d.m.Y')];
+        $content = $this->letterContent($document, $user);
 
         // Earlier questions about the same letter (oldest first), then the new one
         $messages = [['role' => 'user', 'content' => $content], ['role' => 'assistant', 'content' => 'I have read the letter. What would you like to know?']];
@@ -186,8 +167,36 @@ class DocumentQuestionController extends Controller
         return [$answer, (array) $response->json('usage', [])];
     }
 
+    /** The letter itself, what we know about it and the customer's details: the first user message. */
+    protected function letterContent(CustomerDocument $document, \App\Models\User $user): array
+    {
+        $content = [];
+        $mime = $this->mimeOf($document);
+        if (in_array($mime, self::SUPPORTED, true) && $document->file_path && Storage::disk('local')->exists($document->file_path)) {
+            $data = base64_encode(Storage::disk('local')->get($document->file_path));
+            $content[] = [
+                'type' => $mime === 'application/pdf' ? 'document' : 'image',
+                'source' => ['type' => 'base64', 'media_type' => $mime, 'data' => $data],
+                // Follow-up questions within a few minutes reuse the letter at a lower price
+                'cache_control' => ['type' => 'ephemeral'],
+            ];
+        }
+        $known = array_filter([
+            'Title' => $document->title,
+            'Sender' => $document->sender,
+            'Summary' => $document->summary,
+            'Deadline' => $document->deadline?->format('Y-m-d'),
+        ]);
+        $facts = collect($known)->map(fn ($v, $k) => "$k: $v")->implode("\n");
+        $content[] = ['type' => 'text', 'text' => "This is the customer's letter.".($facts ? "\nWhat we already know about it:\n$facts" : '')
+            ."\nThe customer's own details (use them to fill letters and forms):\n".$this->customerDetails($user)
+            ."\nToday: ".now()->format('d.m.Y')];
+
+        return $content;
+    }
+
     /** Name, address and the details saved for applications (users.form_data), as plain lines. */
-    private function customerDetails(\App\Models\User $user): string
+    protected function customerDetails(\App\Models\User $user): string
     {
         $saved = is_array($user->form_data) ? $user->form_data : [];
         $values = ['full_name' => $user->full_name ?: $user->name, 'phone' => $user->phone, 'address_street' => $user->address];
@@ -218,20 +227,20 @@ class DocumentQuestionController extends Controller
             ])->values()->all();
     }
 
-    private function refuse(string $code, string $message, int $status): JsonResponse
+    protected function refuse(string $code, string $message, int $status): JsonResponse
     {
         return response()->json(['message' => $message, 'code' => $code], $status);
     }
 
     /** Only the customer the letter belongs to may ask about it. */
-    private function authorizeOwner(Request $request, CustomerDocument $document): void
+    protected function authorizeOwner(Request $request, CustomerDocument $document): void
     {
         if (strcasecmp((string) $request->user()?->email, $document->user_email) !== 0) {
             abort(404);
         }
     }
 
-    private function mimeOf(CustomerDocument $doc): string
+    protected function mimeOf(CustomerDocument $doc): string
     {
         $ext = strtolower(pathinfo((string) $doc->original_name, PATHINFO_EXTENSION));
 

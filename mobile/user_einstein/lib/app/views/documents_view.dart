@@ -9,6 +9,7 @@ import '../widgets/app_bottom_nav.dart';
 import '../widgets/ui.dart';
 import 'abo_plans_view.dart';
 import 'customer_case_view.dart';
+import 'letter_reply_view.dart';
 
 String folderName(String folder) => 'folder_$folder'.tr;
 
@@ -729,6 +730,8 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
               ),
             // Questions to the AI about this letter (Abo)
             if (controller.aboActive.value && !doc.isProcessing && doc.aiStatus != 'too_long') ...[
+              const SizedBox(height: 12),
+              LetterReply(key: ValueKey('reply_${doc.id}'), doc: doc),
               const SizedBox(height: 12),
               KeyedSubtree(key: chatKey, child: LetterChat(key: ValueKey('chat_${doc.id}'), doc: doc)),
             ],

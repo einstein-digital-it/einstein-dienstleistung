@@ -373,6 +373,9 @@ export const customerDocumentsApi = {
   // Questions to the AI about one letter
   questions: (id) => request(`/customer/documents/${id}/questions`),
   askQuestion: (id, question, lang) => request(`/customer/documents/${id}/questions`, { method: "POST", body: JSON.stringify({ question, lang }) }),
+  // "What do I do?": reply needed or not, German reply, form values
+  draft: (id) => request(`/customer/documents/${id}/draft`),
+  prepareDraft: (id, lang) => request(`/customer/documents/${id}/draft`, { method: "POST", body: JSON.stringify({ lang }) }),
   cancelSubscription: () => request("/customer/subscription/cancel", { method: "POST", body: "{}" }),
   // Voucher code from EinStein: free months without payment
   redeemVoucher: (code) => request("/customer/subscription/redeem", { method: "POST", body: JSON.stringify({ code }) }),

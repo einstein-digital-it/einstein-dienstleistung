@@ -64,6 +64,7 @@ class _FakeBackend {
   bool aboActive = false;
   /// Questions asked the AI about letters, and the answers.
   final questions = <Map<String, dynamic>>[];
+  int drafts = 0;
   String? registeredLanguage;
   int caseUploads = 0;
 
@@ -251,6 +252,20 @@ class _FakeBackend {
     }
     if (method == 'GET' && path == 'customer/subscription') {
       return _json(_subscription());
+    }
+    if (path == 'customer/documents/7/draft') {
+      if (method == 'POST') {
+        drafts++;
+        return _json({
+          'id': 1, 'reply_needed': 'required', 'reason': 'The office needs your passport copy.',
+          'next_steps': 'Send the reply with the copy.', 'deadline': '2026-12-01',
+          'recipient_email': 'abh@stadt.example', 'subject': 'Verlängerung Aufenthaltstitel',
+          'letter': 'Sehr geehrte Damen und Herren,\nanbei die Passkopie.\nMit freundlichen Grüßen\nAmina',
+          'form_fields': [{'label': 'Name', 'value': 'Amina'}], 'attachments': ['Passport copy'], 'missing': [],
+          'needs_signature': true, 'send_by': 'email',
+        }, 201);
+      }
+      return http.Response('{"data":null}', 200, headers: {'content-type': 'application/json'});
     }
     if (path == 'customer/documents/7/questions') {
       if (method == 'POST') {
@@ -813,6 +828,22 @@ void main() {
     expect(find.text('Write a reply'), findsOneWidget);
     expect(docs.aboQuestionsUsed.value, 1);
     expect(find.text('1 of 10 questions this month'), findsOneWidget);
+
+    // "What do I do?": the AI says a reply is needed and prepares it to sign and send
+    final prepare = find.byKey(const Key('reply_prepare'));
+    await tester.ensureVisible(prepare);
+    await tester.runAsync(() async {
+      await tester.tap(prepare);
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+    });
+    await tester.pumpAndSettle();
+    expect(backend.drafts, 1);
+    expect(find.textContaining('Reply needed'), findsOneWidget);
+    expect(find.text('The office needs your passport copy.'), findsOneWidget);
+    expect(find.text('Send by e-mail: abh@stadt.example'), findsOneWidget);
+    expect(find.byKey(const Key('reply_sign')), findsOneWidget);
+    expect(find.byKey(const Key('reply_mail')), findsOneWidget);
+    expect(find.byKey(const Key('reply_share')), findsOneWidget);
   });
 
   testWidgets('My file: a created file shows numbered folders and takes several papers', (
