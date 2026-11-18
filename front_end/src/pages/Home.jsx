@@ -1052,7 +1052,7 @@ export default function Home() {
           <polygon points="50,14 82,32 82,68 50,86 18,68 18,32" fill="none" stroke="currentColor" strokeWidth="0.6" />
           <polygon points="50,26 72,38 72,62 50,74 28,62 28,38" fill="none" stroke="currentColor" strokeWidth="0.6" />
         </svg>
-        <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-4 pb-20 pt-14 md:pt-20 lg:grid-cols-[1.1fr_1fr] lg:pb-28">
+        <div className="relative mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-14 px-4 pb-20 pt-14 md:pt-20 lg:grid-cols-[1.1fr_1fr] lg:pb-28">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <span className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-white px-4 py-1.5 text-sm font-semibold text-[#5b21b6] shadow-sm">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />{x.badge}
@@ -1087,7 +1087,7 @@ export default function Home() {
 
       {/* App intro video */}
       <section className="px-4 pt-20">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1fr_1.4fr]">
+        <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[1fr_1.4fr]">
           <motion.div {...fadeUp}>
             <Kicker>{(APP_VIDEO[lang] || APP_VIDEO.de).kicker}</Kicker>
             <h2 className="mt-4 text-3xl font-black text-[#1f0b52] md:text-4xl">{(APP_VIDEO[lang] || APP_VIDEO.de).title}</h2>
@@ -1223,7 +1223,7 @@ export default function Home() {
 
       {/* Why + quality */}
       <section className="bg-slate-50 py-24">
-        <div className="mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[1.3fr_1fr]">
+        <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] gap-12 px-4 lg:grid-cols-[1.3fr_1fr]">
           <div>
             <motion.div {...fadeUp}>
               <Kicker>{x.whyKicker}</Kicker>
