@@ -13,7 +13,7 @@ function saveSignature(dataUrl) {
 
 const T = {
   de: { title: "Unterschrift", hint: "Mit Finger oder Maus unterschreiben.", clear: "Löschen", save: "Übernehmen", cancel: "Abbrechen" },
-  ar: { title: "التوقيع", hint: "وقّع بإصبعك أو بالماوس.", clear: "مسح", save: "اعتماد", cancel: "إلغاء" },
+  ar: { title: "التوقيع", hint: "وقّع بإصبعك أو بالفأرة.", clear: "مسح", save: "اعتماد", cancel: "إلغاء" },
   en: { title: "Signature", hint: "Sign with your finger or mouse.", clear: "Clear", save: "Use", cancel: "Cancel" },
   tr: { title: "İmza", hint: "Parmağınızla veya fareyle imzalayın.", clear: "Sil", save: "Kullan", cancel: "İptal" },
   es: { title: "Firma", hint: "Firme con el dedo o el ratón.", clear: "Borrar", save: "Usar", cancel: "Cancelar" },

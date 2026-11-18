@@ -47,7 +47,8 @@ class _LetterReplyState extends State<LetterReply> {
       if (mounted) setState(() => signature = s);
     });
     controller.api.documentDraft(widget.doc.id).then((d) {
-      if (mounted && d != null) _apply(d);
+      // Only a real result (with a decision) is shown
+      if (mounted && d != null && const ['none', 'optional', 'required'].contains(d['reply_needed'])) _apply(d);
     }).catchError((_) {});
   }
 
