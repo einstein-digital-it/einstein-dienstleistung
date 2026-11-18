@@ -44,14 +44,15 @@
 // Scene list and timing (seconds). Filled by render.mjs through window.setup().
 const SCENES = [
   { key: 'intro', from: 0, to: 3.6, center: true },
-  { key: 'upload', from: 3.6, to: 8.2, screen: 'documents' },
-  { key: 'sorted', from: 8.2, to: 12.8, screen: 'recent' },
-  { key: 'summary', from: 12.8, to: 17.4, screen: 'detail' },
-  { key: 'reminder', from: 17.4, to: 22.0, screen: 'reminders' },
-  { key: 'booking', from: 22.0, to: 26.6, screen: 'services' },
-  { key: 'outro', from: 26.6, to: 30.0, center: true, url: true },
+  { key: 'upload', from: 3.6, to: 8.0, screen: 'documents' },
+  { key: 'sorted', from: 8.0, to: 12.4, screen: 'recent' },
+  { key: 'summary', from: 12.4, to: 16.8, screen: 'detail' },
+  { key: 'ask', from: 16.8, to: 21.6, screen: 'ask' },
+  { key: 'reply', from: 21.6, to: 26.4, screen: 'reply' },
+  { key: 'reminder', from: 26.4, to: 30.6, screen: 'reminders' },
+  { key: 'outro', from: 30.6, to: 34.0, center: true, url: true },
 ];
-window.DURATION = 30;
+window.DURATION = 34;
 const ease = (x) => (x < 0 ? 0 : x > 1 ? 1 : 1 - Math.pow(1 - x, 3));
 
 window.setup = ({ texts, rtl, shots, logo }) => {

@@ -33,13 +33,23 @@ const reminders = [
 const PRICES = { office: [40, 'hour'], secretariat: [45, 'hour'], forms: [40, 'hour'], admin: [40, 'hour'], coordination: [30, 'hour'], mercosur: [150, null], print: [1, null], eur1: [150, null], dokumentabo: [49, 'month'], bueromanagement: [200, 'month'] };
 const services = JSON.parse(fs.readFileSync(new URL('../../backend/database/data/default_services.json', import.meta.url), 'utf8'))
   .map((s, i) => ({ id: i + 1, status: 'active', name: s.name_de, description: s.description_de, price_from: String(PRICES[s.category]?.[0] ?? ''), price_unit: PRICES[s.category]?.[1] ?? null, ...s }));
+const qaFor = (lang) => ({"de":["Bis wann muss ich den Antrag stellen?","Ihr Bürgergeld ist bis Ende Februar bewilligt. Stellen Sie den Weiterbewilligungsantrag am besten bis Ende Januar."],"ar":["متى يجب أن أقدّم الطلب؟","تمت الموافقة على إعانة المواطن حتى نهاية فبراير. يُفضّل أن تقدّم طلب الاستمرار قبل نهاية يناير."],"en":["By when do I have to apply?","Your Bürgergeld is approved until the end of February. Best apply for continued payments by the end of January."],"uk":["До коли треба подати заяву?","Ваш Bürgergeld схвалено до кінця лютого. Краще подайте заяву на продовження до кінця січня."]})[lang];
+const reasonFor = (lang) => ({"de":["Das Jobcenter braucht Ihren Weiterbewilligungsantrag.","Unterschreiben Sie die Antwort und senden Sie sie per E-Mail."],"ar":["يحتاج مركز العمل إلى طلب الاستمرار الخاص بك.","وقّع الرد وأرسله بالبريد الإلكتروني."],"en":["The Jobcenter needs your application for continued payments.","Sign the reply and send it by e-mail."],"uk":["Джобцентру потрібна ваша заява на продовження.","Підпишіть відповідь і надішліть її поштою."]})[lang];
+const draftFor = (lang) => ({
+  id: 1, reply_needed: 'required', reason: reasonFor(lang)[0], next_steps: reasonFor(lang)[1], deadline: inDays(26),
+  recipient_email: 'jobcenter-frankfurt@jobcenter-ge.de', subject: 'Weiterbewilligungsantrag – BG 12345BG0001234',
+  letter: 'Amina Haddad\nMusterstraße 12, 60311 Frankfurt\n\nJobcenter Frankfurt\n\nFrankfurt, ' + new Date().toLocaleDateString('de-DE') + '\n\nWeiterbewilligungsantrag\n\nSehr geehrte Damen und Herren,\nhiermit beantrage ich die Weiterbewilligung des Bürgergeldes ab März.\n\nMit freundlichen Grüßen\nAmina Haddad',
+  form_fields: [], attachments: [], missing: [], needs_signature: true, send_by: 'email',
+});
 const mocksFor = (lang) => ({
+  'customer/documents/1/questions': { data: [{ id: 1, question: qaFor(lang)[0], answer: qaFor(lang)[1], created_at: inDays(0) }] },
+  'customer/documents/1/draft': { data: draftFor(lang) },
   'auth/me': { data: profile },
   'profile': { data: profile },
   'customer/dashboard': { data: { summary: { total_bookings: 3, upcoming: 1, completed: 2, open_payments: 0 }, profile, upcoming_bookings: [] } },
   'customer/bookings': { data: [] },
   'customer/notifications': { data: [] },
-  'customer/subscription': { data: { active: true, status: 'active', price: 6.99, used: 4, limit: 50, free: false } },
+  'customer/subscription': { data: { active: true, status: 'active', price: 6.99, used: 4, limit: 50, free: false, plan: 'silver', questions_used: 3, questions_limit: 20, plans: [{ key: 'basic', price: 6.99, questions: 10 }, { key: 'silver', price: 11.99, questions: 20 }, { key: 'unlimited', price: 17.99, questions: null }] } },
   'customer/files': { data: [] },
   'customer/documents': { data: { folders: ['jobcenter', 'auslaenderbehoerde', 'finanzamt', 'familienkasse', 'krankenkasse', 'rentenversicherung', 'wohnen', 'arbeit', 'schule', 'bank', 'versicherung', 'sonstiges'], documents: docsFor(lang) } },
   'customer/reminders': { data: reminders },
@@ -63,6 +73,9 @@ for (const locale of (process.env.LOCALES || 'de,ar,en,uk').split(',')) {
   }, { locale });
   await page.route('https://api.mock/**', (route) => {
     const path = new URL(route.request().url()).pathname.replace(/^\/api\//, '');
+    // Every letter has the same answered question and prepared reply
+    const perDoc = path.match(/^customer\/documents\/\d+\/(draft|questions)$/);
+    if (perDoc) return route.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(mocks[`customer/documents/1/${perDoc[1]}`]) });
     const key = Object.keys(mocks).sort((a, b) => b.length - a.length).find((k) => path === k || path.startsWith(k + '/'));
     route.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(key ? mocks[key] : { data: [] }) });
   });
@@ -71,21 +84,30 @@ for (const locale of (process.env.LOCALES || 'de,ar,en,uk').split(',')) {
   const go = async (route) => { try { await page.goto(`${base}/#${route}`, { waitUntil: 'networkidle', timeout: 60000 }); } catch { /* keep going */ } await page.waitForTimeout(4000); };
 
   await go('/documents');
-  await shot('documents');                       // upload card
+  // EXPLORE=1: screenshots every 500 px down "My file", to find the scroll steps below
+  if (process.env.EXPLORE) {
+    await page.mouse.move(195, 500);
+    for (let i = 0; i < 9; i++) { await shot(`explore-${i * 500}`); await page.mouse.wheel(0, 500); }
+    await ctx.close();
+    continue;
+  }
+  await shot('documents');                       // upload card + AI card
+  // Scroll steps as in EXPLORE=1 (each step = one 500 wheel event)
   await page.mouse.move(195, 500);
-  await page.mouse.wheel(0, 650);
+  const down = async (steps) => { for (let i = 0; i < Math.abs(steps); i++) { await page.mouse.wheel(0, Math.sign(steps) * 500); await page.waitForTimeout(120); } };
+  await down(Number(process.env.REMINDER_STEPS || 8));
   await shot('reminders');                       // reminders
-  await page.mouse.wheel(0, 900);
-  await shot('folders');                         // folders
-  await page.mouse.wheel(0, 900);
-  await shot('recent');                          // newest letters
-  // Open the Jobcenter folder (first tile in the 'recent' view), then its letter
-  await page.mouse.click(locale === 'ar' ? 315 : 75, 372); // first tile (right-to-left in Arabic)
-  await shot('folder');
-  await page.mouse.click(195, Number(process.env.DOC_Y || 100));
-  await shot('detail');
-  await go('/services');
-  await shot('services');
+  await down(Number(process.env.FOLDER_STEPS || 3));
+  await shot('recent');                          // folders
+  // Open the Jobcenter letter from the "Ask the AI" card
+  await go('/documents');
+  await page.mouse.click(195, Number(process.env.LETTER_Y || 571));
+  await shot('detail');                          // top of the letter: summary
+  await page.mouse.move(195, 500);
+  await down(Number(process.env.REPLY_STEPS || 3));
+  await shot('reply');                           // the prepared reply
+  await down(Number(process.env.ASK_STEPS || 6));
+  await shot('ask');                             // questions to the AI
   await ctx.close();
 }
 await browser.close();

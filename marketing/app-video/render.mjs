@@ -26,7 +26,7 @@ const browser = await chromium.launch(process.env.EDGE ? { channel: 'msedge', he
 for (const lang of langs) {
   const screenLang = SCREEN_LOCALE[lang];
   const shots = {};
-  for (const name of ['documents', 'recent', 'detail', 'reminders', 'services']) {
+  for (const name of ['documents', 'recent', 'detail', 'ask', 'reply', 'reminders']) {
     const file = path.join(shotsDir, `${screenLang}-${name}.png`);
     if (!fs.existsSync(file)) throw new Error(`missing screenshot ${file}`);
     shots[name] = dataUrl(file);
