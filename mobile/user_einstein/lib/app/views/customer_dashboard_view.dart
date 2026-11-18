@@ -6,6 +6,7 @@ import '../controllers/documents_controller.dart';
 import '../models/booking_item.dart';
 import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
+import '../widgets/ai_feature_card.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/ui.dart';
 import 'documents_view.dart';
@@ -38,6 +39,8 @@ class CustomerDashboardView extends GetView<CustomerDashboardController> {
                 _TopBar(name: store.profile.value.fullName, unread: store.unreadNotificationsCount),
                 const SizedBox(height: 18),
                 const UploadHeroCard(compact: true),
+                const SizedBox(height: 14),
+                const AiFeatureCard(loggedIn: true),
                 if (docs.reminders.isNotEmpty) ...[
                   const SizedBox(height: 24),
                   SectionTitle(

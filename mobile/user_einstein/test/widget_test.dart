@@ -553,6 +553,9 @@ void main() {
     await pumpApp(tester);
     await signIn(tester);
 
+    // The AI card sits above it on the dashboard
+    await tester.scrollUntilVisible(find.text('Book a service'), 200, scrollable: find.byType(Scrollable).first);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Book a service'));
     await tester.pumpAndSettle();
     expect(find.text('Book a service'), findsOneWidget);

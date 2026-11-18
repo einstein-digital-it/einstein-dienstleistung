@@ -70,7 +70,7 @@ class AboPlanTiles extends StatelessWidget {
                           plan.questions == null
                               ? 'abo_plan_questions_unlimited'.tr
                               : 'abo_plan_questions'.trParams({'count': '${plan.questions}'}),
-                          style: const TextStyle(color: AppColors.navy, fontSize: 13),
+                          style: const TextStyle(color: AppColors.darkGray, fontSize: 13),
                         ),
                       ]),
                     ),
@@ -93,7 +93,7 @@ class AboPlanTiles extends StatelessWidget {
             if (!change)
               Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: Text('abo_plan_vat'.tr, style: const TextStyle(color: AppColors.muted, fontSize: 12)),
+                child: Text('abo_plan_vat'.tr, style: const TextStyle(color: AppColors.darkGray, fontSize: 12)),
               ),
           ],
         ));

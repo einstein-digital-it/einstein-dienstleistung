@@ -1,6 +1,16 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'ai_card_kicker': 'New: AI assistant',
+  'ai_card_title': 'Your letters – understood, answered, signed',
+  'ai_card_sub': 'Upload a letter. The AI does the rest – in your language.',
+  'ai_feat_sort': 'Sorts every letter into the right folder, with a summary and the deadline',
+  'ai_feat_translate': 'Translates it into your language with one tap',
+  'ai_feat_ask': 'Answers your questions: “What do I have to do? By when?”',
+  'ai_feat_reply': 'Says whether a reply is needed, writes it in German and fills in forms with your details',
+  'ai_feat_sign': 'Sign with your finger, then share the PDF or send it by e-mail',
+  'ai_card_plans': 'From €6.99 a month · no legal advice',
+  'ai_card_cta': 'Try it',
   'sign_title': 'Sign document',
   'sign_error': 'The document could not be opened.',
   'sign_need': 'Draw your signature first.',
@@ -231,6 +241,16 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'ai_card_kicker': 'جديد: مساعد بالذكاء الاصطناعي',
+  'ai_card_title': 'رسائلك – مفهومة، مردود عليها، وموقّعة',
+  'ai_card_sub': 'ارفع الرسالة، والذكاء الاصطناعي بيكمّل الباقي بلغتك.',
+  'ai_feat_sort': 'بيرتّب كل رسالة بالمجلد الصح، مع ملخص والموعد النهائي',
+  'ai_feat_translate': 'بيترجمها للغتك بكبسة وحدة',
+  'ai_feat_ask': 'بيجاوب على أسئلتك: «شو لازم أعمل؟ ولإيمتى؟»',
+  'ai_feat_reply': 'بيقلك إذا بدها رد، بيكتبه بالألماني وبيعبّي الاستمارات بمعلوماتك',
+  'ai_feat_sign': 'وقّع بإصبعك، وبعدها شارك الـ PDF أو ابعته بالإيميل',
+  'ai_card_plans': 'من 6.99 يورو بالشهر · مو استشارة قانونية',
+  'ai_card_cta': 'جرّب',
   'sign_title': 'توقيع المستند',
   'sign_error': 'ما قدرنا نفتح المستند.',
   'sign_need': 'ارسم توقيعك أولاً.',
@@ -461,6 +481,16 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'ai_card_kicker': 'Neu: KI-Assistent',
+  'ai_card_title': 'Ihre Briefe – verstanden, beantwortet, unterschrieben',
+  'ai_card_sub': 'Laden Sie einen Brief hoch. Die KI erledigt den Rest – in Ihrer Sprache.',
+  'ai_feat_sort': 'Sortiert jeden Brief in den richtigen Ordner, mit Zusammenfassung und Frist',
+  'ai_feat_translate': 'Übersetzt ihn mit einem Tippen in Ihre Sprache',
+  'ai_feat_ask': 'Beantwortet Ihre Fragen: „Was muss ich tun? Bis wann?“',
+  'ai_feat_reply': 'Sagt, ob eine Antwort nötig ist, schreibt sie auf Deutsch und füllt Formulare mit Ihren Daten aus',
+  'ai_feat_sign': 'Mit dem Finger unterschreiben, dann das PDF teilen oder per E-Mail senden',
+  'ai_card_plans': 'Ab 6,99 € im Monat · keine Rechtsberatung',
+  'ai_card_cta': 'Ausprobieren',
   'sign_title': 'Dokument unterschreiben',
   'sign_error': 'Das Dokument konnte nicht geöffnet werden.',
   'sign_need': 'Zeichnen Sie zuerst Ihre Unterschrift.',

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import EinsteinLogo from "@/components/EinsteinLogo";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
+import AiFeatures from "@/components/AiFeatures";
 import { publicApi } from "@/api/backendClient";
 import { displayPrice, priceNote } from "@/lib/priceUtils";
 import { useQuery } from "@tanstack/react-query";
@@ -1080,6 +1081,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* What the AI assistant does */}
+      <AiFeatures lang={lang} />
 
       {/* App intro video */}
       <section className="px-4 pt-20">

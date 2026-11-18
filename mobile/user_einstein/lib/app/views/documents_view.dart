@@ -237,11 +237,11 @@ class AboCard extends StatelessWidget {
               ),
             ]),
             const SizedBox(height: 8),
-            Text('abo_pitch'.tr, style: const TextStyle(color: AppColors.navy, height: 1.5)),
+            Text('abo_pitch'.tr, style: const TextStyle(color: AppColors.darkGray, height: 1.5)),
             const SizedBox(height: 4),
             if (c.aboLimit.value > 0)
               Text('abo_limit'.trParams({'limit': '${c.aboLimit.value}'}),
-                  style: const TextStyle(color: AppColors.navy, fontSize: 13)),
+                  style: const TextStyle(color: AppColors.darkGray, fontSize: 13)),
             const SizedBox(height: 12),
             // Three plans; an older server without plans keeps the single button
             if (c.aboPlans.isNotEmpty)

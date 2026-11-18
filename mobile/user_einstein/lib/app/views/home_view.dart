@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
 import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
+import '../widgets/ai_feature_card.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/public_header.dart';
 import '../widgets/service_card.dart';
@@ -25,6 +26,8 @@ class HomeView extends GetView<HomeController> {
             const SizedBox(height: 18),
             const _Hero(),
             const SizedBox(height: 22),
+            const AiFeatureCard(),
+            const SizedBox(height: 16),
             const _FileFeature(),
             const SizedBox(height: 26),
             SectionTitle(title: 'home_promise'.tr),

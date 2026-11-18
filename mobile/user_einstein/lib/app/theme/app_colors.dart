@@ -16,6 +16,8 @@ abstract class AppColors {
   static const surface = Colors.white;
   static const text = Color(0xFF101828);
   static const muted = Color(0xFF667085);
+  /// Dark gray for body text on light cards (e.g. the Abo card).
+  static const darkGray = Color(0xFF344054);
   static const line = Color(0xFFE6EAF2);
   static const input = Color(0xFFF7F8FB);
   static const success = Color(0xFF12B76A);
