@@ -43,7 +43,7 @@ export default function AboPlans({ abo, lang, busy, mode = "choose", onPick }) {
             <p className="mt-1 text-2xl font-extrabold text-[#6B46C1]" dir="ltr">
               {euro(plan.price)} € <span className="text-xs font-medium text-gray-500">{t.month}</span>
             </p>
-            <ul className="mt-3 flex-1 space-y-1.5 text-sm text-[#2e1065]/85">
+            <ul className="mt-3 flex-1 space-y-1.5 text-sm text-gray-800">
               <li className="flex gap-1.5"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />{t.sort}</li>
               <li className="flex gap-1.5"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />{t.questions(plan.questions)}</li>
             </ul>

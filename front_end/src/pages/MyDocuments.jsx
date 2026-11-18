@@ -430,8 +430,8 @@ export default function MyDocuments() {
              <div className="flex flex-col md:flex-row md:items-center gap-4">
               <div className="flex-1">
                 <p className="font-bold text-[#2e1065]">{t.aboTitle}</p>
-                <p className="text-sm text-[#2e1065]/80 mt-1">{aboReturn === "1" ? t.aboThanks : `${t.aboPitch} ${t.aboNeeded}`}</p>
-                {abo.limit > 0 && <p className="mt-1 text-sm text-[#2e1065]/80">{t.aboLimit(abo.limit)}</p>}
+                <p className="text-sm text-gray-800 mt-1">{aboReturn === "1" ? t.aboThanks : `${t.aboPitch} ${t.aboNeeded}`}</p>
+                {abo.limit > 0 && <p className="mt-1 text-sm text-gray-800">{t.aboLimit(abo.limit)}</p>}
               </div>
              </div>
              {/* Three plans; each starts the Stripe checkout for itself */}
