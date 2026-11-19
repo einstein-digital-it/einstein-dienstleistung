@@ -103,4 +103,21 @@ class AboVoucherTest extends TestCase
         $this->postJson('/api/customer/subscription/redeem', ['code' => 'NOCH-EINER'])->assertStatus(409)->assertJsonPath('code', 'already_subscribed');
         $this->assertSame(0, AboVoucher::where('code', 'NOCH-EINER')->value('used_count'));
     }
+
+    public function test_each_code_is_for_one_plan_and_gives_its_questions(): void
+    {
+        $this->withApiUser('admin');
+        $this->postJson('/api/admin/abo-vouchers', ['code' => 'SILBER-1', 'plan' => 'silver', 'months' => 2, 'max_uses' => 5])
+            ->assertCreated()->assertJsonPath('data.plan', 'silver');
+        $this->postJson('/api/admin/abo-vouchers', ['code' => 'BASIS-1', 'months' => 1, 'max_uses' => 5])
+            ->assertCreated()->assertJsonPath('data.plan', 'basic');
+        $this->postJson('/api/admin/abo-vouchers', ['code' => 'GOLD-1', 'plan' => 'gold', 'months' => 1, 'max_uses' => 5])->assertStatus(422);
+
+        $this->withApiUser('user', 'kunde-plan@example.com');
+        $this->postJson('/api/customer/subscription/redeem', ['code' => 'silber-1'])
+            ->assertOk()
+            ->assertJsonPath('data.free', true)
+            ->assertJsonPath('data.plan', 'silver')
+            ->assertJsonPath('data.questions_limit', 20);
+    }
 }

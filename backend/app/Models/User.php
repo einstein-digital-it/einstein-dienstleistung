@@ -109,10 +109,20 @@ class User extends Authenticatable
         if (in_array($this->role, ['admin', 'provider'], true)) {
             return null;
         }
-        // Free months from a voucher give the basic plan
-        $plan = in_array($this->file_abo_status, ['active', 'past_due'], true) ? $this->file_abo_plan : \App\Support\FileAboPlans::DEFAULT;
+        return \App\Support\FileAboPlans::get($this->currentFileAboPlan())['questions'];
+    }
 
-        return \App\Support\FileAboPlans::get($plan)['questions'];
+    /** The plan in force: the paid one, else the plan of the voucher code, else basic. */
+    public function currentFileAboPlan(): string
+    {
+        if (in_array($this->file_abo_status, ['active', 'past_due'], true)) {
+            return \App\Support\FileAboPlans::exists($this->file_abo_plan) ? $this->file_abo_plan : \App\Support\FileAboPlans::DEFAULT;
+        }
+        if ($this->hasFreeFileAbo() && \App\Support\FileAboPlans::exists($this->file_abo_free_plan)) {
+            return $this->file_abo_free_plan;
+        }
+
+        return \App\Support\FileAboPlans::DEFAULT;
     }
 
     /** AI questions asked this calendar month. */

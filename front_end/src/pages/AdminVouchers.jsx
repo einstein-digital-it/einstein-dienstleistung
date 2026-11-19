@@ -18,6 +18,7 @@ const T = {
   de: {
     title: "Gutscheine", eyebrow: "Adminbereich", desc: "Codes, mit denen Kund:innen Sortieren & Übersetzen kostenlos nutzen – ohne Zahlung.",
     newTitle: "Neuen Gutschein erstellen", newHint: "Geben Sie den Code an die Person weiter. Sie trägt ihn unter „Meine Unterlagen“ ein.",
+    plan: "Abo-Tarif des Codes", plans: { basic: "Basis (10 KI-Fragen)", silver: "Silber (20 KI-Fragen)", unlimited: "Unbegrenzt" },
     code: "Code (leer lassen = automatisch)", months: "Kostenlose Monate", uses: "Für wie viele Personen", validUntil: "Einlösbar bis (optional)", note: "Notiz (für wen?)",
     create: "Gutschein erstellen", creating: "Wird erstellt…", list: "Alle Gutscheine", none: "Noch keine Gutscheine.",
     total: "Gutscheine", active: "Aktiv", redeemed: "Eingelöst", usable: "Aktiv", off: "Aus", usedUp: "Aufgebraucht", expired: "Abgelaufen",
@@ -29,6 +30,7 @@ const T = {
   ar: {
     title: "القسائم", eyebrow: "منطقة الإدارة", desc: "رموز تتيح للعملاء استخدام الترتيب والترجمة مجاناً دون دفع.",
     newTitle: "إنشاء قسيمة جديدة", newHint: "أعطِ الرمز للشخص المعني، فيدخله في صفحة «ملفاتي».",
+    plan: "باقة الاشتراك لهذا الرمز", plans: { basic: "الأساسية (10 أسئلة)", silver: "الفضية (20 سؤالاً)", unlimited: "غير المحدودة" },
     code: "الرمز (اتركه فارغاً ليُنشأ تلقائياً)", months: "عدد الأشهر المجانية", uses: "لعدد كم شخص", validUntil: "صالح للإدخال حتى (اختياري)", note: "ملاحظة (لمن؟)",
     create: "إنشاء القسيمة", creating: "جارٍ الإنشاء…", list: "جميع القسائم", none: "لا توجد قسائم بعد.",
     total: "القسائم", active: "فعّالة", redeemed: "مستخدمة", usable: "فعّالة", off: "متوقفة", usedUp: "استُنفدت", expired: "منتهية",
@@ -40,6 +42,7 @@ const T = {
   en: {
     title: "Voucher codes", eyebrow: "Admin area", desc: "Codes that let customers use sorting & translation for free – without paying.",
     newTitle: "Create a new voucher", newHint: "Give the code to the person. They enter it under “My documents”.",
+    plan: "Subscription plan of the code", plans: { basic: "Basic (10 AI questions)", silver: "Silver (20 AI questions)", unlimited: "Unlimited" },
     code: "Code (leave empty = automatic)", months: "Free months", uses: "For how many people", validUntil: "Can be entered until (optional)", note: "Note (for whom?)",
     create: "Create voucher", creating: "Creating…", list: "All vouchers", none: "No vouchers yet.",
     total: "Vouchers", active: "Active", redeemed: "Redeemed", usable: "Active", off: "Off", usedUp: "Used up", expired: "Expired",
@@ -61,7 +64,7 @@ export default function AdminVouchers() {
   const lang = getLang();
   const t = T[lang] || T.de;
   const queryClient = useQueryClient();
-  const [form, setForm] = useState({ code: "", months: 3, max_uses: 1, valid_until: "", note: "" });
+  const [form, setForm] = useState({ code: "", plan: "basic", months: 3, max_uses: 1, valid_until: "", note: "" });
   const [error, setError] = useState("");
   const [copiedId, setCopiedId] = useState(null);
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["abo-vouchers"] });
@@ -70,7 +73,7 @@ export default function AdminVouchers() {
 
   const createMutation = useMutation({
     mutationFn: aboVouchersApi.create,
-    onSuccess: () => { setForm({ code: "", months: 3, max_uses: 1, valid_until: "", note: "" }); setError(""); refresh(); },
+    onSuccess: () => { setForm({ code: "", plan: "basic", months: 3, max_uses: 1, valid_until: "", note: "" }); setError(""); refresh(); },
     onError: (err) => setError(err.status === 422 && form.code ? t.codeTaken : t.error),
   });
   const updateMutation = useMutation({ mutationFn: ({ id, data }) => aboVouchersApi.update(id, data), onSuccess: refresh });
@@ -81,6 +84,7 @@ export default function AdminVouchers() {
     setError("");
     createMutation.mutate({
       code: form.code.trim() || null,
+      plan: form.plan,
       months: Number(form.months) || 1,
       max_uses: Number(form.max_uses) || 1,
       valid_until: form.valid_until || null,
@@ -127,6 +131,12 @@ export default function AdminVouchers() {
             <input value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} maxLength={255} className={field} />
           </label>
           <label className={label}>
+            {t.plan}
+            <select value={form.plan} onChange={(e) => setForm({ ...form, plan: e.target.value })} className={field}>
+              {Object.entries(t.plans).map(([key, name]) => <option key={key} value={key}>{name}</option>)}
+            </select>
+          </label>
+          <label className={label}>
             {t.months}
             <input type="number" min="1" max="120" value={form.months} onChange={(e) => setForm({ ...form, months: e.target.value })} dir="ltr" className={field} />
           </label>
@@ -162,7 +172,7 @@ export default function AdminVouchers() {
                       <StatusPill tone={tone}>{stateText}</StatusPill>
                     </div>
                     <p className="mt-3 text-sm font-semibold text-[#1f0b52]">
-                      {t.monthsFree(voucher.months)} · {t.usedOf(voucher.used_count, voucher.max_uses)}
+                      <span className="font-semibold text-[#6B46C1]">{t.plans[voucher.plan] || t.plans.basic}</span> · {t.monthsFree(voucher.months)} · {t.usedOf(voucher.used_count, voucher.max_uses)}
                       {voucher.valid_until && <> · {t.until} <bdi>{formatDate(voucher.valid_until)}</bdi></>}
                     </p>
                     {voucher.note && <p className="mt-1 text-sm text-[#65758b]">{voucher.note}</p>}

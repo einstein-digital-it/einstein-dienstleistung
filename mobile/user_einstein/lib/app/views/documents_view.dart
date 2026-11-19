@@ -188,7 +188,7 @@ class AboCard extends StatelessWidget {
                   children: [
                     Text(
                       c.aboFree.value && c.aboFreeUntil.value != null
-                          ? 'abo_free_until'.trParams({'date': formatDate(c.aboFreeUntil.value!)})
+                          ? '${'abo_free_until'.trParams({'date': formatDate(c.aboFreeUntil.value!)})} · ${'abo_plan_${c.aboPlan.value}'.tr}'
                           : ends == null ? 'abo_active'.tr : 'abo_active_until'.trParams({'date': formatDate(ends)}),
                       style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
                     ),

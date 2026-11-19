@@ -269,7 +269,8 @@ class CustomerSubscriptionController extends Controller
     public static function stateFor(User $user): array
     {
         $paid = in_array($user->file_abo_status, ['active', 'past_due'], true);
-        $plan = $paid && FileAboPlans::exists($user->file_abo_plan) ? $user->file_abo_plan : FileAboPlans::DEFAULT;
+        // Paid plan, else the plan of a voucher code, else basic
+        $plan = $user->currentFileAboPlan();
 
         return [
             'plan' => $plan,

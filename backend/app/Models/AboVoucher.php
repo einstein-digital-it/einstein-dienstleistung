@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /** A code that gives customers the Unterlagen-Abo (sorting + translation) for free for some months. */
 class AboVoucher extends Model
 {
-    protected $fillable = ['code', 'months', 'max_uses', 'used_count', 'valid_until', 'active', 'note'];
+    protected $fillable = ['code', 'plan', 'months', 'max_uses', 'used_count', 'valid_until', 'active', 'note'];
 
     protected function casts(): array
     {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\AboVoucher;
 use App\Models\AboVoucherRedemption;
+use App\Support\FileAboPlans;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,8 +13,9 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 /**
- * Voucher codes for the Unterlagen-Abo: the admin creates a code, the customer enters it in
- * "Meine Unterlagen" and gets sorting + translation for free for the given months (no Stripe).
+ * Voucher codes for the Unterlagen-Abo: the admin creates a code for one plan (basic, silver,
+ * unlimited); the customer enters it in "Meine Unterlagen" and gets that plan for free for the
+ * given months (no Stripe). Several codes add up their months; the plan of the newest code applies.
  */
 class AboVoucherController extends Controller
 {
@@ -48,7 +50,7 @@ class AboVoucherController extends Controller
             $start = $user->file_abo_free_until && $user->file_abo_free_until->isFuture() ? $user->file_abo_free_until->copy() : now();
             $until = $start->addMonthsNoOverflow($voucher->months);
             AboVoucherRedemption::create(['abo_voucher_id' => $voucher->id, 'user_id' => $user->id, 'free_until' => $until]);
-            $user->forceFill(['file_abo_free_until' => $until])->save();
+            $user->forceFill(['file_abo_free_until' => $until, 'file_abo_free_plan' => FileAboPlans::exists($voucher->plan) ? $voucher->plan : FileAboPlans::DEFAULT])->save();
 
             return $until;
         });
@@ -75,7 +77,7 @@ class AboVoucherController extends Controller
         return response()->json(['data' => $vouchers->map(fn (AboVoucher $v) => $this->serialize($v))->values()]);
     }
 
-    /** POST admin/abo-vouchers { code?, months, max_uses, valid_until?, note? } — an empty code is generated. */
+    /** POST admin/abo-vouchers { code?, plan, months, max_uses, valid_until?, note? } — an empty code is generated. */
     public function store(Request $request): JsonResponse
     {
         if ($request->filled('code')) {
@@ -83,12 +85,14 @@ class AboVoucherController extends Controller
         }
         $data = $request->validate([
             'code' => ['sometimes', 'nullable', 'string', 'min:4', 'max:40', 'regex:/^[A-Z0-9-]+$/', Rule::unique('abo_vouchers', 'code')],
+            'plan' => ['sometimes', 'string', Rule::in(array_keys(FileAboPlans::all()))],
             'months' => ['required', 'integer', 'min:1', 'max:120'],
             'max_uses' => ['required', 'integer', 'min:1', 'max:100000'],
             'valid_until' => ['sometimes', 'nullable', 'date', 'after_or_equal:today'],
             'note' => ['sometimes', 'nullable', 'string', 'max:255'],
         ]);
         $data['code'] = ! empty($data['code']) ? $data['code'] : $this->newCode();
+        $data['plan'] ??= FileAboPlans::DEFAULT;
 
         return response()->json(['data' => $this->serialize(AboVoucher::create($data)->refresh()->load('redemptions.user'))], 201);
     }
@@ -139,6 +143,7 @@ class AboVoucherController extends Controller
         return [
             'id' => $voucher->id,
             'code' => $voucher->code,
+            'plan' => $voucher->plan ?: FileAboPlans::DEFAULT,
             'months' => $voucher->months,
             'max_uses' => $voucher->max_uses,
             'used_count' => $voucher->used_count,

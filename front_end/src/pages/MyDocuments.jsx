@@ -407,7 +407,7 @@ export default function MyDocuments() {
               <BadgeCheck className="w-5 h-5 text-emerald-600" />
               <p className="flex-1 font-semibold text-[#2e1065]">
                 {abo.free
-                  ? t.aboFree.replace("{d}", new Date(abo.free_until).toLocaleDateString(lang === "ar" ? "ar" : lang))
+                  ? `${t.aboFree.replace("{d}", new Date(abo.free_until).toLocaleDateString(lang === "ar" ? "ar" : lang))} · ${planTexts(lang).names[abo.plan] || planTexts(lang).names.basic}`
                   : abo.ends_at ? t.aboUntil(new Date(abo.ends_at).toLocaleDateString(lang === "ar" ? "ar" : lang)) : t.aboActive}
               </p>
               {abo.limit > 0 && (
