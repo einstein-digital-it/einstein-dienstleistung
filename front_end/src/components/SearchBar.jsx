@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
+import { useSiteServices } from "@/lib/siteServices";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -145,7 +146,16 @@ export default function SearchBar({ lang = "de", variant = "hero" }) {
   const navigate = useNavigate();
   
   const t = translations[lang] || translations.de;
-  const services = serviceData[lang] || serviceData.de;
+  // Only services that are active in "Dienste verwalten" (the built-in list while loading or offline)
+  const allServices = serviceData[lang] || serviceData.de;
+  const siteServices = useSiteServices(allServices.map((s) => s.key));
+  const activeSig = siteServices.map((s) => s.key).join(",");
+  // Memoised: the search effect below depends on this list
+  const services = useMemo(() => {
+    if (!activeSig) return allServices;
+    const active = new Set(activeSig.split(","));
+    return allServices.filter((s) => active.has(s.key));
+  }, [allServices, activeSig]);
   const popular = popularSearches[lang] || popularSearches.de;
 
   useEffect(() => {

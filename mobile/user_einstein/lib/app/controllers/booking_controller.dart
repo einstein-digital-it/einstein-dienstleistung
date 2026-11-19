@@ -20,7 +20,9 @@ class BookingController extends GetxController {
 
   final noteController = TextEditingController();
 
-  final categories = const <String>[
+  /// Built-in order of the bookable services. Only those active in "Dienste verwalten"
+  /// are shown (see [_loadActiveServices]); this list is the fallback without a connection.
+  static const _allCategories = <String>[
     'forms',
     'admin',
     'coordination',
@@ -31,6 +33,8 @@ class BookingController extends GetxController {
     'dokumentabo',
     'bueromanagement',
   ];
+
+  final categories = <String>[..._allCategories].obs;
 
   final categoryLabels = const <String, String>{
     'forms': 'Behoerden & Formularhilfe',
@@ -114,6 +118,21 @@ class BookingController extends GetxController {
     selectedDate.value = dates.first;
     selectedTime.value = times.first;
     address.value = store.profile.value.address;
+    _loadActiveServices();
+  }
+
+  /// Services deleted or switched off by the admin disappear from booking.
+  Future<void> _loadActiveServices() async {
+    try {
+      final active = (await api.services()).map((s) => s.id).toSet();
+      if (active.isEmpty) return;
+      final shown = _allCategories.where(active.contains).toList();
+      if (shown.isEmpty) return;
+      categories.assignAll(shown);
+      if (!shown.contains(selectedCategory.value)) selectedCategory.value = shown.first;
+    } catch (_) {
+      // Offline or older server: keep the built-in list
+    }
   }
 
   void selectCategory(String value) {

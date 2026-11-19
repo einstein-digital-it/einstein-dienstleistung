@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { bookingsApi, publicApi, uploadApi } from "@/api/backendClient";
-import { unitLabel } from "@/lib/siteServices";
+import { unitLabel, useSiteServices } from "@/lib/siteServices";
 import { getStoredAuthUser } from "@/lib/backendAuth";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -342,6 +342,10 @@ const allTimeSlots = [
 const MAX_BOOKINGS_PER_SLOT = 3;
 
 export default function Booking() {
+  // Only services that are active in "Dienste verwalten"; while loading (or offline) the built-in list
+  const siteServices = useSiteServices(categories.map((c) => c.key));
+  const activeKeys = new Set(siteServices.map((s) => s.key));
+  const shownCategories = siteServices.length ? categories.filter((c) => activeKeys.has(c.key)) : categories;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [lang, setLang] = useState("de");
@@ -561,7 +565,7 @@ export default function Booking() {
       setFormData(prev => ({ ...prev, service_id: serviceId }));
       if (cat) setFormData(prev => ({ ...prev, category: cat }));
       setStep(2);
-    } else if (cat && categories.find(c => c.key === cat)) {
+    } else if (cat && shownCategories.find(c => c.key === cat)) {
       setFormData(prev => ({ ...prev, category: cat }));
       setStep(2);
     }
@@ -744,7 +748,7 @@ export default function Booking() {
               <h2 className="text-2xl font-black text-[#1f0b52]">{t.step1}</h2>
               <p className="mt-1 text-sm text-slate-500">{b.chooseHint}</p>
               <div className="mt-6 grid grid-cols-2 gap-3 xl:grid-cols-3">
-                {categories.map((cat) => {
+                {shownCategories.map((cat) => {
                   const Icon = cat.icon;
                   const isSelected = formData.category === cat.key;
                   const priceInfo = getCategoryPriceInfo(cat.key);
