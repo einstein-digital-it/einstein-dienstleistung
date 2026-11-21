@@ -1204,7 +1204,7 @@ export default function Home() {
       </section>
 
       {/* Who it is for */}
-      <section className="py-24">
+      <section className="pb-10 pt-24">
         <div className="mx-auto max-w-7xl px-4">
           <motion.div {...fadeUp} className="mx-auto max-w-2xl text-center">
             <Kicker>{x.forKicker}</Kicker>
@@ -1224,8 +1224,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-4 pb-8">
-        <p className="mx-auto mt-16 max-w-7xl text-center text-xs text-slate-400">{t.note}</p>
+      <section className="px-4 pb-16">
+        <p className="mx-auto max-w-7xl text-center text-xs text-slate-400">{t.note}</p>
       </section>
     </div>
   );

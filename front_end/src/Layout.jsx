@@ -630,7 +630,8 @@ export default function Layout({ children, currentPageName }) {
                 }[lang]}
               </p>
               <p className="text-purple-200 font-semibold text-sm">
-                „EinStein – Weil jeder Mensch Unterstützung verdient."
+                {/* German motto: kept left-to-right inside Arabic text */}
+                <bdi dir="ltr" lang="de">„EinStein – Weil jeder Mensch Unterstützung verdient.“</bdi>
               </p>
 
               {/* Social Media */}
