@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../controllers/customer_dashboard_controller.dart';
 import '../controllers/documents_controller.dart';
-import '../models/booking_item.dart';
 import '../routes/app_routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/ai_feature_card.dart';
@@ -32,7 +31,6 @@ class CustomerDashboardView extends GetView<CustomerDashboardController> {
           child: Obx(() {
             controller.store.locale.value;
             final store = controller.store;
-            final upcoming = store.upcomingBookings;
             return ListView(
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
               children: [
@@ -66,19 +64,6 @@ class CustomerDashboardView extends GetView<CustomerDashboardController> {
                 else
                   for (final d in docs.recent) ...[
                     DocumentTile(doc: d, showFolder: true),
-                    const SizedBox(height: 10),
-                  ],
-                const SizedBox(height: 18),
-                SectionTitle(
-                  title: 'upcoming_bookings'.tr,
-                  action: upcoming.isEmpty ? null : 'see_all'.tr,
-                  onAction: () => Get.offNamed(AppRoutes.myBookings),
-                ),
-                if (upcoming.isEmpty)
-                  AppCard(child: EmptyState(icon: Icons.event_available_outlined, text: 'no_bookings'.tr))
-                else
-                  for (final b in upcoming) ...[
-                    _BookingRow(item: b),
                     const SizedBox(height: 10),
                   ],
               ],
@@ -168,7 +153,7 @@ class _QuickGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      (Icons.add_task_rounded, 'quick_book'.tr, 'quick_book_sub'.tr, AppColors.purple, AppRoutes.bookings, false),
+      (Icons.workspace_premium_rounded, 'nav_subscription'.tr, 'quick_abo_sub'.tr, AppColors.purple, AppRoutes.subscription, false),
       (Icons.folder_rounded, 'nav_documents'.tr, 'quick_files_sub'.tr, const Color(0xFF2563EB), AppRoutes.documents, true),
       (Icons.edit_document, 'nav_forms'.tr, 'quick_forms_sub'.tr, AppColors.gold, AppRoutes.forms, true),
       (Icons.support_agent_rounded, 'quick_support'.tr, 'quick_support_sub'.tr, const Color(0xFF059669), AppRoutes.customerService, false),
@@ -197,38 +182,6 @@ class _QuickGrid extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-class _BookingRow extends StatelessWidget {
-  const _BookingRow({required this.item});
-
-  final BookingItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCard(
-      padding: const EdgeInsets.all(14),
-      onTap: () => Get.offNamed(AppRoutes.myBookings),
-      child: Row(
-        children: [
-          IconTile(icon: Icons.event_rounded, color: item.statusColor, size: 42),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(item.displayService, maxLines: 1, overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: AppColors.navy, fontWeight: FontWeight.w700)),
-                const SizedBox(height: 3),
-                Text('${item.date} · ${item.time}', style: Theme.of(context).textTheme.bodySmall),
-              ],
-            ),
-          ),
-          Pill(label: item.statusKey.tr, color: item.statusColor),
-        ],
-      ),
     );
   }
 }

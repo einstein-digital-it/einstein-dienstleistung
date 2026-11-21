@@ -32,6 +32,13 @@ class AuthController extends GetxController {
   final resendSeconds = 0.obs;
   Timer? _resendTimer;
 
+  @override
+  void onInit() {
+    super.onInit();
+    final args = Get.arguments;
+    if (args is Map && args['register'] == true) isRegister.value = true;
+  }
+
   void toggleMode() {
     isRegister.toggle();
     errorText.value = '';

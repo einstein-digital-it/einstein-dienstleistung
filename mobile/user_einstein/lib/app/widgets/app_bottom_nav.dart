@@ -5,10 +5,11 @@ import '../api/auth_session.dart';
 import '../controllers/customer_store_controller.dart';
 import '../routes/app_routes.dart';
 
-enum NavTab { home, services, offers, documents, bookings, forms, profile, login }
+enum NavTab { home, services, offers, subscription, documents, bookings, forms, profile, login }
 
-/// Guests: Home · Services · Offers · Sign in.
-/// Customers: Home · My file · Bookings · Applications · Account.
+/// The app is only for the Unterlagen-Abo.
+/// Guests: Home · Subscription · Sign in.
+/// Customers: Home · My file · Applications · Account.
 class AppBottomNav extends StatelessWidget {
   const AppBottomNav({super.key, required this.tab});
 
@@ -24,14 +25,12 @@ class AppBottomNav extends StatelessWidget {
           ? <(NavTab, IconData, IconData, String, String)>[
               (NavTab.home, Icons.space_dashboard_outlined, Icons.space_dashboard_rounded, 'nav_home'.tr, AppRoutes.customerDashboard),
               (NavTab.documents, Icons.folder_open_outlined, Icons.folder_rounded, 'nav_documents'.tr, AppRoutes.documents),
-              (NavTab.bookings, Icons.event_note_outlined, Icons.event_note_rounded, 'nav_bookings'.tr, AppRoutes.myBookings),
               (NavTab.forms, Icons.edit_document, Icons.edit_document, 'nav_forms'.tr, AppRoutes.forms),
               (NavTab.profile, Icons.person_outline_rounded, Icons.person_rounded, 'nav_profile'.tr, AppRoutes.profile),
             ]
           : <(NavTab, IconData, IconData, String, String)>[
               (NavTab.home, Icons.home_outlined, Icons.home_rounded, 'nav_home'.tr, AppRoutes.home),
-              (NavTab.services, Icons.grid_view_outlined, Icons.grid_view_rounded, 'nav_services'.tr, AppRoutes.services),
-              (NavTab.offers, Icons.local_offer_outlined, Icons.local_offer_rounded, 'nav_offers'.tr, AppRoutes.offers),
+              (NavTab.subscription, Icons.workspace_premium_outlined, Icons.workspace_premium_rounded, 'nav_subscription'.tr, AppRoutes.subscription),
               (NavTab.login, Icons.login_rounded, Icons.login_rounded, 'sign_in'.tr, AppRoutes.login),
             ];
       final index = items.indexWhere((item) => item.$1 == tab);

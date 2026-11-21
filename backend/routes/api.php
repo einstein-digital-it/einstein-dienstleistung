@@ -55,6 +55,10 @@ Route::post('chat/respond', [ChatController::class, 'respond']);
 Route::get('customer-support', [CustomerSupportController::class, 'index']);
 Route::post('customer-support/requests', [CustomerSupportController::class, 'store']);
 Route::get('public/services', [PublicContentController::class, 'services']);
+// Unterlagen-Abo plans (price incl. VAT, AI questions per month, letters per month) for visitors
+Route::get('public/abo-plans', fn () => response()->json([
+    'data' => ['plans' => \App\Support\FileAboPlans::forApi(), 'letters_per_month' => \App\Models\User::fileAboLimit()],
+]));
 Route::get('public/pricing', [PublicContentController::class, 'pricing']);
 Route::get('public/home', [PublicContentController::class, 'home']);
 Route::get('public/offers', [OfferController::class, 'index']);

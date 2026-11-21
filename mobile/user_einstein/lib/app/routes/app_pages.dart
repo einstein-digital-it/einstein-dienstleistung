@@ -31,6 +31,7 @@ import '../views/offers_view.dart';
 import '../views/payment_view.dart';
 import '../views/profile_view.dart';
 import '../views/services_view.dart';
+import '../views/abo_info_view.dart';
 import 'app_routes.dart';
 import 'customer_auth_middleware.dart';
 
@@ -153,6 +154,11 @@ abstract class AppPages {
           () => ClientWorkspaceController(clientId: Get.arguments.toString()),
         );
       }),
+    ),
+    // The subscription explained (visitors and customers)
+    GetPage(
+      name: AppRoutes.subscription,
+      page: () => const AboInfoView(),
     ),
     GetPage(
       name: AppRoutes.documents,

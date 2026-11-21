@@ -19,5 +19,6 @@ abstract class AppRoutes {
   static const documentCase = '/documents/case';
   static const documentCaseSection = '/documents/case/section';
   static const forms = '/forms';
+  static const subscription = '/subscription';
   static const formFill = '/forms/fill';
 }

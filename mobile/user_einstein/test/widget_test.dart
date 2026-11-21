@@ -12,7 +12,6 @@ import 'package:user_einstein/app/api/api_client.dart';
 import 'package:user_einstein/app/api/auth_session.dart';
 import 'package:user_einstein/app/api/customer_api_service.dart';
 import 'package:user_einstein/app/controllers/customer_clients_controller.dart';
-import 'package:user_einstein/app/controllers/payment_controller.dart';
 import 'package:user_einstein/app/controllers/documents_controller.dart';
 import 'package:user_einstein/app/controllers/forms_controller.dart';
 import 'package:user_einstein/app/lang/app_translations.dart';
@@ -353,27 +352,35 @@ void main() {
     await waitForSnackbars(tester);
   }
 
-  testWidgets('allows a guest to browse home and protects booking', (
+  testWidgets('a guest sees the subscription and starts signing up', (
     tester,
   ) async {
-    await pumpApp(tester, useEnglish: false);
+    await pumpApp(tester);
 
-    expect(
-      find.text(
-        '\u0627\u0644\u062a\u0646\u0638\u064a\u0645 \u0648\u0627\u0644\u0625\u062f\u0627\u0631\u0629',
-      ),
-      findsWidgets,
-    );
-    await tester.tap(
-      find.text('\u0627\u062d\u062c\u0632 \u0627\u0644\u0622\u0646'),
-    );
+    expect(find.text('Your official mail – sorted, translated, answered.'), findsOneWidget);
+    // No services or booking in the app any more
+    expect(find.text('Book now'), findsNothing);
+    expect(find.text('Services'), findsNothing);
+
+    await tester.tap(find.byKey(const Key('home_start')));
     await tester.pumpAndSettle();
-    expect(
-      find.text(
-        '\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644',
-      ),
-      findsOneWidget,
-    );
+    expect(Get.currentRoute, AppRoutes.login);
+    expect(find.widgetWithText(FilledButton, 'Create account'), findsOneWidget);
+  });
+
+  testWidgets('the subscription screen explains the four parts and the plans', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await tester.tap(find.text('Plan').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('One subscription – four kinds of help with your mail'), findsOneWidget);
+    expect(find.text('1. Sort'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('4. Replies & deadlines'), 300, scrollable: find.byType(Scrollable).first);
+    expect(find.text('4. Replies & deadlines'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('11,99 € / month'), 300, scrollable: find.byType(Scrollable).first);
+    expect(find.text('11,99 € / month'), findsOneWidget);
   });
 
   testWidgets('starts with Arabic as the default application language', (
@@ -398,14 +405,11 @@ void main() {
     expect(Get.find<AuthSession>().isAuthenticated, isTrue);
     expect(find.text('Welcome back'), findsOneWidget);
 
-    await tester.tap(find.text('Bookings').last);
+    // Only the subscription: no bookings tab
+    expect(find.text('Bookings'), findsNothing);
+    await tester.tap(find.text('My file').last);
     await tester.pumpAndSettle();
-    expect(find.text('My Bookings'), findsOneWidget);
-
-    // The offers page is still reachable
-    Get.toNamed(AppRoutes.offers);
-    await tester.pumpAndSettle();
-    expect(find.text('Offers from EinStein'), findsOneWidget);
+    expect(Get.currentRoute, AppRoutes.documents);
   });
 
   testWidgets('registers a user and stores the issued session token', (
@@ -492,7 +496,7 @@ void main() {
     expect(find.text('Welcome back'), findsOneWidget);
   });
 
-  testWidgets('opens profile, notification settings, and payment flows', (
+  testWidgets('opens profile and notification settings', (
     tester,
   ) async {
     final launchedUrls = <String>[];
@@ -521,71 +525,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Notification Settings'), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Bookings').last);
-    await tester.pumpAndSettle();
-    final payButton = find.widgetWithText(FilledButton, 'Pay');
-    await tester.ensureVisible(payButton);
-    await tester.pumpAndSettle();
-    await tester.tap(payButton);
-    await tester.pumpAndSettle();
-    expect(find.text('Secure payment'), findsOneWidget);
-
-    final payNowButton = find.widgetWithText(
-      FilledButton,
-      'Pay now - 142.80 EUR',
-    );
-    await tester.ensureVisible(payNowButton);
-    await tester.pumpAndSettle();
-    await tester.tap(payNowButton);
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pumpAndSettle();
-
-    // Payment happens on the Stripe page; the app only opens it.
-    expect(backend.checkoutBookingIds, ['ES-2050']);
-    expect(launchedUrls, ['https://checkout.stripe.test/session']);
-    expect(find.text('Payment successful'), findsNothing);
-
-    // The Stripe webhook marks the booking paid; the customer checks again.
-    backend.markPaid('ES-2050');
-    final checkStatusButton = find.text('Check payment status');
-    await tester.ensureVisible(checkStatusButton);
-    await tester.tap(checkStatusButton);
-    await tester.pumpAndSettle();
-    expect(find.text('Payment successful'), findsOneWidget);
-    expect(Get.find<PaymentController>().isPaid.value, isTrue);
-  });
-
-  testWidgets('creates a booking through the API and shows it in my bookings', (
-    tester,
-  ) async {
-    await pumpApp(tester);
-    await signIn(tester);
-
-    // The AI card sits above it on the dashboard
-    await tester.scrollUntilVisible(find.text('Book a service'), 200, scrollable: find.byType(Scrollable).first);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Book a service'));
-    await tester.pumpAndSettle();
-    expect(find.text('Book a service'), findsOneWidget);
-
-    final prepareButton = find.widgetWithText(FilledButton, 'Prepare booking');
-    await tester.ensureVisible(prepareButton);
-    await tester.pumpAndSettle();
-    await tester.tap(prepareButton);
-    await tester.pump(const Duration(milliseconds: 400));
-    await tester.pumpAndSettle();
-
-    expect(backend.createdBookings, hasLength(1));
-    expect(backend.createdBookings.single['category'], 'forms');
-    expect(
-      backend.createdBookings.single['customer_email'],
-      'customer@example.com',
-    );
-    expect(find.text('My Bookings'), findsOneWidget);
-    expect(find.text('ES-2051'), findsOneWidget);
-    expect(find.text('ES-2050'), findsOneWidget);
+    expect(launchedUrls, isEmpty);
   });
 
   testWidgets('persists notification settings during navigation', (
@@ -630,7 +570,7 @@ void main() {
     tester,
   ) async {
     await pumpApp(tester);
-    expect(find.text('Organisation & Administration'), findsWidgets);
+    expect(find.text('Your official mail – sorted, translated, answered.'), findsOneWidget);
 
     await pumpApp(tester, useEnglish: false);
     expect(Get.locale?.languageCode, 'ar');
