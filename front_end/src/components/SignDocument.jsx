@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Download, Loader2, Mail, PenLine, Share2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Loader2, Mail, PenLine, Share2, Wand2, X } from "lucide-react";
 import { customerDocumentsApi } from "@/api/backendClient";
 import { shareFiles } from "@/lib/shareFiles";
 import SignaturePad, { loadSignature } from "@/components/SignaturePad";
@@ -10,12 +10,12 @@ import SignaturePad, { loadSignature } from "@/components/SignaturePad";
  * the signature and the signed file are not sent to the server.
  */
 const T = {
-  de: { title: "Dokument unterschreiben", loading: "Dokument wird geladen…", page: "Seite", of: "von", drag: "Ziehen Sie die Unterschrift an die richtige Stelle. Größe:", sign: "Unterschrift zeichnen", resign: "Neu zeichnen", needSign: "Zeichnen Sie zuerst Ihre Unterschrift.", pdf: "Unterschriebenes PDF herunterladen", share: "Teilen", mail: "Per E-Mail senden", mailHint: "Das PDF wurde heruntergeladen – hängen Sie es an die E-Mail an.", close: "Schließen", error: "Das Dokument konnte nicht geöffnet werden.", unsupported: "Nur PDF und Fotos (JPG, PNG) können unterschrieben werden.", note: "Einfache elektronische Unterschrift. Wo die Behörde Schriftform verlangt, bitte ausdrucken und von Hand unterschreiben." },
-  ar: { title: "توقيع المستند", loading: "جارٍ تحميل المستند…", page: "الصفحة", of: "من", drag: "اسحب التوقيع إلى المكان الصحيح. الحجم:", sign: "ارسم توقيعك", resign: "أعد الرسم", needSign: "ارسم توقيعك أولاً.", pdf: "تنزيل ملف PDF الموقّع", share: "مشاركة", mail: "إرسال بالبريد الإلكتروني", mailHint: "تم تنزيل ملف PDF – أرفقه بالرسالة الإلكترونية.", close: "إغلاق", error: "تعذّر فتح المستند.", unsupported: "يمكن توقيع ملفات PDF والصور (JPG وPNG) فقط.", note: "توقيع إلكتروني بسيط. إذا طلبت الجهة الرسمية نسخة موقّعة بخط اليد، فاطبع المستند ووقّعه بيدك." },
-  en: { title: "Sign document", loading: "Loading the document…", page: "Page", of: "of", drag: "Drag the signature to the right place. Size:", sign: "Draw signature", resign: "Draw again", needSign: "Draw your signature first.", pdf: "Download signed PDF", share: "Share", mail: "Send by e-mail", mailHint: "The PDF was downloaded – attach it to the e-mail.", close: "Close", error: "The document could not be opened.", unsupported: "Only PDFs and photos (JPG, PNG) can be signed.", note: "Simple electronic signature. Where the authority requires a handwritten original, please print and sign by hand." },
-  tr: { title: "Belgeyi imzala", loading: "Belge yükleniyor…", page: "Sayfa", of: "/", drag: "İmzayı doğru yere sürükleyin. Boyut:", sign: "İmza çiz", resign: "Yeniden çiz", needSign: "Önce imzanızı çizin.", pdf: "İmzalı PDF'i indir", share: "Paylaş", mail: "E-posta ile gönder", mailHint: "PDF indirildi – e-postaya ekleyin.", close: "Kapat", error: "Belge açılamadı.", unsupported: "Yalnızca PDF ve fotoğraflar (JPG, PNG) imzalanabilir.", note: "Basit elektronik imza. Kurum ıslak imza istiyorsa yazdırıp elle imzalayın." },
-  es: { title: "Firmar documento", loading: "Cargando el documento…", page: "Página", of: "de", drag: "Arrastre la firma al lugar correcto. Tamaño:", sign: "Dibujar firma", resign: "Dibujar de nuevo", needSign: "Dibuje primero su firma.", pdf: "Descargar PDF firmado", share: "Compartir", mail: "Enviar por correo", mailHint: "Se ha descargado el PDF: adjúntelo al correo.", close: "Cerrar", error: "No se pudo abrir el documento.", unsupported: "Solo se pueden firmar PDF y fotos (JPG, PNG).", note: "Firma electrónica simple. Si la autoridad exige el original firmado a mano, imprímalo y fírmelo." },
-  uk: { title: "Підписати документ", loading: "Документ завантажується…", page: "Сторінка", of: "з", drag: "Перетягніть підпис у потрібне місце. Розмір:", sign: "Намалювати підпис", resign: "Намалювати знову", needSign: "Спершу намалюйте підпис.", pdf: "Завантажити підписаний PDF", share: "Поділитися", mail: "Надіслати поштою", mailHint: "PDF завантажено – додайте його до листа.", close: "Закрити", error: "Не вдалося відкрити документ.", unsupported: "Підписати можна лише PDF і фото (JPG, PNG).", note: "Проста електронна підпис. Якщо установа вимагає власноручний підпис, роздрукуйте й підпишіть від руки." },
+  de: { autofill: "Automatisch ausfüllen", autofilling: "Die KI füllt das Formular aus…", autofilled: (n) => `${n} Felder ausgefüllt – Ihre Unterschrift steht an der richtigen Stelle.`, noFields: "Dieses PDF hat keine ausfüllbaren Felder. Die Unterschrift können Sie trotzdem setzen.", stillMissing: "Bitte prüfen, noch leer:", afError: { needs_subscription: "Teil des Abos.", limit_reached: "Ihre Fragen für diesen Monat sind aufgebraucht.", not_available: "Die KI ist gerade nicht verfügbar.", failed: "Das Formular konnte nicht ausgefüllt werden." }, title: "Dokument unterschreiben", loading: "Dokument wird geladen…", page: "Seite", of: "von", drag: "Ziehen Sie die Unterschrift an die richtige Stelle. Größe:", sign: "Unterschrift zeichnen", resign: "Neu zeichnen", needSign: "Zeichnen Sie zuerst Ihre Unterschrift.", pdf: "Unterschriebenes PDF herunterladen", share: "Teilen", mail: "Per E-Mail senden", mailHint: "Das PDF wurde heruntergeladen – hängen Sie es an die E-Mail an.", close: "Schließen", error: "Das Dokument konnte nicht geöffnet werden.", unsupported: "Nur PDF und Fotos (JPG, PNG) können unterschrieben werden.", note: "Einfache elektronische Unterschrift. Wo die Behörde Schriftform verlangt, bitte ausdrucken und von Hand unterschreiben." },
+  ar: { autofill: "تعبئة تلقائية", autofilling: "يملأ الذكاء الاصطناعي الاستمارة…", autofilled: (n) => `تمت تعبئة ${n} حقلاً – وتوقيعك في المكان الصحيح.`, noFields: "لا يحتوي ملف PDF هذا على حقول قابلة للتعبئة، ويمكنك مع ذلك إضافة توقيعك.", stillMissing: "يُرجى المراجعة، ما زالت فارغة:", afError: { needs_subscription: "جزء من الاشتراك.", limit_reached: "استنفدت أسئلتك لهذا الشهر.", not_available: "الذكاء الاصطناعي غير متاح حالياً.", failed: "تعذّرت تعبئة الاستمارة." }, title: "توقيع المستند", loading: "جارٍ تحميل المستند…", page: "الصفحة", of: "من", drag: "اسحب التوقيع إلى المكان الصحيح. الحجم:", sign: "ارسم توقيعك", resign: "أعد الرسم", needSign: "ارسم توقيعك أولاً.", pdf: "تنزيل ملف PDF الموقّع", share: "مشاركة", mail: "إرسال بالبريد الإلكتروني", mailHint: "تم تنزيل ملف PDF – أرفقه بالرسالة الإلكترونية.", close: "إغلاق", error: "تعذّر فتح المستند.", unsupported: "يمكن توقيع ملفات PDF والصور (JPG وPNG) فقط.", note: "توقيع إلكتروني بسيط. إذا طلبت الجهة الرسمية نسخة موقّعة بخط اليد، فاطبع المستند ووقّعه بيدك." },
+  en: { autofill: "Auto-fill", autofilling: "The AI is filling in the form…", autofilled: (n) => `${n} fields filled – your signature is in the right place.`, noFields: "This PDF has no fillable fields. You can still add your signature.", stillMissing: "Please check, still empty:", afError: { needs_subscription: "Part of the subscription.", limit_reached: "Your questions for this month are used up.", not_available: "The AI is not available right now.", failed: "The form could not be filled in." }, title: "Sign document", loading: "Loading the document…", page: "Page", of: "of", drag: "Drag the signature to the right place. Size:", sign: "Draw signature", resign: "Draw again", needSign: "Draw your signature first.", pdf: "Download signed PDF", share: "Share", mail: "Send by e-mail", mailHint: "The PDF was downloaded – attach it to the e-mail.", close: "Close", error: "The document could not be opened.", unsupported: "Only PDFs and photos (JPG, PNG) can be signed.", note: "Simple electronic signature. Where the authority requires a handwritten original, please print and sign by hand." },
+  tr: { autofill: "Otomatik doldur", autofilling: "Yapay zekâ formu dolduruyor…", autofilled: (n) => `${n} alan dolduruldu – imzanız doğru yerde.`, noFields: "Bu PDF'te doldurulabilir alan yok. Yine de imzanızı ekleyebilirsiniz.", stillMissing: "Lütfen kontrol edin, hâlâ boş:", afError: { needs_subscription: "Aboneliğe dahildir.", limit_reached: "Bu ayki sorularınız bitti.", not_available: "Yapay zekâ şu anda kullanılamıyor.", failed: "Form doldurulamadı." }, title: "Belgeyi imzala", loading: "Belge yükleniyor…", page: "Sayfa", of: "/", drag: "İmzayı doğru yere sürükleyin. Boyut:", sign: "İmza çiz", resign: "Yeniden çiz", needSign: "Önce imzanızı çizin.", pdf: "İmzalı PDF'i indir", share: "Paylaş", mail: "E-posta ile gönder", mailHint: "PDF indirildi – e-postaya ekleyin.", close: "Kapat", error: "Belge açılamadı.", unsupported: "Yalnızca PDF ve fotoğraflar (JPG, PNG) imzalanabilir.", note: "Basit elektronik imza. Kurum ıslak imza istiyorsa yazdırıp elle imzalayın." },
+  es: { autofill: "Rellenar automáticamente", autofilling: "La IA está rellenando el formulario…", autofilled: (n) => `${n} campos rellenados: su firma está en su sitio.`, noFields: "Este PDF no tiene campos rellenables. Aun así puede añadir su firma.", stillMissing: "Revise, aún vacíos:", afError: { needs_subscription: "Incluido en la suscripción.", limit_reached: "Ha usado todas las preguntas de este mes.", not_available: "La IA no está disponible ahora.", failed: "No se pudo rellenar el formulario." }, title: "Firmar documento", loading: "Cargando el documento…", page: "Página", of: "de", drag: "Arrastre la firma al lugar correcto. Tamaño:", sign: "Dibujar firma", resign: "Dibujar de nuevo", needSign: "Dibuje primero su firma.", pdf: "Descargar PDF firmado", share: "Compartir", mail: "Enviar por correo", mailHint: "Se ha descargado el PDF: adjúntelo al correo.", close: "Cerrar", error: "No se pudo abrir el documento.", unsupported: "Solo se pueden firmar PDF y fotos (JPG, PNG).", note: "Firma electrónica simple. Si la autoridad exige el original firmado a mano, imprímalo y fírmelo." },
+  uk: { autofill: "Заповнити автоматично", autofilling: "ШІ заповнює форму…", autofilled: (n) => `Заповнено полів: ${n} – ваш підпис на потрібному місці.`, noFields: "У цьому PDF немає полів для заповнення. Підпис ви все одно можете додати.", stillMissing: "Перевірте, ще порожні:", afError: { needs_subscription: "Входить у підписку.", limit_reached: "Запитання на цей місяць вичерпано.", not_available: "ШІ зараз недоступний.", failed: "Не вдалося заповнити форму." }, title: "Підписати документ", loading: "Документ завантажується…", page: "Сторінка", of: "з", drag: "Перетягніть підпис у потрібне місце. Розмір:", sign: "Намалювати підпис", resign: "Намалювати знову", needSign: "Спершу намалюйте підпис.", pdf: "Завантажити підписаний PDF", share: "Поділитися", mail: "Надіслати поштою", mailHint: "PDF завантажено – додайте його до листа.", close: "Закрити", error: "Не вдалося відкрити документ.", unsupported: "Підписати можна лише PDF і фото (JPG, PNG).", note: "Проста електронна підпис. Якщо установа вимагає власноручний підпис, роздрукуйте й підпишіть від руки." },
 };
 
 const kindOf = (doc) => {
@@ -52,6 +52,42 @@ export default function SignDocument({ doc, lang, onClose }) {
   const [pos, setPos] = useState({ x: 0.55, y: 0.78, w: 0.3 });
   const [busy, setBusy] = useState(false);
   const [hint, setHint] = useState("");
+  const [filling, setFilling] = useState(false);
+  const [filled, setFilled] = useState(null); // { count, missing } after auto-fill
+
+  /** Puts the signature into the form's signature box (PDF points, bottom-left origin). */
+  const placeAt = (sig, sizes) => {
+    const size = sizes?.[sig.page];
+    if (!size) return;
+    const w = Math.min(Math.max(sig.w / size.w, 0.12), 0.6);
+    setPage(sig.page + 1);
+    setPos({ x: Math.min(sig.x / size.w, 1 - w), y: Math.max(0, 1 - (sig.y + sig.h) / size.h), w });
+  };
+
+  /** Like autofill: the fields fill themselves from the customer's details, the signature goes to its place. */
+  const autofill = async () => {
+    setFilling(true);
+    setHint("");
+    try {
+      const res = await customerDocumentsApi.autofill(doc.id);
+      if (res.pdf) {
+        const data = Uint8Array.from(atob(res.pdf), (c) => c.charCodeAt(0));
+        const pdfjs = await loadPdfJs();
+        const loaded = await pdfjs.getDocument({ data: data.slice() }).promise;
+        setBytes(data);
+        setPdf(loaded);
+        setPages(loaded.numPages);
+      }
+      if (res.signature) placeAt(res.signature, res.pages);
+      setFilled(res.fillable ? { count: res.filled, missing: res.missing || [] } : null);
+      if (!res.fillable) setHint(t.noFields);
+      if (!signature) setDrawing(true); // the signature is drawn once, then always used
+    } catch (err) {
+      setHint(t.afError[err.code] || t.afError.failed);
+    } finally {
+      setFilling(false);
+    }
+  };
   const drag = useRef(null);
 
   useEffect(() => {
@@ -199,6 +235,11 @@ export default function SignDocument({ doc, lang, onClose }) {
         ) : (
           <>
             <div className="mt-3 flex flex-wrap items-center gap-3">
+              {kind === "pdf" && (
+                <button type="button" onClick={autofill} disabled={filling} className="inline-flex items-center gap-1.5 rounded-lg bg-[#6B46C1] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#805AD5] disabled:opacity-60">
+                  {filling ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Wand2 className="h-3.5 w-3.5" />}{filling ? t.autofilling : t.autofill}
+                </button>
+              )}
               <button type="button" onClick={() => setDrawing(true)} className="inline-flex items-center gap-1.5 rounded-lg border border-purple-200 px-3 py-1.5 text-xs font-semibold text-[#6B46C1] hover:bg-purple-50">
                 <PenLine className="h-3.5 w-3.5" />{signature ? t.resign : t.sign}
               </button>
@@ -216,6 +257,13 @@ export default function SignDocument({ doc, lang, onClose }) {
                 </label>
               )}
             </div>
+
+            {filled && (
+              <div className="mt-3 rounded-lg bg-emerald-50 p-2 text-xs text-emerald-800">
+                <p className="font-semibold">{t.autofilled(filled.count)}</p>
+                {filled.missing.length > 0 && <p className="mt-1 text-amber-800">{t.stillMissing} <span dir="ltr">{filled.missing.join(", ")}</span></p>}
+              </div>
+            )}
 
             <div ref={stage} className="mt-3 flex justify-center overflow-hidden rounded-lg bg-gray-100 p-2" dir="ltr">
               <div className="relative">

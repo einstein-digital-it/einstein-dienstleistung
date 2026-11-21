@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\McpController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\CustomerClientController;
 use App\Http\Controllers\Api\CustomerDocumentController;
+use App\Http\Controllers\Api\DocumentAutofillController;
 use App\Http\Controllers\Api\DocumentDraftController;
 use App\Http\Controllers\Api\DocumentQuestionController;
 use App\Http\Controllers\Api\CustomerFileController;
@@ -103,6 +104,7 @@ Route::middleware('api.auth:admin,user')->group(function () {
     Route::post('customer/documents/{document}/questions', [DocumentQuestionController::class, 'store'])->middleware('throttle:20,1');
     Route::get('customer/documents/{document}/draft', [DocumentDraftController::class, 'show']);
     Route::post('customer/documents/{document}/draft', [DocumentDraftController::class, 'store'])->middleware('throttle:10,1');
+    Route::post('customer/documents/{document}/autofill', [DocumentAutofillController::class, 'store'])->middleware('throttle:10,1');
     Route::post('customer/subscription/redeem', [AboVoucherController::class, 'redeem'])->middleware('throttle:10,1');
     Route::get('customer/reminders', [CustomerReminderController::class, 'index']);
     Route::post('customer/reminders', [CustomerReminderController::class, 'store']);

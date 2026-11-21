@@ -394,6 +394,8 @@ export const customerDocumentsApi = {
   askQuestion: (id, question, lang) => request(`/customer/documents/${id}/questions`, { method: "POST", body: JSON.stringify({ question, lang }) }),
   // "What do I do?": reply needed or not, German reply, form values
   draft: (id) => request(`/customer/documents/${id}/draft`),
+  // Fill the fields of a PDF form like autofill; returns the filled PDF (base64) and the signature place
+  autofill: (id) => request(`/customer/documents/${id}/autofill`, { method: "POST", body: "{}" }),
   prepareDraft: (id, lang) => request(`/customer/documents/${id}/draft`, { method: "POST", body: JSON.stringify({ lang }) }),
   cancelSubscription: () => request("/customer/subscription/cancel", { method: "POST", body: "{}" }),
   // Voucher code from EinStein: free months without payment

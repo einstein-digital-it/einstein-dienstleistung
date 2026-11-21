@@ -384,6 +384,12 @@ class CustomerApiService {
     return _answers(data);
   }
 
+  /// Fills the fields of a PDF form like autofill. Returns { fillable, filled, missing, pdf (base64)?, signature?, pages }.
+  Future<Map<String, dynamic>> autofillDocument(int id) async {
+    final data = await client.post('customer/documents/$id/autofill', body: const {}, timeout: const Duration(seconds: 100));
+    return Map<String, dynamic>.from(data as Map);
+  }
+
   /// The last "What do I do?" result for a letter, or null.
   Future<Map<String, dynamic>?> documentDraft(int id) async {
     final data = await client.get('customer/documents/$id/draft');

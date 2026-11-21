@@ -1,5 +1,11 @@
 // Ukrainian (uk). Keys missing here fall back to English.
 const Map<String, String> ukTranslations = {
+  "autofill": "Заповнити автоматично",
+  "autofill_working": "Заповнюємо…",
+  "autofill_done": "Заповнено полів: @count – ваш підпис на потрібному місці.",
+  "autofill_missing": "Перевірте, ще порожні:",
+  "autofill_no_fields": "У цьому PDF немає полів для заповнення. Підпис ви все одно можете додати.",
+  "autofill_failed": "Не вдалося заповнити форму.",
   "files_explanation_note": "Просте пояснення для розуміння – чинним є лише оригінал листа.",
   "files_explanation": "Просте пояснення",
   "nav_subscription": "Підписка",

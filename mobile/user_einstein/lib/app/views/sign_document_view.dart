@@ -1,3 +1,4 @@
+import 'dart:convert' show base64Decode;
 import 'dart:io' show File;
 
 import 'package:flutter/foundation.dart';
@@ -11,6 +12,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../api/api_exception.dart';
 import '../controllers/documents_controller.dart';
 import '../models/customer_document.dart';
 import '../theme/app_colors.dart';
@@ -45,7 +47,11 @@ class _SignDocumentScreenState extends State<SignDocumentScreen> {
   double width = 0.3;
   bool loading = true;
   bool busy = false;
+  bool filling = false;
   String error = '';
+  /// After auto-fill: how many fields were filled and which stayed empty.
+  int? filledCount;
+  List<String> missing = const [];
 
   @override
   void initState() {
@@ -73,6 +79,68 @@ class _SignDocumentScreenState extends State<SignDocumentScreen> {
       error = 'sign_error'.tr;
     }
     if (mounted) setState(() => loading = false);
+  }
+
+  Future<List<(Uint8List, Size)>> _raster(Uint8List bytes) async {
+    final out = <(Uint8List, Size)>[];
+    await for (final raster in Printing.raster(bytes, dpi: 150)) {
+      out.add((await raster.toPng(), Size(raster.width.toDouble(), raster.height.toDouble())));
+    }
+    return out;
+  }
+
+  /// Like autofill: the form's fields fill themselves from the customer's details and the
+  /// saved signature goes into the signature box.
+  Future<void> _autofill() async {
+    setState(() => filling = true);
+    try {
+      final res = await controller.api.autofillDocument(widget.doc.id);
+      final pdf = res['pdf'];
+      if (pdf is String && pdf.isNotEmpty) {
+        final rendered = await _raster(base64Decode(pdf));
+        if (rendered.isNotEmpty) {
+          pages
+            ..clear()
+            ..addAll(rendered.map((r) => r.$1));
+          sizes
+            ..clear()
+            ..addAll(rendered.map((r) => r.$2));
+        }
+      }
+      final sig = res['signature'];
+      final pdfPages = (res['pages'] as List? ?? const []).whereType<Map>().toList();
+      if (sig is Map) {
+        final p = int.tryParse('${sig['page']}') ?? 0;
+        if (p < pdfPages.length && p < pages.length) {
+          final pw = double.tryParse('${pdfPages[p]['w']}') ?? 1;
+          final ph = double.tryParse('${pdfPages[p]['h']}') ?? 1;
+          final x = (double.tryParse('${sig['x']}') ?? 0) / pw;
+          final y = (double.tryParse('${sig['y']}') ?? 0) / ph;
+          final w = ((double.tryParse('${sig['w']}') ?? 0) / pw).clamp(0.12, 0.6);
+          final h = (double.tryParse('${sig['h']}') ?? 0) / ph;
+          page = p;
+          width = w;
+          pos = Offset(x.clamp(0.0, 1 - w), (1 - y - h).clamp(0.0, 0.95));
+        }
+      }
+      filledCount = res['fillable'] == true ? int.tryParse('${res['filled']}') : null;
+      missing = (res['missing'] as List? ?? const []).map((e) => '$e').toList();
+      if (res['fillable'] != true) Get.snackbar('sign_title'.tr, 'autofill_no_fields'.tr);
+      if (mounted) setState(() {});
+      if (signature == null) await _draw(); // drawn once, then always used
+    } on ApiException catch (e) {
+      final key = switch (e.code) {
+        'needs_subscription' => 'ask_needs',
+        'limit_reached' => 'ask_limit',
+        'not_available' => 'ask_unavailable',
+        _ => 'autofill_failed',
+      };
+      Get.snackbar('sign_title'.tr, key.tr);
+    } catch (_) {
+      Get.snackbar('sign_title'.tr, 'autofill_failed'.tr);
+    } finally {
+      if (mounted) setState(() => filling = false);
+    }
   }
 
   Future<void> _draw() async {
@@ -154,6 +222,17 @@ class _SignDocumentScreenState extends State<SignDocumentScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
                     child: Row(children: [
+                      if (widget.doc.isPdf) ...[
+                        FilledButton.icon(
+                          key: const Key('sign_autofill'),
+                          onPressed: filling ? null : _autofill,
+                          icon: filling
+                              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                              : const Icon(Icons.auto_fix_high_rounded),
+                          label: Text((filling ? 'autofill_working' : 'autofill').tr),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
                       OutlinedButton.icon(
                         key: const Key('sign_draw'),
                         onPressed: _draw,
@@ -168,6 +247,20 @@ class _SignDocumentScreenState extends State<SignDocumentScreen> {
                       ],
                     ]),
                   ),
+                  if (filledCount != null)
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(color: AppColors.successSoft, borderRadius: BorderRadius.circular(12)),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('autofill_done'.trParams({'count': '$filledCount'}),
+                            style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.w700, fontSize: 13)),
+                        if (missing.isNotEmpty)
+                          Text('${'autofill_missing'.tr} ${missing.join(', ')}',
+                              style: const TextStyle(color: AppColors.warning, fontSize: 12)),
+                      ]),
+                    ),
                   if (signature != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),

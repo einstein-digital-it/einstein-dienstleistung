@@ -1,6 +1,12 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'autofill': 'Auto-fill',
+  'autofill_working': 'Filling in…',
+  'autofill_done': '@count fields filled – your signature is in the right place.',
+  'autofill_missing': 'Please check, still empty:',
+  'autofill_no_fields': 'This PDF has no fillable fields. You can still add your signature.',
+  'autofill_failed': 'The form could not be filled in.',
   'files_explanation_note': 'Simple explanation to help you understand – only the original letter counts.',
   'files_explanation': 'Explained simply',
   'nav_subscription': 'Plan',
@@ -288,6 +294,12 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'autofill': 'تعبئة تلقائية',
+  'autofill_working': 'جارٍ التعبئة…',
+  'autofill_done': 'تمت تعبئة @count حقلاً – وتوقيعك في المكان الصحيح.',
+  'autofill_missing': 'يُرجى المراجعة، ما زالت فارغة:',
+  'autofill_no_fields': 'لا يحتوي ملف PDF هذا على حقول قابلة للتعبئة، ويمكنك مع ذلك إضافة توقيعك.',
+  'autofill_failed': 'تعذّرت تعبئة الاستمارة.',
   'files_explanation_note': 'شرح مبسّط لمساعدتك على الفهم – والمعتمد هو الرسالة الأصلية فقط.',
   'files_explanation': 'شرح مبسّط',
   'nav_subscription': 'الاشتراك',
@@ -575,6 +587,12 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'autofill': 'Automatisch ausfüllen',
+  'autofill_working': 'Wird ausgefüllt…',
+  'autofill_done': '@count Felder ausgefüllt – Ihre Unterschrift steht an der richtigen Stelle.',
+  'autofill_missing': 'Bitte prüfen, noch leer:',
+  'autofill_no_fields': 'Dieses PDF hat keine ausfüllbaren Felder. Die Unterschrift können Sie trotzdem setzen.',
+  'autofill_failed': 'Das Formular konnte nicht ausgefüllt werden.',
   'files_explanation_note': 'Einfache Erklärung zum Verständnis – maßgeblich ist nur das Originalschreiben.',
   'files_explanation': 'Einfach erklärt',
   'nav_subscription': 'Abo',
