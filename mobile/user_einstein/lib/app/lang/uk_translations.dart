@@ -1,5 +1,11 @@
 // Ukrainian (uk). Keys missing here fall back to English.
 const Map<String, String> ukTranslations = {
+  "terms_pre": "Я прочитав(-ла) й приймаю ",
+  "terms_agb": "Умови (AGB)",
+  "terms_and": " та ",
+  "terms_privacy": "Політику конфіденційності",
+  "terms_post": ".",
+  "terms_required": "Будь ласка, прийміть умови та політику конфіденційності.",
   "ai_card_kicker": "Нове: ШІ-помічник",
   "ai_card_title": "Ваші листи – зрозумілі, з відповіддю, підписані",
   "ai_card_sub": "Завантажте лист. Решту зробить ШІ – вашою мовою.",

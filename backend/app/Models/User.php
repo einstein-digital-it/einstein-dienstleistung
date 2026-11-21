@@ -83,6 +83,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'terms_accepted_at' => 'datetime',
             'email_verification_expires_at' => 'datetime',
             'email_verification_sent_at' => 'datetime',
             'is_active' => 'boolean',

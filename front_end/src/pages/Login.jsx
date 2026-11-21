@@ -69,12 +69,23 @@ function readLang() {
   try { return localStorage.getItem("einstein_lang") || "de"; } catch { return "de"; }
 }
 
+/** Consent at sign-up: AGB and privacy policy (links open in a new tab). */
+const TERMS = {
+  de: { pre: "Ich habe die ", agb: "AGB", and: " und die ", privacy: "Datenschutzerklärung", post: " gelesen und akzeptiere sie.", error: "Bitte akzeptieren Sie die AGB und die Datenschutzerklärung." },
+  ar: { pre: "قرأتُ ", agb: "الشروط والأحكام العامة (AGB)", and: " و", privacy: "سياسة الخصوصية", post: " وأوافق عليهما.", error: "يُرجى الموافقة على الشروط والأحكام العامة وسياسة الخصوصية." },
+  en: { pre: "I have read and accept the ", agb: "Terms (AGB)", and: " and the ", privacy: "Privacy Policy", post: ".", error: "Please accept the terms and the privacy policy." },
+  tr: { pre: "", agb: "Genel Şartlar (AGB)", and: " ve ", privacy: "Gizlilik Politikası", post: " metinlerini okudum ve kabul ediyorum.", error: "Lütfen Genel Şartları ve Gizlilik Politikasını kabul edin." },
+  es: { pre: "He leído y acepto las ", agb: "Condiciones (AGB)", and: " y la ", privacy: "Política de privacidad", post: ".", error: "Acepte las condiciones y la política de privacidad." },
+  uk: { pre: "Я прочитав(-ла) й приймаю ", agb: "Умови (AGB)", and: " та ", privacy: "Політику конфіденційності", post: ".", error: "Будь ласка, прийміть умови та політику конфіденційності." },
+};
+
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const [lang, setLang] = useState(readLang);
   const [mode, setMode] = useState(/register/i.test(location.pathname) ? "register" : "login");
   const [name, setName] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -160,12 +171,13 @@ export default function Login() {
     const trimmedEmail = email.trim();
     if (!trimmedEmail || !password.trim()) return setError(t.errEmpty);
     if (mode === "register" && !name.trim()) return setError(t.errName);
+    if (mode === "register" && !acceptTerms) return setError((TERMS[lang] || TERMS.de).error);
 
     setLoading(true);
     setError("");
     try {
       const result = mode === "register"
-        ? await authApi.register({ name: name.trim(), email: trimmedEmail, password, preferred_language: lang })
+        ? await authApi.register({ name: name.trim(), email: trimmedEmail, password, preferred_language: lang, accept_terms: true })
         : await authApi.login({ email: trimmedEmail, password });
 
       if (result?.verification_required) askForCode(result.email || trimmedEmail);
@@ -365,6 +377,28 @@ export default function Login() {
                 </button>
               </div>
             </div>
+
+            {mode === "register" && (() => {
+              const tt = TERMS[lang] || TERMS.de;
+              return (
+                <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm leading-relaxed text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={acceptTerms}
+                    onChange={(e) => { setAcceptTerms(e.target.checked); setError(""); }}
+                    className="mt-0.5 h-5 w-5 shrink-0 accent-[#6d28d9]"
+                    aria-required="true"
+                  />
+                  <span>
+                    {tt.pre}
+                    <a href="/AGB" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#6d28d9] underline">{tt.agb}</a>
+                    {tt.and}
+                    <a href="/Datenschutz" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#6d28d9] underline">{tt.privacy}</a>
+                    {tt.post} <span className="text-red-600">*</span>
+                  </span>
+                </label>
+              );
+            })()}
 
             {error && (
               <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700" role="alert">{error}</p>

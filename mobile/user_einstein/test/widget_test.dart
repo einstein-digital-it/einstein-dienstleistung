@@ -429,6 +429,16 @@ void main() {
       FilledButton,
       'Create account',
     );
+    // Without accepting the AGB and the privacy policy there is no account
+    await tester.ensureVisible(createAccountButton);
+    await tester.tap(createAccountButton);
+    await tester.pumpAndSettle();
+    expect(find.text('Please accept the terms and the privacy policy.'), findsOneWidget);
+    final terms = find.byKey(const Key('accept_terms'));
+    await tester.ensureVisible(terms);
+    await tester.tap(terms);
+    await tester.pumpAndSettle();
+
     await tester.ensureVisible(createAccountButton);
     await tester.tap(createAccountButton);
     await tester.pump(const Duration(milliseconds: 500));

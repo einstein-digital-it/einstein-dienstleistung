@@ -30,6 +30,7 @@ class CustomerApiService {
     required String email,
     required String password,
     String? language,
+    bool acceptTerms = false,
   }) async {
     final data = await client.post(
       'auth/register',
@@ -38,6 +39,8 @@ class CustomerApiService {
         'email': email,
         'password': password,
         'preferred_language': ?language,
+        // Consent to the AGB and the privacy policy (the server stores when)
+        if (acceptTerms) 'accept_terms': true,
       },
     );
     return Map<String, dynamic>.from(data as Map);

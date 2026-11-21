@@ -1,6 +1,12 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'terms_pre': 'I have read and accept the ',
+  'terms_agb': 'Terms (AGB)',
+  'terms_and': ' and the ',
+  'terms_privacy': 'Privacy Policy',
+  'terms_post': '.',
+  'terms_required': 'Please accept the terms and the privacy policy.',
   'ai_card_kicker': 'New: AI assistant',
   'ai_card_title': 'Your letters – understood, answered, signed',
   'ai_card_sub': 'Upload a letter. The AI does the rest – in your language.',
@@ -241,6 +247,12 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'terms_pre': 'قرأتُ ',
+  'terms_agb': 'الشروط والأحكام العامة (AGB)',
+  'terms_and': ' و',
+  'terms_privacy': 'سياسة الخصوصية',
+  'terms_post': ' وأوافق عليهما.',
+  'terms_required': 'يُرجى الموافقة على الشروط والأحكام العامة وسياسة الخصوصية.',
   'ai_card_kicker': 'جديد: مساعد بالذكاء الاصطناعي',
   'ai_card_title': 'رسائلك – مفهومة، ومردود عليها، وموقّعة',
   'ai_card_sub': 'ارفع رسالتك، ويتولّى الذكاء الاصطناعي الباقي بلغتك.',
@@ -481,6 +493,12 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'terms_pre': 'Ich habe die ',
+  'terms_agb': 'AGB',
+  'terms_and': ' und die ',
+  'terms_privacy': 'Datenschutzerklärung',
+  'terms_post': ' gelesen und akzeptiere sie.',
+  'terms_required': 'Bitte akzeptieren Sie die AGB und die Datenschutzerklärung.',
   'ai_card_kicker': 'Neu: KI-Assistent',
   'ai_card_title': 'Ihre Briefe – verstanden, beantwortet, unterschrieben',
   'ai_card_sub': 'Laden Sie einen Brief hoch. Die KI erledigt den Rest – in Ihrer Sprache.',

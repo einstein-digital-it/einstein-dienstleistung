@@ -21,6 +21,8 @@ class AuthController extends GetxController {
   final codeController = TextEditingController();
 
   final isRegister = false.obs;
+  /// "I accept the AGB and the privacy policy" — required to sign up.
+  final acceptTerms = false.obs;
   final isLoading = false.obs;
   final errorText = ''.obs;
 
@@ -42,6 +44,11 @@ class AuthController extends GetxController {
 
     if (isRegister.value && name.isEmpty) {
       errorText.value = 'Enter your name to create an account.';
+      return;
+    }
+
+    if (isRegister.value && !acceptTerms.value) {
+      errorText.value = 'terms_required'.tr;
       return;
     }
 
@@ -70,6 +77,7 @@ class AuthController extends GetxController {
               email: email,
               password: password,
               language: Get.locale?.languageCode,
+              acceptTerms: acceptTerms.value,
             )
           : await api.login(email: email, password: password);
       if (result['verification_required'] == true) {

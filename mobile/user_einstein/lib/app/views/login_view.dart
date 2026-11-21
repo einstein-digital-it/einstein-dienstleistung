@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../api/api_client.dart';
 import '../controllers/auth_controller.dart';
 import '../theme/app_colors.dart';
 import '../widgets/einstein_logo.dart';
@@ -87,6 +88,10 @@ class LoginView extends GetView<AuthController> {
                       icon: Icons.lock_outline,
                       obscureText: true,
                     ),
+                    if (controller.isRegister.value) ...[
+                      const SizedBox(height: 16),
+                      _TermsConsent(controller: controller),
+                    ],
                     if (controller.errorText.value.isNotEmpty) ...[
                       const SizedBox(height: 18),
                       Container(
@@ -350,5 +355,48 @@ class _AuthField extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+/// "I have read and accept the AGB and the privacy policy" with links to both pages
+/// (the website on the same address as the API).
+class _TermsConsent extends StatelessWidget {
+  const _TermsConsent({required this.controller});
+
+  final AuthController controller;
+
+  void _open(String page) {
+    final api = Uri.parse(Get.find<ApiClient>().baseUrl);
+    launchUrl(api.replace(path: '/$page', query: null, fragment: null), mode: LaunchMode.externalApplication);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const link = TextStyle(color: AppColors.purple, fontWeight: FontWeight.w700, decoration: TextDecoration.underline);
+    return Obx(() => Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Checkbox(
+              key: const Key('accept_terms'),
+              value: controller.acceptTerms.value,
+              onChanged: (v) {
+                controller.acceptTerms.value = v ?? false;
+                controller.errorText.value = '';
+              },
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Wrap(children: [
+                  Text('terms_pre'.tr, style: const TextStyle(color: AppColors.text, height: 1.4)),
+                  GestureDetector(onTap: () => _open('AGB'), child: Text('terms_agb'.tr, style: link)),
+                  Text('terms_and'.tr, style: const TextStyle(color: AppColors.text, height: 1.4)),
+                  GestureDetector(onTap: () => _open('Datenschutz'), child: Text('terms_privacy'.tr, style: link)),
+                  Text('terms_post'.tr, style: const TextStyle(color: AppColors.text, height: 1.4)),
+                ]),
+              ),
+            ),
+          ],
+        ));
   }
 }

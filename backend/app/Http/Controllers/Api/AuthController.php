@@ -130,6 +130,9 @@ class AuthController extends Controller
             'phone' => ['sometimes', 'nullable', 'string', 'max:255'],
             'address' => ['sometimes', 'nullable', 'string', 'max:255'],
             'preferred_language' => ['sometimes', 'nullable', 'string', 'max:10'],
+            // "I accept the AGB and the privacy policy". The website and app require it; app
+            // versions from before it existed do not send it, so it is optional here.
+            'accept_terms' => ['sometimes', 'accepted'],
         ]);
 
         $user = User::create([
@@ -143,6 +146,10 @@ class AuthController extends Controller
             'role' => 'user',
             'is_active' => true,
         ]);
+        // Proof of consent: when the customer accepted the AGB and the privacy policy
+        if (! empty($data['accept_terms'])) {
+            $user->forceFill(['terms_accepted_at' => now()])->save();
+        }
 
         if (EmailVerification::enabled()) {
             EmailVerification::send($user);
