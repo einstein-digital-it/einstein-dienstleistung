@@ -130,9 +130,8 @@ class AuthController extends Controller
             'phone' => ['sometimes', 'nullable', 'string', 'max:255'],
             'address' => ['sometimes', 'nullable', 'string', 'max:255'],
             'preferred_language' => ['sometimes', 'nullable', 'string', 'max:10'],
-            // "I accept the AGB and the privacy policy". The website and app require it; app
-            // versions from before it existed do not send it, so it is optional here.
-            'accept_terms' => ['sometimes', 'accepted'],
+            // "I accept the AGB and the privacy policy": no account without it (owner, Nov 2026)
+            'accept_terms' => ['required', 'accepted'],
         ]);
 
         $user = User::create([

@@ -27,4 +27,12 @@ class TermsConsentTest extends TestCase
             'name' => 'Amina', 'email' => 'amina@example.com', 'password' => 'geheim123', 'accept_terms' => false,
         ])->assertStatus(422)->assertJsonValidationErrors('accept_terms');
     }
+
+    public function test_no_account_without_consent(): void
+    {
+        $this->postJson('/api/auth/register', [
+            'name' => 'Amina', 'email' => 'amina@example.com', 'password' => 'geheim123',
+        ])->assertStatus(422)->assertJsonValidationErrors('accept_terms');
+        $this->assertDatabaseMissing('users', ['email' => 'amina@example.com']);
+    }
 }

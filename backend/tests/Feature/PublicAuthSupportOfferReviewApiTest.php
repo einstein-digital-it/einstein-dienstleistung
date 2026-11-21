@@ -40,6 +40,7 @@ class PublicAuthSupportOfferReviewApiTest extends TestCase
             'name' => 'Customer User',
             'email' => 'customer@example.com',
             'password' => 'secret123',
+            'accept_terms' => true,
         ])
             ->assertCreated()
             ->assertJsonPath('data.user.role', 'user');

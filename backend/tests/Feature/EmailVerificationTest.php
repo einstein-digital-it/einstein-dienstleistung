@@ -21,6 +21,7 @@ class EmailVerificationTest extends TestCase
             'email' => $email,
             'password' => 'secret123',
             'preferred_language' => $lang,
+            'accept_terms' => true,
         ])->assertCreated()
             ->assertJsonPath('code', 'email_not_verified')
             ->assertJsonPath('data.verification_required', true)
@@ -142,7 +143,7 @@ class EmailVerificationTest extends TestCase
         config(['services.auth.verify_email' => false]);
 
         $this->postJson('/api/auth/register', [
-            'name' => 'New Customer', 'email' => 'new@example.com', 'password' => 'secret123',
+            'name' => 'New Customer', 'email' => 'new@example.com', 'password' => 'secret123', 'accept_terms' => true,
         ])->assertCreated()->assertJsonPath('data.user.email', 'new@example.com');
 
         $this->postJson('/api/auth/login', ['email' => 'new@example.com', 'password' => 'secret123'])->assertOk();
