@@ -96,20 +96,6 @@ class ServicesController extends GetxController {
       ],
     ),
     const ServiceItem(
-      id: 'eur1',
-      title: 'service_eur1_title',
-      description: 'service_eur1_description',
-      price: 'service_eur1_price',
-      icon: Icons.local_shipping_outlined,
-      color: Color(0xFFE11D48),
-      features: [
-        'service_eur1_feature_1',
-        'service_eur1_feature_2',
-        'service_eur1_feature_3',
-        'service_eur1_feature_4',
-      ],
-    ),
-    const ServiceItem(
       id: 'dokumentabo',
       title: 'service_dokumentabo_title',
       description: 'service_dokumentabo_description',

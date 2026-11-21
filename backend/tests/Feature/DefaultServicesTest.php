@@ -14,21 +14,21 @@ class DefaultServicesTest extends TestCase
     public function test_the_website_services_are_in_the_table_in_six_languages(): void
     {
         $this->assertSame(
-            ['office', 'secretariat', 'forms', 'admin', 'coordination', 'mercosur', 'print', 'eur1', 'dokumentabo', 'bueromanagement'],
+            ['office', 'secretariat', 'forms', 'admin', 'coordination', 'mercosur', 'print', 'dokumentabo', 'bueromanagement'],
             Service::orderBy('sort_order')->pluck('category')->all()
         );
 
-        $eur1 = Service::where('category', 'eur1')->first();
+        $forms = Service::where('category', 'forms')->first();
         foreach (['de', 'ar', 'en', 'tr', 'es', 'uk'] as $lang) {
-            $this->assertNotEmpty($eur1->{"name_$lang"}, "name_$lang");
-            $this->assertNotEmpty($eur1->{"description_$lang"}, "description_$lang");
-            $this->assertNotEmpty($eur1->features[$lang] ?? [], "features.$lang");
+            $this->assertNotEmpty($forms->{"name_$lang"}, "name_$lang");
+            $this->assertNotEmpty($forms->{"description_$lang"}, "description_$lang");
+            $this->assertNotEmpty($forms->features[$lang] ?? [], "features.$lang");
         }
-        $this->assertSame($eur1->name_de, $eur1->name);
+        $this->assertSame($forms->name_de, $forms->name);
 
         $this->getJson('/api/public/services')
             ->assertOk()
-            ->assertJsonCount(10, 'data')
+            ->assertJsonCount(9, 'data')
             ->assertJsonPath('data.0.category', 'office');
     }
 
@@ -45,7 +45,7 @@ class DefaultServicesTest extends TestCase
             ->assertJsonPath('data.features.de.1', 'Stempel');
 
         $this->patchJson("/api/admin/services/{$print->id}", ['status' => 'inactive'])->assertOk();
-        $this->getJson('/api/public/services')->assertOk()->assertJsonCount(9, 'data');
+        $this->getJson('/api/public/services')->assertOk()->assertJsonCount(8, 'data');
 
         $this->deleteJson("/api/admin/services/{$print->id}")->assertNoContent();
         $this->assertDatabaseMissing('services', ['category' => 'print']);
@@ -65,6 +65,6 @@ class DefaultServicesTest extends TestCase
             'sort_order' => 200,
         ])->assertCreated()->assertJsonPath('data.category', 'uebersetzung');
 
-        $this->getJson('/api/public/services')->assertOk()->assertJsonPath('data.10.name_ar', 'ترجمة');
+        $this->getJson('/api/public/services')->assertOk()->assertJsonPath('data.9.name_ar', 'ترجمة');
     }
 }

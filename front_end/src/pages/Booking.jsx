@@ -24,8 +24,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Loader2,
-  AlertCircle,
-  Ship
+  AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,7 +62,6 @@ const translations = {
       mercosur: "MERCOSUR (LATAM)",
       print: "Druck- & Stempeldienstleistungen",
       secretariat: "Büro & Sekretariat (Vor-Ort)",
-      eur1: "Dokumentenservice EU–Syrien / EUR.1",
       dokumentabo: "Dokumenten-Abo – 58,31 € / Monat inkl. MwSt.",
       bueromanagement: "Büro-Management (Betriebe)"
     },
@@ -105,7 +103,6 @@ const translations = {
       mercosur: "ميركوسور (أمريكا اللاتينية)",
       print: "خدمات الطباعة والأختام",
       secretariat: "المكتب والسكرتارية (حضوري)",
-      eur1: "خدمة وثائق التصدير/الاستيراد EUR.1",
       dokumentabo: "اشتراك المستندات – 58.31 يورو / شهرياً شامل الضريبة",
       bueromanagement: "إدارة المكتب (للشركات)"
     },
@@ -147,7 +144,6 @@ const translations = {
       mercosur: "MERCOSUR (LATAM)",
       print: "Printing & Stamp Services",
       secretariat: "Office & Secretariat (On-Site)",
-      eur1: "EU–Syria Document Service / EUR.1",
       dokumentabo: "Document Subscription – €58.31 / month incl. VAT",
       bueromanagement: "Office Management (businesses)"
     },
@@ -189,7 +185,6 @@ const translations = {
       mercosur: "MERCOSUR (LATAM)",
       print: "Servicios de Impresión y Sellos",
       secretariat: "Oficina & Secretariado (Presencial)",
-      eur1: "Servicio de Documentos UE–Siria / EUR.1",
       dokumentabo: "Suscripción de Documentos – 58,31 € / mes IVA incl.",
       bueromanagement: "Gestión de Oficina (empresas)"
     },
@@ -231,7 +226,6 @@ const translations = {
       mercosur: "MERCOSUR (LATAM)",
       print: "Baskı ve Damga Hizmetleri",
       secretariat: "Ofis & Sekreterlik (Yerinde)",
-      eur1: "AB–Suriye Belge Hizmeti / EUR.1",
       dokumentabo: "Belge Aboneliği – Aylık 58,31 € KDV dahil",
       bueromanagement: "Büro Yönetimi (işletmeler)"
     },
@@ -273,7 +267,6 @@ const translations = {
       mercosur: "MERCOSUR (Латинська Америка)",
       print: "Друк і печатки",
       secretariat: "Офіс і секретаріат (на місці)",
-      eur1: "Документи ЄС–Сирія / EUR.1",
       dokumentabo: "Документна підписка – 58,31 € / міс. з ПДВ",
       bueromanagement: "Офіс-менеджмент (для бізнесу)"
     },
@@ -319,7 +312,6 @@ const categories = [
   { key: "mercosur", icon: Globe, color: "bg-amber-500" },
   { key: "print", icon: Printer, color: "bg-pink-500" },
   { key: "secretariat", icon: Building2, color: "bg-violet-600" },
-  { key: "eur1", icon: Ship, color: "bg-rose-600" },
   { key: "dokumentabo", icon: Mail, color: "bg-purple-500" },
   { key: "bueromanagement", icon: Briefcase, color: "bg-sky-700" }
 ];

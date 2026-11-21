@@ -6,8 +6,8 @@ void main() {
     final item = BookingItem.fromJson({
       'id': 1,
       'booking_number': 'ES-20261025171803-514',
-      'service_name': 'Dokumentenservice EU-Syrien / EUR.1',
-      'category': 'eur1',
+      'service_name': 'Behörden & Formularhilfe',
+      'category': 'forms',
       'date': '2026-10-26T00:00:00.000000Z',
       'time': '09:00',
       'status': 'pending',

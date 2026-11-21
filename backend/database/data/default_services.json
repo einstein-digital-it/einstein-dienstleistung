@@ -440,62 +440,6 @@
     "price_unit": "service"
   },
   {
-    "category": "eur1",
-    "sort_order": 80,
-    "name_de": "Dokumentenservice für EU–Syrien Warenverkehr / EUR.1",
-    "description_de": "Administrative Vorbereitung von Export-/Importunterlagen für den Warenverkehr EU–Syrien.",
-    "name_ar": "خدمة وثائق التصدير/الاستيراد بين سوريا والاتحاد الأوروبي / EUR.1",
-    "description_ar": "تحضير إداري لوثائق التصدير/الاستيراد في التبادل التجاري بين الاتحاد الأوروبي وسوريا.",
-    "name_en": "EU–Syria Trade Document Service / EUR.1",
-    "description_en": "Administrative preparation of export/import documents for EU–Syria trade.",
-    "name_tr": "AB–Suriye Ticaret Belge Hizmeti / EUR.1",
-    "description_tr": "AB–Suriye ticareti icin ihracat/ithalat belgelerinin idari hazirligi.",
-    "name_es": "Servicio de Documentos Comerciales UE–Siria / EUR.1",
-    "description_es": "Preparación administrativa de documentos de exportación/importación para el comercio UE–Siria.",
-    "name_uk": "Документи для торгівлі ЄС–Сирія / EUR.1",
-    "description_uk": "Адміністративна підготовка експортних/імпортних документів для торгівлі ЄС–Сирія.",
-    "features": {
-      "de": [
-        "Administrative Vorbereitung von Export-/Importunterlagen",
-        "Checklisten",
-        "EUR.1-Vorbereitung",
-        "Übersetzungen"
-      ],
-      "ar": [
-        "تحضير إداري لوثائق التصدير/الاستيراد",
-        "قوائم المراجعة (Checklisten)",
-        "تجهيز EUR.1",
-        "الترجمات"
-      ],
-      "en": [
-        "Administrative preparation of export/import documents",
-        "Checklists",
-        "EUR.1 preparation",
-        "Translations"
-      ],
-      "tr": [
-        "Ihracat/ithalat belgelerinin idari hazirligi",
-        "Kontrol listeleri (Checklisten)",
-        "EUR.1 hazirligi",
-        "Ceviriler"
-      ],
-      "es": [
-        "Preparación administrativa de documentos de exportación/importación",
-        "Listas de verificación (Checklisten)",
-        "Preparación EUR.1",
-        "Traducciones"
-      ],
-      "uk": [
-        "Адміністративна підготовка експортних/імпортних документів",
-        "Чек-листи",
-        "Підготовка EUR.1",
-        "Переклади"
-      ]
-    },
-    "price_from": 150,
-    "price_unit": "service"
-  },
-  {
     "category": "dokumentabo",
     "sort_order": 90,
     "name_de": "EinStein Dokumenten-Abo – Ihre Post. Unsere Aufgabe.",

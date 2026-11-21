@@ -29,7 +29,6 @@ class BookingController extends GetxController {
     'mercosur',
     'print',
     'office',
-    'eur1',
     'dokumentabo',
     'bueromanagement',
   ];
@@ -43,14 +42,12 @@ class BookingController extends GetxController {
     'mercosur': 'MERCOSUR (LATAM)',
     'print': 'Druck & Stempel',
     'office': 'Buero & Organisation',
-    'eur1': 'Dokumentenservice EU-Syrien / EUR.1',
     'dokumentabo': 'Dokumenten-Abo (49 EUR / Monat)',
     'bueromanagement': 'Büro-Management',
   };
 
   /// Fixed prices for services that have one (others are calculated later)
   final categoryPrices = const <String, num>{
-    'eur1': 150,
     'dokumentabo': 49,
   };
 

@@ -11,7 +11,7 @@ void main() {
 
   test('Ukrainian prices end with the VAT note the booking grid strips', () {
     final vat = ukTranslations['incl_vat']!;
-    for (final key in ['service_forms_price', 'service_admin_price', 'service_eur1_price']) {
+    for (final key in ['service_forms_price', 'service_admin_price', 'service_print_price']) {
       expect(ukTranslations[key], endsWith(' $vat'));
     }
   });

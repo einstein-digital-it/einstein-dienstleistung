@@ -51,13 +51,13 @@ class McpController extends Controller
         ],
         'services' => [
             'model' => Service::class,
-            'about' => 'Services shown on the website/app, one row per category (e.g. "eur1", "forms"). Names and descriptions in de/ar/en/tr/es/uk; features is JSON {"de": ["…"], ...}. Hide a service with status "inactive".',
+            'about' => 'Services shown on the website/app, one row per category (e.g. "forms"). Names and descriptions in de/ar/en/tr/es/uk; features is JSON {"de": ["…"], ...}. Hide a service with status "inactive".',
             'writable' => '*', 'create' => true, 'delete' => true,
             'search' => ['name', 'name_de', 'name_ar', 'name_en', 'category'],
         ],
         'price_groups' => [
             'model' => PriceGroup::class,
-            'about' => 'One price group per service category (e.g. "dokumentabo", "eur1", "forms"). Its price_items are the prices shown on the website and app; the first item is the main price.',
+            'about' => 'One price group per service category (e.g. "dokumentabo", "forms"). Its price_items are the prices shown on the website and app; the first item is the main price.',
             'writable' => '*', 'create' => true, 'delete' => true,
             'search' => ['category'],
         ],
