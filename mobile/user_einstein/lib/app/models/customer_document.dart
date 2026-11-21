@@ -52,6 +52,7 @@ class CustomerDocument {
     this.summary,
     this.translation,
     this.translationLanguage,
+    this.translationMode,
     this.deadline,
     this.section,
   });
@@ -68,6 +69,9 @@ class CustomerDocument {
   final String? summary;
   final String? translation;
   final String? translationLanguage;
+  /// "explanation" when the letter was already in the chosen language (plain-language version).
+  final String? translationMode;
+  bool get isExplanation => translationMode == 'explanation';
   final DateTime? deadline;
   final String? section;
 
@@ -88,6 +92,7 @@ class CustomerDocument {
     summary: json['summary']?.toString(),
     translation: json['translation']?.toString(),
     translationLanguage: json['translation_language']?.toString(),
+    translationMode: json['translation_mode']?.toString(),
     deadline: DateTime.tryParse((json['deadline'] ?? '').toString()),
     section: json['section']?.toString(),
   );

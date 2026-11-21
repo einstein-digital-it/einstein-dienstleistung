@@ -85,6 +85,8 @@ class ProcessCustomerDocument
             $doc->update([
                 'summary' => $result['summary'] ?? $doc->summary,
                 'translation' => $result['translation'] ?? null,
+                // "explanation" when the letter was already in the chosen language (plain-language version)
+                'translation_mode' => ($result['mode'] ?? null) === 'explanation' ? 'explanation' : 'translation',
                 'ai_status' => 'done',
             ] + $this->tokens($doc));
             $this->notify($doc, [
@@ -166,7 +168,8 @@ class ProcessCustomerDocument
         Reply with ONE JSON object only, no other text:
         {
           "summary": 2-4 plain sentences in $language: what it is about, what the customer must do, and any deadline or amount,
-          "translation": a faithful full translation of the document text into $language (keep names, numbers, dates, reference numbers; use line breaks)
+          "mode": "translation" if the document is written in another language than $language, "explanation" if it is already in $language,
+          "translation": for "translation": a faithful full translation of the document text into $language. For "explanation": do not translate; rewrite the whole document in plain, easy $language for someone who does not know official language, in the same order, and explain official terms in brackets. In both cases keep every name, number, amount, date and reference number, and use line breaks
         }
         TXT;
         $prompt = <<<TXT

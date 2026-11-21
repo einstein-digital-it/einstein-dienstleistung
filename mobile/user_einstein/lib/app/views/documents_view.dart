@@ -724,7 +724,7 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
                     child: Row(children: [
                       const Icon(Icons.translate_rounded, color: AppColors.navy, size: 20),
                       const SizedBox(width: 8),
-                      Expanded(child: Text('files_translation'.tr, style: Theme.of(context).textTheme.titleLarge)),
+                      Expanded(child: Text((doc.isExplanation ? 'files_explanation' : 'files_translation').tr, style: Theme.of(context).textTheme.titleLarge)),
                       Icon(showTranslation ? Icons.expand_less_rounded : Icons.expand_more_rounded, color: AppColors.muted),
                     ]),
                   ),

@@ -169,7 +169,7 @@ class FileAboTest extends TestCase
 
         (new ProcessCustomerDocument($id, false, false, true))->handle();
         $doc->refresh();
-        $this->assertSame(['done', 'النص المترجم كاملاً', 'ملخص', 'jobcenter'], [$doc->ai_status, $doc->translation, $doc->summary, $doc->folder]);
+        $this->assertSame(['done', 'النص المترجم كاملاً', 'ملخص', 'jobcenter', 'translation'], [$doc->ai_status, $doc->translation, $doc->summary, $doc->folder, $doc->translation_mode]);
         // Both calls are counted for documents:ai-cost
         $this->assertSame([3000, 1100], [$doc->ai_input_tokens, $doc->ai_output_tokens]);
 
@@ -214,5 +214,31 @@ class FileAboTest extends TestCase
             'HTTP_STRIPE_SIGNATURE' => "t=$t,v1=$sig",
             'CONTENT_TYPE' => 'application/json',
         ], $payload)->assertOk();
+    }
+
+    public function test_a_letter_already_in_the_chosen_language_is_explained_in_plain_words(): void
+    {
+        Storage::fake('local');
+        Bus::fake([ProcessCustomerDocument::class]);
+        config(['services.anthropic.key' => 'test-key']);
+        Http::fake([
+            'api.anthropic.com/v1/messages/count_tokens' => Http::response(['input_tokens' => 1000]),
+            'api.anthropic.com/v1/messages' => Http::response(['usage' => ['input_tokens' => 1500, 'output_tokens' => 900], 'content' => [['type' => 'text', 'text' => json_encode([
+                'summary' => 'Das Jobcenter will Unterlagen.', 'mode' => 'explanation', 'translation' => 'Das Jobcenter (Amt für Bürgergeld) möchte Ihre Kontoauszüge sehen.',
+            ])]]]),
+        ]);
+        $this->withApiUser('user', 'deutsch@example.com')->forceFill(['file_abo_status' => 'active'])->save();
+        $id = $this->post('/api/customer/documents', [
+            'folder' => 'jobcenter', 'lang' => 'de',
+            'file' => UploadedFile::fake()->create('brief.pdf', 40, 'application/pdf'),
+        ], ['Accept' => 'application/json'])->assertCreated()->json('data.id');
+
+        $this->postJson("/api/customer/documents/$id/translate", ['lang' => 'de'])->assertOk();
+        (new ProcessCustomerDocument($id, false, false, true))->handle();
+
+        // The prompt asks for a plain-language version when the letter is already in that language
+        Http::assertSent(fn ($request) => str_ends_with($request->url(), '/v1/messages')
+            && str_contains($request['messages'][0]['content'][1]['text'], '"explanation"'));
+        $this->getJson("/api/customer/documents")->assertOk()->assertJsonFragment(['translation_mode' => 'explanation']);
     }
 }

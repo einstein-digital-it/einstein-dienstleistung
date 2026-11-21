@@ -10,7 +10,7 @@ const T = {
     sub: "Laden Sie einen Brief hoch. Unsere KI erledigt den Rest – in Ihrer Sprache.",
     items: [
       ["sort", "Sortieren & zusammenfassen", "Jeder Brief landet automatisch im richtigen Ordner, mit kurzer Zusammenfassung und Frist."],
-      ["translate", "In Ihre Sprache übersetzen", "Arabisch, Deutsch, Englisch, Türkisch, Spanisch oder Ukrainisch – mit einem Klick."],
+      ["translate", "Übersetzen oder einfach erklären", "In Arabisch, Deutsch, Englisch, Türkisch, Spanisch oder Ukrainisch – ist der Brief schon in Ihrer Sprache, erklärt die KI ihn in einfachen Worten."],
       ["ask", "Fragen stellen", "„Was muss ich tun? Bis wann?“ – die KI erklärt den Brief in einfachen Worten."],
       ["reply", "Antwort & Formular", "Sie sagt, ob eine Antwort nötig ist, schreibt sie auf Deutsch und füllt Formulare mit Ihren Daten aus."],
       ["sign", "Unterschreiben & senden", "Mit dem Finger unterschreiben, als PDF speichern, teilen oder direkt per E-Mail senden."],
@@ -22,7 +22,7 @@ const T = {
     sub: "ارفع رسالتك، ويتولّى الذكاء الاصطناعي الباقي بلغتك.",
     items: [
       ["sort", "الترتيب والتلخيص", "تُحفظ كل رسالة تلقائياً في المجلد الصحيح، مع ملخص قصير والموعد النهائي."],
-      ["translate", "الترجمة إلى لغتك", "العربية أو الألمانية أو الإنجليزية أو التركية أو الإسبانية أو الأوكرانية – بنقرة واحدة."],
+      ["translate", "الترجمة أو الشرح المبسّط", "بالعربية أو الألمانية أو الإنجليزية أو التركية أو الإسبانية أو الأوكرانية – وإذا كانت الرسالة بلغتك أصلاً، يشرحها الذكاء الاصطناعي بكلمات بسيطة."],
       ["ask", "اطرح أسئلتك", "«ما الذي يجب عليّ فعله؟ وما هو الموعد النهائي؟» – يشرح لك الذكاء الاصطناعي الرسالة بكلمات بسيطة."],
       ["reply", "الرد والاستمارات", "يخبرك إن كانت الرسالة تحتاج إلى رد، ويكتبه بالألمانية، ويملأ الاستمارات ببياناتك."],
       ["sign", "التوقيع والإرسال", "وقّع بإصبعك، واحفظ الملف بصيغة PDF، وشاركه أو أرسله مباشرة بالبريد الإلكتروني."],
@@ -34,7 +34,7 @@ const T = {
     sub: "Upload a letter. Our AI does the rest – in your language.",
     items: [
       ["sort", "Sort & summarise", "Every letter goes into the right folder automatically, with a short summary and the deadline."],
-      ["translate", "Translate into your language", "Arabic, German, English, Turkish, Spanish or Ukrainian – with one click."],
+      ["translate", "Translate or explain simply", "In Arabic, German, English, Turkish, Spanish or Ukrainian – if the letter is already in your language, the AI explains it in plain words."],
       ["ask", "Ask questions", "“What do I have to do? By when?” – the AI explains the letter in plain words."],
       ["reply", "Reply & forms", "It tells you whether a reply is needed, writes it in German and fills in forms with your details."],
       ["sign", "Sign & send", "Sign with your finger, save as PDF, share it or send it straight by e-mail."],
@@ -46,7 +46,7 @@ const T = {
     sub: "Bir mektup yükleyin. Gerisini yapay zekâ dilinizde halleder.",
     items: [
       ["sort", "Sırala ve özetle", "Her mektup kısa bir özet ve son tarihle otomatik olarak doğru klasöre gider."],
-      ["translate", "Dilinize çevir", "Arapça, Almanca, İngilizce, Türkçe, İspanyolca veya Ukraynaca – tek tıkla."],
+      ["translate", "Çevir veya basitçe açıkla", "Arapça, Almanca, İngilizce, Türkçe, İspanyolca veya Ukraynaca – mektup zaten sizin dilinizdeyse yapay zekâ onu basit kelimelerle açıklar."],
       ["ask", "Soru sor", "“Ne yapmalıyım? Ne zamana kadar?” – yapay zekâ mektubu basitçe açıklar."],
       ["reply", "Cevap ve form", "Cevap gerekip gerekmediğini söyler, Almanca yazar ve formları bilgilerinizle doldurur."],
       ["sign", "İmzala ve gönder", "Parmağınızla imzalayın, PDF olarak kaydedin, paylaşın veya e-postayla gönderin."],
@@ -58,7 +58,7 @@ const T = {
     sub: "Suba una carta. Nuestra IA hace el resto, en su idioma.",
     items: [
       ["sort", "Ordenar y resumir", "Cada carta va sola a la carpeta correcta, con un breve resumen y el plazo."],
-      ["translate", "Traducir a su idioma", "Árabe, alemán, inglés, turco, español o ucraniano, con un clic."],
+      ["translate", "Traducir o explicar fácil", "En árabe, alemán, inglés, turco, español o ucraniano; si la carta ya está en su idioma, la IA la explica con palabras sencillas."],
       ["ask", "Hacer preguntas", "«¿Qué tengo que hacer? ¿Hasta cuándo?»: la IA explica la carta con palabras sencillas."],
       ["reply", "Respuesta y formulario", "Le dice si hace falta responder, redacta la respuesta en alemán y rellena formularios con sus datos."],
       ["sign", "Firmar y enviar", "Firme con el dedo, guárdelo en PDF, compártalo o envíelo por correo."],
@@ -70,7 +70,7 @@ const T = {
     sub: "Завантажте лист. Решту зробить наш ШІ – вашою мовою.",
     items: [
       ["sort", "Впорядкувати й підсумувати", "Кожен лист автоматично потрапляє в потрібну папку з коротким підсумком і строком."],
-      ["translate", "Перекласти вашою мовою", "Арабська, німецька, англійська, турецька, іспанська чи українська – одним натисканням."],
+      ["translate", "Перекласти або просто пояснити", "Арабською, німецькою, англійською, турецькою, іспанською чи українською – якщо лист уже вашою мовою, ШІ пояснить його простими словами."],
       ["ask", "Ставити запитання", "«Що мені робити? До коли?» – ШІ пояснює лист простими словами."],
       ["reply", "Відповідь і форми", "Підкаже, чи потрібна відповідь, напише її німецькою й заповнить форми вашими даними."],
       ["sign", "Підписати й надіслати", "Підпишіть пальцем, збережіть PDF, поділіться або надішліть поштою."],

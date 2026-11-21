@@ -23,7 +23,7 @@ class CustomerDocument extends Model
     protected $fillable = [
         'user_email', 'folder', 'title', 'file_path', 'original_name',
         'mime_type', 'size', 'uploaded_by', 'note', 'customer_file_id', 'section', 'ai_input_tokens', 'ai_output_tokens',
-        'ai_status', 'translation_language', 'sender', 'sender_email', 'summary', 'translation', 'deadline',
+        'ai_status', 'translation_language', 'sender', 'sender_email', 'summary', 'translation', 'translation_mode', 'deadline',
     ];
 
     protected function casts(): array
