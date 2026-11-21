@@ -210,128 +210,280 @@ class _SignDocumentScreenState extends State<SignDocumentScreen> {
     }
   }
 
+  /// Where the customer is: 1 fill in, 2 sign, 3 send.
+  int get _step => signature == null ? (filledCount != null ? 2 : 1) : 3;
+
+  Widget _steps() {
+    final labels = ['sign_step_fill'.tr, 'sign_step_sign'.tr, 'sign_step_send'.tr];
+    return Row(children: [
+      for (var i = 0; i < 3; i++) ...[
+        Builder(builder: (_) {
+          final n = i + 1;
+          final done = n < _step;
+          final now = n == _step;
+          return Row(mainAxisSize: MainAxisSize.min, children: [
+            Container(
+              width: 26,
+              height: 26,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: done ? AppColors.success : now ? AppColors.purple : AppColors.line,
+              ),
+              child: done
+                  ? const Icon(Icons.check_rounded, size: 16, color: Colors.white)
+                  : Text('$n', style: TextStyle(color: now ? Colors.white : AppColors.muted, fontWeight: FontWeight.w800, fontSize: 12)),
+            ),
+            const SizedBox(width: 6),
+            Text(labels[i],
+                style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700, color: done || now ? AppColors.navy : AppColors.muted)),
+          ]);
+        }),
+        if (i < 2) const Expanded(child: Padding(padding: EdgeInsets.symmetric(horizontal: 6), child: Divider(color: AppColors.line, height: 1))),
+      ],
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('sign_title'.tr)),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('sign_title'.tr, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 17, color: AppColors.navy)),
+          Text(widget.doc.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12.5, color: AppColors.muted)),
+        ]),
+      ),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : error.isNotEmpty
               ? Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(error, textAlign: TextAlign.center)))
               : Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
-                    child: Row(children: [
-                      if (widget.doc.isPdf) ...[
-                        FilledButton.icon(
-                          key: const Key('sign_autofill'),
-                          onPressed: filling ? null : _autofill,
-                          icon: filling
-                              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                              : const Icon(Icons.auto_fix_high_rounded),
-                          label: Text((filling ? 'autofill_working' : 'autofill').tr),
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                      OutlinedButton.icon(
-                        key: const Key('sign_draw'),
-                        onPressed: _draw,
-                        icon: const Icon(Icons.draw_rounded),
-                        label: Text((signature == null ? 'reply_sign' : 'reply_resign').tr),
-                      ),
-                      const Spacer(),
-                      if (pages.length > 1) ...[
-                        IconButton(onPressed: page > 0 ? () => setState(() => page--) : null, icon: const Icon(Icons.chevron_left_rounded)),
-                        Text('${page + 1} / ${pages.length}'),
-                        IconButton(onPressed: page < pages.length - 1 ? () => setState(() => page++) : null, icon: const Icon(Icons.chevron_right_rounded)),
-                      ],
-                    ]),
-                  ),
-                  if (filledCount != null)
-                    Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(color: AppColors.successSoft, borderRadius: BorderRadius.circular(12)),
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('autofill_done'.trParams({'count': '$filledCount'}),
-                            style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.w700, fontSize: 13)),
-                        if (missing.isNotEmpty)
-                          Text('${'autofill_missing'.tr} ${missing.join(', ')}',
-                              style: const TextStyle(color: AppColors.warning, fontSize: 12)),
-                      ]),
+                  // Steps and tools
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF8FAFC),
+                      border: Border(bottom: BorderSide(color: AppColors.line)),
                     ),
-                  if (signature != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(children: [
-                        Text('sign_size'.tr, style: const TextStyle(color: AppColors.muted, fontSize: 12)),
-                        Expanded(
-                          child: Slider(value: width, min: 0.12, max: 0.6, onChanged: (v) => setState(() => width = v.clamp(0.12, 1 - pos.dx))),
-                        ),
-                      ]),
-                    ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Center(
-                        child: AspectRatio(
-                          aspectRatio: sizes[page].width / sizes[page].height,
-                          child: LayoutBuilder(builder: (context, box) {
-                            return Stack(children: [
-                              Positioned.fill(child: Image.memory(pages[page], fit: BoxFit.fill)),
-                              if (signature != null)
-                                Positioned(
-                                  left: pos.dx * box.maxWidth,
-                                  top: pos.dy * box.maxHeight,
-                                  width: width * box.maxWidth,
-                                  child: GestureDetector(
-                                    key: const Key('sign_drag'),
-                                    onPanUpdate: (d) => setState(() {
-                                      pos = Offset(
-                                        (pos.dx + d.delta.dx / box.maxWidth).clamp(0.0, 1 - width),
-                                        (pos.dy + d.delta.dy / box.maxHeight).clamp(0.0, 0.95),
-                                      );
-                                    }),
-                                    child: Container(
-                                      decoration: BoxDecoration(border: Border.all(color: AppColors.purple, width: 1.5)),
-                                      child: Image.memory(signature!),
-                                    ),
-                                  ),
-                                ),
-                            ]);
-                          }),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SafeArea(
-                    top: false,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                      child: Column(children: [
-                        Text('sign_hint'.tr, style: const TextStyle(color: AppColors.muted, fontSize: 12), textAlign: TextAlign.center),
-                        const SizedBox(height: 8),
-                        Row(children: [
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                      _steps(),
+                      const SizedBox(height: 12),
+                      Row(children: [
+                        if (widget.doc.isPdf) ...[
                           Expanded(
-                            child: FilledButton.icon(
-                              key: const Key('sign_mail'),
-                              onPressed: busy ? null : () => _run(true),
-                              icon: const Icon(Icons.mail_outline_rounded),
-                              label: Text('reply_mail'.tr),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                gradient: const LinearGradient(colors: [Color(0xFF4C1D95), Color(0xFF7C3AED)]),
+                                boxShadow: [BoxShadow(color: AppColors.purple.withValues(alpha: 0.22), blurRadius: 14, offset: const Offset(0, 6))],
+                              ),
+                              child: TextButton.icon(
+                                key: const Key('sign_autofill'),
+                                onPressed: filling ? null : _autofill,
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(vertical: 13),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                ),
+                                icon: filling
+                                    ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                    : const Icon(Icons.auto_fix_high_rounded, size: 19),
+                                label: Text((filling ? 'autofill_working' : 'autofill').tr,
+                                    style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14.5)),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              key: const Key('sign_share'),
-                              onPressed: busy ? null : () => _run(false),
-                              icon: const Icon(Icons.picture_as_pdf_outlined),
-                              label: Text('reply_share'.tr),
+                        ],
+                        // The saved signature and "draw again"
+                        Material(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14), side: const BorderSide(color: AppColors.line)),
+                          child: InkWell(
+                            key: const Key('sign_draw'),
+                            borderRadius: BorderRadius.circular(14),
+                            onTap: _draw,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                if (signature != null) ...[
+                                  Image.memory(signature!, height: 28, width: 56, fit: BoxFit.contain),
+                                  const SizedBox(width: 8),
+                                ],
+                                const Icon(Icons.draw_rounded, size: 18, color: AppColors.purple),
+                                const SizedBox(width: 4),
+                                Text((signature == null ? 'reply_sign' : 'reply_resign').tr,
+                                    style: const TextStyle(color: AppColors.purple, fontWeight: FontWeight.w700)),
+                              ]),
                             ),
                           ),
-                        ]),
+                        ),
                       ]),
+                      if (filledCount != null) ...[
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(color: AppColors.successSoft, borderRadius: BorderRadius.circular(12)),
+                          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            const Icon(Icons.check_rounded, size: 18, color: AppColors.success),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                Text('autofill_done'.trParams({'count': '$filledCount'}),
+                                    style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.w700, fontSize: 13)),
+                                if (missing.isNotEmpty)
+                                  Text('${'autofill_missing'.tr} ${missing.join(', ')}',
+                                      style: const TextStyle(color: AppColors.warning, fontSize: 12)),
+                              ]),
+                            ),
+                          ]),
+                        ),
+                      ],
+                      if (signature != null || pages.length > 1) ...[
+                        const SizedBox(height: 4),
+                        Row(children: [
+                          if (signature != null) ...[
+                            Text('sign_size'.tr, style: const TextStyle(color: AppColors.darkGray, fontSize: 13, fontWeight: FontWeight.w600)),
+                            Expanded(
+                              child: SliderTheme(
+                                data: SliderTheme.of(context).copyWith(
+                                  activeTrackColor: AppColors.purple,
+                                  thumbColor: AppColors.purple,
+                                  inactiveTrackColor: AppColors.line,
+                                  overlayColor: AppColors.purple.withValues(alpha: 0.12),
+                                  trackHeight: 4,
+                                ),
+                                child: Slider(value: width, min: 0.12, max: 0.6, onChanged: (v) => setState(() => width = v.clamp(0.12, 1 - pos.dx))),
+                              ),
+                            ),
+                          ] else
+                            const Spacer(),
+                          if (pages.length > 1)
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: AppColors.line),
+                              ),
+                              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                IconButton(
+                                  visualDensity: VisualDensity.compact,
+                                  onPressed: page > 0 ? () => setState(() => page--) : null,
+                                  icon: const Icon(Icons.chevron_left_rounded),
+                                ),
+                                Text('${page + 1} / ${pages.length}', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5)),
+                                IconButton(
+                                  visualDensity: VisualDensity.compact,
+                                  onPressed: page < pages.length - 1 ? () => setState(() => page++) : null,
+                                  icon: const Icon(Icons.chevron_right_rounded),
+                                ),
+                              ]),
+                            ),
+                        ]),
+                      ],
+                    ]),
+                  ),
+                  // The page, in its own scroll area
+                  Expanded(
+                    child: Container(
+                      color: const Color(0xFFF1F5F9),
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
+                        child: Column(children: [
+                          Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: AspectRatio(
+                              aspectRatio: sizes[page].width / sizes[page].height,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 12, offset: const Offset(0, 4))],
+                                ),
+                                child: LayoutBuilder(builder: (context, box) {
+                                  return Stack(children: [
+                                    Positioned.fill(child: Image.memory(pages[page], fit: BoxFit.fill)),
+                                    if (signature != null)
+                                      Positioned(
+                                        left: pos.dx * box.maxWidth,
+                                        top: pos.dy * box.maxHeight,
+                                        width: width * box.maxWidth,
+                                        child: GestureDetector(
+                                          key: const Key('sign_drag'),
+                                          onPanUpdate: (d) => setState(() {
+                                            pos = Offset(
+                                              (pos.dx + d.delta.dx / box.maxWidth).clamp(0.0, 1 - width),
+                                              (pos.dy + d.delta.dy / box.maxHeight).clamp(0.0, 0.95),
+                                            );
+                                          }),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white.withValues(alpha: 0.35),
+                                              borderRadius: BorderRadius.circular(6),
+                                              border: Border.all(color: AppColors.purple, width: 1.6),
+                                            ),
+                                            child: Image.memory(signature!),
+                                          ),
+                                        ),
+                                      ),
+                                  ]);
+                                }),
+                              ),
+                            ),
+                          ),
+                          if (signature != null) ...[
+                            const SizedBox(height: 10),
+                            Text('sign_drag_hint'.tr, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.muted, fontSize: 12)),
+                          ],
+                        ]),
+                      ),
+                    ),
+                  ),
+                  // Send: always visible
+                  Container(
+                    decoration: const BoxDecoration(color: Colors.white, border: Border(top: BorderSide(color: AppColors.line))),
+                    child: SafeArea(
+                      top: false,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                          Row(children: [
+                            Expanded(
+                              flex: 3,
+                              child: FilledButton.icon(
+                                key: const Key('sign_mail'),
+                                onPressed: busy ? null : () => _run(true),
+                                style: FilledButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 13),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                ),
+                                icon: busy
+                                    ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                    : const Icon(Icons.mail_outline_rounded),
+                                label: Text('reply_mail'.tr, style: const TextStyle(fontWeight: FontWeight.w800)),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              flex: 2,
+                              child: OutlinedButton.icon(
+                                key: const Key('sign_share'),
+                                onPressed: busy ? null : () => _run(false),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 13),
+                                  side: const BorderSide(color: Color(0xFFE9D5FF)),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                ),
+                                icon: const Icon(Icons.ios_share_rounded),
+                                label: Text('reply_share'.tr, style: const TextStyle(fontWeight: FontWeight.w700)),
+                              ),
+                            ),
+                          ]),
+                          const SizedBox(height: 8),
+                          Text('sign_note'.tr, style: const TextStyle(color: AppColors.muted, fontSize: 11.5, height: 1.35)),
+                        ]),
+                      ),
                     ),
                   ),
                 ]),

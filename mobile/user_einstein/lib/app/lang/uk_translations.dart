@@ -1,5 +1,10 @@
 // Ukrainian (uk). Keys missing here fall back to English.
 const Map<String, String> ukTranslations = {
+  "sign_step_fill": "Заповнити",
+  "sign_step_sign": "Підписати",
+  "sign_step_send": "Надіслати",
+  "sign_drag_hint": "Перемістіть підпис пальцем.",
+  "sign_note": "Простий електронний підпис. Якщо установа вимагає власноручний підпис, роздрукуйте й підпишіть від руки.",
   "autofill": "Заповнити автоматично",
   "autofill_working": "Заповнюємо…",
   "autofill_done": "Заповнено полів: @count – ваш підпис на потрібному місці.",

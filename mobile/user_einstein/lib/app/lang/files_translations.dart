@@ -1,6 +1,11 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'sign_step_fill': 'Fill in',
+  'sign_step_sign': 'Sign',
+  'sign_step_send': 'Send',
+  'sign_drag_hint': 'Move the signature with your finger.',
+  'sign_note': 'Simple electronic signature. Where the authority requires a handwritten original, print and sign by hand.',
   'autofill': 'Auto-fill',
   'autofill_working': 'Filling in…',
   'autofill_done': '@count fields filled – your signature is in the right place.',
@@ -294,6 +299,11 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'sign_step_fill': 'التعبئة',
+  'sign_step_sign': 'التوقيع',
+  'sign_step_send': 'الإرسال',
+  'sign_drag_hint': 'اسحب التوقيع بإصبعك.',
+  'sign_note': 'توقيع إلكتروني بسيط. إذا طلبت الجهة الرسمية نسخة موقّعة بخط اليد، فاطبع المستند ووقّعه بيدك.',
   'autofill': 'تعبئة تلقائية',
   'autofill_working': 'جارٍ التعبئة…',
   'autofill_done': 'تمت تعبئة @count حقلاً – وتوقيعك في المكان الصحيح.',
@@ -587,6 +597,11 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'sign_step_fill': 'Ausfüllen',
+  'sign_step_sign': 'Unterschreiben',
+  'sign_step_send': 'Senden',
+  'sign_drag_hint': 'Unterschrift mit dem Finger verschieben.',
+  'sign_note': 'Einfache elektronische Unterschrift. Wo die Behörde Schriftform verlangt, bitte ausdrucken und von Hand unterschreiben.',
   'autofill': 'Automatisch ausfüllen',
   'autofill_working': 'Wird ausgefüllt…',
   'autofill_done': '@count Felder ausgefüllt – Ihre Unterschrift steht an der richtigen Stelle.',
