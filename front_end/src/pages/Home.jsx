@@ -642,12 +642,9 @@ const X = {
     fileKicker: "Meine Unterlagen", fileTitle: "Jeder Brief sortiert, übersetzt und mit Frist im Blick.", fileSub: "Fotografieren Sie Ihre Post. Unsere KI ordnet sie dem richtigen Ordner zu, übersetzt sie in Ihre Sprache und erinnert Sie an Fristen.",
     fileSteps: [["Hochladen", "Foto oder PDF, auch mehrere auf einmal"], ["Sortiert & übersetzt", "Im richtigen Ordner, in Ihrer Sprache"], ["Erinnert", "Bevor eine Frist abläuft"]],
     fileCta: "Meine Unterlagen öffnen", fileNote: "Monatsabo, jederzeit kündbar",
-    howKicker: "So einfach geht’s", howTitle: "In drei Schritten erledigt",
-    how: [["Leistung wählen", "Online oder per Telefon – in Ihrer Sprache."], ["Termin bekommen", "Wir bestätigen und nennen den Preis vorab."], ["Erledigt", "Wir kümmern uns – Sie behalten den Überblick."]],
     whyKicker: "Warum EinStein",
     forKicker: "Für wen",
-    ctaTitle: "Bereit, den Papierkram abzugeben?", ctaSub: "Buchen Sie in wenigen Minuten – wir melden uns schnell zurück.",
-  },
+    },
   ar: {
     badge: "شريكك في الحياة اليومية في ألمانيا",
     heroTitle: "رسائل الدوائر الرسمية والمواعيد والأعمال المكتبية – نتولاها عنك.",
@@ -659,12 +656,9 @@ const X = {
     fileKicker: "ملفاتي", fileTitle: "كل رسالة مرتّبة ومترجمة، وموعدها أمامك.", fileSub: "صوّر رسائلك، فيحفظها الذكاء الاصطناعي في المجلد الصحيح، ويترجمها إلى لغتك، ويذكّرك قبل المواعيد.",
     fileSteps: [["ارفع", "صورة أو ملف PDF، ويمكنك رفع عدة ملفات دفعة واحدة"], ["مرتّبة ومترجمة", "في المجلد الصحيح وبلغتك"], ["تذكير", "قبل انتهاء الموعد"]],
     fileCta: "افتح ملفاتي", fileNote: "اشتراك شهري، يمكنك إلغاؤه في أي وقت",
-    howKicker: "بكل سهولة", howTitle: "ثلاث خطوات فقط",
-    how: [["اختر الخدمة", "عبر الإنترنت أو بالهاتف – وبلغتك."], ["احجز موعداً", "نؤكد لك الموعد ونخبرك بالسعر مسبقاً."], ["انتهى الأمر", "نتولى كل شيء – ونبقيك على اطلاع دائم."]],
     whyKicker: "لماذا آينشتاين",
     forKicker: "لمن خدماتنا",
-    ctaTitle: "هل أنت مستعد لتسليمنا أوراقك؟", ctaSub: "احجز خلال دقائق – وسنتواصل معك سريعاً.",
-  },
+    },
   en: {
     badge: "Your partner for daily life in Germany",
     heroTitle: "Official letters, appointments, office work – handled.",
@@ -676,12 +670,9 @@ const X = {
     fileKicker: "My documents", fileTitle: "Every letter sorted, translated, deadline in sight.", fileSub: "Photograph your mail. Our AI files it in the right folder, translates it into your language and reminds you of deadlines.",
     fileSteps: [["Upload", "Photo or PDF, several at once"], ["Sorted & translated", "In the right folder, in your language"], ["Reminded", "Before a deadline passes"]],
     fileCta: "Open my documents", fileNote: "Monthly subscription, cancel any time",
-    howKicker: "How it works", howTitle: "Done in three steps",
-    how: [["Choose a service", "Online or by phone – in your language."], ["Get an appointment", "We confirm and tell you the price up front."], ["Done", "We take care of it – you stay informed."]],
     whyKicker: "Why EinStein",
     forKicker: "Who it’s for",
-    ctaTitle: "Ready to hand over the paperwork?", ctaSub: "Book in minutes – we get back to you quickly.",
-  },
+    },
   uk: {
     badge: "Ваш партнер у повсякденному житті в Німеччині",
     heroTitle: "Листи з установ, зустрічі, офіс – ми все владнаємо.",
@@ -693,12 +684,9 @@ const X = {
     fileKicker: "Мої документи", fileTitle: "Кожен лист упорядкований, перекладений, строк перед очима.", fileSub: "Сфотографуйте пошту. Наш ШІ розкладе її по папках, перекладе вашою мовою й нагадає про строки.",
     fileSteps: [["Завантажте", "Фото або PDF, кілька одразу"], ["Упорядковано й перекладено", "У потрібній папці, вашою мовою"], ["Нагадування", "До того, як мине строк"]],
     fileCta: "Відкрити мої документи", fileNote: "Місячна підписка, скасування будь-коли",
-    howKicker: "Як це працює", howTitle: "Готово за три кроки",
-    how: [["Оберіть послугу", "Онлайн або телефоном – вашою мовою."], ["Отримайте зустріч", "Ми підтверджуємо й називаємо ціну заздалегідь."], ["Готово", "Ми все владнаємо – ви в курсі."]],
     whyKicker: "Чому EinStein",
     forKicker: "Для кого",
-    ctaTitle: "Готові передати нам папери?", ctaSub: "Бронюйте за кілька хвилин – ми швидко відповімо.",
-  },
+    },
 };
 X.tr = {
   badge: "Almanya’da günlük yaşam ortağınız",
@@ -711,12 +699,9 @@ X.tr = {
   fileKicker: "Belgelerim", fileTitle: "Her mektup sıralı, çevrilmiş ve son tarihi gözünüzün önünde.", fileSub: "Mektuplarınızın fotoğrafını çekin. Yapay zekâmız doğru klasöre yerleştirir, dilinize çevirir ve son tarihleri hatırlatır.",
   fileSteps: [["Yükleyin", "Fotoğraf veya PDF, birkaçı birden"], ["Sıralanır ve çevrilir", "Doğru klasörde, kendi dilinizde"], ["Hatırlatma", "Son tarih geçmeden önce"]],
   fileCta: "Belgelerimi aç", fileNote: "Aylık abonelik, istediğiniz zaman iptal",
-  howKicker: "Nasıl çalışır", howTitle: "Üç adımda tamam",
-  how: [["Hizmeti seçin", "Online veya telefonla – kendi dilinizde."], ["Randevu alın", "Onaylar ve fiyatı baştan söyleriz."], ["Tamam", "Biz hallederiz – siz bilgilendirilirsiniz."]],
   whyKicker: "Neden EinStein",
   forKicker: "Kimler için",
-  ctaTitle: "Evrak işlerini bize bırakmaya hazır mısınız?", ctaSub: "Birkaç dakikada rezervasyon yapın – hızlıca dönüş yaparız.",
-};
+  };
 X.es = {
   badge: "Su aliado para la vida diaria en Alemania",
   heroTitle: "Cartas oficiales, citas, oficina – nos encargamos.",
@@ -728,12 +713,9 @@ X.es = {
   fileKicker: "Mis documentos", fileTitle: "Cada carta ordenada, traducida y con su plazo a la vista.", fileSub: "Fotografíe su correo. Nuestra IA lo guarda en la carpeta correcta, lo traduce a su idioma y le recuerda los plazos.",
   fileSteps: [["Suba", "Foto o PDF, varios a la vez"], ["Ordenado y traducido", "En la carpeta correcta, en su idioma"], ["Recordatorio", "Antes de que venza el plazo"]],
   fileCta: "Abrir mis documentos", fileNote: "Suscripción mensual, cancele cuando quiera",
-  howKicker: "Cómo funciona", howTitle: "Listo en tres pasos",
-  how: [["Elija un servicio", "En línea o por teléfono – en su idioma."], ["Pida una cita", "Confirmamos y le decimos el precio por adelantado."], ["Listo", "Nos encargamos de todo – usted se mantiene informado."]],
   whyKicker: "Por qué EinStein",
   forKicker: "Para quién",
-  ctaTitle: "¿Listo para delegar el papeleo?", ctaSub: "Reserve en minutos – le respondemos rápido.",
-};
+  };
 
 // How EinStein works (every request is handled by EinStein itself)
 const WORK = {
@@ -1181,25 +1163,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="py-24">
-        <div className="mx-auto max-w-7xl px-4">
-          <motion.div {...fadeUp} className="mx-auto max-w-2xl text-center">
-            <Kicker>{x.howKicker}</Kicker>
-            <h2 className="mt-4 text-3xl font-black text-[#1f0b52] md:text-4xl">{x.howTitle}</h2>
-          </motion.div>
-          <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {x.how.map(([title, text], i) => (
-              <motion.div key={title} {...fadeUp} transition={{ duration: 0.45, delay: i * 0.08 }} className="relative rounded-3xl bg-slate-50 p-8">
-                <span className="text-5xl font-black text-purple-200">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="mt-4 text-xl font-bold text-[#1f0b52]">{title}</h3>
-                <p className="mt-2 leading-relaxed text-slate-600">{text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Why + quality */}
       <section className="bg-slate-50 py-24">
         <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] gap-12 px-4 lg:grid-cols-[1.3fr_1fr]">
@@ -1261,22 +1224,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final call to action */}
       <section className="px-4 pb-8">
-        <motion.div {...fadeUp} className="relative mx-auto flex max-w-7xl flex-col gap-8 overflow-hidden rounded-[2rem] bg-[#1f0b52] p-10 text-white md:flex-row md:items-center md:justify-between md:p-12">
-          <svg aria-hidden="true" className="pointer-events-none absolute -bottom-24 -end-20 h-80 w-80 text-white/10" viewBox="0 0 100 100">
-            <polygon points="50,2 92,26 92,74 50,98 8,74 8,26" fill="currentColor" />
-          </svg>
-          <div className="relative">
-            <h2 className="text-3xl font-black md:text-4xl">{x.ctaTitle}</h2>
-            <p className="mt-3 text-lg text-purple-100">{x.ctaSub}</p>
-          </div>
-          <div className="relative flex flex-col gap-3 sm:flex-row">
-            <Link to={createPageUrl("Booking")} className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-white px-6 font-bold text-[#4c1d95] transition hover:bg-purple-50">{x.ctaBook}<Arrow className="h-5 w-5" /></Link>
-            <a href="tel:+496927246275" className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/30 px-6 font-bold text-white transition hover:bg-white/10" dir="ltr">069 27246275</a>
-          </div>
-        </motion.div>
-        <p className="mx-auto mt-8 max-w-7xl text-center text-xs text-slate-400">{t.note}</p>
+        <p className="mx-auto mt-16 max-w-7xl text-center text-xs text-slate-400">{t.note}</p>
       </section>
     </div>
   );
