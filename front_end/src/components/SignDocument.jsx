@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Download, Loader2, Mail, PenLine, Share2, Wand2, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Download, Loader2, Mail, PenLine, Share2, Wand2, X } from "lucide-react";
 import { customerDocumentsApi } from "@/api/backendClient";
 import { shareFiles } from "@/lib/shareFiles";
 import SignaturePad, { loadSignature } from "@/components/SignaturePad";
@@ -10,12 +10,12 @@ import SignaturePad, { loadSignature } from "@/components/SignaturePad";
  * the signature and the signed file are not sent to the server.
  */
 const T = {
-  de: { autofill: "Automatisch ausfüllen", autofilling: "Die KI füllt das Formular aus…", autofilled: (n) => `${n} Felder ausgefüllt – Ihre Unterschrift steht an der richtigen Stelle.`, noFields: "Dieses PDF hat keine ausfüllbaren Felder. Die Unterschrift können Sie trotzdem setzen.", stillMissing: "Bitte prüfen, noch leer:", afError: { needs_subscription: "Teil des Abos.", limit_reached: "Ihre Fragen für diesen Monat sind aufgebraucht.", not_available: "Die KI ist gerade nicht verfügbar.", failed: "Das Formular konnte nicht ausgefüllt werden." }, title: "Dokument unterschreiben", loading: "Dokument wird geladen…", page: "Seite", of: "von", drag: "Ziehen Sie die Unterschrift an die richtige Stelle. Größe:", sign: "Unterschrift zeichnen", resign: "Neu zeichnen", needSign: "Zeichnen Sie zuerst Ihre Unterschrift.", pdf: "Unterschriebenes PDF herunterladen", share: "Teilen", mail: "Per E-Mail senden", mailHint: "Das PDF wurde heruntergeladen – hängen Sie es an die E-Mail an.", close: "Schließen", error: "Das Dokument konnte nicht geöffnet werden.", unsupported: "Nur PDF und Fotos (JPG, PNG) können unterschrieben werden.", note: "Einfache elektronische Unterschrift. Wo die Behörde Schriftform verlangt, bitte ausdrucken und von Hand unterschreiben." },
-  ar: { autofill: "تعبئة تلقائية", autofilling: "يملأ الذكاء الاصطناعي الاستمارة…", autofilled: (n) => `تمت تعبئة ${n} حقلاً – وتوقيعك في المكان الصحيح.`, noFields: "لا يحتوي ملف PDF هذا على حقول قابلة للتعبئة، ويمكنك مع ذلك إضافة توقيعك.", stillMissing: "يُرجى المراجعة، ما زالت فارغة:", afError: { needs_subscription: "جزء من الاشتراك.", limit_reached: "استنفدت أسئلتك لهذا الشهر.", not_available: "الذكاء الاصطناعي غير متاح حالياً.", failed: "تعذّرت تعبئة الاستمارة." }, title: "توقيع المستند", loading: "جارٍ تحميل المستند…", page: "الصفحة", of: "من", drag: "اسحب التوقيع إلى المكان الصحيح. الحجم:", sign: "ارسم توقيعك", resign: "أعد الرسم", needSign: "ارسم توقيعك أولاً.", pdf: "تنزيل ملف PDF الموقّع", share: "مشاركة", mail: "إرسال بالبريد الإلكتروني", mailHint: "تم تنزيل ملف PDF – أرفقه بالرسالة الإلكترونية.", close: "إغلاق", error: "تعذّر فتح المستند.", unsupported: "يمكن توقيع ملفات PDF والصور (JPG وPNG) فقط.", note: "توقيع إلكتروني بسيط. إذا طلبت الجهة الرسمية نسخة موقّعة بخط اليد، فاطبع المستند ووقّعه بيدك." },
-  en: { autofill: "Auto-fill", autofilling: "The AI is filling in the form…", autofilled: (n) => `${n} fields filled – your signature is in the right place.`, noFields: "This PDF has no fillable fields. You can still add your signature.", stillMissing: "Please check, still empty:", afError: { needs_subscription: "Part of the subscription.", limit_reached: "Your questions for this month are used up.", not_available: "The AI is not available right now.", failed: "The form could not be filled in." }, title: "Sign document", loading: "Loading the document…", page: "Page", of: "of", drag: "Drag the signature to the right place. Size:", sign: "Draw signature", resign: "Draw again", needSign: "Draw your signature first.", pdf: "Download signed PDF", share: "Share", mail: "Send by e-mail", mailHint: "The PDF was downloaded – attach it to the e-mail.", close: "Close", error: "The document could not be opened.", unsupported: "Only PDFs and photos (JPG, PNG) can be signed.", note: "Simple electronic signature. Where the authority requires a handwritten original, please print and sign by hand." },
-  tr: { autofill: "Otomatik doldur", autofilling: "Yapay zekâ formu dolduruyor…", autofilled: (n) => `${n} alan dolduruldu – imzanız doğru yerde.`, noFields: "Bu PDF'te doldurulabilir alan yok. Yine de imzanızı ekleyebilirsiniz.", stillMissing: "Lütfen kontrol edin, hâlâ boş:", afError: { needs_subscription: "Aboneliğe dahildir.", limit_reached: "Bu ayki sorularınız bitti.", not_available: "Yapay zekâ şu anda kullanılamıyor.", failed: "Form doldurulamadı." }, title: "Belgeyi imzala", loading: "Belge yükleniyor…", page: "Sayfa", of: "/", drag: "İmzayı doğru yere sürükleyin. Boyut:", sign: "İmza çiz", resign: "Yeniden çiz", needSign: "Önce imzanızı çizin.", pdf: "İmzalı PDF'i indir", share: "Paylaş", mail: "E-posta ile gönder", mailHint: "PDF indirildi – e-postaya ekleyin.", close: "Kapat", error: "Belge açılamadı.", unsupported: "Yalnızca PDF ve fotoğraflar (JPG, PNG) imzalanabilir.", note: "Basit elektronik imza. Kurum ıslak imza istiyorsa yazdırıp elle imzalayın." },
-  es: { autofill: "Rellenar automáticamente", autofilling: "La IA está rellenando el formulario…", autofilled: (n) => `${n} campos rellenados: su firma está en su sitio.`, noFields: "Este PDF no tiene campos rellenables. Aun así puede añadir su firma.", stillMissing: "Revise, aún vacíos:", afError: { needs_subscription: "Incluido en la suscripción.", limit_reached: "Ha usado todas las preguntas de este mes.", not_available: "La IA no está disponible ahora.", failed: "No se pudo rellenar el formulario." }, title: "Firmar documento", loading: "Cargando el documento…", page: "Página", of: "de", drag: "Arrastre la firma al lugar correcto. Tamaño:", sign: "Dibujar firma", resign: "Dibujar de nuevo", needSign: "Dibuje primero su firma.", pdf: "Descargar PDF firmado", share: "Compartir", mail: "Enviar por correo", mailHint: "Se ha descargado el PDF: adjúntelo al correo.", close: "Cerrar", error: "No se pudo abrir el documento.", unsupported: "Solo se pueden firmar PDF y fotos (JPG, PNG).", note: "Firma electrónica simple. Si la autoridad exige el original firmado a mano, imprímalo y fírmelo." },
-  uk: { autofill: "Заповнити автоматично", autofilling: "ШІ заповнює форму…", autofilled: (n) => `Заповнено полів: ${n} – ваш підпис на потрібному місці.`, noFields: "У цьому PDF немає полів для заповнення. Підпис ви все одно можете додати.", stillMissing: "Перевірте, ще порожні:", afError: { needs_subscription: "Входить у підписку.", limit_reached: "Запитання на цей місяць вичерпано.", not_available: "ШІ зараз недоступний.", failed: "Не вдалося заповнити форму." }, title: "Підписати документ", loading: "Документ завантажується…", page: "Сторінка", of: "з", drag: "Перетягніть підпис у потрібне місце. Розмір:", sign: "Намалювати підпис", resign: "Намалювати знову", needSign: "Спершу намалюйте підпис.", pdf: "Завантажити підписаний PDF", share: "Поділитися", mail: "Надіслати поштою", mailHint: "PDF завантажено – додайте його до листа.", close: "Закрити", error: "Не вдалося відкрити документ.", unsupported: "Підписати можна лише PDF і фото (JPG, PNG).", note: "Проста електронна підпис. Якщо установа вимагає власноручний підпис, роздрукуйте й підпишіть від руки." },
+  de: { steps: ["Ausfüllen", "Unterschreiben", "Senden"], size: "Größe", yourSignature: "Ihre Unterschrift", dragHint: "Unterschrift mit der Maus oder dem Finger verschieben.", autofill: "Automatisch ausfüllen", autofilling: "Die KI füllt das Formular aus…", autofilled: (n) => `${n} Felder ausgefüllt – Ihre Unterschrift steht an der richtigen Stelle.`, noFields: "Dieses PDF hat keine ausfüllbaren Felder. Die Unterschrift können Sie trotzdem setzen.", stillMissing: "Bitte prüfen, noch leer:", afError: { needs_subscription: "Teil des Abos.", limit_reached: "Ihre Fragen für diesen Monat sind aufgebraucht.", not_available: "Die KI ist gerade nicht verfügbar.", failed: "Das Formular konnte nicht ausgefüllt werden." }, title: "Dokument unterschreiben", loading: "Dokument wird geladen…", page: "Seite", of: "von", drag: "Ziehen Sie die Unterschrift an die richtige Stelle. Größe:", sign: "Unterschrift zeichnen", resign: "Neu zeichnen", needSign: "Zeichnen Sie zuerst Ihre Unterschrift.", pdf: "Unterschriebenes PDF herunterladen", share: "Teilen", mail: "Per E-Mail senden", mailHint: "Das PDF wurde heruntergeladen – hängen Sie es an die E-Mail an.", close: "Schließen", error: "Das Dokument konnte nicht geöffnet werden.", unsupported: "Nur PDF und Fotos (JPG, PNG) können unterschrieben werden.", note: "Einfache elektronische Unterschrift. Wo die Behörde Schriftform verlangt, bitte ausdrucken und von Hand unterschreiben." },
+  ar: { steps: ["التعبئة", "التوقيع", "الإرسال"], size: "الحجم", yourSignature: "توقيعك", dragHint: "اسحب التوقيع بالفأرة أو بإصبعك.", autofill: "تعبئة تلقائية", autofilling: "يملأ الذكاء الاصطناعي الاستمارة…", autofilled: (n) => `تمت تعبئة ${n} حقلاً – وتوقيعك في المكان الصحيح.`, noFields: "لا يحتوي ملف PDF هذا على حقول قابلة للتعبئة، ويمكنك مع ذلك إضافة توقيعك.", stillMissing: "يُرجى المراجعة، ما زالت فارغة:", afError: { needs_subscription: "جزء من الاشتراك.", limit_reached: "استنفدت أسئلتك لهذا الشهر.", not_available: "الذكاء الاصطناعي غير متاح حالياً.", failed: "تعذّرت تعبئة الاستمارة." }, title: "توقيع المستند", loading: "جارٍ تحميل المستند…", page: "الصفحة", of: "من", drag: "اسحب التوقيع إلى المكان الصحيح. الحجم:", sign: "ارسم توقيعك", resign: "أعد الرسم", needSign: "ارسم توقيعك أولاً.", pdf: "تنزيل ملف PDF الموقّع", share: "مشاركة", mail: "إرسال بالبريد الإلكتروني", mailHint: "تم تنزيل ملف PDF – أرفقه بالرسالة الإلكترونية.", close: "إغلاق", error: "تعذّر فتح المستند.", unsupported: "يمكن توقيع ملفات PDF والصور (JPG وPNG) فقط.", note: "توقيع إلكتروني بسيط. إذا طلبت الجهة الرسمية نسخة موقّعة بخط اليد، فاطبع المستند ووقّعه بيدك." },
+  en: { steps: ["Fill in", "Sign", "Send"], size: "Size", yourSignature: "Your signature", dragHint: "Move the signature with the mouse or your finger.", autofill: "Auto-fill", autofilling: "The AI is filling in the form…", autofilled: (n) => `${n} fields filled – your signature is in the right place.`, noFields: "This PDF has no fillable fields. You can still add your signature.", stillMissing: "Please check, still empty:", afError: { needs_subscription: "Part of the subscription.", limit_reached: "Your questions for this month are used up.", not_available: "The AI is not available right now.", failed: "The form could not be filled in." }, title: "Sign document", loading: "Loading the document…", page: "Page", of: "of", drag: "Drag the signature to the right place. Size:", sign: "Draw signature", resign: "Draw again", needSign: "Draw your signature first.", pdf: "Download signed PDF", share: "Share", mail: "Send by e-mail", mailHint: "The PDF was downloaded – attach it to the e-mail.", close: "Close", error: "The document could not be opened.", unsupported: "Only PDFs and photos (JPG, PNG) can be signed.", note: "Simple electronic signature. Where the authority requires a handwritten original, please print and sign by hand." },
+  tr: { steps: ["Doldur", "İmzala", "Gönder"], size: "Boyut", yourSignature: "İmzanız", dragHint: "İmzayı fare veya parmağınızla taşıyın.", autofill: "Otomatik doldur", autofilling: "Yapay zekâ formu dolduruyor…", autofilled: (n) => `${n} alan dolduruldu – imzanız doğru yerde.`, noFields: "Bu PDF'te doldurulabilir alan yok. Yine de imzanızı ekleyebilirsiniz.", stillMissing: "Lütfen kontrol edin, hâlâ boş:", afError: { needs_subscription: "Aboneliğe dahildir.", limit_reached: "Bu ayki sorularınız bitti.", not_available: "Yapay zekâ şu anda kullanılamıyor.", failed: "Form doldurulamadı." }, title: "Belgeyi imzala", loading: "Belge yükleniyor…", page: "Sayfa", of: "/", drag: "İmzayı doğru yere sürükleyin. Boyut:", sign: "İmza çiz", resign: "Yeniden çiz", needSign: "Önce imzanızı çizin.", pdf: "İmzalı PDF'i indir", share: "Paylaş", mail: "E-posta ile gönder", mailHint: "PDF indirildi – e-postaya ekleyin.", close: "Kapat", error: "Belge açılamadı.", unsupported: "Yalnızca PDF ve fotoğraflar (JPG, PNG) imzalanabilir.", note: "Basit elektronik imza. Kurum ıslak imza istiyorsa yazdırıp elle imzalayın." },
+  es: { steps: ["Rellenar", "Firmar", "Enviar"], size: "Tamaño", yourSignature: "Su firma", dragHint: "Mueva la firma con el ratón o el dedo.", autofill: "Rellenar automáticamente", autofilling: "La IA está rellenando el formulario…", autofilled: (n) => `${n} campos rellenados: su firma está en su sitio.`, noFields: "Este PDF no tiene campos rellenables. Aun así puede añadir su firma.", stillMissing: "Revise, aún vacíos:", afError: { needs_subscription: "Incluido en la suscripción.", limit_reached: "Ha usado todas las preguntas de este mes.", not_available: "La IA no está disponible ahora.", failed: "No se pudo rellenar el formulario." }, title: "Firmar documento", loading: "Cargando el documento…", page: "Página", of: "de", drag: "Arrastre la firma al lugar correcto. Tamaño:", sign: "Dibujar firma", resign: "Dibujar de nuevo", needSign: "Dibuje primero su firma.", pdf: "Descargar PDF firmado", share: "Compartir", mail: "Enviar por correo", mailHint: "Se ha descargado el PDF: adjúntelo al correo.", close: "Cerrar", error: "No se pudo abrir el documento.", unsupported: "Solo se pueden firmar PDF y fotos (JPG, PNG).", note: "Firma electrónica simple. Si la autoridad exige el original firmado a mano, imprímalo y fírmelo." },
+  uk: { steps: ["Заповнити", "Підписати", "Надіслати"], size: "Розмір", yourSignature: "Ваш підпис", dragHint: "Перемістіть підпис мишею або пальцем.", autofill: "Заповнити автоматично", autofilling: "ШІ заповнює форму…", autofilled: (n) => `Заповнено полів: ${n} – ваш підпис на потрібному місці.`, noFields: "У цьому PDF немає полів для заповнення. Підпис ви все одно можете додати.", stillMissing: "Перевірте, ще порожні:", afError: { needs_subscription: "Входить у підписку.", limit_reached: "Запитання на цей місяць вичерпано.", not_available: "ШІ зараз недоступний.", failed: "Не вдалося заповнити форму." }, title: "Підписати документ", loading: "Документ завантажується…", page: "Сторінка", of: "з", drag: "Перетягніть підпис у потрібне місце. Розмір:", sign: "Намалювати підпис", resign: "Намалювати знову", needSign: "Спершу намалюйте підпис.", pdf: "Завантажити підписаний PDF", share: "Поділитися", mail: "Надіслати поштою", mailHint: "PDF завантажено – додайте його до листа.", close: "Закрити", error: "Не вдалося відкрити документ.", unsupported: "Підписати можна лише PDF і фото (JPG, PNG).", note: "Проста електронна підпис. Якщо установа вимагає власноручний підпис, роздрукуйте й підпишіть від руки." },
 };
 
 const kindOf = (doc) => {
@@ -219,79 +219,125 @@ export default function SignDocument({ doc, lang, onClose }) {
     }
   };
 
+  // Where the customer is: 1 fill in, 2 sign, 3 send
+  const step = !signature ? (filled ? 2 : 1) : 3;
+  const btnSoft = "inline-flex items-center justify-center gap-2 rounded-xl border border-purple-200 bg-white px-4 py-2.5 text-sm font-semibold text-[#5b21b6] transition hover:bg-purple-50 disabled:opacity-60";
+
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 p-3 sm:p-6" role="dialog" aria-modal="true" aria-label={t.title}>
-      <div className="mx-auto max-w-3xl rounded-2xl bg-white p-4 shadow-xl">
-        <div className="flex items-center justify-between gap-2">
-          <p className="font-bold text-[#2e1065]">{t.title}</p>
-          <button type="button" onClick={onClose} aria-label={t.close} className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100"><X className="h-5 w-5" /></button>
+    <div className="fixed inset-0 z-[100] flex items-stretch justify-center bg-slate-900/60 p-0 backdrop-blur-sm sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={t.title}>
+      <div className="flex max-h-full w-full max-w-4xl flex-col overflow-hidden bg-white shadow-2xl sm:max-h-[92vh] sm:rounded-3xl">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-3 border-b border-slate-100 px-4 py-3 sm:px-5 sm:py-4">
+          <div className="min-w-0">
+            <p className="text-lg font-black text-[#1f0b52]">{t.title}</p>
+            <p className="truncate text-sm text-slate-500">{doc.title}</p>
+          </div>
+          <button type="button" onClick={onClose} aria-label={t.close} className="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100"><X className="h-5 w-5" /></button>
         </div>
-        <p className="truncate text-xs text-gray-500">{doc.title}</p>
 
         {error ? (
-          <p className="mt-4 rounded-lg bg-red-50 p-3 text-sm font-semibold text-red-700">{error}</p>
+          <p className="m-5 rounded-xl bg-red-50 p-4 text-sm font-semibold text-red-700">{error}</p>
         ) : loading ? (
-          <p className="mt-6 flex items-center justify-center gap-2 py-10 text-sm text-[#6B46C1]"><Loader2 className="h-4 w-4 animate-spin" />{t.loading}</p>
+          <p className="flex flex-1 items-center justify-center gap-2 py-20 text-sm text-[#6B46C1]"><Loader2 className="h-5 w-5 animate-spin" />{t.loading}</p>
         ) : (
           <>
-            <div className="mt-3 flex flex-wrap items-center gap-3">
-              {kind === "pdf" && (
-                <button type="button" onClick={autofill} disabled={filling} className="inline-flex items-center gap-1.5 rounded-lg bg-[#6B46C1] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#805AD5] disabled:opacity-60">
-                  {filling ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Wand2 className="h-3.5 w-3.5" />}{filling ? t.autofilling : t.autofill}
-                </button>
-              )}
-              <button type="button" onClick={() => setDrawing(true)} className="inline-flex items-center gap-1.5 rounded-lg border border-purple-200 px-3 py-1.5 text-xs font-semibold text-[#6B46C1] hover:bg-purple-50">
-                <PenLine className="h-3.5 w-3.5" />{signature ? t.resign : t.sign}
-              </button>
-              {pages > 1 && (
-                <div className="flex items-center gap-1 text-xs text-gray-600">
-                  <button type="button" disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="rounded p-1 hover:bg-gray-100 disabled:opacity-40" aria-label="‹"><ChevronLeft className="h-4 w-4 rtl:rotate-180" /></button>
-                  {t.page} {page} {t.of} {pages}
-                  <button type="button" disabled={page >= pages} onClick={() => setPage((p) => p + 1)} className="rounded p-1 hover:bg-gray-100 disabled:opacity-40" aria-label="›"><ChevronRight className="h-4 w-4 rtl:rotate-180" /></button>
+            {/* Steps + tools */}
+            <div className="space-y-3 border-b border-slate-100 bg-slate-50/70 px-4 py-3 sm:space-y-4 sm:px-5 sm:py-4">
+              <ol className="flex items-center gap-2 text-xs font-semibold">
+                {t.steps.map((label, i) => {
+                  const n = i + 1;
+                  const state = n < step ? "done" : n === step ? "now" : "next";
+                  return (
+                    <li key={label} className="flex flex-1 items-center gap-2">
+                      <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-black ${state === "done" ? "bg-emerald-500 text-white" : state === "now" ? "bg-[#6d28d9] text-white" : "bg-slate-200 text-slate-500"}`}>
+                        {state === "done" ? <Check className="h-4 w-4" /> : n}
+                      </span>
+                      <span className={state === "next" ? "text-slate-400" : "text-[#1f0b52]"}>{label}</span>
+                      {n < 3 && <span className="hidden h-px flex-1 bg-slate-200 sm:block" />}
+                    </li>
+                  );
+                })}
+              </ol>
+
+              <div className="grid grid-cols-[1fr_auto] gap-2 sm:gap-3">
+                {kind === "pdf" ? (
+                  <button type="button" onClick={autofill} disabled={filling} className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] px-3 py-2.5 text-sm sm:px-5 sm:py-3 font-bold text-white shadow-lg shadow-purple-500/20 transition hover:brightness-110 disabled:opacity-60">
+                    {filling ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}{filling ? t.autofilling : t.autofill}
+                  </button>
+                ) : <span />}
+                <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2">
+                  {signature
+                    ? <img src={signature} alt={t.yourSignature} className="hidden h-9 w-24 object-contain sm:block" />
+                    : <span className="text-xs text-slate-500">{t.yourSignature}</span>}
+                  <button type="button" onClick={() => setDrawing(true)} className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-semibold text-[#5b21b6] transition hover:bg-purple-50">
+                    <PenLine className="h-4 w-4" />{signature ? t.resign : t.sign}
+                  </button>
+                </div>
+              </div>
+
+              {filled && (
+                <div className="flex items-start gap-2 rounded-xl bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0" />
+                  <div>
+                    <p className="font-semibold">{t.autofilled(filled.count)}</p>
+                    {filled.missing.length > 0 && <p className="mt-0.5 text-amber-800">{t.stillMissing} <span dir="ltr">{filled.missing.join(", ")}</span></p>}
+                  </div>
                 </div>
               )}
-              {signature && (
-                <label className="flex items-center gap-2 text-xs text-gray-600">
-                  {t.drag}
-                  <input type="range" min="0.12" max="0.6" step="0.01" value={pos.w} onChange={(e) => setPos((p) => ({ ...p, w: Math.min(Number(e.target.value), 1 - p.x) }))} />
-                </label>
+
+              {(signature || pages > 1) && (
+                <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-600">
+                  {signature && (
+                    <label className="flex items-center gap-3">
+                      <span className="font-medium">{t.size}</span>
+                      <input type="range" min="0.12" max="0.6" step="0.01" value={pos.w} onChange={(e) => setPos((p) => ({ ...p, w: Math.min(Number(e.target.value), 1 - p.x) }))} className="w-32 accent-[#6d28d9]" />
+                    </label>
+                  )}
+                  {pages > 1 && (
+                    <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-1 py-0.5">
+                      <button type="button" disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="rounded-lg p-1.5 hover:bg-slate-100 disabled:opacity-40" aria-label="‹"><ChevronLeft className="h-4 w-4 rtl:rotate-180" /></button>
+                      <span className="px-1 text-xs font-semibold">{t.page} {page} {t.of} {pages}</span>
+                      <button type="button" disabled={page >= pages} onClick={() => setPage((p) => p + 1)} className="rounded-lg p-1.5 hover:bg-slate-100 disabled:opacity-40" aria-label="›"><ChevronRight className="h-4 w-4 rtl:rotate-180" /></button>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
 
-            {filled && (
-              <div className="mt-3 rounded-lg bg-emerald-50 p-2 text-xs text-emerald-800">
-                <p className="font-semibold">{t.autofilled(filled.count)}</p>
-                {filled.missing.length > 0 && <p className="mt-1 text-amber-800">{t.stillMissing} <span dir="ltr">{filled.missing.join(", ")}</span></p>}
+            {/* The page */}
+            <div className="min-h-0 flex-1 overflow-y-auto bg-slate-100 px-3 py-4 sm:px-6">
+              <div ref={stage} className="mx-auto flex max-w-[720px] justify-center" dir="ltr">
+                <div className="relative">
+                  <canvas ref={canvas} className="block rounded-sm bg-white shadow-md" />
+                  {signature && (
+                    <img
+                      src={signature}
+                      alt=""
+                      draggable={false}
+                      onPointerDown={startDrag}
+                      onPointerMove={moveDrag}
+                      onPointerUp={endDrag}
+                      style={{ left: `${pos.x * 100}%`, top: `${pos.y * 100}%`, width: `${pos.w * 100}%` }}
+                      className="absolute cursor-move touch-none rounded-md border-2 border-dashed border-[#7c3aed] bg-white/40 ring-4 ring-purple-500/10"
+                    />
+                  )}
+                </div>
               </div>
-            )}
-
-            <div ref={stage} className="mt-3 flex justify-center overflow-hidden rounded-lg bg-gray-100 p-2" dir="ltr">
-              <div className="relative">
-                <canvas ref={canvas} className="block bg-white shadow" />
-                {signature && (
-                  <img
-                    src={signature}
-                    alt=""
-                    draggable={false}
-                    onPointerDown={startDrag}
-                    onPointerMove={moveDrag}
-                    onPointerUp={endDrag}
-                    style={{ left: `${pos.x * 100}%`, top: `${pos.y * 100}%`, width: `${pos.w * 100}%` }}
-                    className="absolute cursor-move touch-none rounded border-2 border-dashed border-[#7c3aed] bg-white/30"
-                  />
-                )}
-              </div>
+              {signature && <p className="mt-3 text-center text-xs text-slate-500">{t.dragHint}</p>}
             </div>
 
-            <div className="mt-3 flex flex-wrap gap-2">
-              <button type="button" disabled={busy} onClick={() => run("download")} className="inline-flex items-center gap-1.5 rounded-lg bg-[#6B46C1] px-3 py-2 text-xs font-bold text-white hover:bg-[#805AD5] disabled:opacity-60">
-                {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}{t.pdf}
-              </button>
-              <button type="button" disabled={busy} onClick={() => run("mail")} className="inline-flex items-center gap-1.5 rounded-lg border border-purple-200 px-3 py-2 text-xs font-semibold text-[#6B46C1] hover:bg-purple-50 disabled:opacity-60"><Mail className="h-3.5 w-3.5" />{t.mail}</button>
-              <button type="button" disabled={busy} onClick={() => run("share")} className="inline-flex items-center gap-1.5 rounded-lg border border-purple-200 px-3 py-2 text-xs font-semibold text-[#6B46C1] hover:bg-purple-50 disabled:opacity-60"><Share2 className="h-3.5 w-3.5" />{t.share}</button>
+            {/* Send: always visible */}
+            <div className="border-t border-slate-100 bg-white px-4 py-3 sm:px-5 sm:py-4">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-[1.4fr_1fr_1fr]">
+                <button type="button" disabled={busy} onClick={() => run("download")} className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-[#6d28d9] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#5b21b6] disabled:opacity-60 sm:col-span-1">
+                  {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}{t.pdf}
+                </button>
+                <button type="button" disabled={busy} onClick={() => run("mail")} className={btnSoft}><Mail className="h-4 w-4" />{t.mail}</button>
+                <button type="button" disabled={busy} onClick={() => run("share")} className={btnSoft}><Share2 className="h-4 w-4" />{t.share}</button>
+              </div>
+              {hint && <p className="mt-2 text-sm font-semibold text-[#6B46C1]">{hint}</p>}
+              <p className="mt-2 text-[11px] leading-snug text-slate-500 sm:text-xs sm:leading-relaxed">{t.note}</p>
             </div>
-            {hint && <p className="mt-2 text-xs font-semibold text-[#6B46C1]">{hint}</p>}
-            <p className="mt-2 text-[11px] text-gray-500">{t.note}</p>
           </>
         )}
       </div>
