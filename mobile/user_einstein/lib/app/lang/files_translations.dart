@@ -1,6 +1,7 @@
 // Texts for the customer file, reminders, applications and the new home.
 
 const Map<String, String> filesEn = {
+  'files_explanation_note': 'Simple explanation to help you understand – only the original letter counts.',
   'files_explanation': 'Explained simply',
   'nav_subscription': 'Plan',
   'quick_abo_sub': 'Everything that\'s included',
@@ -287,6 +288,7 @@ const Map<String, String> filesEn = {
 };
 
 const Map<String, String> filesAr = {
+  'files_explanation_note': 'شرح مبسّط لمساعدتك على الفهم – والمعتمد هو الرسالة الأصلية فقط.',
   'files_explanation': 'شرح مبسّط',
   'nav_subscription': 'الاشتراك',
   'quick_abo_sub': 'كل ما يتضمنه الاشتراك',
@@ -573,6 +575,7 @@ const Map<String, String> filesAr = {
 };
 
 const Map<String, String> filesDe = {
+  'files_explanation_note': 'Einfache Erklärung zum Verständnis – maßgeblich ist nur das Originalschreiben.',
   'files_explanation': 'Einfach erklärt',
   'nav_subscription': 'Abo',
   'quick_abo_sub': 'Was alles enthalten ist',

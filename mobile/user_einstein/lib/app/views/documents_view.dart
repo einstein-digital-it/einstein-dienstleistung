@@ -732,7 +732,7 @@ class _DocumentDetailViewState extends State<DocumentDetailView> {
                     const SizedBox(height: 10),
                     SelectableText(doc.translation!, style: Theme.of(context).textTheme.bodyLarge),
                     const SizedBox(height: 10),
-                    Text('files_translation_note'.tr, style: Theme.of(context).textTheme.bodySmall),
+                    Text((doc.isExplanation ? 'files_explanation_note' : 'files_translation_note').tr, style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ]),
               ),

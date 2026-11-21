@@ -1,5 +1,6 @@
 // Ukrainian (uk). Keys missing here fall back to English.
 const Map<String, String> ukTranslations = {
+  "files_explanation_note": "Просте пояснення для розуміння – чинним є лише оригінал листа.",
   "files_explanation": "Просте пояснення",
   "nav_subscription": "Підписка",
   "quick_abo_sub": "Що входить у підписку",
